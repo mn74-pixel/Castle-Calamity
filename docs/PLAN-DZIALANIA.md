@@ -31,6 +31,21 @@ Status: **wdrożone i sprawdzone automatycznie**
 - poziom 4: rycerz lecący na chmurze, poziom 5: konserwator polerujący księżyc,
 - nowe gagi zachowują pełny przebieg od krawędzi do krawędzi bez widocznej pętli.
 
+## Następny etap v4.3
+
+Status: **wdrożony i sprawdzony automatycznie**
+
+- oszczepnik faktycznie wypuszcza broń z dłoni; wydłużony oszczep i krótka smuga pokazują cały lot,
+- kartki za latającym biurkiem mają ciągły ruch bez modulo, teleportowania i widocznego końca pętli,
+- od poziomu 7 dostępny jest Kamieniarz kupowany za złoto,
+- maksymalnie dwóch kamieniarzy jednej strony pracuje równocześnie,
+- jednostka automatycznie idzie do jednego z trzech kamieniołomów i wraca z blokiem,
+- co trzy dostawy zamek przechodzi jeden z trzech widocznych etapów rozbudowy,
+- każdy etap daje 7,5% maksymalnego HP; pełna rozbudowa daje 22,5%,
+- po trzecim etapie kolejne dostawy wykonują tylko lekką naprawę murów,
+- nie dodano osobnego licznika kamienia ani sklepu budowlanego, więc ekonomia pozostaje prosta,
+- przeciwnik poznaje Kamieniarza dopiero od poziomu 8, aby poziom 7 był czytelnym wprowadzeniem mechaniki.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -42,7 +57,7 @@ Status: **wdrożone i sprawdzone automatycznie**
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v4.2 gotowa do testu gracza**
+Status: **wersja v4.3 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg czarownika ustawiony na 180,
@@ -54,7 +69,7 @@ Status: **wersja v4.2 gotowa do testu gracza**
 - intro otrzymało nową sekwencję policjanta bez napisów ekranowych i bocznych cieni,
 - każdy z 12 poziomów ma własny dyskretny absurd scenograficzny,
 - pozostał test odczucia balansu na prawdziwym telefonie i monitorze,
-- sprawdzenie, czy wszystkie 13 jednostek ma wyraźną rolę,
+- sprawdzenie, czy wszystkie 14 jednostek ma wyraźną rolę,
 - zebranie uwag Marcina po każdej wersji testowej.
 
 Kryterium zakończenia: trzy pełne rozgrywki na telefonie i komputerze bez błędu blokującego.
@@ -73,6 +88,7 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 
 ## Etap 3 — głębsza strategia
 
+- wdrożono lekką rozbudowę zamku przez Kamieniarzy od poziomu 7, bez osobnej waluty,
 - czytelne kontry jednostek,
 - profile AI: defensywny, agresywny, oblężniczy i chaotyczny,
 - unikalne zachowania bossów,
@@ -106,5 +122,5 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 Potrzebne są trzy decyzje:
 
 1. Czy osoba, która nie zna gry, rozumie cel i sterowanie po samouczku bez dodatkowego tłumaczenia?
-2. Czy tor armaty jest czytelny także podczas tłocznej bitwy na prawdziwym telefonie?
-3. Czy zasięg czarownika 180 daje przewagę, ale nie dominuje całej walki?
+2. Czy oszczep jest widoczny od dłoni aż do celu także podczas tłocznej bitwy na telefonie?
+3. Czy Kamieniarz daje ciekawą decyzję za 36 złota, ale nie odciąga uwagi od właściwej bitwy?

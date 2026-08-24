@@ -483,6 +483,7 @@ var UD = {
   archer:   {n:"Łucznik",    c:18, h:50, a:10, ac:2,  s:34, r:170,worker:false,cannon:false, spl:0, R:180,G:140,B:80,  tier:2},
   warrior:  {n:"Wojownik",   c:22, h:110,a:15, ac:8,  s:36, r:26, worker:false,cannon:false, spl:0, R:200,G:80, B:80,  tier:2},
   berserk:  {n:"Berserker",  c:32, h:90, a:24, ac:12, s:55, r:28, worker:false,cannon:false, spl:0, R:170,G:50, B:50,  tier:2},
+  mason:    {n:"Kamieniarz", c:36, h:68, a:0,  ac:0,  s:33, r:0,  worker:false,mason:true,cannon:false,spl:0,R:142,G:137,B:128,tier:0},
   crossbow: {n:"Kusznik",    c:40, h:70, a:22, ac:5,  s:28, r:140,worker:false,cannon:false, spl:0, R:160,G:110,B:60,  tier:2},
   knight:   {n:"Rycerz",     c:50, h:180,a:28, ac:15, s:62, r:30, worker:false,cannon:false, spl:0, R:160,G:170,B:200, tier:3},
   wizard:   {n:"Czarownik",  c:70, h:80, a:38, ac:8,  s:32, r:180,worker:false,cannon:false, spl:0, R:170,G:90, B:200, tier:3},
@@ -493,14 +494,13 @@ var UD = {
   golem:    {n:"Golem",      c:90, h:400,a:30, ac:30, s:22, r:28, worker:false,cannon:false, spl:0, R:120,G:130,B:110, tier:4, siege:true},
   spearman: {n:"Oszczepnik", c:28, h:80, a:18, ac:6,  s:38, r:95, worker:false,cannon:false, spl:0, R:120,G:160,B:140, tier:2, thrower:true}
 };
-/* Kolejność w UI: wszystkie 13 jednostek, od najtańszej do najdroższej. */
-var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","crossbow","monk","knight","wizard","templar","golem","cannon"];
-var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8","9","0","-","=","]"];
+/* Kolejność w UI: wszystkie jednostki, od najtańszej do najdroższej. */
+var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","crossbow","monk","knight","wizard","templar","golem","cannon"];
+var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8","9","0","-","=","]","["];
 
 /* ── Levels ── */
-/* PROGRESJA: kolejne poziomy poszerzają rotację jednostek.
-   ad = cooldown spawnu AI (ms) — większe = wolniejsze pojawianie się wrogów.
-   Łącznie 10 jednostek (drwal, pikeman, warrior, archer, crossbow, berserk, knight, templar, cannon, wizard) */
+/* PROGRESJA: kolejne poziomy poszerzają rotację 14 jednostek.
+   ad = cooldown spawnu AI (ms) — większe = wolniejsze pojawianie się wrogów. */
 var LV = [
   {id:1, n:"Zielone Pola",       pH:1000,eH:1000,gm:1.8,ad:8500,sc:0,ai:["drwal","warrior","drwal","warrior"], ul:["drwal","warrior"]},
   {id:2, n:"Jesienny Zmierzch",  pH:1200,eH:1200,gm:1.9,ad:7500,sc:1,ai:["drwal","warrior","pikeman","warrior"], ul:["drwal","warrior","pikeman"]},
@@ -508,12 +508,12 @@ var LV = [
   {id:4, n:"Świt nad Wzgórzami", pH:1800,eH:1800,gm:2.2,ad:6000,sc:3,ai:["drwal","warrior","spearman","archer","knight"], ul:["drwal","warrior","spearman","archer","knight"]},
   {id:5, n:"Cytadela",           pH:2200,eH:2200,gm:2.4,ad:5400,sc:4,ai:["drwal","warrior","archer","monk","knight","cannon"], ul:["drwal","warrior","spearman","archer","monk","knight","cannon"]},
   {id:6, n:"Pustynia Khepri",    pH:2600,eH:2600,gm:2.5,ad:4800,sc:5,ai:["drwal","archer","knight","wizard","warrior"], ul:["drwal","warrior","monk","archer","knight","cannon","wizard"]},
-  {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","archer","crossbow","knight","cannon","wizard"]},
-  {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,ai:["drwal","golem","berserk","crossbow","knight"], ul:["drwal","warrior","monk","archer","crossbow","berserk","golem","knight","cannon","wizard"]},
-  {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,ai:["drwal","cannon","wizard","golem","templar","cannon"], ul:["drwal","warrior","spearman","archer","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,ai:["drwal","knight","wizard","templar","cannon","golem","wizard"], ul:["drwal","warrior","monk","archer","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true},
-  {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,ai:["drwal","templar","golem","cannon","wizard","crossbow"], ul:["drwal","warrior","spearman","monk","archer","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,ai:["drwal","templar","wizard","cannon","golem","templar","wizard","cannon"], ul:["drwal","warrior","spearman","monk","archer","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true}
+  {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","archer","mason","crossbow","knight","cannon","wizard"]},
+  {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","cannon","wizard"]},
+  {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,ai:["drwal","mason","cannon","wizard","golem","templar","cannon"], ul:["drwal","warrior","spearman","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
+  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,ai:["drwal","mason","knight","wizard","templar","cannon","golem","wizard"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true},
+  {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
+  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,ai:["drwal","mason","templar","wizard","cannon","golem","templar","wizard","cannon"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true}
 ];
 
 var G=null, LI=0, RAF=null, PAUSED=false;
@@ -798,13 +798,20 @@ function load(idx){
     clouds.push({x:Math.random()*W,y:140+Math.random()*60,rw:55+Math.random()*70,rh:14+Math.random()*16,spd:6+Math.random()*6,a:0.14+Math.random()*0.10, layer:1});
   for(var i=0;i<3;i++) // duże, powolne - dolna
     clouds.push({x:Math.random()*W,y:200+Math.random()*Math.max(40,GY*0.15),rw:80+Math.random()*100,rh:18+Math.random()*22,spd:3+Math.random()*4,a:0.18+Math.random()*0.10, layer:2});
+  /* Kamieniołomy pojawiają się dopiero od poziomu 7. Nie tworzą osobnej
+     waluty ani panelu — są czytelnym, terenowym celem kamieniarzy. */
+  var rocks=[];
+  if(lv.id>=7){
+    var rockSlots=[0.38,0.50,0.62];
+    for(var ri=0;ri<rockSlots.length;ri++)rocks.push({x:Math.round(W*rockSlots[ri]),y:GY,seed:.23+ri*.29});
+  }
   G={
     eraId:ACTIVE_ERA_ID,eraPack:(ERA_REGISTRY.packs&&ERA_REGISTRY.packs[ACTIVE_ERA_ID])||null,
     lv:lv,W:W,H:H,GY:GY,
-    p:{hp:lv.pH,max:lv.pH,gold:30,x:0,w:cw,h:ch,isP:true,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.31},
-    e:{hp:lv.eH,max:lv.eH,gold:35,x:W-cw,w:cw,h:ch,isP:false,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.71},
+    p:{hp:lv.pH,max:lv.pH,baseMax:lv.pH,buildStage:0,buildLoads:0,gold:30,x:0,w:cw,h:ch,isP:true,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.31},
+    e:{hp:lv.eH,max:lv.eH,baseMax:lv.eH,buildStage:0,buildLoads:0,gold:35,x:W-cw,w:cw,h:ch,isP:false,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.71},
     units:[],projs:[],blasts:[],floats:[],dust:[],smoke:[],embers:[],sparks:[],coins:[],birds:[],bloodstains:[],gags:[],
-    trees:trees,clouds:clouds,
+    trees:trees,rocks:rocks,clouds:clouds,
     treeT:0,aiT:0,aiI:0,T:0,LT:0,over:false,overT:0,sunAngle:0.47,
     gagT:randBetween(CONTENT.timing.firstMin,CONTENT.timing.firstMax),gagShown:false,freezeField:0,arrowRainFx:null,lastGagType:null,
     stats:{kills:0,losses:0,goldEarned:0,unitsSpawned:0,startTime:Date.now()},
@@ -919,12 +926,13 @@ function buildCards(){
     if(ud.a>0)tipHTML+="<span class='stat'>"+tr("tip.attackUnit")+":</span> <b style='color:#ff8844'>"+Math.round(effStat(key,"a"))+"</b><br>";
     if((ud.ac||0)>0)tipHTML+="<span class='stat'>"+tr("tip.attackCastle")+":</span> <b style='color:#cc6622'>"+Math.round(effStat(key,"ac"))+"</b><br>";
     if(!ud.cannon)tipHTML+="<span class='stat'>"+tr("tip.speed")+":</span> "+Math.round(effStat(key,"s"))+"<br>";
-    tipHTML+="<span class='stat'>"+tr("tip.range")+":</span> <b>"+(ud.r>900?"∞":Math.round(ud.r))+"</b> "+(ud.r>900?"("+tr("tip.far")+")":ud.r>40?"("+tr("tip.ranged")+")":"("+tr("tip.melee")+")");
+    if(!ud.mason)tipHTML+="<span class='stat'>"+tr("tip.range")+":</span> <b>"+(ud.r>900?"∞":Math.round(ud.r))+"</b> "+(ud.r>900?"("+tr("tip.far")+")":ud.r>40?"("+tr("tip.ranged")+")":"("+tr("tip.melee")+")");
     if(ud.worker)tipHTML+="<br><span style='color:#cca044'>"+tr("tip.worker")+"</span>";
+    if(ud.mason)tipHTML+="<span style='color:#bfc6c9'>"+tr("tip.mason")+"</span>";
     if(ud.cannon)tipHTML+="<br><span style='color:#ff8844'>"+tr("tip.area")+"</span><br><span style='color:#ffcc44'>"+tr("tip.shots")+": "+(ud.shots||5)+" ("+tr("tip.thenGone")+")</span>";
     /* Specjalizacja */
     var aRatio = (ud.a > 0 && (ud.ac||0) > 0) ? (ud.a / (ud.ac||1)) : 0;
-    if(!ud.worker && !ud.cannon){
+    if(!ud.worker && !ud.mason && !ud.cannon){
       if(aRatio > 3) tipHTML+="<br><span style='color:#88aaff'>⚔ "+tr("tip.antiUnit")+"</span>";
       else if(aRatio > 0 && aRatio < 0.6) tipHTML+="<br><span style='color:#cc6622'>🏰 "+tr("tip.siege")+"</span>";
     }
@@ -979,6 +987,15 @@ function spawnUnit(key,isP){
   var ud=UD[key];if(!ud)return;
   var cas=isP?G.p:G.e;
   var cost=isP?effStat(key,"c"):ud.c;
+  if(ud.mason){
+    if(!G.rocks||!G.rocks.length)return;
+    var activeMasons=0;
+    for(var mi=0;mi<G.units.length;mi++){
+      var mu=G.units[mi];
+      if(mu&&mu.isP===isP&&mu.ud.mason&&mu.state!=="dead")activeMasons++;
+    }
+    if(activeMasons>=2)return;
+  }
   if(cas.gold<cost)return;
   cas.gold-=cost;
   if(isP)G.stats.unitsSpawned++;
@@ -992,12 +1009,14 @@ function spawnUnit(key,isP){
     eff_s:isP?effStat(key,"s"):ud.s,
     eff_spdmul:spdMul(key,isP),
     x:sx,y:sy,
-    state:ud.cannon?"cannon":(ud.worker?"toTree":"march"),
+    state:ud.cannon?"cannon":(ud.worker?"toTree":(ud.mason?"toRock":"march")),
     tgt:null,acd:0,carry:0,ttgt:null,gt:0,
+    rockTarget:null,quarryT:0,carryStone:false,
     vx:0,step:Math.random()*6.28,atkPhase:0,flash:0,dT:0,fallRot:0,fallVy:0,
     shotsLeft: ud.cannon ? (ud.shots||5) : null
   };
   if(ud.worker){u.ttgt=nearTree(u.x);if(!u.ttgt)u.state="march";}
+  if(ud.mason){u.rockTarget=nearRock(u.x,isP);if(!u.rockTarget)return;}
   if(!isP&&G.freezeField>0){u.frozen=G.freezeField;u.frozenFlash=0;}
   G.units.push(u);
   tutorialOnSpawn(key,isP);
@@ -1009,6 +1028,20 @@ function nearTree(fx){
   for(var i=0;i<G.trees.length;i++){
     var t=G.trees[i];if(t.w<=0)continue;
     var d=Math.abs(t.x-fx);if(d<bd){bd=d;best=t;}
+  }
+  return best;
+}
+function nearRock(fx,isP){
+  if(!G||!G.rocks)return null;
+  var best=null,bd=1e9;
+  for(var i=0;i<G.rocks.length;i++){
+    var r=G.rocks[i],busy=0;
+    for(var j=0;j<G.units.length;j++){
+      var u=G.units[j];
+      if(u&&u.isP===isP&&u.state!=="dead"&&u.rockTarget===r)busy++;
+    }
+    var d=Math.abs(r.x-fx)+busy*90;
+    if(d<bd){bd=d;best=r;}
   }
   return best;
 }
@@ -1261,14 +1294,14 @@ function approachVx(u,target,dt,acc){
 function spawnDeathFX(u){
   for(var i=0;i<8;i++)G.dust.push({x:u.x+(Math.random()-0.5)*8,y:u.y-10-Math.random()*15,vx:(Math.random()-0.5)*70,vy:-30-Math.random()*50,life:0.7+Math.random()*0.3,sz:1.5+Math.random()*1.5});
   for(var i=0;i<5;i++){var ang=Math.random()*Math.PI*2,spd=30+Math.random()*60;G.sparks.push({x:u.x,y:u.y-15,vx:Math.cos(ang)*spd,vy:Math.sin(ang)*spd-30,life:0.4+Math.random()*0.2,col:"#cc3322"});}
-  if(G.bloodstains&&G.bloodstains.length<40&&!u.ud.worker){
+  if(G.bloodstains&&G.bloodstains.length<40&&!u.ud.worker&&!u.ud.mason){
     G.bloodstains.push({x:u.x+(Math.random()-0.5)*6,y:G.GY-1,sz:4+Math.random()*3,rot:Math.random()*Math.PI*2,alpha:0.5+Math.random()*0.2});
   }
 }
 function kill(u){
   if(!u||u.state==="dead")return;
   if(G){
-    if(!u.ud.worker){
+    if(!u.ud.worker&&!u.ud.mason){
       if(u.isP){G.stats.losses++;G.killStreak.count=0;}
       else{
         G.stats.kills++;addXP(u.ud.c*0.8);
@@ -1380,7 +1413,7 @@ function strikeAndDie(u){
 }
 /* FIX: findFoe szuka tylko z przodu (po stronie, gdzie idzie jednostka) — zapobiega strzelaniu do tyłu */
 function findFoe(u,md){
-  if(u.ud.worker)return null;
+  if(u.ud.worker||u.ud.mason)return null;
   var forward=u.isP?1:-1; // gracz idzie w prawo, AI w lewo
   var best=null,bd=md;
   for(var i=0;i<G.units.length;i++){
@@ -1576,10 +1609,13 @@ function tick(dt){
     else if(st==="toTree")doToTree(u,dt);
     else if(st==="gather")doGather(u,dt);
     else if(st==="return")doReturn(u,dt);
+    else if(st==="toRock")doToRock(u,dt);
+    else if(st==="quarry")doQuarry(u,dt);
+    else if(st==="stoneReturn")doStoneReturn(u,dt);
     else if(st==="march")doMarch(u,dt);
     else if(st==="fight")doFight(u,dt);
     if(u.state==="dead")continue;
-    if(!u.ud.cannon&&u.state!=="gather"){
+    if(!u.ud.cannon&&u.state!=="gather"&&u.state!=="quarry"){
       var spd=Math.abs(u.vx);
       u.step+=(spd*0.028+0.06)*dt*6;
     }
@@ -2034,6 +2070,50 @@ function doReturn(u,dt){
   }
   approachVx(u,(dx>0?1:-1)*uSpd(u)*1.1,dt,240);u.x+=u.vx*dt;
 }
+function doToRock(u,dt){
+  if(!u.rockTarget)u.rockTarget=nearRock(u.x,u.isP);
+  if(!u.rockTarget){retireSupportUnit(u);return;}
+  var dx=u.rockTarget.x-u.x;
+  if(Math.abs(dx)<11){u.state="quarry";u.quarryT=0;u.vx=0;return;}
+  approachVx(u,(dx>0?1:-1)*uSpd(u),dt,220);u.x+=u.vx*dt;
+}
+function doQuarry(u,dt){
+  u.vx=0;u.quarryT+=dt*(u.eff_spdmul||1);
+  u.atkPhase=.45+.55*Math.abs(Math.sin(u.quarryT*5.2));
+  if(Math.random()<dt*5){
+    G.dust.push({x:u.x+(Math.random()-.5)*13,y:u.y-4-Math.random()*7,vx:(Math.random()-.5)*28,vy:-18-Math.random()*20,life:.45+Math.random()*.2,sz:1.4+Math.random()*1.6});
+  }
+  if(u.quarryT>=2.85){u.carryStone=true;u.state="stoneReturn";u.atkPhase=0;}
+}
+function retireSupportUnit(u){
+  u.state="dead";u.dT=.01;u.vx=0;u.atkPhase=0;
+}
+function deliverStone(c,u){
+  if(!c)return;
+  if((c.buildStage||0)<3){
+    c.buildLoads=(c.buildLoads||0)+1;
+    if(c.buildLoads>=3){
+      c.buildLoads=0;c.buildStage=(c.buildStage||0)+1;
+      var oldMax=c.max,base=c.baseMax||oldMax;
+      c.max=Math.round(base*(1+c.buildStage*.075));
+      c.hp=Math.min(c.max,c.hp+(c.max-oldMax));
+      addFlt(c.x+c.w*.5,G.GY-c.h-18,tr("combat.castleStage")+" "+c.buildStage+"/3","#d8d1bd");
+      c.shake=Math.max(c.shake||0,.32);
+      for(var si=0;si<12;si++)G.dust.push({x:c.x+Math.random()*c.w,y:G.GY-c.h*.18-Math.random()*c.h*.55,vx:(Math.random()-.5)*45,vy:-15-Math.random()*35,life:.65+Math.random()*.35,sz:1.6+Math.random()*2.2});
+    }else{
+      addFlt(c.x+c.w*.5,G.GY-c.h-9,"▰ "+c.buildLoads+"/3","#c9c2ae");
+    }
+  }else if(c.hp<c.max){
+    var repair=Math.min(c.max-c.hp,Math.max(1,Math.round(c.max*.025)));
+    c.hp+=repair;addFlt(c.x+c.w*.5,G.GY-c.h-10,"+"+Math.round(repair)+" "+tr("combat.castleRepair"),"#8ee39a");
+  }
+  retireSupportUnit(u);
+}
+function doStoneReturn(u,dt){
+  var home=u.isP?G.p:G.e,tx=u.isP?home.x+home.w+7:home.x-7,dx=tx-u.x;
+  if(Math.abs(dx)<9){deliverStone(home,u);return;}
+  approachVx(u,(dx>0?1:-1)*uSpd(u)*.92,dt,210);u.x+=u.vx*dt;
+}
 function doMarch(u,dt){
   u.acd-=dt;
   var range=uRange(u);
@@ -2067,18 +2147,19 @@ function doFight(u,dt){
       var forward=u.isP?1:-1;
       if((tx-sx)*forward<-5){u.tgt=null;u.state="march";return;}
       if(u.ud.thrower){
-        /* Oszczep jest liczony do aktualnej pozycji celu. Stary stały wektor
-           przelatywał nad celem, a potem nurkował pionowo w ziemię. */
-        var dist=Math.abs(tx-sx);
+        /* Oszczep startuje z wyprostowanej dłoni, a nie ze środka postaci.
+           Dzięki temu widać dokładnie moment wypuszczenia i cały lot. */
+        var launchX=sx+forward*11*combatScale(),launchY=sy-5*combatScale();
+        var dist=Math.abs(tx-launchX);
         var ftJ=Math.max(.48,Math.min(1.05,dist/(265*combatScale())));
         var arcJ=Math.max(28,Math.min(68,dist*.16));
         var gravJ=(8*arcJ)/(ftJ*ftJ);
-        var vx0=(tx-sx)/ftJ;
-        var vy0=((ty-sy)-.5*gravJ*ftJ*ftJ)/ftJ;
+        var vx0=(tx-launchX)/ftJ;
+        var vy0=((ty-launchY)-.5*gravJ*ftJ*ftJ)/ftJ;
         G.projs.push({
-          x:sx,y:sy,vx:vx0,vy:vy0,
+          x:launchX,y:launchY,vx:vx0,vy:vy0,
           atk:ratk,atkC:uAtkCastle(u)*1.6,
-          isP:u.isP,life:ftJ+.3,flightTime:ftJ,spl:0,grav:gravJ,type:"spearman",trail:null
+          isP:u.isP,life:ftJ+.3,flightTime:ftJ,spl:0,grav:gravJ,type:"spearman",trail:[]
         });
         if(u.isP) SFX.arrow();
       }else if(u.key==="archer"||u.key==="crossbow"){
@@ -2276,9 +2357,18 @@ function drawFlyingDeskGag(g){
   var stamp=Math.abs(Math.sin(g.phase*7))*6;
   CT.strokeStyle="#d4aa82";CT.lineWidth=3;CT.beginPath();CT.moveTo(-6,-33);CT.lineTo(-10,-24+stamp*.25);CT.stroke();
   CT.fillStyle="#7b1c2b";CT.fillRect(-13,-24+stamp*.25,6,3);
-  // Uciekające dokumenty za biurkiem
-  CT.fillStyle="rgba(245,238,216,.9)";
-  for(var pi=0;pi<3;pi++){var px=-42-pi*18-(g.phase*12%(18));var py=-14+Math.sin(g.phase*4+pi)*12;CT.save();CT.translate(px,py);CT.rotate(Math.sin(g.phase*3+pi)*.5);CT.fillRect(-5,-3,10,7);CT.restore();}
+  /* Dokumenty są przywiązane do jednego, ciągłego układu za biurkiem.
+     Bez modulo i bez teleportowania kartki z końca na początek szeregu. */
+  for(var pi=0;pi<4;pi++){
+    var px=-43-pi*19+Math.sin(g.phase*.82+pi*1.73)*4.2;
+    var py=-15+Math.sin(g.phase*2.15+pi*1.31)*(7.5+pi*1.1);
+    var prot=Math.sin(g.phase*1.65+pi*2.07)*.55;
+    CT.save();CT.translate(px,py);CT.rotate(prot);
+    CT.fillStyle="rgba(245,238,216,.92)";CT.strokeStyle="rgba(125,111,86,.72)";CT.lineWidth=.65;
+    CT.beginPath();CT.moveTo(-5.5,-3.5);CT.lineTo(5,-2.7);CT.lineTo(5.6,3.3);CT.lineTo(-4.8,3.7);CT.closePath();CT.fill();CT.stroke();
+    CT.strokeStyle="rgba(112,100,81,.55)";CT.beginPath();CT.moveTo(-3,-1);CT.lineTo(3.3,-.7);CT.moveTo(-3,1);CT.lineTo(1.8,1.2);CT.stroke();
+    CT.restore();
+  }
 }
 
 function drawBathtubGag(g,bob){
@@ -2569,6 +2659,58 @@ function drawAbilityAtmosphere(){
     }
     CT.restore();
   }
+}
+
+function drawRockDeposit(r){
+  if(!r)return;
+  var s=combatScale(),x=r.x,y=r.y,seed=r.seed||.3;
+  CT.save();CT.translate(x,y);
+  CT.fillStyle="rgba(0,0,0,.22)";CT.beginPath();CT.ellipse(0,1,22*s,4*s,0,0,Math.PI*2);CT.fill();
+  var cols=["#6f7475","#8a8f8e","#5b6061"];
+  for(var i=0;i<5;i++){
+    var rx=(-16+i*8+Math.sin(seed*21+i)*3)*s,ry=(-3-(i%2)*5)*s,rr=(6+(i%3)*2)*s;
+    CT.fillStyle=cols[i%cols.length];CT.strokeStyle="#3f4343";CT.lineWidth=.8;
+    CT.beginPath();CT.moveTo(rx-rr,ry);CT.lineTo(rx-rr*.45,ry-rr*.8);CT.lineTo(rx+rr*.45,ry-rr*.72);CT.lineTo(rx+rr,ry);CT.lineTo(rx+rr*.35,ry+rr*.35);CT.lineTo(rx-rr*.55,ry+rr*.28);CT.closePath();CT.fill();CT.stroke();
+  }
+  CT.strokeStyle="rgba(225,230,225,.4)";CT.lineWidth=.7;
+  CT.beginPath();CT.moveTo(-9*s,-9*s);CT.lineTo(-4*s,-5*s);CT.lineTo(-7*s,-1*s);CT.moveTo(9*s,-11*s);CT.lineTo(4*s,-7*s);CT.stroke();
+  CT.restore();
+}
+
+function drawCastleExpansion(c){
+  if(!c||(!c.buildStage&&!c.buildLoads)||(c.collapseT||0)>.05)return;
+  var st=c.buildStage||0,x=c.x,w=c.w,top=G.GY-c.h,isP=c.isP;
+  var light=isP?"#aebbd0":"#c3aa90",mid=isP?"#6d7e99":"#806b57",dark=isP?"#344158":"#46362a";
+  CT.save();
+  if(st>=1){
+    /* Etap 1: przypory i metalowe wzmocnienie bramy. */
+    CT.fillStyle=mid;CT.strokeStyle=dark;CT.lineWidth=1;
+    CT.beginPath();CT.moveTo(x-6,G.GY);CT.lineTo(x+10,G.GY);CT.lineTo(x+14,G.GY-c.h*.34);CT.lineTo(x+5,G.GY-c.h*.29);CT.closePath();CT.fill();CT.stroke();
+    CT.beginPath();CT.moveTo(x+w+6,G.GY);CT.lineTo(x+w-10,G.GY);CT.lineTo(x+w-14,G.GY-c.h*.34);CT.lineTo(x+w-5,G.GY-c.h*.29);CT.closePath();CT.fill();CT.stroke();
+    CT.strokeStyle="#8b7041";CT.lineWidth=2.2;CT.beginPath();CT.arc(x+w*.5,G.GY-24,14,-Math.PI*.95,-Math.PI*.05);CT.stroke();
+  }
+  if(st>=2){
+    /* Etap 2: wyższy chodnik straży z dodatkowymi blankami. */
+    CT.fillStyle=mid;CT.strokeStyle=dark;CT.lineWidth=1;
+    CT.fillRect(x+w*.22,top-7,w*.56,11);CT.strokeRect(x+w*.22,top-7,w*.56,11);
+    var merW=w*.075;for(var mi=0;mi<5;mi++){var mx=x+w*.25+mi*w*.115;CT.fillStyle=light;CT.fillRect(mx,top-13,merW,7);CT.strokeRect(mx,top-13,merW,7);}
+  }
+  if(st>=3){
+    /* Etap 3: mała wieżyczka obserwacyjna i flaga, całkowicie poważne. */
+    var tw=w*.26,tx=x+w*.5-tw*.5,th=Math.min(28,c.h*.15);
+    CT.fillStyle=mid;CT.strokeStyle=dark;CT.fillRect(tx,top-th-8,tw,th);CT.strokeRect(tx,top-th-8,tw,th);
+    CT.fillStyle=light;for(var bi=0;bi<3;bi++){var bx=tx+2+bi*(tw-5)/2;CT.fillRect(bx,top-th-13,5,6);CT.strokeRect(bx,top-th-13,5,6);}
+    CT.strokeStyle="#49351f";CT.lineWidth=1.2;CT.beginPath();CT.moveTo(x+w*.5,top-th-13);CT.lineTo(x+w*.5,top-th-29);CT.stroke();
+    CT.fillStyle=isP?"#3979d2":"#c1322e";CT.beginPath();CT.moveTo(x+w*.5,top-th-29);CT.lineTo(x+w*.5+(isP?1:-1)*15,top-th-24);CT.lineTo(x+w*.5,top-th-20);CT.closePath();CT.fill();
+  }
+  if((c.buildLoads||0)>0&&st<3){
+    /* Materiał w budowie jest pokazany na świecie, bez kolejnego licznika w HUD. */
+    for(var li=0;li<c.buildLoads;li++){
+      var lx=c.isP?x+w-12-li*9:x+12+li*9;
+      CT.fillStyle="#92908a";CT.strokeStyle="#464541";CT.fillRect(lx-4,G.GY-8,8,7);CT.strokeRect(lx-4,G.GY-8,8,7);
+    }
+  }
+  CT.restore();
 }
 
 function render(){
@@ -3259,6 +3401,8 @@ function render(){
   CT.restore();
   // Trees
   for(var i=0;i<G.trees.length;i++)if(G.trees[i].w>0)drawTree(G.trees[i]);
+  // Kamieniołomy (od poziomu 7)
+  if(G.rocks)for(var ri=0;ri<G.rocks.length;ri++)drawRockDeposit(G.rocks[ri]);
   // Bloodstains
   if(G.bloodstains&&G.bloodstains.length){
     CT.save();
@@ -3274,6 +3418,7 @@ function render(){
   }
   // Castles
   drawCastle(G.p,sc);drawCastle(G.e,sc);
+  drawCastleExpansion(G.p);drawCastleExpansion(G.e);
   drawLevelAbsurdity();
   // Smoke
   for(var i=0;i<G.smoke.length;i++){
@@ -6295,7 +6440,7 @@ function drawUnit(u, unitSz){
   }
   if(u.ud.cannon){drawCannonUnit(u);return;}
   var dir;
-  if(u.ud.worker&&u.state==="return")dir=u.isP?-1:1;
+  if((u.ud.worker&&u.state==="return")||(u.ud.mason&&u.state==="stoneReturn"))dir=u.isP?-1:1;
   else if(u.state==="fight"&&u.tgt&&!isNaN(u.tgt.x))dir=u.tgt.x>u.x?1:-1;
   else if(Math.abs(u.vx||0)>1)dir=u.vx>0?1:-1;
   else dir=u.isP?1:-1;
@@ -6350,6 +6495,13 @@ function drawUnit(u, unitSz){
     CT.fillRect(bkX-4*f2, u.y-22*f2, 8*f2, 9*f2);
     CT.strokeRect(bkX-4*f2, u.y-22*f2, 8*f2, 9*f2);
     CT.restore();
+  }
+  if(u.ud.mason&&u.carryStone){
+    var mf=unitSz/22,mx=u.x-dir*5.5*mf,my=u.y-18*mf;
+    CT.save();CT.translate(mx,my);CT.rotate(dir*.08);
+    CT.fillStyle="#8c8a84";CT.strokeStyle="#454440";CT.lineWidth=1;
+    CT.beginPath();CT.moveTo(-5*mf,-5*mf);CT.lineTo(4*mf,-6*mf);CT.lineTo(6*mf,4*mf);CT.lineTo(-4*mf,5*mf);CT.closePath();CT.fill();CT.stroke();
+    CT.strokeStyle="rgba(255,255,255,.3)";CT.beginPath();CT.moveTo(-3*mf,-3*mf);CT.lineTo(2*mf,-4*mf);CT.stroke();CT.restore();
   }
   var hpBarY=u.key==="knight"?u.y-85:u.y-58;
   if(u.hp<u.max){
@@ -7189,6 +7341,17 @@ function drawFigCommon(ctx, key, px, py, dir, sz, step, atk, moving, withTime, h
     ctx.moveTo(px, by+3*f); ctx.lineTo(px, by+9*f);
     ctx.moveTo(px-2*f, by+5*f); ctx.lineTo(px+2*f, by+5*f);
     ctx.stroke();
+  }else if(key==="mason"){
+    // === KAMIENIARZ — fartuch, skórzana czapka i młotek murarski ===
+    ctx.fillStyle="#6a5440";ctx.beginPath();ctx.arc(px,hy-1*f,hr*.98,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#b8b2a8";ctx.strokeStyle="#69645e";ctx.lineWidth=.7;
+    ctx.beginPath();ctx.moveTo(px-4*f,by+1*f);ctx.lineTo(px+4*f,by+1*f);ctx.lineTo(px+5*f,by+14*f);ctx.lineTo(px-5*f,by+14*f);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.strokeStyle="#817a70";ctx.lineWidth=.6;ctx.beginPath();ctx.moveTo(px-2*f,by+3*f);ctx.lineTo(px-2*f,by+12*f);ctx.stroke();
+    var malletSwing=atk>0?(-1.05+atk*1.55):-.55;
+    ctx.save();ctx.translate(px+dir*5*f,by+2*f);ctx.scale(dir,1);ctx.rotate(malletSwing);
+    ctx.strokeStyle="#6c4425";ctx.lineWidth=1.5*f;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(10*f,0);ctx.stroke();
+    ctx.fillStyle="#77736d";ctx.strokeStyle="#45423f";ctx.lineWidth=.7;ctx.fillRect(8*f,-3*f,6*f,6*f);ctx.strokeRect(8*f,-3*f,6*f,6*f);ctx.restore();
+    ctx.fillStyle="#8f8a82";ctx.strokeStyle="#4f4c48";ctx.beginPath();ctx.moveTo(px-dir*7*f,by+8*f);ctx.lineTo(px-dir*3*f,by+5*f);ctx.lineTo(px-dir*2*f,by+11*f);ctx.closePath();ctx.fill();ctx.stroke();
   }else if(key==="golem"){
     // === GOLEM - wielki kamienny kolos ===
     // Golem jest większy (skala x1.4 dla ciała)
@@ -7240,26 +7403,25 @@ function drawFigCommon(ctx, key, px, py, dir, sz, step, atk, moving, withTime, h
     // Twarz
     ctx.fillStyle="#e0b888";
     ctx.beginPath(); ctx.arc(px, hy+1*f, hr*0.7, 0, Math.PI*2); ctx.fill();
-    // Oszczep w uniesionej ręce (gotowy do rzutu)
-    var throwAngle = atk > 0 ? -0.78 + (1-atk)*0.34 : -0.48;
-    ctx.save();
-    ctx.translate(px+dir*4*f, by-2*f);
-    /* Najpierw odbicie drużyny, potem kąt. Dzięki temu grot zawsze patrzy
-       w stronę przeciwnika, a nie w dół ekranu po stronie czerwonej. */
-    ctx.scale(dir,1);
-    ctx.rotate(throwAngle);
-    // Drzewce
-    ctx.strokeStyle="#8a6030"; ctx.lineWidth=1.4*f; ctx.lineCap="round";
-    ctx.beginPath(); ctx.moveTo(-8*f, 0); ctx.lineTo(12*f, 0); ctx.stroke();
-    // Grot
-    ctx.fillStyle="#bbb";
-    ctx.beginPath();
-    ctx.moveTo(12*f, 0); ctx.lineTo(16*f, -1.5*f); ctx.lineTo(15*f, 0); ctx.lineTo(16*f, 1.5*f);
-    ctx.closePath(); ctx.fill();
-    // Wiązanie grotu
-    ctx.strokeStyle="#5a3a18"; ctx.lineWidth=0.5*f;
-    ctx.beginPath(); ctx.moveTo(11*f,-1*f); ctx.lineTo(11*f,1*f); ctx.stroke();
-    ctx.restore();
+    if(atk>.35){
+      /* Po wypuszczeniu broń naprawdę znika z dłoni. Wyprostowane ramię
+         wskazuje kierunek rzutu, więc sylwetka nie udaje kolejnego zamachu. */
+      ctx.strokeStyle="#d5aa7d";ctx.lineWidth=2.7*f;ctx.lineCap="round";
+      ctx.beginPath();ctx.moveTo(px+dir*2*f,by+1*f);ctx.lineTo(px+dir*11*f,by-4*f);ctx.stroke();
+      ctx.fillStyle="#d5aa7d";ctx.beginPath();ctx.arc(px+dir*12*f,by-4.5*f,1.7*f,0,Math.PI*2);ctx.fill();
+    }else{
+      // Oszczep w uniesionej ręce — widoczny dopiero po krótkim przeładowaniu.
+      var throwAngle = atk > 0 ? -0.64 + (1-atk)*0.18 : -0.48;
+      ctx.save();
+      ctx.translate(px+dir*4*f, by-2*f);
+      ctx.scale(dir,1);ctx.rotate(throwAngle);
+      ctx.strokeStyle="#8a6030"; ctx.lineWidth=1.4*f; ctx.lineCap="round";
+      ctx.beginPath(); ctx.moveTo(-8*f, 0); ctx.lineTo(12*f, 0); ctx.stroke();
+      ctx.fillStyle="#bbb";
+      ctx.beginPath();ctx.moveTo(12*f,0);ctx.lineTo(16*f,-1.5*f);ctx.lineTo(15*f,0);ctx.lineTo(16*f,1.5*f);ctx.closePath();ctx.fill();
+      ctx.strokeStyle="#5a3a18";ctx.lineWidth=.5*f;ctx.beginPath();ctx.moveTo(11*f,-1*f);ctx.lineTo(11*f,1*f);ctx.stroke();
+      ctx.restore();
+    }
     // Mała tarcza okrągła (lewa ręka, wyraźnie z boku)
     ctx.fillStyle="#6a8070";
     ctx.beginPath(); ctx.arc(px-dir*7*f, by+6*f, 3.5*f, 0, Math.PI*2); ctx.fill();
@@ -7418,20 +7580,23 @@ function drawProj(p){
     CT.strokeStyle="rgba(255,150,55,.72)";CT.lineWidth=1.4;
     CT.beginPath();CT.arc(p.x,p.y,10,0,Math.PI*2);CT.stroke();
   }else if(p.type==="spearman"){
-    // Oszczep - obraca się wg wektora ruchu (parabola)
+    // Długi, kontrastowy oszczep z krótką smugą — lot pozostaje czytelny na telefonie.
     var sang=Math.atan2(p.vy,p.vx);
+    if(p.trail&&p.trail.length>1){
+      CT.save();CT.globalAlpha=.25;CT.strokeStyle="#d9c29b";CT.lineWidth=3;
+      CT.beginPath();CT.moveTo(p.trail[0].x,p.trail[0].y);CT.lineTo(p.x,p.y);CT.stroke();CT.restore();
+    }
     CT.save();
     CT.translate(p.x,p.y);
     CT.rotate(sang);
-    // Drzewce
-    CT.strokeStyle="#8a6030";CT.lineWidth=2;CT.lineCap="round";
-    CT.beginPath();CT.moveTo(-10,0);CT.lineTo(8,0);CT.stroke();
-    // Grot metalowy
-    CT.fillStyle="#bbb";
-    CT.beginPath();CT.moveTo(8,0);CT.lineTo(13,-2);CT.lineTo(12,0);CT.lineTo(13,2);CT.closePath();CT.fill();
-    // Lotki/wiązanie
-    CT.strokeStyle="#5a3a18";CT.lineWidth=0.8;
-    CT.beginPath();CT.moveTo(-10,-1.5);CT.lineTo(-10,1.5);CT.stroke();
+    CT.strokeStyle="#7b4c20";CT.lineWidth=2.7;CT.lineCap="round";
+    CT.beginPath();CT.moveTo(-16,0);CT.lineTo(12,0);CT.stroke();
+    CT.strokeStyle="rgba(255,225,170,.55)";CT.lineWidth=.8;CT.beginPath();CT.moveTo(-13,-.8);CT.lineTo(9,-.8);CT.stroke();
+    CT.fillStyle="#d7dde0";CT.strokeStyle="#596066";CT.lineWidth=.7;
+    CT.beginPath();CT.moveTo(12,0);CT.lineTo(19,-3.2);CT.lineTo(17,0);CT.lineTo(19,3.2);CT.closePath();CT.fill();CT.stroke();
+    CT.fillStyle=p.isP?"#4e83c9":"#b74137";
+    CT.beginPath();CT.moveTo(-15,0);CT.lineTo(-19,-3.4);CT.lineTo(-11,-1.3);CT.closePath();CT.fill();
+    CT.beginPath();CT.moveTo(-15,0);CT.lineTo(-19,3.4);CT.lineTo(-11,1.3);CT.closePath();CT.fill();
     CT.restore();
   }else{
     CT.fillStyle="#ffcc44";CT.beginPath();CT.arc(p.x,p.y,4,0,Math.PI*2);CT.fill();

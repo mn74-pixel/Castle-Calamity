@@ -50,6 +50,8 @@ castle-calamity/
 - Każdy ruchomy gag jest usuwany dopiero po przekroczeniu przeciwnej krawędzi ekranu.
 - Stałe absurdy poziomów są rysowane przez `drawLevelAbsurdity()` w `index.html` — jeden motyw dla każdego z 12 poziomów.
 - Nowy żart bieżący: najpierw dodaj zatwierdzony wpis do `topicalGags`, wraz z datą wygaśnięcia i notatką o źródle, a potem dołącz jego prostą animację w `index.html`.
+- Kamieniarz, kamieniołomy, automatyczne dostawy i trzy etapy graficznej rozbudowy zamku są częścią wspólnego silnika w `index.html`; jednostka jest dostępna dopiero od poziomu 7.
+- System rozbudowy celowo nie ma osobnej waluty ani dodatkowego panelu. Koszt jest płacony w złocie przy zakupie Kamieniarza, a postęp widać bezpośrednio przy zamku.
 
 ## Ważne przy publikacji
 

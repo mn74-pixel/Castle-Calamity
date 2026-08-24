@@ -4,8 +4,8 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v4.2
-- 12 poziomów i 13 dostępnych jednostek,
+## Co zawiera wersja v4.3
+- 12 poziomów i 14 dostępnych jednostek,
 - opcjonalny samouczek pierwszego poziomu, który można pominąć i uruchomić ponownie,
 - przełącznik języka polskiego i angielskiego z zapisem wyboru,
 - fundament jednego silnika obsługującego w przyszłości pakiety różnych epok,
@@ -15,11 +15,13 @@ na pełnym ekranie i **offline**.
 - zasięg czarownika zwiększony do 180 jednostek,
 - przeprojektowanego łucznika ustawionego profilem do celu,
 - wysoką, kontrolowaną parabolę kuli armatniej z cieniem, smugą i efektem uderzenia,
-- naprawione kierunki oszczepów oraz balistyczne tory strzał, bełtów i oszczepów,
+- naprawiony pełny rzut oszczepnika: wypuszczenie z dłoni, czytelna smuga i balistyczny lot,
+- kamieniarza od poziomu 7: maksymalnie dwóch naraz, automatyczna dostawa i trzy wizualne etapy rozbudowy zamku,
+- każda ukończona rozbudowa dodaje 7,5% maksymalnego HP zamku (łącznie 22,5%); późniejsze dostawy lekko naprawiają mury,
 - celowany Deszcz Strzał w trzech falach,
 - Mróz trwający 3,8 s i obejmujący nowe jednostki wroga,
 - intro bez bocznej winiety i napisów fabularnych, z policjantem zabezpieczającym saksofon stożkiem drogowym,
-- dwanaście rzadkich gagów wizualnych — inny na każdym poziomie i najwyżej jeden podczas bitwy,
+- dwanaście rzadkich gagów wizualnych — inny na każdym poziomie i najwyżej jeden podczas bitwy; kartki latającego biurka nie przeskakują już między końcami pętli,
 - osobny dyskretny absurd scenograficzny na każdym z 12 poziomów,
 - latającą rybę z łatwo zmienianym proporcem reklamowym,
 - trwały zapis postępu i własnych herbów w pamięci urządzenia.
@@ -55,7 +57,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v4.2` → `castle-calamity-v4.3`.
+np. `castle-calamity-v4.3` → `castle-calamity-v4.4`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)
