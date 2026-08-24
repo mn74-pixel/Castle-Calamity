@@ -46,6 +46,19 @@ Status: **wdrożony i sprawdzony automatycznie**
 - nie dodano osobnego licznika kamienia ani sklepu budowlanego, więc ekonomia pozostaje prosta,
 - przeciwnik poznaje Kamieniarza dopiero od poziomu 8, aby poziom 7 był czytelnym wprowadzeniem mechaniki.
 
+## Audyt i etap v4.4
+
+Status: **wdrożony i sprawdzony automatycznie**
+
+- intro skrócono z 18,6 do 13,35 sekundy i usunięto z obrazu HUD oraz napisy,
+- nowa pantomima ma jeden główny żart: policjant wystawia mandat kuli armatniej,
+  po czym ucieka przed nią przez cały ekran,
+- wprowadzono profile AI: zrównoważony, defensywny, agresywny, oblężniczy i chaotyczny,
+- AI uwzględnia skład armii gracza oraz unika bezmyślnego powtarzania tej samej jednostki,
+- wprowadzono umiarkowane kontry i zmniejszono dominację ukrytego poziomu `tier`,
+- relacje kontr opisano w podpowiedziach kart, bez dodawania kolejnego panelu podczas bitwy,
+- pełny raport znajduje się w `AUDYT-V4.4.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -57,7 +70,7 @@ Status: **wdrożony i sprawdzony automatycznie**
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v4.3 gotowa do testu gracza**
+Status: **wersja v4.4 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg czarownika ustawiony na 180,
@@ -89,8 +102,8 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 ## Etap 3 — głębsza strategia
 
 - wdrożono lekką rozbudowę zamku przez Kamieniarzy od poziomu 7, bez osobnej waluty,
-- czytelne kontry jednostek,
-- profile AI: defensywny, agresywny, oblężniczy i chaotyczny,
+- wdrożono czytelne, umiarkowane kontry jednostek,
+- wdrożono profile AI: defensywny, agresywny, oblężniczy i chaotyczny,
 - unikalne zachowania bossów,
 - korekta ekonomii złota oraz kosztów,
 - mierzenie skuteczności jednostek po każdej bitwie.
@@ -121,6 +134,6 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 
 Potrzebne są trzy decyzje:
 
-1. Czy osoba, która nie zna gry, rozumie cel i sterowanie po samouczku bez dodatkowego tłumaczenia?
-2. Czy oszczep jest widoczny od dłoni aż do celu także podczas tłocznej bitwy na telefonie?
-3. Czy Kamieniarz daje ciekawą decyzję za 36 złota, ale nie odciąga uwagi od właściwej bitwy?
+1. Czy nowe intro jest zabawne i wystarczająco krótkie przy kolejnym uruchomieniu?
+2. Czy kontry są odczuwalne, ale żadna z nich nie rozstrzyga bitwy automatycznie?
+3. Czy poziomy defensywne, agresywne i oblężnicze rzeczywiście grają inaczej bez frustrowania gracza?

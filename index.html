@@ -502,18 +502,18 @@ var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8","9","0","-","=","]","["];
 /* PROGRESJA: kolejne poziomy poszerzają rotację 14 jednostek.
    ad = cooldown spawnu AI (ms) — większe = wolniejsze pojawianie się wrogów. */
 var LV = [
-  {id:1, n:"Zielone Pola",       pH:1000,eH:1000,gm:1.8,ad:8500,sc:0,ai:["drwal","warrior","drwal","warrior"], ul:["drwal","warrior"]},
-  {id:2, n:"Jesienny Zmierzch",  pH:1200,eH:1200,gm:1.9,ad:7500,sc:1,ai:["drwal","warrior","pikeman","warrior"], ul:["drwal","warrior","pikeman"]},
-  {id:3, n:"Nocna Twierdza",     pH:1500,eH:1500,gm:2.0,ad:6800,sc:2,ai:["drwal","pikeman","archer","warrior"], ul:["drwal","warrior","pikeman","archer"]},
-  {id:4, n:"Świt nad Wzgórzami", pH:1800,eH:1800,gm:2.2,ad:6000,sc:3,ai:["drwal","warrior","spearman","archer","knight"], ul:["drwal","warrior","spearman","archer","knight"]},
-  {id:5, n:"Cytadela",           pH:2200,eH:2200,gm:2.4,ad:5400,sc:4,ai:["drwal","warrior","archer","monk","knight","cannon"], ul:["drwal","warrior","spearman","archer","monk","knight","cannon"]},
-  {id:6, n:"Pustynia Khepri",    pH:2600,eH:2600,gm:2.5,ad:4800,sc:5,ai:["drwal","archer","knight","wizard","warrior"], ul:["drwal","warrior","monk","archer","knight","cannon","wizard"]},
-  {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","archer","mason","crossbow","knight","cannon","wizard"]},
-  {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","cannon","wizard"]},
-  {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,ai:["drwal","mason","cannon","wizard","golem","templar","cannon"], ul:["drwal","warrior","spearman","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,ai:["drwal","mason","knight","wizard","templar","cannon","golem","wizard"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true},
-  {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,ai:["drwal","mason","templar","wizard","cannon","golem","templar","wizard","cannon"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true}
+  {id:1, n:"Zielone Pola",       pH:1000,eH:1000,gm:1.8,ad:8500,sc:0,profile:"balanced", ai:["drwal","warrior","drwal","warrior"], ul:["drwal","warrior"]},
+  {id:2, n:"Jesienny Zmierzch",  pH:1200,eH:1200,gm:1.9,ad:7500,sc:1,profile:"defensive",ai:["drwal","warrior","pikeman","warrior"], ul:["drwal","warrior","pikeman"]},
+  {id:3, n:"Nocna Twierdza",     pH:1500,eH:1500,gm:2.0,ad:6800,sc:2,profile:"aggressive",ai:["drwal","pikeman","archer","warrior"], ul:["drwal","warrior","pikeman","archer"]},
+  {id:4, n:"Świt nad Wzgórzami", pH:1800,eH:1800,gm:2.2,ad:6000,sc:3,profile:"chaotic",  ai:["drwal","warrior","spearman","archer","knight"], ul:["drwal","warrior","spearman","archer","knight"]},
+  {id:5, n:"Cytadela",           pH:2200,eH:2200,gm:2.4,ad:5400,sc:4,profile:"defensive",ai:["drwal","warrior","archer","monk","knight","cannon"], ul:["drwal","warrior","spearman","archer","monk","knight","cannon"]},
+  {id:6, n:"Pustynia Khepri",    pH:2600,eH:2600,gm:2.5,ad:4800,sc:5,profile:"aggressive",ai:["drwal","archer","knight","wizard","warrior"], ul:["drwal","warrior","monk","archer","knight","cannon","wizard"]},
+  {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,profile:"defensive",ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","archer","mason","crossbow","knight","cannon","wizard"]},
+  {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,profile:"siege",    ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","cannon","wizard"]},
+  {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,profile:"siege",    ai:["drwal","mason","cannon","wizard","golem","templar","cannon"], ul:["drwal","warrior","spearman","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
+  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,profile:"aggressive",ai:["drwal","mason","knight","wizard","templar","cannon","golem","wizard"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true},
+  {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,profile:"defensive",ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
+  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,profile:"chaotic",  ai:["drwal","mason","templar","wizard","cannon","golem","templar","wizard","cannon"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true}
 ];
 
 var G=null, LI=0, RAF=null, PAUSED=false;
@@ -812,7 +812,7 @@ function load(idx){
     e:{hp:lv.eH,max:lv.eH,baseMax:lv.eH,buildStage:0,buildLoads:0,gold:35,x:W-cw,w:cw,h:ch,isP:false,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.71},
     units:[],projs:[],blasts:[],floats:[],dust:[],smoke:[],embers:[],sparks:[],coins:[],birds:[],bloodstains:[],gags:[],
     trees:trees,rocks:rocks,clouds:clouds,
-    treeT:0,aiT:0,aiI:0,T:0,LT:0,over:false,overT:0,sunAngle:0.47,
+    treeT:0,aiT:0,aiI:0,aiProfile:lv.profile||"balanced",aiNextMs:lv.ad,aiLastKey:null,T:0,LT:0,over:false,overT:0,sunAngle:0.47,
     gagT:randBetween(CONTENT.timing.firstMin,CONTENT.timing.firstMax),gagShown:false,freezeField:0,arrowRainFx:null,lastGagType:null,
     stats:{kills:0,losses:0,goldEarned:0,unitsSpawned:0,startTime:Date.now()},
     killStreak:{count:0,lastKillT:-999}
@@ -937,6 +937,8 @@ function buildCards(){
       else if(aRatio > 0 && aRatio < 0.6) tipHTML+="<br><span style='color:#cc6622'>🏰 "+tr("tip.siege")+"</span>";
     }
     if(key==="archer")tipHTML+="<br><span style='color:#d8bd68'>◎ "+tr("tip.archerFormation")+"</span>";
+    var counterKey="tip.counter."+key,counterText=tr(counterKey);
+    if(counterText!==counterKey)tipHTML+="<br><span style='color:#79d9e8'>◆ "+counterText+"</span>";
     if(ud.cannon) tipHTML+="<br><span style='color:#cc6622'>🏰 "+tr("tip.siege")+"</span>";
     tip.innerHTML=tipHTML;
     card.appendChild(kbd);card.appendChild(wrap);card.appendChild(cc);card.appendChild(tip);
@@ -1270,6 +1272,31 @@ function uAtk(u){
   return (u.rallied&&u.rallied>0) ? a*1.5 : a;
 }
 function uAtkCastle(u){var ac=u.eff_ac!==undefined ? u.eff_ac : (u.ud.ac||0); return (u.rallied&&u.rallied>0) ? ac*1.5 : ac;}
+/* Czytelne, umiarkowane kontry. Zastępują dawną, bardzo silną przewagę samego
+   numeru tieru; dzięki temu wybór rodzaju jednostki ma większe znaczenie. */
+var UNIT_COUNTERS={
+  pikeman:{knight:1.45,berserk:1.28},
+  warrior:{pikeman:1.20},
+  spearman:{knight:1.35,golem:1.16},
+  archer:{warrior:1.18,spearman:1.16},
+  crossbow:{templar:1.32,golem:1.28,knight:1.18},
+  wizard:{golem:1.38,templar:1.34},
+  berserk:{archer:1.28,crossbow:1.25,wizard:1.20},
+  knight:{archer:1.30,crossbow:1.27,wizard:1.22},
+  templar:{warrior:1.20,berserk:1.18},
+  golem:{warrior:1.22,berserk:1.20}
+};
+function matchupMultiplier(attacker,target){
+  if(!attacker||!target)return 1;
+  var aTier=attacker.ud.tier||0,dTier=target.ud.tier||0;
+  var tierMul=Math.max(.84,Math.min(1.20,1+(aTier-dTier)*.06));
+  var row=UNIT_COUNTERS[attacker.key],counter=row&&row[target.key]?row[target.key]:1;
+  return tierMul*counter;
+}
+function counterImpactFx(target,mul){
+  if(!target||mul<1.12)return;
+  for(var i=0;i<4;i++)G.sparks.push({x:target.x+(Math.random()-.5)*8,y:target.y-18+(Math.random()-.5)*7,vx:(Math.random()-.5)*34,vy:-26-Math.random()*20,life:.42+Math.random()*.18,col:i%2?"#fff0a0":"#66d9ff"});
+}
 function refreshArcherAuras(){
   if(!G||!G.units)return;
   var archers=[];
@@ -1526,6 +1553,65 @@ function updateAbsurdGags(dt){
   G.gags=keep;
 }
 
+/* ── DOKTRYNY AI v4.4 ──
+   Ten sam zestaw jednostek zachowuje się inaczej na kolejnych poziomach.
+   AI bierze pod uwagę własną doktrynę i prosty obraz armii gracza, ale nadal
+   kupuje wyłącznie jednostki przewidziane dla danego poziomu. */
+var AI_PROFILE_SPEED={balanced:1,defensive:1.07,aggressive:.88,siege:1.03,chaotic:.96};
+function countActiveUnit(key,isP){
+  var n=0;if(!G||!G.units)return n;
+  for(var i=0;i<G.units.length;i++){var u=G.units[i];if(u&&u.state!=="dead"&&u.isP===isP&&(!key||u.key===key))n++;}
+  return n;
+}
+function playerArmyShape(){
+  var shape={ranged:0,heavy:0,melee:0,total:0};
+  for(var i=0;i<G.units.length;i++){
+    var u=G.units[i];if(!u||!u.isP||u.state==="dead"||u.ud.worker||u.ud.mason||u.ud.cannon)continue;
+    shape.total++;if(u.ud.r>40)shape.ranged++;else shape.melee++;if(u.max>=175)shape.heavy++;
+  }
+  return shape;
+}
+function aiUnitScore(key,profile,planned,shape){
+  var ud=UD[key];if(!ud||G.e.gold<ud.c)return -1;
+  if(ud.mason&&(!G.rocks||!G.rocks.length||countActiveUnit("mason",false)>=2))return -1;
+  var score=1*(key===planned?1.32:1);
+  if(profile==="defensive"){
+    if(ud.r>40)score*=1.38;if(ud.heal)score*=1.7;if(key==="templar"||key==="golem")score*=1.35;
+    if(ud.mason)score*=((G.e.hp/G.e.max)<.86&&G.e.buildStage<3)?2.35:.55;
+    if(ud.s>=50)score*=.82;
+  }else if(profile==="aggressive"){
+    if(ud.s>=50)score*=1.72;if(ud.r<=40&&!ud.worker&&!ud.mason)score*=1.32;
+    if(ud.worker||ud.mason)score*=.45;if(ud.heal)score*=.78;
+  }else if(profile==="siege"){
+    if(ud.cannon||ud.siege)score*=2.35;else if((ud.ac||0)>=15)score*=1.55;
+    if(ud.worker)score*=.62;if(ud.heal)score*=.72;if(ud.mason)score*=G.e.buildStage<1?2.0:(G.e.buildStage<2?1.2:.48);
+  }else if(profile==="chaotic"){
+    score*=.48+Math.random()*1.95;
+  }
+  /* Reakcja na czytelną przewagę gracza — łamacze linii na strzelców,
+     broń przebijająca na ciężkich, dystans na tłum piechoty. */
+  if(shape.ranged>=3&&(key==="knight"||key==="berserk"))score*=1.58;
+  if(shape.heavy>=2&&(key==="wizard"||key==="crossbow"||key==="cannon"))score*=1.46;
+  if(shape.melee>=3&&(key==="archer"||key==="crossbow"||key==="spearman"))score*=1.34;
+  if(key===G.aiLastKey)score*=.64;
+  if(profile!=="chaotic")score*=.86+Math.random()*.28;
+  return score;
+}
+function selectAiUnit(){
+  var list=G.lv.ai||[],profile=G.aiProfile||"balanced",planned=list[G.aiI%Math.max(1,list.length)],shape=playerArmyShape();
+  G.aiI++;
+  var best=null,bestScore=-1;
+  for(var i=0;i<list.length;i++){
+    var key=list[i],score=aiUnitScore(key,profile,planned,shape);
+    if(score>bestScore){bestScore=score;best=key;}
+  }
+  return best;
+}
+function nextAiInterval(){
+  var mul=AI_PROFILE_SPEED[G.aiProfile]||1;
+  return G.lv.ad*mul*(.91+Math.random()*.18);
+}
+
 /* ── Tick ── */
 function tick(dt){
   if(!G.over){
@@ -1546,25 +1632,11 @@ function tick(dt){
     }
     /* Podczas aktywnego samouczka przeciwnik grzecznie czeka na szkolenie BHP. */
     if(!G.tutorialMode)G.aiT+=dt*1000;
-    if(!G.tutorialMode&&G.aiT>=G.lv.ad){
+    if(!G.tutorialMode&&G.aiT>=(G.aiNextMs||G.lv.ad)){
       G.aiT=0;
-      /* AI: spróbuj zaplanowaną jednostkę. Jeśli za droga, spróbuj tańszej z tej samej listy. */
-      var aiK = G.lv.ai[G.aiI%G.lv.ai.length];
-      G.aiI++;
-      if(G.e.gold >= UD[aiK].c){
-        spawnUnit(aiK, false);
-      } else {
-        /* Fallback: znajdź najdroższą jednostkę z listy ai na którą stać */
-        var bestK = null, bestC = -1;
-        for(var aki=0; aki<G.lv.ai.length; aki++){
-          var akCand = G.lv.ai[aki];
-          if(G.e.gold >= UD[akCand].c && UD[akCand].c > bestC){
-            bestK = akCand;
-            bestC = UD[akCand].c;
-          }
-        }
-        if(bestK) spawnUnit(bestK, false);
-      }
+      var aiK=selectAiUnit();
+      if(aiK){spawnUnit(aiK,false);G.aiLastKey=aiK;}
+      G.aiNextMs=nextAiInterval();
     }
   }
   G.sunAngle=(G.sunAngle||0.47)+dt*0.006;
@@ -1674,7 +1746,7 @@ function tick(dt){
       if(dx*dx+dy*dy<256){
         hit=true;
         if(p.spl>0)doBlast(p);
-        else{dmgUnit(u,p.atk);addFlt(u.x,u.y-32,"-"+Math.round(p.atk),"#ff8844");}
+        else{dmgUnit(u,p.atk);counterImpactFx(u,p.counterMul||1);addFlt(u.x,u.y-32,"-"+Math.round(p.atk),"#ff8844");}
         break;
       }
     }
@@ -2140,8 +2212,9 @@ function doFight(u,dt){
     u.acd=Math.max(0.6,baseAcd)+Math.random()*0.4;u.atkPhase=1;
     if(!u.tgt||u.tgt.state==="dead"){u.tgt=null;u.state="march";return;}
     tgt=u.tgt;
+    var matchMul=matchupMultiplier(u,tgt);
     if(u.ud.r>40){
-      var ratk=(u.key==="wizard")?uAtk(u)*2.0:uAtk(u)*1.6;
+      var ratk=((u.key==="wizard")?uAtk(u)*2.0:uAtk(u)*1.6)*matchMul;
       var sx=u.x,sy=u.y-22,tx=tgt.x,ty=tgt.y-22;
       var ang=Math.atan2(ty-sy,tx-sx);
       var forward=u.isP?1:-1;
@@ -2159,7 +2232,7 @@ function doFight(u,dt){
         G.projs.push({
           x:launchX,y:launchY,vx:vx0,vy:vy0,
           atk:ratk,atkC:uAtkCastle(u)*1.6,
-          isP:u.isP,life:ftJ+.3,flightTime:ftJ,spl:0,grav:gravJ,type:"spearman",trail:[]
+          isP:u.isP,life:ftJ+.3,flightTime:ftJ,spl:0,grav:gravJ,type:"spearman",trail:[],counterMul:matchMul
         });
         if(u.isP) SFX.arrow();
       }else if(u.key==="archer"||u.key==="crossbow"){
@@ -2173,34 +2246,31 @@ function doFight(u,dt){
         G.projs.push({
           x:sx,y:sy,vx:(tx-sx)/ftR,vy:((ty-sy)-.5*gravR*ftR*ftR)/ftR,
           atk:ratk,atkC:uAtkCastle(u)*1.6,
-          isP:u.isP,life:ftR+.28,flightTime:ftR,spl:0,grav:gravR,type:u.key,trail:null
+          isP:u.isP,life:ftR+.28,flightTime:ftR,spl:0,grav:gravR,type:u.key,trail:null,counterMul:matchMul
         });
         if(u.isP)SFX.arrow();
       }else{
         G.projs.push({
           x:sx,y:sy,vx:Math.cos(ang)*340,vy:Math.sin(ang)*340,
           atk:ratk,atkC:uAtkCastle(u)*1.6,
-          isP:u.isP,life:1.5,spl:0,grav:0,type:u.key,trail:null
+          isP:u.isP,life:1.5,spl:0,grav:0,type:u.key,trail:null,counterMul:matchMul
         });
         if(u.isP){ if(u.key==="wizard")SFX.magic(); else SFX.arrow(); }
       }
     }else{
-      var aTier=u.ud.tier||0,dTier=tgt.ud.tier||0,td=aTier-dTier;
-      var aDmg=uAtk(u)*(1.2+Math.random()*0.3);
-      if(td>0)aDmg*=(1+td*0.5);
-      if(td<0)aDmg*=Math.max(0.25,1+td*0.3);
+      var aDmg=uAtk(u)*(1.2+Math.random()*0.3)*matchMul;
       var cDmg=0;
       if(!tgt.ud.worker&&!tgt.ud.cannon&&tgt.ud.r<=40){
-        cDmg=uAtk(tgt)*(1.0+Math.random()*0.3);
-        if(dTier-aTier>0)cDmg*=(1+(dTier-aTier)*0.5);
-        if(dTier-aTier<0)cDmg*=Math.max(0.25,1+(dTier-aTier)*0.3);
+        cDmg=uAtk(tgt)*(1.0+Math.random()*0.3)*matchupMultiplier(tgt,u);
       }
       dmgUnit(tgt,aDmg);
+      counterImpactFx(tgt,matchMul);
       if(tgt.state!=="dead")addFlt(tgt.x,tgt.y-15,"-"+Math.round(aDmg),u.isP?"#88aaff":"#ffaa44");
       spawnSparks((u.x+tgt.x)/2,u.y-18);
       if(u.isP) SFX.sword();
       if(cDmg>0&&u.state!=="dead"){
         dmgUnit(u,cDmg);
+        counterImpactFx(u,matchupMultiplier(tgt,u));
         if(u.state!=="dead")addFlt(u.x,u.y-15,"-"+Math.round(cDmg),tgt.isP?"#88aaff":"#ffaa44");
       }
     }
@@ -5665,6 +5735,8 @@ function drawCastle(c,sc){
   }
   CT.restore();
 
+  /* HP i ekonomia nie należą do pantomimy intro. */
+  if(!G.introMode){
   /* HP bar BELOW castle */
   var bp=Math.max(0,c.hp/c.max);
   var barW=w+4,barH=13;
@@ -5711,6 +5783,7 @@ function drawCastle(c,sc){
       CT.fillStyle="#ff8866";CT.textAlign="left";CT.textBaseline="middle";
       CT.fillText(enText,enX-etw+8,enY+9);
     }
+  }
   }
 
   /* === RESTORE TILT ROTATION === */
@@ -8911,7 +8984,7 @@ function drawSax(sf, hasArrow){
 }
 
 /* === GŁÓWNA PĘTLA RENDEROWANIA INTRO === */
-function renderIntro(){
+function renderIntroLegacy(){
   if(!INTRO_ACTIVE || !CT) return;
   var now = performance.now() / 1000;
   if(INTRO_LAST === 0) INTRO_LAST = now;
@@ -9575,8 +9648,112 @@ function renderIntro(){
   CT.fillRect(0,H-Math.max(8,H*.035),W,Math.max(8,H*.035));
   if(T<.8){CT.fillStyle="rgba(0,0,0,"+(1-T/.8)+")";CT.fillRect(0,0,W,H);}
 
-  INTRO_RAF = requestAnimationFrame(renderIntro);
+  INTRO_RAF = requestAnimationFrame(renderIntroLegacy);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   INTRO v4.4 — krótka pantomima bez napisów i bez winiety.
+   Policjant zatrzymuje kulę, wystawia jej mandat, po czym regulamin przegrywa.
+   ═══════════════════════════════════════════════════════════ */
+function drawIntroCannonball(x,y,r,spin,ticket){
+  CT.save();CT.translate(x,y);CT.rotate(spin);
+  CT.fillStyle="rgba(0,0,0,.25)";CT.beginPath();CT.ellipse(0,r*.72,r*1.25,r*.32,0,0,Math.PI*2);CT.fill();
+  var bg=CT.createRadialGradient(-r*.35,-r*.4,1,0,0,r);
+  bg.addColorStop(0,"#777");bg.addColorStop(.38,"#35383a");bg.addColorStop(1,"#090a0b");
+  CT.fillStyle=bg;CT.strokeStyle="#050505";CT.lineWidth=1.5;CT.beginPath();CT.arc(0,0,r,0,Math.PI*2);CT.fill();CT.stroke();
+  CT.strokeStyle="rgba(255,255,255,.2)";CT.lineWidth=1;CT.beginPath();CT.arc(-r*.16,-r*.18,r*.48,-2.5,-.6);CT.stroke();
+  if(ticket){
+    CT.rotate(-spin);CT.fillStyle="#efe2bd";CT.strokeStyle="#796b4d";CT.lineWidth=.7;
+    CT.save();CT.rotate(-.18);CT.fillRect(-r*.12,-r*1.12,r*.88,r*.58);CT.strokeRect(-r*.12,-r*1.12,r*.88,r*.58);
+    CT.strokeStyle="#a33";CT.beginPath();CT.moveTo(r*.02,-r*.88);CT.lineTo(r*.55,-r*.88);CT.stroke();CT.restore();
+  }
+  CT.restore();
+}
+function drawIntroTriangleInstrument(x,y,s,t){
+  CT.save();CT.translate(x,y);CT.strokeStyle="#f1c64c";CT.lineWidth=1.8*s;CT.lineJoin="round";
+  CT.beginPath();CT.moveTo(-4*s,-6*s);CT.lineTo(5*s,5*s);CT.lineTo(-6*s,5*s);CT.lineTo(-4*s,-6*s);CT.stroke();
+  var tap=Math.abs(Math.sin(t*9));CT.strokeStyle="#c99c32";CT.lineWidth=1.1*s;CT.beginPath();CT.moveTo(7*s,-2*s);CT.lineTo((4+tap*3)*s,4*s);CT.stroke();
+  if(tap>.82){CT.strokeStyle="rgba(255,235,145,.65)";CT.lineWidth=.8;for(var i=0;i<3;i++){CT.beginPath();CT.moveTo((8+i*2)*s,(-5+i)*s);CT.lineTo((11+i*2)*s,(-7+i)*s);CT.stroke();}}
+  CT.restore();
+}
+function renderIntroV44(){
+  if(!INTRO_ACTIVE||!CT)return;
+  var now=performance.now()/1000;if(INTRO_LAST===0)INTRO_LAST=now;
+  var dt=Math.min(.05,Math.max(0,now-INTRO_LAST));INTRO_LAST=now;INTRO_T+=dt;
+  var T=INTRO_T;if(T>=INTRO_DURATION){finishIntro();return;}
+  CT.setTransform(DPR,0,0,DPR,0,0);CT.clearRect(0,0,W,H);
+  var cw=Math.max(90,Math.min(Math.round(W*.15),200));
+  var ch=Math.max(100,Math.min(Math.round(H*.55),260));
+  var gy=Math.round(H*.79),unitSz=getUnitDrawSize(),f=unitSz/22;
+
+  var sky=CT.createLinearGradient(0,0,0,gy);sky.addColorStop(0,"#18365f");sky.addColorStop(.58,"#3979a9");sky.addColorStop(1,"#78acc4");
+  CT.fillStyle=sky;CT.fillRect(0,0,W,gy);
+  var sunX=W*.76,sunY=H*.17,halo=CT.createRadialGradient(sunX,sunY,5,sunX,sunY,62);
+  halo.addColorStop(0,"rgba(255,229,142,.7)");halo.addColorStop(1,"rgba(255,215,100,0)");CT.fillStyle=halo;CT.beginPath();CT.arc(sunX,sunY,62,0,Math.PI*2);CT.fill();
+  CT.fillStyle="#ffe08a";CT.beginPath();CT.arc(sunX,sunY,15,0,Math.PI*2);CT.fill();
+  if(!INTRO_CL)INTRO_CL=[{x:W*.14,y:H*.13,rw:58,rh:15,sp:10},{x:W*.43,y:H*.09,rw:78,rh:18,sp:13},{x:W*.70,y:H*.22,rw:48,rh:12,sp:8},{x:W*.91,y:H*.12,rw:62,rh:16,sp:11}];
+  for(var ci=0;ci<INTRO_CL.length;ci++){
+    var cl=INTRO_CL[ci];cl.x+=cl.sp*dt;if(cl.x>W+90)cl.x=-90;
+    CT.fillStyle="rgba(224,237,246,.45)";CT.beginPath();CT.ellipse(cl.x,cl.y,cl.rw,cl.rh,0,0,Math.PI*2);CT.fill();
+    CT.fillStyle="rgba(245,250,255,.25)";CT.beginPath();CT.ellipse(cl.x-cl.rw*.22,cl.y-3,cl.rw*.58,cl.rh*.75,0,0,Math.PI*2);CT.fill();
+  }
+  CT.fillStyle="#315f68";CT.beginPath();CT.moveTo(0,gy);CT.lineTo(W*.25,gy*.63);CT.lineTo(W*.48,gy);CT.lineTo(W*.67,gy*.57);CT.lineTo(W,gy);CT.closePath();CT.fill();
+  CT.fillStyle="#214a38";CT.beginPath();CT.moveTo(0,gy);CT.quadraticCurveTo(W*.2,gy*.78,W*.42,gy);CT.quadraticCurveTo(W*.66,gy*.76,W,gy);CT.closePath();CT.fill();
+  var ground=CT.createLinearGradient(0,gy,0,H);ground.addColorStop(0,"#367c22");ground.addColorStop(1,"#123d12");CT.fillStyle=ground;CT.fillRect(0,gy,W,H-gy);CT.fillStyle="#55a33a";CT.fillRect(0,gy,W,3);
+
+  var savedG=G;
+  if(!INTRO_G)INTRO_G={introMode:true,lv:{sc:0,n:"Intro"},W:W,H:H,GY:gy,T:T,p:{hp:1000,max:1000,gold:0,x:0,w:cw,h:ch,isP:true,fires:[],rubble:[],holes:[],collapseT:0,shake:0,bannerSeed:.31},e:{hp:1000,max:1000,gold:0,x:W-cw,w:cw,h:ch,isP:false,fires:[],rubble:[],holes:[],collapseT:0,shake:0,bannerSeed:.71},trees:[{x:W*.40,y:gy,w:100,max:100},{x:W*.55,y:gy,w:100,max:100},{x:W*.68,y:gy,w:100,max:100}],units:[],projs:[],blasts:[],floats:[],dust:[],smoke:[],embers:[],sparks:[],coins:[],birds:[],bloodstains:[],clouds:[]};
+  INTRO_G.W=W;INTRO_G.H=H;INTRO_G.GY=gy;INTRO_G.T=T;INTRO_G.p.w=cw;INTRO_G.p.h=ch;INTRO_G.e.x=W-cw;INTRO_G.e.w=cw;INTRO_G.e.h=ch;
+  for(var ti=0;ti<INTRO_G.trees.length;ti++){INTRO_G.trees[ti].y=gy;INTRO_G.trees[ti].x=W*(.40+ti*.14);}
+  G=INTRO_G;try{drawCastle(G.p,SC[0]);drawCastle(G.e,SC[0]);for(var trI=0;trI<G.trees.length;trI++)drawTree(G.trees[trI]);}catch(e){}G=savedG;
+
+  if(T>.35&&T<3.65){var cp=(T-.35)/3.3;drawIntroChicken(-34+cp*(W+68),gy,Math.max(.72,Math.min(1.08,W/920)),T);}
+  var saxoX=cw*.85,saxoY=gy-ch*1.06,redX=W-cw*.5,redY=gy-ch*1.28;
+  var hitT=3.68,fallT=Math.max(0,T-hitT),saxGroundY=gy-5*f;
+  var saxRestX=saxoX+64*f,saxRestY=saxGroundY;
+  if(T>=hitT){
+    var fallP=Math.min(1,fallT/1.05),sx=lerp(saxoX+7*f,saxRestX,easeOut(fallP));
+    var sy=fallP<1?lerp(saxoY-7*f,saxGroundY,fallP*fallP)-Math.sin(fallP*Math.PI)*10*f:saxRestY;
+    CT.save();CT.translate(sx,sy);CT.rotate(Math.min(Math.PI*.62,fallT*3.3));drawSax(f*.9,true);CT.restore();
+  }
+  if(T>2.9&&T<hitT){
+    var ap=(T-2.9)/(hitT-2.9),tx=saxoX+5*f,ty=saxoY-3*f,ax=lerp(redX,tx,ap),ay=lerp(redY,ty,ap)-Math.sin(ap*Math.PI)*18;
+    var aa=Math.atan2(ty-redY,tx-redX);CT.strokeStyle="rgba(255,255,255,.38)";CT.lineWidth=3;CT.beginPath();CT.moveTo(ax-Math.cos(aa)*45,ay-Math.sin(aa)*45);CT.lineTo(ax,ay);CT.stroke();
+    CT.save();CT.translate(ax,ay);CT.rotate(aa);CT.fillStyle="#6d431e";CT.fillRect(-14,-1,27,2);CT.fillStyle="#d7dadd";CT.beginPath();CT.moveTo(13,0);CT.lineTo(19,-3);CT.lineTo(19,3);CT.closePath();CT.fill();CT.fillStyle="#b7332d";CT.beginPath();CT.moveTo(-13,0);CT.lineTo(-18,-3);CT.lineTo(-18,3);CT.closePath();CT.fill();CT.restore();
+  }
+  if(T<hitT)drawSaxPlayerRight(saxoX,saxoY,unitSz,T,false);
+  else{
+    drawSaxoPlayerSimple(saxoX,saxoY,f,{showLegs:false,playing:false,rotation:0,fingerMove:0});
+    if(T>9.7)drawIntroTriangleInstrument(saxoX+8*f,saxoY+1*f,.8*f,T);
+  }
+
+  var policeStart=4.75,policeStopT=6.15,runT=9.05,policeStopX=saxRestX+37*f,policeX=-65,policeDir=-1,panicked=false;
+  if(T>policeStart){
+    if(T<policeStopT)policeX=lerp(-65,policeStopX,easeOut((T-policeStart)/(policeStopT-policeStart)));
+    else if(T<runT)policeX=policeStopX;
+    else{var pr=Math.min(1,(T-runT)/(INTRO_DURATION-runT-.12));policeX=lerp(policeStopX,W+88,easeIn(pr));policeDir=1;panicked=true;}
+  }
+  var ballR=Math.max(12,unitSz*.35),ballStopX=policeStopX-35*f,ballX=-ballR-35,ballSpin=0,ballVisible=T>7.05;
+  if(ballVisible){
+    if(T<8.12){var bp=(T-7.05)/(8.12-7.05);ballX=lerp(-ballR-35,ballStopX,easeOut(bp));ballSpin=bp*8;}
+    else if(T<runT){ballX=ballStopX;ballSpin=8;}
+    else{var br=Math.min(1,(T-runT)/(INTRO_DURATION-runT-.08));ballX=lerp(ballStopX,W+ballR+60,easeIn(br));ballSpin=8+br*19;}
+    drawIntroCannonball(ballX,gy-ballR,ballR,ballSpin,T>8.35);
+  }
+  if(T>6.55){
+    CT.fillStyle="#ec7f27";CT.strokeStyle="#8c3d13";CT.lineWidth=1;CT.beginPath();CT.moveTo(saxRestX+15*f,gy);CT.lineTo(saxRestX+21*f,gy-17*f);CT.lineTo(saxRestX+27*f,gy);CT.closePath();CT.fill();CT.stroke();CT.fillStyle="#f5d1a7";CT.fillRect(saxRestX+18*f,gy-8*f,6*f,2*f);
+  }
+  if(T>policeStart&&policeX<W+90){
+    var ps=unitSz/46,whistle=T>6.2&&T<7.0?Math.max(.08,.75-(T-6.2)*.82):0;
+    CT.save();CT.translate(policeX,gy);CT.scale(ps,ps);drawPolicemanGag({x:0,y:0,dir:policeDir,phase:T*2.05,panicked:panicked,whistle:whistle},0);CT.restore();
+  }
+  if(T<.45){CT.fillStyle="rgba(0,0,0,"+(1-T/.45)+")";CT.fillRect(0,0,W,H);}
+  if(T>INTRO_DURATION-.35){CT.fillStyle="rgba(0,0,0,"+((T-(INTRO_DURATION-.35))/.35)+")";CT.fillRect(0,0,W,H);}
+  INTRO_RAF=requestAnimationFrame(renderIntroV44);
+}
+
+INTRO_DURATION=13.35;
+var renderIntro=renderIntroV44;
 
 
 

@@ -20,6 +20,7 @@ castle-calamity/
 │   └── i18n.js
 └── docs/
     ├── ARCHITEKTURA-EPOK.md
+    ├── AUDYT-V4.4.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -37,6 +38,7 @@ castle-calamity/
 | `assets/icons/` | Ikony aplikacji na telefon i komputer | Przy nowej identyfikacji wizualnej |
 | `README.md` | Instrukcja uruchomienia i publikacji | Przy zmianie sposobu wdrażania |
 | `docs/PLAN-DZIALANIA.md` | Kolejność dalszego rozwoju i kryteria odbioru | Po każdej większej decyzji projektowej |
+| `docs/AUDYT-V4.4.md` | Stan techniczny, wykryte problemy, poprawki i ryzyka po audycie v4.4 | Po większym audycie lub przed publikacją |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
