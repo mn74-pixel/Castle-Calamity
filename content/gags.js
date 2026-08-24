@@ -7,20 +7,23 @@
     dzięki czemu nie trzeba grzebać w silniku gry.
   */
   root.CASTLE_CONTENT = {
-    version: "2026-08-23-v1",
+    version: "2026-08-24-v2",
 
     timing: {
-      firstMin: 28,
-      firstMax: 52,
-      nextMin: 45,
-      nextMax: 90,
+      firstMin: 32,
+      firstMax: 58,
+      nextMin: 55,
+      nextMax: 105,
       maximumConcurrent: 1,
-      abilityGagChance: 0.12
+      abilityGagChance: 0.08
     },
 
     gags: [
-      { id: "crowned-chicken", type: "chicken", enabled: true, weight: 58 },
-      { id: "flying-fish-ad", type: "skyfish", enabled: true, weight: 42 }
+      { id: "crowned-chicken", type: "chicken", enabled: true, weight: 24 },
+      { id: "flying-fish-ad", type: "skyfish", enabled: true, weight: 22 },
+      { id: "polite-policeman", type: "policeman", enabled: true, weight: 20 },
+      { id: "airborne-office", type: "flyingdesk", enabled: true, weight: 17 },
+      { id: "runaway-bathtub", type: "bathtub", enabled: true, weight: 17 }
     ],
 
     flyingFishAd: {

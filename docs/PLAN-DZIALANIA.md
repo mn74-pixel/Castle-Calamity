@@ -1,6 +1,24 @@
 # Castle Calamity — plan działania
 
-## Zasady, których trzymamy się od wersji v3
+## Priorytet nadrzędny
+
+Najpierw kończymy jeden stabilny, skalowalny i użyteczny silnik oraz pełną
+kampanię średniowieczną. Następne epoki będą pakietami danych i grafiki, nie
+kopiami projektu. Szczegóły: `ARCHITEKTURA-EPOK.md`.
+
+## Fundament v4.1
+
+Status: **wdrożony do testów**
+
+- opcjonalny czterostopniowy samouczek w prawdziwym poziomie 1,
+- przeciwnik nie atakuje podczas objaśnień,
+- możliwość pominięcia i ponownego uruchomienia samouczka,
+- zapamiętywanie ukończenia samouczka,
+- przełącznik PL/EN i zapamiętywanie języka,
+- osobne pliki tłumaczeń oraz rejestru epok,
+- aktywny wyłącznie pakiet średniowieczny.
+
+## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
 2. Każdy obiekt biegnący lub lecący przechodzi przez cały ekran.
@@ -11,12 +29,17 @@
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v3 gotowa do testu gracza**
+Status: **wersja v4.1 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 150 i sprawdzony automatycznie,
+- zasięg czarownika ustawiony na 180,
+- armata otrzymała kontrolowaną, niską parabolę, czytelną kulę, smugę i efekt trafienia,
+- sylwetka łucznika została ustawiona profilem do kierunku strzału,
 - Deszcz Strzał zachowuje trzy celowane fale, a Mróz trwa 3,8 s,
 - skala postaci jest liczona z wysokości ekranu: 46 px przy 1280×720 i 25 px przy 844×390,
-- ruchome gagi sprawdzone na pełnym przebiegu od jednej krawędzi do drugiej,
+- pięć ruchomych gagów sprawdzono na pełnym przebiegu od jednej krawędzi do drugiej,
+- intro otrzymało nową sekwencję policjanta bez napisów ekranowych i bocznych cieni,
+- każdy z 12 poziomów ma własny dyskretny absurd scenograficzny,
 - pozostał test odczucia balansu na prawdziwym telefonie i monitorze,
 - sprawdzenie, czy wszystkie 13 jednostek ma wyraźną rolę,
 - zebranie uwag Marcina po każdej wersji testowej.
@@ -25,9 +48,9 @@ Kryterium zakończenia: trzy pełne rozgrywki na telefonie i komputerze bez bł�
 
 ## Etap 2 — biblioteka humoru i reklama
 
-Status: **konfiguracja gotowa; kolejne gagi po wspólnej decyzji**
+Status: **pierwsza biblioteka gotowa; kolejne gagi po wspólnej decyzji**
 
-- przygotować 6–8 gagów stałych, ale losować najwyżej kilka podczas jednej bitwy,
+- obecnie działa pięć gagów ruchomych; docelowo przygotować 6–8, ale losować najwyżej kilka podczas jednej bitwy,
 - osobna pula żartów z Polski, świata, kultury, muzyki i sportu,
 - każdy gag bieżący otrzymuje źródło, datę publikacji i datę wyłączenia,
 - przygotować 2–3 formaty reklamowe: proporzec ryby, herb sponsora i dyskretna plansza między poziomami,
@@ -46,7 +69,7 @@ Kryterium zakończenia: gag nie powtarza się dwa razy z rzędu i zawsze kończy
 ## Etap 4 — grafika i animacja
 
 - ujednolicić proporcje wszystkich postaci,
-- poprawić sylwetki i animacje łuczników, mnicha, golema i oszczepnika,
+- poprawiono sylwetkę łucznika; następne są animacje mnicha, golema i oszczepnika,
 - rozbudować tła bez zasłaniania pola walki,
 - dopracować zniszczenia zamków i efekty czarów,
 - nowe ikony aplikacji zgodne z jakością grafiki w grze.
@@ -69,6 +92,6 @@ Kryterium zakończenia: gag nie powtarza się dwa razy z rzędu i zawsze kończy
 
 Potrzebne są trzy decyzje:
 
-1. Czy zasięg łucznika 150 jest już wystarczający podczas realnej walki?
-2. Jaki pierwszy prawdziwy napis lub logotyp ma pojawić się na rybie reklamowej?
-3. Które 3 wydarzenia z Polski lub świata mamy jako pierwsze przełożyć na krótkie, nieagresywne gagi wizualne?
+1. Czy osoba, która nie zna gry, rozumie cel i sterowanie po samouczku bez dodatkowego tłumaczenia?
+2. Czy tor armaty jest czytelny także podczas tłocznej bitwy na prawdziwym telefonie?
+3. Czy zasięg czarownika 180 daje przewagę, ale nie dominuje całej walki?

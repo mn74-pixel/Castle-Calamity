@@ -15,8 +15,11 @@ castle-calamity/
 │       ├── icon-maskable-192.png
 │       └── icon-maskable-512.png
 ├── content/
-│   └── gags.js
+│   ├── eras.js
+│   ├── gags.js
+│   └── i18n.js
 └── docs/
+    ├── ARCHITEKTURA-EPOK.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -27,18 +30,24 @@ castle-calamity/
 |---|---|---|
 | `index.html` | Silnik gry, grafika Canvas, jednostki, poziomy, intro i interfejs | Przy zmianach mechaniki lub grafiki |
 | `content/gags.js` | Częstotliwość humoru, lista gagów i treść reklamy na latającej rybie | Przy bieżących żartach i zmianie partnera reklamowego |
+| `content/i18n.js` | Polskie i angielskie teksty interfejsu, samouczka, jednostek i poziomów | Przy każdym nowym tekście widocznym dla gracza |
+| `content/eras.js` | Rejestr pakietów epok; obecnie aktywne jest średniowiecze | Przy dodawaniu epoki albo zmianie jej zestawów grafiki i balansu |
 | `manifest.json` | Nazwa PWA, tryb pełnoekranowy, orientacja i ścieżki ikon | Przy zmianie nazwy lub ikon |
 | `sw.js` | Pliki działające offline i numer pamięci podręcznej | Przy każdej opublikowanej wersji |
 | `assets/icons/` | Ikony aplikacji na telefon i komputer | Przy nowej identyfikacji wizualnej |
 | `README.md` | Instrukcja uruchomienia i publikacji | Przy zmianie sposobu wdrażania |
 | `docs/PLAN-DZIALANIA.md` | Kolejność dalszego rozwoju i kryteria odbioru | Po każdej większej decyzji projektowej |
+| `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
 
 - Reklama na rybie: edytuj `flyingFishAd` w `content/gags.js`.
 - Rzadziej lub częściej: edytuj `timing.nextMin` i `timing.nextMax`.
-- Rzadki gag przy Deszczu Strzał: edytuj `timing.abilityGagChance` (obecnie `0.12`, czyli 12%).
+- Rzadki gag przy Deszczu Strzał: edytuj `timing.abilityGagChance` (obecnie `0.08`, czyli 8%).
 - Włączenie/wyłączenie gagu: zmień pole `enabled` przy wybranym wpisie.
+- Dostępne ruchome gagi: koronowana kura, latająca ryba, policjant, latające biurko i wanna na kołach.
+- Każdy ruchomy gag jest usuwany dopiero po przekroczeniu przeciwnej krawędzi ekranu.
+- Stałe absurdy poziomów są rysowane przez `drawLevelAbsurdity()` w `index.html` — jeden motyw dla każdego z 12 poziomów.
 - Nowy żart bieżący: najpierw dodaj zatwierdzony wpis do `topicalGags`, wraz z datą wygaśnięcia i notatką o źródle, a potem dołącz jego prostą animację w `index.html`.
 
 ## Ważne przy publikacji

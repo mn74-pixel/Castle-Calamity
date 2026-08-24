@@ -1,11 +1,13 @@
 /* Castle Calamity PWA — Service Worker
    Cache-first: gra działa w pełni offline po pierwszym otwarciu. */
-const CACHE = "castle-calamity-v3";
+const CACHE = "castle-calamity-v4.1";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./content/gags.js",
+  "./content/i18n.js",
+  "./content/eras.js",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable-192.png",
