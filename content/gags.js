@@ -7,7 +7,7 @@
     dzięki czemu nie trzeba grzebać w silniku gry.
   */
   root.CASTLE_CONTENT = {
-    version: "2026-08-24-v2",
+    version: "2026-08-24-v3",
 
     timing: {
       firstMin: 32,
@@ -18,12 +18,23 @@
       abilityGagChance: 0.08
     },
 
+    /*
+      Każdy etap ma własny gag przelotowy. W jednej bitwie uruchamia się on
+      najwyżej raz, więc animacja nie zdradza pętli i żart nie męczy gracza.
+    */
     gags: [
-      { id: "crowned-chicken", type: "chicken", enabled: true, weight: 24 },
-      { id: "flying-fish-ad", type: "skyfish", enabled: true, weight: 22 },
-      { id: "polite-policeman", type: "policeman", enabled: true, weight: 20 },
-      { id: "airborne-office", type: "flyingdesk", enabled: true, weight: 17 },
-      { id: "runaway-bathtub", type: "bathtub", enabled: true, weight: 17 }
+      { id: "crowned-chicken", type: "chicken", enabled: true, weight: 1, levels: [1] },
+      { id: "runaway-bathtub", type: "bathtub", enabled: true, weight: 1, levels: [2] },
+      { id: "polite-policeman", type: "policeman", enabled: true, weight: 1, levels: [3] },
+      { id: "cloud-knight", type: "cloudknight", enabled: true, weight: 1, levels: [4] },
+      { id: "moon-janitor", type: "moonjanitor", enabled: true, weight: 1, levels: [5] },
+      { id: "flying-fish-ad", type: "skyfish", enabled: true, weight: 1, levels: [6] },
+      { id: "duck-patrol", type: "duckpatrol", enabled: true, weight: 1, levels: [7] },
+      { id: "airborne-office", type: "flyingdesk", enabled: true, weight: 1, levels: [8] },
+      { id: "fire-marshal", type: "firemarshal", enabled: true, weight: 1, levels: [9] },
+      { id: "tea-balloon", type: "teaballoon", enabled: true, weight: 1, levels: [10] },
+      { id: "snow-clerk", type: "snowclerk", enabled: true, weight: 1, levels: [11] },
+      { id: "vacuum-demon", type: "vacuumdemon", enabled: true, weight: 1, levels: [12] }
     ],
 
     flyingFishAd: {

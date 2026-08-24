@@ -18,6 +18,19 @@ Status: **wdrożony do testów**
 - osobne pliki tłumaczeń oraz rejestru epok,
 - aktywny wyłącznie pakiet średniowieczny.
 
+## Poprawki v4.2
+
+Status: **wdrożone i sprawdzone automatycznie**
+
+- poziomy 4 i 5 ponownie korzystają z poprawionych łuczników,
+- łuk, kusza i oszczep mają celowane tory balistyczne zamiast nurkowania w ziemię,
+- przeciwny oszczepnik poprawnie odwraca broń w lewo,
+- armata otrzymała wyższą parabolę zależną od dystansu i rozmiaru ekranu,
+- zasięg łucznika wzrósł do 170, a dwóch łuczników tworzy formację z aurą,
+- każdy poziom ma własny gag przelotowy; w jednej bitwie pojawia się on najwyżej raz,
+- poziom 4: rycerz lecący na chmurze, poziom 5: konserwator polerujący księżyc,
+- nowe gagi zachowują pełny przebieg od krawędzi do krawędzi bez widocznej pętli.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -29,15 +42,15 @@ Status: **wdrożony do testów**
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v4.1 gotowa do testu gracza**
+Status: **wersja v4.2 gotowa do testu gracza**
 
-- zasięg łucznika ustawiony na 150 i sprawdzony automatycznie,
+- zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg czarownika ustawiony na 180,
-- armata otrzymała kontrolowaną, niską parabolę, czytelną kulę, smugę i efekt trafienia,
+- armata otrzymała kontrolowaną, wysoką parabolę, czytelną kulę, smugę i efekt trafienia,
 - sylwetka łucznika została ustawiona profilem do kierunku strzału,
 - Deszcz Strzał zachowuje trzy celowane fale, a Mróz trwa 3,8 s,
 - skala postaci jest liczona z wysokości ekranu: 46 px przy 1280×720 i 25 px przy 844×390,
-- pięć ruchomych gagów sprawdzono na pełnym przebiegu od jednej krawędzi do drugiej,
+- dwanaście ruchomych gagów sprawdzono na pełnym przebiegu od jednej krawędzi do drugiej,
 - intro otrzymało nową sekwencję policjanta bez napisów ekranowych i bocznych cieni,
 - każdy z 12 poziomów ma własny dyskretny absurd scenograficzny,
 - pozostał test odczucia balansu na prawdziwym telefonie i monitorze,
@@ -50,13 +63,13 @@ Kryterium zakończenia: trzy pełne rozgrywki na telefonie i komputerze bez bł�
 
 Status: **pierwsza biblioteka gotowa; kolejne gagi po wspólnej decyzji**
 
-- obecnie działa pięć gagów ruchomych; docelowo przygotować 6–8, ale losować najwyżej kilka podczas jednej bitwy,
+- obecnie działa 12 gagów ruchomych, po jednym dla każdego poziomu i najwyżej jeden podczas bitwy,
 - osobna pula żartów z Polski, świata, kultury, muzyki i sportu,
 - każdy gag bieżący otrzymuje źródło, datę publikacji i datę wyłączenia,
 - przygotować 2–3 formaty reklamowe: proporzec ryby, herb sponsora i dyskretna plansza między poziomami,
 - dodać przełącznik całkowitego wyłączenia reklam.
 
-Kryterium zakończenia: gag nie powtarza się dwa razy z rzędu i zawsze kończy pełną animację.
+Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełną animację.
 
 ## Etap 3 — głębsza strategia
 

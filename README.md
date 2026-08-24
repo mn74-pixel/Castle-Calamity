@@ -4,20 +4,22 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v4.1
+## Co zawiera wersja v4.2
 - 12 poziomów i 13 dostępnych jednostek,
 - opcjonalny samouczek pierwszego poziomu, który można pominąć i uruchomić ponownie,
 - przełącznik języka polskiego i angielskiego z zapisem wyboru,
 - fundament jednego silnika obsługującego w przyszłości pakiety różnych epok,
 - poprawione skalowanie postaci oraz HUD-u na telefonach w poziomie,
-- zasięg łucznika zwiększony do 150 jednostek,
+- zasięg łucznika zwiększony do 170 jednostek i skalowany do wysokości pola bitwy,
+- formację łuczników: dwóch pobliskich łuczników aktywuje subtelną aurę, +12% ataku i szybszą salwę,
 - zasięg czarownika zwiększony do 180 jednostek,
 - przeprojektowanego łucznika ustawionego profilem do celu,
-- niski, czytelny tor kuli armatniej z cieniem, smugą i efektem uderzenia,
+- wysoką, kontrolowaną parabolę kuli armatniej z cieniem, smugą i efektem uderzenia,
+- naprawione kierunki oszczepów oraz balistyczne tory strzał, bełtów i oszczepów,
 - celowany Deszcz Strzał w trzech falach,
 - Mróz trwający 3,8 s i obejmujący nowe jednostki wroga,
 - intro bez bocznej winiety i napisów fabularnych, z policjantem zabezpieczającym saksofon stożkiem drogowym,
-- pięć rzadkich, losowych gagów wizualnych, które przechodzą przez cały ekran,
+- dwanaście rzadkich gagów wizualnych — inny na każdym poziomie i najwyżej jeden podczas bitwy,
 - osobny dyskretny absurd scenograficzny na każdym z 12 poziomów,
 - latającą rybę z łatwo zmienianym proporcem reklamowym,
 - trwały zapis postępu i własnych herbów w pamięci urządzenia.
@@ -53,7 +55,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v4.1` → `castle-calamity-v4.2`.
+np. `castle-calamity-v4.2` → `castle-calamity-v4.3`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

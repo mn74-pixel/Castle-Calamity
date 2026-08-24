@@ -45,7 +45,8 @@ castle-calamity/
 - Rzadziej lub częściej: edytuj `timing.nextMin` i `timing.nextMax`.
 - Rzadki gag przy Deszczu Strzał: edytuj `timing.abilityGagChance` (obecnie `0.08`, czyli 8%).
 - Włączenie/wyłączenie gagu: zmień pole `enabled` przy wybranym wpisie.
-- Dostępne ruchome gagi: koronowana kura, latająca ryba, policjant, latające biurko i wanna na kołach.
+- Dostępnych jest 12 ruchomych gagów — po jednym dla każdego poziomu; poziom 4 ma rycerza na chmurze, a poziom 5 konserwatora polerującego księżyc.
+- Podczas jednej bitwy gag przelotowy pojawia się najwyżej raz.
 - Każdy ruchomy gag jest usuwany dopiero po przekroczeniu przeciwnej krawędzi ekranu.
 - Stałe absurdy poziomów są rysowane przez `drawLevelAbsurdity()` w `index.html` — jeden motyw dla każdego z 12 poziomów.
 - Nowy żart bieżący: najpierw dodaj zatwierdzony wpis do `topicalGags`, wraz z datą wygaśnięcia i notatką o źródle, a potem dołącz jego prostą animację w `index.html`.
