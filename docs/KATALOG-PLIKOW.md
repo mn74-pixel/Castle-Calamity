@@ -22,6 +22,7 @@ castle-calamity/
     ├── ARCHITEKTURA-EPOK.md
     ├── AUDYT-V4.4.md
     ├── ETAP-BOSSOW-V4.5.md
+    ├── GRAFIKA-PREMIUM-V4.6.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -41,6 +42,7 @@ castle-calamity/
 | `docs/PLAN-DZIALANIA.md` | Kolejność dalszego rozwoju i kryteria odbioru | Po każdej większej decyzji projektowej |
 | `docs/AUDYT-V4.4.md` | Stan techniczny, wykryte problemy, poprawki i ryzyka po audycie v4.4 | Po większym audycie lub przed publikacją |
 | `docs/ETAP-BOSSOW-V4.5.md` | Fazy, ataki, balans i testy dwóch końcowych bossów | Przy zmianie zachowań poziomów 10 i 12 |
+| `docs/GRAFIKA-PREMIUM-V4.6.md` | Animacje jednostek premium, warstwy tła i efekty umiejętności | Przy zmianie grafiki walki albo efektów czarów |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany

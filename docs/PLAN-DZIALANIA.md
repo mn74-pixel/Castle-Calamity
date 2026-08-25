@@ -73,6 +73,22 @@ Status: **wdrożony i sprawdzony automatycznie**
 - każdy boss daje jednorazową nagrodę; nie znika po dotarciu do zamku gracza,
 - szczegóły i zakres testów znajdują się w `ETAP-BOSSOW-V4.5.md`.
 
+## Grafika premium v4.6
+
+Status: **wdrożona i sprawdzona automatycznie oraz na renderach referencyjnych**
+
+- mnich, golem i oszczepnik nie korzystają już z ogólnego korpusu z nałożonym dodatkiem,
+- mnich ma pracujący habit, kostur i odrębną pozę aktywnego leczenia,
+- golem ma asymetryczne bloki, artykułowane ramiona i nogi, przenoszenie ciężaru oraz uderzenie oburącz,
+- oszczepnik idzie profilem, pokazuje kierunek celu i przez moment po rzucie ma wyraźnie pustą dłoń,
+- ikony kart tych jednostek korzystają z nowych sylwetek,
+- chmury, odległe ruiny, góry i wzgórza tworzą kilka wolno poruszających się planów,
+- Deszcz Strzał ma trzy przesuwające się fale cienia i kręgi trafień,
+- Mróz ma falę przechodzącą po ziemi, lodowe odłamki i czytelniejszą bryłę lodu na jednostkach,
+- Zew Bitwy ma rozszerzający się pierścień, znak sztandaru i subtelną aurę na jednostkach,
+- zasięgi, obrażenia, czasy działania i skalowanie z v4.5 pozostały bez zmian,
+- szczegóły i zakres testów znajdują się w `GRAFIKA-PREMIUM-V4.6.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -84,7 +100,7 @@ Status: **wdrożony i sprawdzony automatycznie**
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v4.5 gotowa do testu gracza**
+Status: **wersja v4.6 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg czarownika ustawiony na 180,
@@ -124,10 +140,10 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 
 ## Etap 4 — grafika i animacja
 
-- ujednolicić proporcje wszystkich postaci,
-- poprawiono sylwetkę łucznika; następne są animacje mnicha, golema i oszczepnika,
-- rozbudować tła bez zasłaniania pola walki,
-- dopracować zniszczenia zamków i efekty czarów,
+- ujednolicono proporcje kluczowych postaci i zachowano wspólną skalę telefonu oraz komputera,
+- poprawiono sylwetkę łucznika oraz przebudowano animacje mnicha, golema i oszczepnika,
+- rozbudowano tła o wolne warstwy głębi bez zasłaniania pola walki,
+- dopracowano efekty trzech umiejętności; kolejne są zniszczenia zamków i efekty pocisków specjalnych,
 - nowe ikony aplikacji zgodne z jakością grafiki w grze.
 
 ## Etap 5 — audio i kampania
@@ -148,6 +164,6 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 
 Potrzebne są trzy decyzje:
 
-1. Czy boss poziomu 10 jest wymagający, ale szarża nie staje się frustrująca?
-2. Czy portale i teleport poziomu 12 są wystarczająco czytelne na prawdziwym telefonie?
-3. Czy nagrody 150 i 250 złota pomagają po walce, ale nie upraszczają zbyt mocno końcówki poziomu?
+1. Czy nowe sylwetki mnicha, golema i oszczepnika są czytelne w normalnym tempie bitwy?
+2. Czy efekty Mrozu i Deszczu Strzał są widoczne, ale nie zasłaniają jednostek na telefonie?
+3. Czy wolny ruch warstw tła wygląda naturalnie podczas pełnej, kilkuminutowej rozgrywki?

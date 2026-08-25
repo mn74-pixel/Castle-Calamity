@@ -4,12 +4,15 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v4.5
+## Co zawiera wersja v4.6
 - 12 poziomów i 14 dostępnych jednostek,
 - opcjonalny samouczek pierwszego poziomu, który można pominąć i uruchomić ponownie,
 - przełącznik języka polskiego i angielskiego z zapisem wyboru,
 - fundament jednego silnika obsługującego w przyszłości pakiety różnych epok,
 - poprawione skalowanie postaci oraz HUD-u na telefonach w poziomie,
+- trzy całkowicie przebudowane sylwetki premium: mnich z animacją leczenia, ciężki golem z artykułowanymi kończynami oraz profilowy oszczepnik z pustą dłonią po rzucie,
+- wielowarstwowe tła z bardzo wolną paralaksą chmur, wzgórz i gór, mgłą atmosferyczną oraz odległymi ruinami,
+- rozbudowane efekty Deszczu Strzał, Mrozu i Zewu Bitwy bez zmiany ich balansu,
 - zasięg łucznika zwiększony do 170 jednostek i skalowany do wysokości pola bitwy,
 - formację łuczników: dwóch pobliskich łuczników aktywuje subtelną aurę, +12% ataku i szybszą salwę,
 - zasięg czarownika zwiększony do 180 jednostek,
@@ -45,6 +48,7 @@ na pełnym ekranie i **offline**.
 | `docs/PLAN-DZIALANIA.md` | Etapy dalszego rozwoju gry |
 | `docs/AUDYT-V4.4.md` | Wyniki audytu, wykonane poprawki i pozostawione ryzyka |
 | `docs/ETAP-BOSSOW-V4.5.md` | Zachowania, balans i testy bossów poziomów 10 i 12 |
+| `docs/GRAFIKA-PREMIUM-V4.6.md` | Nowe animacje jednostek, głębia plansz i efekty umiejętności |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -64,7 +68,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v4.5` → `castle-calamity-v4.6`.
+np. `castle-calamity-v4.6` → `castle-calamity-v4.7`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)
