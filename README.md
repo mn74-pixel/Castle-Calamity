@@ -4,7 +4,7 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v4.4
+## Co zawiera wersja v4.5
 - 12 poziomów i 14 dostępnych jednostek,
 - opcjonalny samouczek pierwszego poziomu, który można pominąć i uruchomić ponownie,
 - przełącznik języka polskiego i angielskiego z zapisem wyboru,
@@ -21,6 +21,9 @@ na pełnym ekranie i **offline**.
 - krótsze, 13,35-sekundowe intro bez napisów i HUD: policjant wystawia mandat kuli armatniej, po czym regulamin przegrywa,
 - pięć doktryn przeciwnika: zrównoważoną, defensywną, agresywną, oblężniczą i chaotyczną,
 - umiarkowane kontry jednostek z opisem w podpowiedziach i dyskretnym efektem trafienia,
+- dwóch prawdziwych bossów na polu walki: Władcę Krwawej Łuny na poziomie 10 i Króla Demonów na poziomie 12,
+- trzy czytelne fazy każdego bossa, osobny pasek HP, zapowiadane ataki i nagrodę za pokonanie,
+- Władcę Łuny z aurą, rozkazem, szarżą i jednorazową przerwą na herbatę oraz Króla Demonów z seriami ognia, portalami i teleportem,
 - celowany Deszcz Strzał w trzech falach,
 - Mróz trwający 3,8 s i obejmujący nowe jednostki wroga,
 - dwanaście rzadkich gagów wizualnych — inny na każdym poziomie i najwyżej jeden podczas bitwy; kartki latającego biurka nie przeskakują już między końcami pętli,
@@ -41,6 +44,7 @@ na pełnym ekranie i **offline**.
 | `docs/KATALOG-PLIKOW.md` | Mapa paczki i wskazówki, gdzie wprowadzać zmiany |
 | `docs/PLAN-DZIALANIA.md` | Etapy dalszego rozwoju gry |
 | `docs/AUDYT-V4.4.md` | Wyniki audytu, wykonane poprawki i pozostawione ryzyka |
+| `docs/ETAP-BOSSOW-V4.5.md` | Zachowania, balans i testy bossów poziomów 10 i 12 |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -60,7 +64,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v4.4` → `castle-calamity-v4.5`.
+np. `castle-calamity-v4.5` → `castle-calamity-v4.6`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

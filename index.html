@@ -492,7 +492,11 @@ var UD = {
   // === NOWE JEDNOSTKI (rotacja - nie wszystkie naraz) ===
   monk:     {n:"Mnich",      c:45, h:90, a:8,  ac:4,  s:34, r:60, worker:false,cannon:false, spl:0, R:240,G:220,B:120, tier:3, heal:true, healAmt:18, healRange:70},
   golem:    {n:"Golem",      c:90, h:400,a:30, ac:30, s:22, r:28, worker:false,cannon:false, spl:0, R:120,G:130,B:110, tier:4, siege:true},
-  spearman: {n:"Oszczepnik", c:28, h:80, a:18, ac:6,  s:38, r:95, worker:false,cannon:false, spl:0, R:120,G:160,B:140, tier:2, thrower:true}
+  spearman: {n:"Oszczepnik", c:28, h:80, a:18, ac:6,  s:38, r:95, worker:false,cannon:false, spl:0, R:120,G:160,B:140, tier:2, thrower:true},
+  /* Bossowie nie trafiają do kart gracza ani zwykłej kolejki AI. Pojawiają się
+     tylko raz, sterowani przez osobny reżyser starcia. */
+  moonlord: {n:"Władca Krwawej Łuny",c:0,h:1200,a:31,ac:24,s:30,r:44,worker:false,cannon:false,spl:0,R:150,G:30,B:52,tier:5,boss:true,bossKind:"moon",bounty:150},
+  demonking:{n:"Król Demonów",c:0,h:1700,a:34,ac:28,s:25,r:185,worker:false,cannon:false,spl:18,R:112,G:35,B:125,tier:5,boss:true,bossKind:"demon",bounty:250}
 };
 /* Kolejność w UI: wszystkie jednostki, od najtańszej do najdroższej. */
 var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","crossbow","monk","knight","wizard","templar","golem","cannon"];
@@ -511,9 +515,9 @@ var LV = [
   {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,profile:"defensive",ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","archer","mason","crossbow","knight","cannon","wizard"]},
   {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,profile:"siege",    ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","cannon","wizard"]},
   {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,profile:"siege",    ai:["drwal","mason","cannon","wizard","golem","templar","cannon"], ul:["drwal","warrior","spearman","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,profile:"aggressive",ai:["drwal","mason","knight","wizard","templar","cannon","golem","wizard"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true},
+  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,profile:"aggressive",ai:["drwal","mason","knight","wizard","templar","cannon","golem","wizard"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true,bossKey:"moonlord"},
   {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,profile:"defensive",ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,profile:"chaotic",  ai:["drwal","mason","templar","wizard","cannon","golem","templar","wizard","cannon"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true}
+  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,profile:"chaotic",  ai:["drwal","mason","templar","wizard","cannon","golem","templar","wizard","cannon"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true,bossKey:"demonking"}
 ];
 
 var G=null, LI=0, RAF=null, PAUSED=false;
@@ -810,12 +814,13 @@ function load(idx){
     lv:lv,W:W,H:H,GY:GY,
     p:{hp:lv.pH,max:lv.pH,baseMax:lv.pH,buildStage:0,buildLoads:0,gold:30,x:0,w:cw,h:ch,isP:true,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.31},
     e:{hp:lv.eH,max:lv.eH,baseMax:lv.eH,buildStage:0,buildLoads:0,gold:35,x:W-cw,w:cw,h:ch,isP:false,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.71},
-    units:[],projs:[],blasts:[],floats:[],dust:[],smoke:[],embers:[],sparks:[],coins:[],birds:[],bloodstains:[],gags:[],
+    units:[],projs:[],blasts:[],floats:[],dust:[],smoke:[],embers:[],sparks:[],coins:[],birds:[],bloodstains:[],gags:[],bossPortals:[],
     trees:trees,rocks:rocks,clouds:clouds,
     treeT:0,aiT:0,aiI:0,aiProfile:lv.profile||"balanced",aiNextMs:lv.ad,aiLastKey:null,T:0,LT:0,over:false,overT:0,sunAngle:0.47,
     gagT:randBetween(CONTENT.timing.firstMin,CONTENT.timing.firstMax),gagShown:false,freezeField:0,arrowRainFx:null,lastGagType:null,
     stats:{kills:0,losses:0,goldEarned:0,unitsSpawned:0,startTime:Date.now()},
-    killStreak:{count:0,lastKillT:-999}
+    killStreak:{count:0,lastKillT:-999},
+    boss:initBossEncounter(lv),bossBlinkFx:null
   };
   PAUSED=false;
   abilityCooldowns={};
@@ -979,8 +984,9 @@ function updHUD(){
 }
 
 /* ── Spawn ── */
-function spawnUnit(key,isP){
+function spawnUnit(key,isP,options){
   if(!G||G.over||PAUSED)return;
+  options=options||{};
   if(TUTORIAL.active&&isP){
     if(TUTORIAL.step===0)return;
     if(TUTORIAL.step===1&&key!=="drwal"){updateTutorialUI();return;}
@@ -998,10 +1004,11 @@ function spawnUnit(key,isP){
     }
     if(activeMasons>=2)return;
   }
-  if(cas.gold<cost)return;
-  cas.gold-=cost;
+  if(!options.free&&cas.gold<cost)return;
+  if(!options.free)cas.gold-=cost;
   if(isP)G.stats.unitsSpawned++;
   var sx=ud.cannon?(isP?cas.x+cas.w*0.62:cas.x+cas.w*0.38):(isP?cas.x+cas.w+8:cas.x-10);
+  if(options.x!==undefined&&isFinite(options.x))sx=options.x;
   var sy=ud.cannon?(G.GY-(isP?G.p.h:G.e.h)-8):G.GY;
   var effH=isP?Math.round(effStat(key,"h")):ud.h;
   var u={
@@ -1015,7 +1022,8 @@ function spawnUnit(key,isP){
     tgt:null,acd:0,carry:0,ttgt:null,gt:0,
     rockTarget:null,quarryT:0,carryStone:false,
     vx:0,step:Math.random()*6.28,atkPhase:0,flash:0,dT:0,fallRot:0,fallVy:0,
-    shotsLeft: ud.cannon ? (ud.shots||5) : null
+    shotsLeft: ud.cannon ? (ud.shots||5) : null,
+    bossPhase:ud.boss?1:0,bossSummon:!!options.bossSummon,bossRallied:0,moonAura:0,bossCharge:0,bossTea:0
   };
   if(ud.worker){u.ttgt=nearTree(u.x);if(!u.ttgt)u.state="march";}
   if(ud.mason){u.rockTarget=nearRock(u.x,isP);if(!u.rockTarget)return;}
@@ -1023,6 +1031,7 @@ function spawnUnit(key,isP){
   G.units.push(u);
   tutorialOnSpawn(key,isP);
   if(isP) SFX.spawn();
+  return u;
 }
 function nearTree(fx){
 
@@ -1265,11 +1274,22 @@ function uRange(u){
   var r=u&&u.ud?u.ud.r:0;
   return r>40?r*combatScale():r;
 }
-function uSpd(u){var s=u.eff_s||u.ud.s; return (u.rallied&&u.rallied>0) ? s*1.5 : s;}
+function uSpd(u){
+  var s=u.eff_s||u.ud.s,m=1;
+  if(u.rallied&&u.rallied>0)m*=1.5;
+  if(u.bossRallied&&u.bossRallied>0)m*=1.24;
+  if(u.moonAura&&u.moonAura>0)m*=1.06;
+  if(u.bossCharge&&u.bossCharge>0)m*=1.9;
+  return s*m;
+}
 function uAtk(u){
-  var a=u.eff_a||u.ud.a;
+  var a=u.eff_a||u.ud.a,m=1;
   if(u.key==="archer"&&u.archerAura)a*=1.12;
-  return (u.rallied&&u.rallied>0) ? a*1.5 : a;
+  if(u.rallied&&u.rallied>0)m*=1.5;
+  if(u.bossRallied&&u.bossRallied>0)m*=1.22;
+  if(u.moonAura&&u.moonAura>0)m*=1.06;
+  if(u.bossCharge&&u.bossCharge>0)m*=1.22;
+  return a*m;
 }
 function uAtkCastle(u){var ac=u.eff_ac!==undefined ? u.eff_ac : (u.ud.ac||0); return (u.rallied&&u.rallied>0) ? ac*1.5 : ac;}
 /* Czytelne, umiarkowane kontry. Zastępują dawną, bardzo silną przewagę samego
@@ -1612,6 +1632,166 @@ function nextAiInterval(){
   return G.lv.ad*mul*(.91+Math.random()*.18);
 }
 
+/* ═══════════════════════════════════════════════
+   REŻYSER BOSSÓW v4.5
+   Boss jest prawdziwą jednostką na polu walki, a nie tylko większą liczbą HP
+   zamku. Każda moc ma czytelną zapowiedź i trzy fazy zależne od HP bossa.
+   ═══════════════════════════════════════════════ */
+function initBossEncounter(lv){
+  if(!lv||!lv.bossKey)return null;
+  return {
+    key:lv.bossKey,spawnT:lv.bossKey==="moonlord"?6.2:7.2,spawned:false,
+    unit:null,defeated:false,phase:1,abilityT:8.5,portalT:9.5,blinkCd:7,
+    cast:null,teaDone:false,mistakeRolled:false,rewarded:false
+  };
+}
+function bossPhaseFor(u){
+  if(!u||!u.max)return 1;
+  var pct=Math.max(0,u.hp/u.max);
+  return pct>.66?1:(pct>.33?2:3);
+}
+function nearestLivingPlayer(x,maxD){
+  var best=null,bd=maxD===undefined?1e9:maxD;
+  for(var i=0;i<G.units.length;i++){
+    var u=G.units[i];
+    if(!u||!u.isP||u.state==="dead"||u.ud.worker||u.ud.mason||u.ud.cannon)continue;
+    var d=Math.abs(u.x-x);if(d<bd){bd=d;best=u;}
+  }
+  return best;
+}
+function spawnBossEncounter(bs){
+  if(!bs||bs.spawned)return;
+  var u=spawnUnit(bs.key,false,{free:true});
+  if(!u)return;
+  bs.spawned=true;bs.unit=u;u.bossPhase=1;u.acd=.8;
+  addFlt(Math.max(W*.35,Math.min(W*.72,u.x)),G.GY-88,tr("boss.appears",{name:tr("boss."+bs.key)}),"#ffd36b");
+  G.blasts.push({x:u.x,y:u.y-24,mr:62,r:0,life:.8,duration:.8,shockwave:true,boss:true});
+  for(var i=0;i<12;i++)G.sparks.push({x:u.x+(Math.random()-.5)*18,y:u.y-20,vx:(Math.random()-.5)*70,vy:-35-Math.random()*55,life:.65,col:bs.key==="moonlord"?"#ff5a64":"#cc66ff"});
+}
+function bossPhaseChanged(bs,u,phase){
+  bs.phase=phase;u.bossPhase=phase;
+  addFlt(u.x,u.y-82,tr("boss.phase",{phase:phase}),phase===3?"#ffdd62":"#ff8d77");
+  G.blasts.push({x:u.x,y:u.y-22,mr:58+phase*12,r:0,life:.75,duration:.75,shockwave:true,boss:true});
+  if(u.ud.bossKind==="moon"&&phase===3&&!bs.teaDone){
+    /* Jednorazowa przerwa na herbatę: oddech dla gracza i suchy absurd,
+       pokazany wyłącznie animacją filiżanki. */
+    bs.teaDone=true;u.bossTea=2.8;u.vx=0;u.tgt=null;u.state="march";
+  }
+  if(u.ud.bossKind==="demon")bs.portalT=Math.min(bs.portalT,1.9);
+}
+function resolveMoonCast(bs,u,type){
+  if(type==="edict"){
+    for(var i=0;i<G.units.length;i++){
+      var a=G.units[i];
+      if(!a||a.isP||a===u||a.state==="dead"||a.ud.worker||a.ud.mason||a.ud.cannon)continue;
+      if(Math.abs(a.x-u.x)<=185*combatScale())a.bossRallied=Math.max(a.bossRallied||0,4.2);
+    }
+    G.blasts.push({x:u.x,y:u.y-20,mr:180*combatScale(),r:0,life:.65,duration:.65,bossAura:true});
+  }else{
+    u.bossCharge=2.6;u.tgt=null;u.state="march";
+    G.blasts.push({x:u.x,y:G.GY-4,mr:72,r:0,life:.55,duration:.55,shockwave:true,boss:true});
+  }
+}
+function updateMoonBoss(bs,u,dt){
+  /* Stała, delikatna aura jest czytelna, lecz nie rozstrzyga walki sama. */
+  for(var i=0;i<G.units.length;i++){
+    var a=G.units[i];
+    if(a&&a!==u&&!a.isP&&a.state!=="dead"&&!a.ud.worker&&!a.ud.mason&&Math.abs(a.x-u.x)<105*combatScale())a.moonAura=.24;
+  }
+  if(u.bossTea>0||u.frozen>0)return;
+  if(bs.cast){
+    bs.cast.t-=dt;u.bossCasting=bs.cast.type;
+    if(bs.cast.t<=0){var type=bs.cast.type;bs.cast=null;u.bossCasting=null;resolveMoonCast(bs,u,type);}
+    return;
+  }
+  bs.abilityT-=dt;
+  if(bs.abilityT<=0){
+    var type=bs.phase===1?"edict":(bs.phase===2?"charge":(Math.random()<.5?"edict":"charge"));
+    bs.cast={type:type,t:1.05,max:1.05};u.bossCasting=type;u.vx*=.2;
+    bs.abilityT=(bs.phase===1?10.5:(bs.phase===2?8.8:7.4))+Math.random()*1.4;
+  }
+}
+function countBossSummons(){
+  var n=0;for(var i=0;i<G.units.length;i++){var u=G.units[i];if(u&&u.bossSummon&&u.state!=="dead")n++;}return n;
+}
+function openDemonPortal(bs,phase){
+  if(!G.bossPortals)G.bossPortals=[];
+  var target=nearestLivingPlayer(W*.58,1e9);
+  var base=target?target.x+70:W*(.50+Math.random()*.16);
+  var x=Math.max(G.p.x+G.p.w+90,Math.min(G.e.x-75,base+(Math.random()-.5)*90));
+  var pool=phase===1?["berserk","wizard"]:(phase===2?["templar","wizard","berserk"]:["templar","golem","wizard"]);
+  var mistake=false;
+  if(phase===3&&!bs.mistakeRolled){
+    bs.mistakeRolled=true;mistake=Math.random()<.30;
+  }
+  G.bossPortals.push({x:x,y:G.GY-3,life:1.45,max:1.45,key:mistake?null:pool[Math.floor(Math.random()*pool.length)],mistake:mistake,phase:phase});
+}
+function resolveDemonPortal(p){
+  if(p.mistake){
+    /* W 30% starć finałowy portal myli formularze i wypuszcza królewską
+       kurę. Zastępuje ona zwykły gag poziomu, więc humor nie kumuluje się. */
+    var spec=GAG_MOTION.chicken;
+    G.gags.push({id:"wrong-portal",type:"chicken",x:W+spec.pad,y:G.GY-1,vx:-72,dir:-1,life:999,phase:0,exitPad:spec.pad});
+    G.gagShown=true;return;
+  }
+  if(!p.key||countBossSummons()>=2)return;
+  var u=spawnUnit(p.key,false,{free:true,x:p.x,bossSummon:true});
+  if(u){u.state="march";u.acd=.45;u.bossSummon=true;}
+}
+function updateBossPortals(dt){
+  if(!G.bossPortals)return;
+  var keep=[];
+  for(var i=0;i<G.bossPortals.length;i++){
+    var p=G.bossPortals[i];p.life-=dt;
+    if(p.life<=0)resolveDemonPortal(p);else keep.push(p);
+  }
+  G.bossPortals=keep;
+  if(G.bossBlinkFx){G.bossBlinkFx.life-=dt;if(G.bossBlinkFx.life<=0)G.bossBlinkFx=null;}
+}
+function updateDemonBoss(bs,u,dt){
+  updateBossPortals(dt);
+  if(u.frozen>0)return;
+  bs.portalT-=dt;
+  var summonCap=bs.phase===1?1:2;
+  if(bs.portalT<=0&&countBossSummons()<summonCap&&G.bossPortals.length<1){
+    openDemonPortal(bs,bs.phase);
+    bs.portalT=(bs.phase===1?13:(bs.phase===2?10.8:8.8))+Math.random()*1.6;
+  }
+  bs.blinkCd-=dt;
+  if(u.bossBlink){
+    u.bossBlink.t-=dt;u.vx=0;
+    if(u.bossBlink.t<=0){
+      var oldX=u.x;u.x=u.bossBlink.toX;u.tgt=null;u.state="march";
+      G.bossBlinkFx={fromX:oldX,toX:u.x,y:u.y-23,life:.72,max:.72};u.bossBlink=null;
+      for(var i=0;i<12;i++)G.sparks.push({x:u.x+(Math.random()-.5)*20,y:u.y-22,vx:(Math.random()-.5)*65,vy:-30-Math.random()*45,life:.55,col:"#d979ff"});
+    }
+    return;
+  }
+  var near=nearestLivingPlayer(u.x,62*combatScale());
+  if(bs.phase>=2&&near&&bs.blinkCd<=0){
+    var retreat=Math.min(G.e.x-28,u.x+78*combatScale());
+    if(retreat>u.x+25){u.bossBlink={t:.55,max:.55,toX:retreat};u.vx=0;bs.blinkCd=8.5+Math.random()*1.5;}
+  }
+}
+function updateBossEncounter(dt){
+  var bs=G&&G.boss;if(!bs||G.over)return;
+  if(!bs.spawned){bs.spawnT-=dt;if(bs.spawnT<=0)spawnBossEncounter(bs);return;}
+  var u=bs.unit;
+  if(!u||u.state==="dead"){
+    if(!bs.defeated){
+      bs.defeated=true;
+      if(!bs.rewarded){
+        bs.rewarded=true;var reward=(u&&u.ud&&u.ud.bounty)||100;
+        G.p.gold=Math.min(9999,G.p.gold+reward);addXP(Math.round(reward*.65));
+        addFlt(W*.5,Math.max(82,G.GY*.22),tr("boss.defeated",{name:tr("boss."+bs.key),gold:reward}),"#ffe271");
+      }
+    }
+    updateBossPortals(dt);return;
+  }
+  var phase=bossPhaseFor(u);if(phase!==bs.phase)bossPhaseChanged(bs,u,phase);
+  if(u.ud.bossKind==="moon")updateMoonBoss(bs,u,dt);else updateDemonBoss(bs,u,dt);
+}
+
 /* ── Tick ── */
 function tick(dt){
   if(!G.over){
@@ -1638,6 +1818,7 @@ function tick(dt){
       if(aiK){spawnUnit(aiK,false);G.aiLastKey=aiK;}
       G.aiNextMs=nextAiInterval();
     }
+    updateBossEncounter(dt);
   }
   G.sunAngle=(G.sunAngle||0.47)+dt*0.006;
 
@@ -1656,6 +1837,10 @@ function tick(dt){
     if(!u.ud.cannon)u.y=G.GY;
     if(u.flash>0)u.flash-=dt;
     if(u.atkPhase>0)u.atkPhase=Math.max(0,u.atkPhase-dt*4);
+    if(u.bossRallied>0)u.bossRallied=Math.max(0,u.bossRallied-dt);
+    if(u.moonAura>0)u.moonAura=Math.max(0,u.moonAura-dt);
+    if(u.bossCharge>0)u.bossCharge=Math.max(0,u.bossCharge-dt);
+    if(u.bossTea>0){u.bossTea=Math.max(0,u.bossTea-dt);u.vx=0;continue;}
     // Zamrożenie - odliczaj i pomiń ruch
     if(u.frozen&&u.frozen>0){
       u.frozen-=dt;
@@ -2196,7 +2381,21 @@ function doMarch(u,dt){
     approachVx(u,(dx>0?1:-1)*uSpd(u),dt,200);u.x+=u.vx*dt;return;
   }
   var tc=u.isP?G.e:G.p,castleEdge=u.isP?tc.x:tc.x+tc.w;
-  if(Math.abs(u.x-castleEdge)<=range+6){strikeAndDie(u);return;}
+  if(Math.abs(u.x-castleEdge)<=range+6){
+    if(u.ud.boss){
+      u.vx=0;
+      if(u.acd<=0){
+        var bossCastleDmg=uAtkCastle(u)*(1.0+Math.random()*.22);
+        if(u.ud.bossKind==="demon"){
+          var bsx=u.x,bsy=u.y-28,btx=tc.x+tc.w*.5,bty=G.GY-tc.h*.42,bang=Math.atan2(bty-bsy,btx-bsx),bspd=290*combatScale();
+          G.projs.push({x:bsx,y:bsy,vx:Math.cos(bang)*bspd,vy:Math.sin(bang)*bspd,atk:uAtk(u)*.55,atkC:bossCastleDmg,isP:u.isP,life:1.7,spl:14,grav:0,type:"demonfire",trail:[]});
+        }else castleDmg(tc,bossCastleDmg,u.x,G.GY-tc.h*.35);
+        u.acd=1.35;u.atkPhase=1;
+      }
+      return;
+    }
+    strikeAndDie(u);return;
+  }
   var cdx=(tc.x+tc.w*0.5)-u.x;
   approachVx(u,(cdx>0?1:-1)*uSpd(u),dt,200);u.x+=u.vx*dt;
 }
@@ -2208,6 +2407,7 @@ function doFight(u,dt){
   u.acd-=dt;
   if(u.acd<=0){
     var baseAcd=u.ud.r>40?1.8:(1.5-(u.ud.tier||0)*0.15);
+    if(u.ud.boss)baseAcd=u.ud.bossKind==="demon"?1.72:1.02;
     if(u.key==="archer"&&u.archerAura)baseAcd*=.9;
     u.acd=Math.max(0.6,baseAcd)+Math.random()*0.4;u.atkPhase=1;
     if(!u.tgt||u.tgt.state==="dead"){u.tgt=null;u.state="march";return;}
@@ -2219,7 +2419,20 @@ function doFight(u,dt){
       var ang=Math.atan2(ty-sy,tx-sx);
       var forward=u.isP?1:-1;
       if((tx-sx)*forward<-5){u.tgt=null;u.state="march";return;}
-      if(u.ud.thrower){
+      if(u.ud.bossKind==="demon"){
+        /* Król Demonów nie strzela mocniej bez końca — w kolejnych fazach
+           dzieli ten sam czytelny atak na 1/2/3 rozchodzące się kule. */
+        var shots=Math.max(1,Math.min(3,u.bossPhase||1));
+        for(var ds=0;ds<shots;ds++){
+          var spread=(ds-(shots-1)/2)*.065;
+          var da=ang+spread,spd=285*combatScale();
+          G.projs.push({
+            x:sx,y:sy-5,vx:Math.cos(da)*spd,vy:Math.sin(da)*spd,
+            atk:uAtk(u)*.68*matchMul,atkC:uAtkCastle(u)*1.2,
+            isP:false,life:1.75,spl:12+(u.bossPhase||1)*2,grav:0,type:"demonfire",trail:[],counterMul:matchMul
+          });
+        }
+      }else if(u.ud.thrower){
         /* Oszczep startuje z wyprostowanej dłoni, a nie ze środka postaci.
            Dzięki temu widać dokładnie moment wypuszczenia i cały lot. */
         var launchX=sx+forward*11*combatScale(),launchY=sy-5*combatScale();
@@ -2267,6 +2480,17 @@ function doFight(u,dt){
       counterImpactFx(tgt,matchMul);
       if(tgt.state!=="dead")addFlt(tgt.x,tgt.y-15,"-"+Math.round(aDmg),u.isP?"#88aaff":"#ffaa44");
       spawnSparks((u.x+tgt.x)/2,u.y-18);
+      if(u.ud.bossKind==="moon"&&(u.bossPhase||1)>=2){
+        /* Szeroki zamach jest groźny dla zwartego tłumu, ale zadaje tylko
+           część obrażeń celu głównego. */
+        for(var cle=0;cle<G.units.length;cle++){
+          var cu=G.units[cle];
+          if(!cu||cu===tgt||!cu.isP||cu.state==="dead"||cu.ud.worker||cu.ud.mason||cu.ud.cannon)continue;
+          if(Math.abs(cu.x-tgt.x)<42*combatScale()){
+            var splash=aDmg*.30;dmgUnit(cu,splash);addFlt(cu.x,cu.y-16,"-"+Math.round(splash),"#d56a78");
+          }
+        }
+      }
       if(u.isP) SFX.sword();
       if(cDmg>0&&u.state!=="dead"){
         dmgUnit(u,cDmg);
@@ -2729,6 +2953,57 @@ function drawAbilityAtmosphere(){
     }
     CT.restore();
   }
+}
+
+function drawBossWorldFx(){
+  if(!G||!G.boss)return;
+  var bs=G.boss,u=bs.unit;
+  /* Portale są widoczne przez 1,45 s przed przywołaniem. */
+  if(G.bossPortals)for(var i=0;i<G.bossPortals.length;i++){
+    var p=G.bossPortals[i],prog=1-p.life/p.max,pulse=.72+.28*Math.sin(G.T*12);
+    CT.save();CT.translate(p.x,p.y);CT.scale(1,.30);
+    CT.globalAlpha=.22+.50*prog;CT.fillStyle=p.mistake?"#f0e7c9":"#8024a8";CT.beginPath();CT.arc(0,0,(15+prog*23)*combatScale(),0,Math.PI*2);CT.fill();
+    CT.globalAlpha=.8*pulse;CT.strokeStyle=p.mistake?"#e3c45b":"#df70ff";CT.lineWidth=2.4;CT.setLineDash([6,5]);CT.rotate(G.T*1.8);CT.beginPath();CT.arc(0,0,(21+prog*18)*combatScale(),0,Math.PI*2);CT.stroke();CT.setLineDash([]);CT.restore();
+    /* Pionowa obręcz zapobiega zlewaniu się portalu z linią ziemi na telefonie. */
+    CT.save();CT.globalAlpha=.34+.34*prog;CT.strokeStyle=p.mistake?"#ffe39a":"#d866ff";CT.lineWidth=2.2;
+    CT.beginPath();CT.ellipse(p.x,p.y-(22+prog*8)*combatScale(),(15+prog*8)*combatScale(),(25+prog*13)*combatScale(),Math.sin(G.T*2.2)*.08,0,Math.PI*2);CT.stroke();
+    CT.globalAlpha=.10+.16*prog;CT.fillStyle=p.mistake?"#fff2c1":"#b53ed4";CT.beginPath();CT.ellipse(p.x,p.y-(22+prog*8)*combatScale(),(12+prog*7)*combatScale(),(22+prog*12)*combatScale(),0,0,Math.PI*2);CT.fill();CT.restore();
+    if(p.mistake){
+      /* Białe formularze krążą wokół portalu, zanim pojawi się niewłaściwy petent. */
+      CT.save();CT.fillStyle="#eee8d3";CT.strokeStyle="#80735c";CT.lineWidth=.6;
+      for(var q=0;q<4;q++){var a=G.T*2+q*Math.PI/2,px=p.x+Math.cos(a)*28,py=p.y-12-Math.sin(a)*12;CT.save();CT.translate(px,py);CT.rotate(a*.4);CT.fillRect(-4,-6,8,12);CT.strokeRect(-4,-6,8,12);CT.restore();}CT.restore();
+    }
+  }
+  if(!u||u.state==="dead")return;
+  if(bs.cast){
+    var cp=1-bs.cast.t/bs.cast.max,rr=(36+cp*58)*combatScale();
+    CT.save();CT.globalAlpha=.28+.35*cp;CT.strokeStyle=bs.cast.type==="charge"?"#ffb34d":"#ff4d68";CT.lineWidth=2.2;CT.setLineDash([7,6]);
+    CT.beginPath();CT.arc(u.x,u.y-19,rr,0,Math.PI*2);CT.stroke();CT.setLineDash([]);
+    if(bs.cast.type==="charge"){
+      var d=u.isP?1:-1;CT.globalAlpha=.24+.28*cp;CT.fillStyle="#ff773c";CT.beginPath();CT.moveTo(u.x,u.y-9);CT.lineTo(u.x+d*145*combatScale(),u.y-3);CT.lineTo(u.x,u.y+2);CT.closePath();CT.fill();
+    }
+    CT.restore();
+  }
+  if(u.bossBlink){
+    var bp=1-u.bossBlink.t/u.bossBlink.max;
+    CT.save();CT.globalAlpha=.28+.45*bp;CT.strokeStyle="#d86cff";CT.lineWidth=2;CT.setLineDash([4,5]);
+    CT.beginPath();CT.ellipse(u.x,u.y-20,20+bp*11,30+bp*9,0,0,Math.PI*2);CT.stroke();CT.beginPath();CT.ellipse(u.bossBlink.toX,u.y-20,18+bp*9,27+bp*8,0,0,Math.PI*2);CT.stroke();CT.setLineDash([]);CT.restore();
+  }
+  if(G.bossBlinkFx){
+    var fx=G.bossBlinkFx,fa=Math.max(0,fx.life/fx.max);
+    CT.save();CT.globalAlpha=fa*.45;CT.fillStyle="#a83edd";CT.beginPath();CT.arc(fx.fromX,fx.y,34*(1-fa)+10,0,Math.PI*2);CT.fill();CT.beginPath();CT.arc(fx.toX,fx.y,34*(1-fa)+10,0,Math.PI*2);CT.fill();CT.restore();
+  }
+}
+
+function drawBossHUD(){
+  if(!G||!G.boss||!G.boss.spawned||G.boss.defeated||!G.boss.unit||G.boss.unit.state==="dead")return;
+  var u=G.boss.unit,pct=Math.max(0,u.hp/u.max),bw=Math.min(360,W*.44),bh=11,bx=W*.5-bw*.5,by=Math.max(58,Math.min(72,H*.13));
+  CT.save();CT.textAlign="center";CT.textBaseline="bottom";CT.font="bold "+Math.max(9,Math.min(12,Math.round(H*.018)))+"px Arial";
+  CT.strokeStyle="rgba(0,0,0,.95)";CT.lineWidth=3;var label=tr("boss."+G.boss.key)+" · "+tr("boss.phase",{phase:u.bossPhase||1});CT.strokeText(label,W*.5,by-5);CT.fillStyle="#ffe1a0";CT.fillText(label,W*.5,by-5);
+  CT.fillStyle="rgba(5,3,8,.82)";CT.fillRect(bx-2,by-2,bw+4,bh+4);CT.strokeStyle="#d2aa42";CT.lineWidth=1.2;CT.strokeRect(bx-2,by-2,bw+4,bh+4);
+  var gr=CT.createLinearGradient(bx,0,bx+bw,0);gr.addColorStop(0,u.ud.bossKind==="moon"?"#8e182d":"#6b1f82");gr.addColorStop(1,u.ud.bossKind==="moon"?"#ff4d5b":"#dc5cff");CT.fillStyle=gr;CT.fillRect(bx,by,bw*pct,bh);
+  CT.fillStyle="rgba(255,255,255,.23)";CT.fillRect(bx,by,bw*pct,bh*.36);
+  CT.strokeStyle="rgba(255,235,180,.45)";CT.lineWidth=1;CT.beginPath();CT.moveTo(bx+bw/3,by);CT.lineTo(bx+bw/3,by+bh);CT.moveTo(bx+bw*2/3,by);CT.lineTo(bx+bw*2/3,by+bh);CT.stroke();CT.restore();
 }
 
 function drawRockDeposit(r){
@@ -3506,6 +3781,7 @@ function render(){
   for(var i=0;i<G.sparks.length;i++){var sp=G.sparks[i];var sa=sp.life/0.65;if(sa<0.01)continue;CT.globalAlpha=sa;CT.fillStyle=sp.col;CT.beginPath();CT.arc(sp.x,sp.y,2,0,Math.PI*2);CT.fill();}
   CT.globalAlpha=1;
   drawAbilityAtmosphere();
+  drawBossWorldFx();
   // Units
   var unitSz = getUnitDrawSize(); // identyczna logika skali na telefonie i monitorze
   var su=G.units.slice(0);su.sort(function(a,b){return a.y-b.y;});
@@ -3545,6 +3821,8 @@ function render(){
       CT.globalAlpha=(bl.life/0.4)*0.15;
       CT.fillStyle="#88ffaa";CT.beginPath();CT.arc(bl.x,bl.y,bl.r,0,Math.PI*2);CT.fill();
       CT.restore();
+    } else if(bl.bossAura){
+      CT.save();CT.globalAlpha=(bl.life/(bl.duration||.65))*.34;CT.strokeStyle="#ff4260";CT.lineWidth=3;CT.beginPath();CT.arc(bl.x,bl.y,bl.r,0,Math.PI*2);CT.stroke();CT.restore();
     } else {
       CT.save();CT.globalAlpha=(bl.life/0.55)*0.7;
       CT.fillStyle="#ff9910";CT.beginPath();CT.arc(bl.x,bl.y,bl.r,0,Math.PI*2);CT.fill();CT.restore();
@@ -3591,6 +3869,7 @@ function render(){
   CT.fillStyle = vigGr;
   CT.fillRect(0, 0, W, H);
   CT.restore();
+  drawBossHUD();
 }
 
 function drawTree(t){
@@ -6495,6 +6774,63 @@ function drawRider(px, rideY, dir, f, step, atk){
   CT.beginPath();CT.arc(sx + dir*2.8*rf, sy + 0.5*rf, 1*rf, 0, Math.PI*2);CT.fill();
 }
 
+/* Bossowie mają własne, większe sylwetki. Celowo nie używają zwykłej figury
+   piechura, żeby gracz rozpoznawał ich także na małym ekranie. */
+function drawBossUnit(u,unitSz){
+  var dir=(u.state==="fight"&&u.tgt)?(u.tgt.x>u.x?1:-1):(Math.abs(u.vx)>1?(u.vx>0?1:-1):(u.isP?1:-1));
+  var f=unitSz/22*1.28,phase=u.bossPhase||1,atk=Math.sin(Math.max(0,Math.min(1,u.atkPhase||0))*Math.PI);
+  var dead=u.state==="dead",alpha=dead?Math.max(0,u.dT/.55):1;
+  CT.save();CT.globalAlpha=alpha;CT.translate(u.x,u.y);if(dead)CT.rotate(u.fallRot||0);CT.scale(dir,1);
+  CT.fillStyle="rgba(0,0,0,.42)";CT.beginPath();CT.ellipse(0,2,22*f,4*f,0,0,Math.PI*2);CT.fill();
+  /* Puls fazy: purpura/czerwień staje się wyraźniejsza, nie większa. */
+  CT.save();CT.globalAlpha=.11+phase*.035+.035*Math.sin(G.T*5);CT.fillStyle=u.ud.bossKind==="moon"?"#ff344f":"#b84cff";
+  CT.beginPath();CT.ellipse(0,-22*f,25*f,30*f,0,0,Math.PI*2);CT.fill();CT.restore();
+  if(u.ud.bossKind==="moon"){
+    /* Płaszcz i wysokie buty */
+    CT.fillStyle="#220711";CT.strokeStyle="#070308";CT.lineWidth=1.2*f;
+    CT.beginPath();CT.moveTo(-9*f,-31*f);CT.quadraticCurveTo(-20*f,-18*f,-14*f,0);CT.lineTo(10*f,0);CT.quadraticCurveTo(17*f,-18*f,9*f,-31*f);CT.closePath();CT.fill();CT.stroke();
+    CT.strokeStyle="#151016";CT.lineWidth=5*f;CT.beginPath();CT.moveTo(-5*f,-12*f);CT.lineTo(-7*f,0);CT.moveTo(5*f,-12*f);CT.lineTo(7*f,0);CT.stroke();
+    CT.fillStyle="#6e1428";CT.strokeStyle="#2a0710";CT.beginPath();CT.moveTo(-10*f,-34*f);CT.lineTo(10*f,-34*f);CT.lineTo(8*f,-12*f);CT.lineTo(-8*f,-12*f);CT.closePath();CT.fill();CT.stroke();
+    CT.fillStyle="#c22e45";CT.fillRect(-2*f,-33*f,4*f,20*f);CT.fillStyle="#e2b64d";CT.beginPath();CT.arc(0,-22*f,3*f,0,Math.PI*2);CT.fill();
+    /* Naramienniki z półksiężycami */
+    CT.fillStyle="#93243a";for(var sh=-1;sh<=1;sh+=2){CT.beginPath();CT.arc(sh*11*f,-31*f,6*f,Math.PI,Math.PI*2);CT.fill();CT.stroke();}
+    CT.fillStyle="#d8aa78";CT.beginPath();CT.ellipse(0,-41*f,6*f,7*f,0,0,Math.PI*2);CT.fill();CT.strokeStyle="#2b0610";CT.stroke();
+    CT.fillStyle="#2b0812";CT.beginPath();CT.arc(0,-43*f,7*f,Math.PI,Math.PI*2);CT.fill();
+    /* Korona z przesadnie długimi zębami */
+    CT.fillStyle="#e0b83f";CT.strokeStyle="#5e3b08";CT.lineWidth=.8*f;CT.beginPath();CT.moveTo(-7*f,-48*f);CT.lineTo(-6*f,-57*f);CT.lineTo(-2*f,-51*f);CT.lineTo(0,-60*f);CT.lineTo(3*f,-51*f);CT.lineTo(7*f,-57*f);CT.lineTo(7*f,-47*f);CT.closePath();CT.fill();CT.stroke();
+    CT.fillStyle="#14050a";CT.beginPath();CT.arc(-2*f,-42*f,.8*f,0,Math.PI*2);CT.arc(3*f,-42*f,.8*f,0,Math.PI*2);CT.fill();
+    /* Glewia: w fazie szarży świeci i wychyla się do celu. */
+    CT.save();CT.translate(8*f,-27*f);CT.rotate(-.62-atk*.72);CT.strokeStyle="#6f3f1c";CT.lineWidth=2.6*f;CT.beginPath();CT.moveTo(-2*f,10*f);CT.lineTo(23*f,-20*f);CT.stroke();
+    CT.fillStyle=u.bossCharge>0?"#ff6670":"#d9dde2";CT.strokeStyle="#4b1d27";CT.beginPath();CT.moveTo(23*f,-20*f);CT.lineTo(31*f,-28*f);CT.lineTo(28*f,-17*f);CT.lineTo(20*f,-13*f);CT.closePath();CT.fill();CT.stroke();CT.restore();
+    if(u.bossTea>0){
+      /* Bez napisu: filiżanka, spodek i trzy zupełnie poważne obłoczki pary. */
+      CT.fillStyle="#eee5d1";CT.strokeStyle="#6f563e";CT.lineWidth=.8*f;CT.fillRect(-7*f,-72*f,13*f,7*f);CT.strokeRect(-7*f,-72*f,13*f,7*f);
+      CT.beginPath();CT.arc(7*f,-69*f,4*f,-1.2,1.2);CT.stroke();CT.fillStyle="#d3aa45";CT.fillRect(-10*f,-64*f,19*f,1.5*f);
+      CT.strokeStyle="rgba(255,255,255,.72)";CT.lineWidth=1.2*f;for(var st=0;st<3;st++){CT.beginPath();CT.moveTo((-4+st*4)*f,-73*f);CT.quadraticCurveTo((-7+st*4)*f,-79*f,(-3+st*4)*f,-83*f);CT.stroke();}
+    }
+  }else{
+    /* Skrzydła są szerokie, lecz nie zasłaniają sąsiednich jednostek. */
+    var flap=Math.sin(G.T*3.2)*2*f;
+    CT.fillStyle="#34103f";CT.strokeStyle="#14051b";CT.lineWidth=1.2*f;
+    CT.beginPath();CT.moveTo(-7*f,-33*f);CT.quadraticCurveTo(-25*f,-48*f,-29*f,-27*f+flap);CT.lineTo(-18*f,-31*f);CT.lineTo(-22*f,-16*f);CT.lineTo(-7*f,-24*f);CT.closePath();CT.fill();CT.stroke();
+    CT.beginPath();CT.moveTo(7*f,-33*f);CT.quadraticCurveTo(25*f,-48*f,29*f,-27*f-flap);CT.lineTo(18*f,-31*f);CT.lineTo(22*f,-16*f);CT.lineTo(7*f,-24*f);CT.closePath();CT.fill();CT.stroke();
+    CT.strokeStyle="#281027";CT.lineWidth=5*f;CT.beginPath();CT.moveTo(-5*f,-12*f);CT.lineTo(-8*f,0);CT.moveTo(5*f,-12*f);CT.lineTo(8*f,0);CT.stroke();
+    CT.fillStyle="#611a59";CT.strokeStyle="#200720";CT.beginPath();CT.moveTo(-9*f,-35*f);CT.quadraticCurveTo(0,-41*f,9*f,-35*f);CT.lineTo(8*f,-11*f);CT.lineTo(-8*f,-11*f);CT.closePath();CT.fill();CT.stroke();
+    CT.fillStyle="#ad377f";CT.beginPath();CT.moveTo(-3*f,-34*f);CT.lineTo(3*f,-34*f);CT.lineTo(2*f,-14*f);CT.lineTo(-2*f,-14*f);CT.closePath();CT.fill();
+    CT.fillStyle="#b95a62";CT.beginPath();CT.ellipse(0,-43*f,6.5*f,7*f,0,0,Math.PI*2);CT.fill();CT.stroke();
+    /* Rogi i mała korona oparta zdecydowanie zbyt wysoko. */
+    CT.fillStyle="#2a1328";CT.beginPath();CT.moveTo(-5*f,-48*f);CT.quadraticCurveTo(-15*f,-59*f,-7*f,-62*f);CT.lineTo(-1*f,-49*f);CT.closePath();CT.fill();
+    CT.beginPath();CT.moveTo(5*f,-48*f);CT.quadraticCurveTo(15*f,-59*f,7*f,-62*f);CT.lineTo(1*f,-49*f);CT.closePath();CT.fill();
+    CT.fillStyle="#e1b73f";CT.beginPath();CT.moveTo(-5*f,-52*f);CT.lineTo(-4*f,-59*f);CT.lineTo(0,-54*f);CT.lineTo(4*f,-60*f);CT.lineTo(6*f,-51*f);CT.closePath();CT.fill();
+    CT.fillStyle="#12040f";CT.beginPath();CT.arc(-2*f,-43*f,.9*f,0,Math.PI*2);CT.arc(3*f,-43*f,.9*f,0,Math.PI*2);CT.fill();
+    /* Kula ognia w dłoni informuje o gotowym ataku dystansowym. */
+    var ox=14*f,oy=-27*f,orb=4.5*f+Math.sin(G.T*8)*.7*f;
+    CT.globalAlpha=.35;CT.fillStyle="#d253ff";CT.beginPath();CT.arc(ox,oy,orb*2.4,0,Math.PI*2);CT.fill();CT.globalAlpha=alpha;
+    CT.fillStyle="#ff743d";CT.beginPath();CT.arc(ox,oy,orb,0,Math.PI*2);CT.fill();CT.fillStyle="#fff3ad";CT.beginPath();CT.arc(ox-f,oy-f,orb*.38,0,Math.PI*2);CT.fill();
+  }
+  CT.restore();
+}
+
 /* ── Unit drawing ── */
 function drawUnit(u, unitSz){
   if(!u||isNaN(u.x)||isNaN(u.y))return;
@@ -6511,6 +6847,7 @@ function drawUnit(u, unitSz){
     CT.fillText(u.key || "?", u.x, u.y - 38);
     CT.restore();
   }
+  if(u.ud.boss){drawBossUnit(u,unitSz);return;}
   if(u.ud.cannon){drawCannonUnit(u);return;}
   var dir;
   if((u.ud.worker&&u.state==="return")||(u.ud.mason&&u.state==="stoneReturn"))dir=u.isP?-1:1;
@@ -6535,6 +6872,10 @@ function drawUnit(u, unitSz){
     CT.setLineDash([4,6]);CT.beginPath();CT.ellipse(u.x,u.y-2,25*combatScale(),6,0,0,Math.PI*2);CT.stroke();CT.setLineDash([]);
     CT.fillStyle=u.isP?"rgba(80,145,255,.18)":"rgba(255,90,70,.16)";
     CT.beginPath();CT.ellipse(u.x,u.y-2,20*combatScale(),4.5,0,0,Math.PI*2);CT.fill();CT.restore();
+  }
+  if((u.bossRallied&&u.bossRallied>0)||(u.moonAura&&u.moonAura>0)){
+    CT.save();CT.globalAlpha=(u.bossRallied>0?.20:.10)+.035*Math.sin(G.T*7+(u.x||0));
+    CT.fillStyle="#ff3f55";CT.beginPath();CT.ellipse(u.x,u.y-15,15*combatScale(),24*combatScale(),0,0,Math.PI*2);CT.fill();CT.restore();
   }
   // Efekt zamrożenia - niebieski odcień
   if(u.frozen&&u.frozen>0){
@@ -7622,6 +7963,18 @@ function drawProj(p){
       CT.fillStyle="rgba(255,200,255,.7)";
       CT.beginPath();CT.arc(spX, spY, 1.2, 0, Math.PI*2);CT.fill();
     }
+  }else if(p.type==="demonfire"){
+    var dAng=Math.atan2(p.vy,p.vx),dPulse=1+Math.sin(G.T*20+p.x*.03)*.16;
+    if(p.trail&&p.trail.length){
+      for(var di=0;di<p.trail.length;di++){
+        var dtp=di/p.trail.length;CT.globalAlpha=dtp*.34;CT.fillStyle=di%2?"#9a38c4":"#f05a38";
+        CT.beginPath();CT.arc(p.trail[di].x,p.trail[di].y,2+dtp*4,0,Math.PI*2);CT.fill();
+      }
+    }
+    CT.globalAlpha=.28;CT.fillStyle="#d455ff";CT.beginPath();CT.arc(p.x,p.y,13*dPulse,0,Math.PI*2);CT.fill();CT.globalAlpha=1;
+    var dg=CT.createRadialGradient(p.x-2,p.y-2,1,p.x,p.y,7*dPulse);dg.addColorStop(0,"#fff2a3");dg.addColorStop(.35,"#ff7b35");dg.addColorStop(1,"#7c1d8f");
+    CT.fillStyle=dg;CT.beginPath();CT.arc(p.x,p.y,7*dPulse,0,Math.PI*2);CT.fill();
+    CT.strokeStyle="rgba(255,220,120,.6)";CT.lineWidth=1.2;CT.beginPath();CT.moveTo(p.x-Math.cos(dAng)*12,p.y-Math.sin(dAng)*12);CT.lineTo(p.x,p.y);CT.stroke();
   }else if(p.type==="cannon"){
     /* Cień na ziemi prowadzi wzrok i pokazuje poziomy ruch nawet przy wysokim łuku. */
     var cannonAlt=Math.max(0,G.GY-p.y);

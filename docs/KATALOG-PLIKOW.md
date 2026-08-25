@@ -21,6 +21,7 @@ castle-calamity/
 └── docs/
     ├── ARCHITEKTURA-EPOK.md
     ├── AUDYT-V4.4.md
+    ├── ETAP-BOSSOW-V4.5.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -39,6 +40,7 @@ castle-calamity/
 | `README.md` | Instrukcja uruchomienia i publikacji | Przy zmianie sposobu wdrażania |
 | `docs/PLAN-DZIALANIA.md` | Kolejność dalszego rozwoju i kryteria odbioru | Po każdej większej decyzji projektowej |
 | `docs/AUDYT-V4.4.md` | Stan techniczny, wykryte problemy, poprawki i ryzyka po audycie v4.4 | Po większym audycie lub przed publikacją |
+| `docs/ETAP-BOSSOW-V4.5.md` | Fazy, ataki, balans i testy dwóch końcowych bossów | Przy zmianie zachowań poziomów 10 i 12 |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
@@ -54,6 +56,7 @@ castle-calamity/
 - Nowy żart bieżący: najpierw dodaj zatwierdzony wpis do `topicalGags`, wraz z datą wygaśnięcia i notatką o źródle, a potem dołącz jego prostą animację w `index.html`.
 - Kamieniarz, kamieniołomy, automatyczne dostawy i trzy etapy graficznej rozbudowy zamku są częścią wspólnego silnika w `index.html`; jednostka jest dostępna dopiero od poziomu 7.
 - System rozbudowy celowo nie ma osobnej waluty ani dodatkowego panelu. Koszt jest płacony w złocie przy zakupie Kamieniarza, a postęp widać bezpośrednio przy zamku.
+- Bossowie są częścią wspólnego silnika w `index.html`; zwykłe jednostki nie mogą ich kupić ani wylosować w kolejce AI.
 
 ## Ważne przy publikacji
 

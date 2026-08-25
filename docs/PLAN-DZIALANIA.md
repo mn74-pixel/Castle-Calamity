@@ -59,6 +59,20 @@ Status: **wdrożony i sprawdzony automatycznie**
 - relacje kontr opisano w podpowiedziach kart, bez dodawania kolejnego panelu podczas bitwy,
 - pełny raport znajduje się w `AUDYT-V4.4.md`.
 
+## Etap bossów v4.5
+
+Status: **wdrożony i sprawdzony automatycznie**
+
+- poziomy 10 i 12 mają prawdziwych bossów poruszających się i walczących na polu bitwy,
+- każdy boss ma trzy fazy zależne od własnego HP oraz osobny pasek stanu,
+- Władca Krwawej Łuny wzmacnia pobliskich sojuszników, wydaje rozkaz i wykonuje zapowiadaną szarżę,
+- w trzeciej fazie Władca robi jedną krótką przerwę na herbatę, która daje graczowi oddech,
+- Król Demonów strzela jedną, dwiema lub trzema kulami zależnie od fazy,
+- portale Króla są widoczne przed przywołaniem i utrzymują najwyżej dwóch dodatkowych sług,
+- od drugiej fazy Król może zapowiedzieć i wykonać krótki teleport w stronę własnego zamku,
+- każdy boss daje jednorazową nagrodę; nie znika po dotarciu do zamku gracza,
+- szczegóły i zakres testów znajdują się w `ETAP-BOSSOW-V4.5.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -70,7 +84,7 @@ Status: **wdrożony i sprawdzony automatycznie**
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v4.4 gotowa do testu gracza**
+Status: **wersja v4.5 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg czarownika ustawiony na 180,
@@ -104,7 +118,7 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - wdrożono lekką rozbudowę zamku przez Kamieniarzy od poziomu 7, bez osobnej waluty,
 - wdrożono czytelne, umiarkowane kontry jednostek,
 - wdrożono profile AI: defensywny, agresywny, oblężniczy i chaotyczny,
-- unikalne zachowania bossów,
+- wdrożono unikalne zachowania bossów poziomów 10 i 12,
 - korekta ekonomii złota oraz kosztów,
 - mierzenie skuteczności jednostek po każdej bitwie.
 
@@ -134,6 +148,6 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 
 Potrzebne są trzy decyzje:
 
-1. Czy nowe intro jest zabawne i wystarczająco krótkie przy kolejnym uruchomieniu?
-2. Czy kontry są odczuwalne, ale żadna z nich nie rozstrzyga bitwy automatycznie?
-3. Czy poziomy defensywne, agresywne i oblężnicze rzeczywiście grają inaczej bez frustrowania gracza?
+1. Czy boss poziomu 10 jest wymagający, ale szarża nie staje się frustrująca?
+2. Czy portale i teleport poziomu 12 są wystarczająco czytelne na prawdziwym telefonie?
+3. Czy nagrody 150 i 250 złota pomagają po walce, ale nie upraszczają zbyt mocno końcówki poziomu?
