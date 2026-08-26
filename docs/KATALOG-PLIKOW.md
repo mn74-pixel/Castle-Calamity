@@ -13,7 +13,9 @@ castle-calamity/
 │       ├── icon-192.png
 │       ├── icon-512.png
 │       ├── icon-maskable-192.png
-│       └── icon-maskable-512.png
+│       ├── icon-maskable-512.png
+│       ├── icon-master.svg
+│       └── render-icons.js
 ├── content/
 │   ├── eras.js
 │   ├── gags.js
@@ -23,6 +25,9 @@ castle-calamity/
     ├── AUDYT-V4.4.md
     ├── ETAP-BOSSOW-V4.5.md
     ├── GRAFIKA-PREMIUM-V4.6.md
+    ├── ZNISZCZENIA-I-POCISKI-V4.7.md
+    ├── AUDIO-I-KAMPANIA-V4.8.md
+    ├── WYDANIE-PWA-V4.9.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -38,11 +43,16 @@ castle-calamity/
 | `manifest.json` | Nazwa PWA, tryb pełnoekranowy, orientacja i ścieżki ikon | Przy zmianie nazwy lub ikon |
 | `sw.js` | Pliki działające offline i numer pamięci podręcznej | Przy każdej opublikowanej wersji |
 | `assets/icons/` | Ikony aplikacji na telefon i komputer | Przy nowej identyfikacji wizualnej |
+| `assets/icons/icon-master.svg` | Wektorowe źródło wszystkich czterech ikon PWA | Przy zmianie kompozycji ikony |
+| `assets/icons/render-icons.js` | Generator wariantów 192/512 oraz maskowalnych | Po zmianie pliku źródłowego SVG |
 | `README.md` | Instrukcja uruchomienia i publikacji | Przy zmianie sposobu wdrażania |
 | `docs/PLAN-DZIALANIA.md` | Kolejność dalszego rozwoju i kryteria odbioru | Po każdej większej decyzji projektowej |
 | `docs/AUDYT-V4.4.md` | Stan techniczny, wykryte problemy, poprawki i ryzyka po audycie v4.4 | Po większym audycie lub przed publikacją |
 | `docs/ETAP-BOSSOW-V4.5.md` | Fazy, ataki, balans i testy dwóch końcowych bossów | Przy zmianie zachowań poziomów 10 i 12 |
 | `docs/GRAFIKA-PREMIUM-V4.6.md` | Animacje jednostek premium, warstwy tła i efekty umiejętności | Przy zmianie grafiki walki albo efektów czarów |
+| `docs/ZNISZCZENIA-I-POCISKI-V4.7.md` | Progi zniszczeń, odrębne efekty trafień i testy ikon PWA | Przy zmianie wyglądu zamków, pocisków lub ikony |
+| `docs/AUDIO-I-KAMPANIA-V4.8.md` | Rodziny dźwięków, ustawienia audio, mapa kampanii i trwałe ulepszenia | Przy zmianie dźwięków, nagród lub postępu kampanii |
+| `docs/WYDANIE-PWA-V4.9.md` | Odporność offline, automatyczny budżet grafiki oraz testy wydania | Przy zmianie service workera albo optymalizacji urządzeń |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany

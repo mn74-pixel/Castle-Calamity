@@ -89,6 +89,48 @@ Status: **wdrożona i sprawdzona automatycznie oraz na renderach referencyjnych*
 - zasięgi, obrażenia, czasy działania i skalowanie z v4.5 pozostały bez zmian,
 - szczegóły i zakres testów znajdują się w `GRAFIKA-PREMIUM-V4.6.md`.
 
+## Zniszczenia, pociski i ikony v4.7
+
+Status: **wdrożone i sprawdzone automatycznie oraz na renderach referencyjnych**
+
+- cofnięto nieudaną oprawę Deszczu Strzał z v4.6 do czytelniejszej wersji v4.5,
+- zamki przechodzą przez trzy widoczne progi uszkodzeń przed końcowym zawaleniem,
+- trafienie zamku ma miejscowy błysk, a przekroczenie progu wywołuje krótki wstrząs konstrukcji,
+- magia, demoniczny ogień, bełt, oszczep i kula armatnia mają odrębne efekty lotu oraz uderzenia,
+- nowa ikona PWA przedstawia zamek, miecz, pióro i dyskretnie absurdalnego koronowanego kaczego herolda,
+- wszystkie cztery pliki ikon są generowane z jednego źródła SVG,
+- nie zmieniono obrażeń, zasięgów, kosztów, czasu umiejętności ani częstotliwości humoru,
+- szczegóły i testy znajdują się w `ZNISZCZENIA-I-POCISKI-V4.7.md`.
+
+## Audio i kampania v4.8
+
+Status: **wdrożone i sprawdzone automatycznie**
+
+- łuk, kusza, oszczep, armata i trzy umiejętności mają odrębne krótkie sygnały,
+- powtarzalne odgłosy są ograniczone czasowo, aby duże starcie nie tworzyło hałasu,
+- bossowie mają różne motywy wejścia i kolejnych faz,
+- ustawienia głośności, motywów oraz wyciszenia są zapisywane,
+- techniczny rząd przycisków zastąpiła graficzna mapa 12 bitew,
+- mapa rozróżnia poziomy ukończone, bieżące, zablokowane i bossowskie,
+- pierwsze zwycięstwo daje trzy pieczęcie; powtórka nie nalicza nagrody ponownie,
+- ukończenia, najlepsze czasy, pieczęcie i wybrane ulepszenia są trwałe,
+- istniejący postęp gracza jest automatycznie migrowany,
+- szczegóły i testy znajdują się w `AUDIO-I-KAMPANIA-V4.8.md`.
+
+## Wydanie PWA i optymalizacja v4.9
+
+Status: **wdrożone i sprawdzone automatycznie; pozostaje próba na fizycznym iPhonie i Androidzie**
+
+- Service Worker rozróżnia nawigację od skryptów i obrazów, dzięki czemu nie zwraca dokumentu HTML w miejscu brakującego pliku,
+- komplet dziesięciu zasobów startowych jest zapisywany przy instalacji i uruchamia grę bez internetu,
+- powtarzające się sygnały zmiany rozmiaru nie zerują ponownie tego samego bufora Canvas,
+- urządzenie o małej pamięci lub liczbie rdzeni startuje w trybie oszczędnym, a inne przełącza się dopiero po trwałym spadku płynności,
+- tryb oszczędny ogranicza DPR do 1,25, renderuje w budżecie około 30 kl./s i redukuje wyłącznie dekoracyjne cząstki,
+- schowanie karty zatrzymuje pętlę obrazu i audio; po powrocie bitwa nie nadrabia czasu spędzonego w tle,
+- odgłosy szumu korzystają ze współdzielonego AudioBuffer zamiast tworzyć nową tablicę próbek przy każdym trafieniu,
+- balans, liczba jednostek, audio, kampania i wygląd na mocniejszym sprzęcie pozostają bez zmian,
+- szczegóły i zakres testów znajdują się w `WYDANIE-PWA-V4.9.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -100,7 +142,7 @@ Status: **wdrożona i sprawdzona automatycznie oraz na renderach referencyjnych*
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v4.6 gotowa do testu gracza**
+Status: **wersja v4.8 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg czarownika ustawiony na 180,
@@ -143,27 +185,28 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - ujednolicono proporcje kluczowych postaci i zachowano wspólną skalę telefonu oraz komputera,
 - poprawiono sylwetkę łucznika oraz przebudowano animacje mnicha, golema i oszczepnika,
 - rozbudowano tła o wolne warstwy głębi bez zasłaniania pola walki,
-- dopracowano efekty trzech umiejętności; kolejne są zniszczenia zamków i efekty pocisków specjalnych,
-- nowe ikony aplikacji zgodne z jakością grafiki w grze.
+- dopracowano progresywne zniszczenia zamków i efekty pocisków specjalnych,
+- wdrożono nowe ikony aplikacji zgodne z jakością grafiki w grze.
 
 ## Etap 5 — audio i kampania
 
-- osobne dźwięki łuku, kuszy, mrozu i Deszczu Strzał,
-- krótkie muzyczne sygnały bossów,
-- zapis ulepszeń kampanii,
-- ekran mapy i czytelniejszy postęp 12 poziomów.
+- wdrożono osobne dźwięki łuku, kuszy, oszczepu, armaty, mrozu, Deszczu Strzał i Zewu Bitwy,
+- wdrożono krótkie muzyczne sygnały bossów i osobną regulację ich poziomu,
+- wdrożono trwały zapis ulepszeń, pieczęci, ukończeń i najlepszych czasów,
+- wdrożono ekran mapy i czytelniejszy postęp 12 poziomów.
 
 ## Etap 6 — wydanie
 
-- test PWA offline na iPhonie i Androidzie,
-- kontrola pamięci oraz płynności na starszych telefonach,
-- przygotowanie wersji GitHub Pages,
+- automatyczny test PWA offline i kompletności pamięci został wdrożony,
+- automatyczny tryb oszczędny pamięci i renderowania został wdrożony,
+- wersja GitHub Pages z plikami w katalogu głównym jest przygotowywana dla każdego wydania,
+- pozostał końcowy test dotykowy i miksu audio na fizycznym iPhonie oraz Androidzie,
 - później opakowanie do sklepów mobilnych.
 
 ## Najbliższa sesja z Marcinem
 
 Potrzebne są trzy decyzje:
 
-1. Czy nowe sylwetki mnicha, golema i oszczepnika są czytelne w normalnym tempie bitwy?
-2. Czy efekty Mrozu i Deszczu Strzał są widoczne, ale nie zasłaniają jednostek na telefonie?
-3. Czy wolny ruch warstw tła wygląda naturalnie podczas pełnej, kilkuminutowej rozgrywki?
+1. Czy proporcje głośności łuku, armaty, magii i bossów są dobre na głośniku telefonu?
+2. Czy mapa kampanii jest czytelna bez instrukcji i nie wymaga przewijania na używanym telefonie?
+3. Czy trwałe ulepszenia nie ułatwiają zbyt mocno późniejszych poziomów?

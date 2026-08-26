@@ -4,15 +4,29 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v4.6
+## Co zawiera wersja v4.9
 - 12 poziomów i 14 dostępnych jednostek,
+- odporny tryb offline: dokument gry wraca z pamięci, a brakujący skrypt nie jest zastępowany błędnym HTML-em,
+- automatyczny tryb oszczędny dla starszych telefonów: mniejszy bufor Retina, około 30 kl./s i niższa gęstość wyłącznie dekoracyjnych efektów,
+- zatrzymanie renderowania i dźwięku po schowaniu aplikacji bez nadrabiania bitwy po powrocie,
+- wspólny bufor szumu Web Audio zamiast nowej alokacji pamięci przy każdym huku lub trafieniu,
 - opcjonalny samouczek pierwszego poziomu, który można pominąć i uruchomić ponownie,
 - przełącznik języka polskiego i angielskiego z zapisem wyboru,
+- mapę kampanii w kształcie jednej czytelnej trasy: ukończone, bieżące, zablokowane i bossowskie bitwy są rozróżnione graficznie,
+- trwały zapis ukończeń, najlepszych czasów, pieczęci oraz wybranych ulepszeń kampanii,
+- trzy pieczęcie ulepszeń za pierwsze ukończenie poziomu — bez ponownego naliczania nagrody za powtarzanie tej samej bitwy,
+- proceduralny system audio Web Audio z zapisem głośności i osobną regulacją motywów bossów,
+- odrębne, krótkie sygnały łuku, kuszy, oszczepu, armaty, Deszczu Strzał, Mrozu i Zewu Bitwy,
+- krótkie motywy wejścia i kolejnych faz Władcy Krwawej Łuny oraz Króla Demonów,
 - fundament jednego silnika obsługującego w przyszłości pakiety różnych epok,
 - poprawione skalowanie postaci oraz HUD-u na telefonach w poziomie,
 - trzy całkowicie przebudowane sylwetki premium: mnich z animacją leczenia, ciężki golem z artykułowanymi kończynami oraz profilowy oszczepnik z pustą dłonią po rzucie,
 - wielowarstwowe tła z bardzo wolną paralaksą chmur, wzgórz i gór, mgłą atmosferyczną oraz odległymi ruinami,
-- rozbudowane efekty Deszczu Strzał, Mrozu i Zewu Bitwy bez zmiany ich balansu,
+- rozbudowane efekty Mrozu i Zewu Bitwy bez zmiany ich balansu,
+- przywróconą, lżejszą oprawę Deszczu Strzał z v4.5 — bez szerokich pasów cienia i dodatkowych kręgów,
+- trzy progresywne stany uszkodzeń zamku: pęknięcia, wyłomy, osmalenia, rumowisko, odsłonięte belki i zerwany łańcuch,
+- osobne efekty lotu i trafienia dla magii, demonicznego ognia, bełtu, oszczepu i kuli armatniej,
+- całkowicie nowy zestaw ikon PWA 192/512 px z bezpieczną kompozycją maskowalną,
 - zasięg łucznika zwiększony do 170 jednostek i skalowany do wysokości pola bitwy,
 - formację łuczników: dwóch pobliskich łuczników aktywuje subtelną aurę, +12% ataku i szybszą salwę,
 - zasięg czarownika zwiększony do 180 jednostek,
@@ -49,6 +63,9 @@ na pełnym ekranie i **offline**.
 | `docs/AUDYT-V4.4.md` | Wyniki audytu, wykonane poprawki i pozostawione ryzyka |
 | `docs/ETAP-BOSSOW-V4.5.md` | Zachowania, balans i testy bossów poziomów 10 i 12 |
 | `docs/GRAFIKA-PREMIUM-V4.6.md` | Nowe animacje jednostek, głębia plansz i efekty umiejętności |
+| `docs/ZNISZCZENIA-I-POCISKI-V4.7.md` | Progi uszkodzeń zamków, efekty pocisków i nowa ikona PWA |
+| `docs/AUDIO-I-KAMPANIA-V4.8.md` | System audio, mapa kampanii i trwały zapis ulepszeń |
+| `docs/WYDANIE-PWA-V4.9.md` | Tryb offline, optymalizacja pamięci i starszych telefonów |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -68,7 +85,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v4.6` → `castle-calamity-v4.7`.
+np. `castle-calamity-v4.9` → `castle-calamity-v5.0`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

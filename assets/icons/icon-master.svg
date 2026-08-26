@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17264a"/>
+      <stop offset="0.62" stop-color="#416f9d"/>
+      <stop offset="1" stop-color="#d08a59"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d4dbe4"/>
+      <stop offset="0.5" stop-color="#8a98aa"/>
+      <stop offset="1" stop-color="#4b5668"/>
+    </linearGradient>
+    <linearGradient id="roof" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#da4a3e"/>
+      <stop offset="1" stop-color="#6e1824"/>
+    </linearGradient>
+    <radialGradient id="moon">
+      <stop offset="0" stop-color="#fff7c4"/>
+      <stop offset="0.65" stop-color="#f7d578"/>
+      <stop offset="1" stop-color="#e29a49"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.45" stop-color="#cbd7e4"/>
+      <stop offset="1" stop-color="#65758a"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#050812" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <g>
+    <rect width="512" height="512" fill="url(#sky)"/>
+    <circle cx="398" cy="96" r="46" fill="#ffe59b" opacity="0.16"/>
+    <circle cx="398" cy="96" r="31" fill="url(#moon)"/>
+    <circle cx="387" cy="87" r="5" fill="#d8aa5e" opacity="0.35"/>
+    <circle cx="408" cy="106" r="7" fill="#d8aa5e" opacity="0.28"/>
+    <g fill="#dceeff" opacity="0.65">
+      <circle cx="95" cy="76" r="3"/><circle cx="146" cy="109" r="2"/><circle cx="272" cy="69" r="2.4"/><circle cx="326" cy="115" r="2"/>
+    </g>
+    <path d="M0 300 L82 234 L148 278 L230 201 L309 272 L388 218 L512 295 L512 390 L0 390 Z" fill="#315477" opacity="0.7"/>
+    <path d="M0 334 L96 276 L181 322 L277 260 L362 326 L439 274 L512 315 L512 410 L0 410 Z" fill="#1d384c" opacity="0.85"/>
+    <path d="M0 374 Q130 341 256 373 Q388 337 512 370 L512 512 L0 512 Z" fill="#183b2a"/>
+
+    <g filter="url(#shadow)" stroke="#273141" stroke-width="5" stroke-linejoin="round">
+      <rect x="100" y="198" width="104" height="204" rx="4" fill="url(#stone)"/>
+      <rect x="308" y="198" width="104" height="204" rx="4" fill="url(#stone)"/>
+      <rect x="180" y="226" width="152" height="176" rx="4" fill="url(#stone)"/>
+      <path d="M84 201 L152 107 L220 201 Z" fill="url(#roof)"/>
+      <path d="M292 201 L360 107 L428 201 Z" fill="url(#roof)"/>
+      <path d="M180 229 V203 H201 V229 H224 V203 H247 V229 H270 V203 H293 V229 H316 V203 H332 V255 H180 Z" fill="url(#stone)"/>
+      <path d="M98 200 V177 H119 V200 H142 V177 H165 V200 H188 V177 H205 V219 H98 Z" fill="url(#stone)"/>
+      <path d="M307 200 V177 H328 V200 H351 V177 H374 V200 H397 V177 H414 V219 H307 Z" fill="url(#stone)"/>
+    </g>
+
+    <g stroke="#59677a" stroke-width="3" opacity="0.66">
+      <path d="M101 252 H204 M101 294 H204 M101 336 H204 M308 252 H411 M308 294 H411 M308 336 H411 M181 274 H331 M181 319 H331"/>
+      <path d="M126 219 V252 M178 219 V252 M126 294 V336 M178 294 V336 M334 219 V252 M386 219 V252 M334 294 V336 M386 294 V336 M218 229 V274 M293 229 V274 M218 319 V360 M293 319 V360"/>
+    </g>
+
+    <g fill="#172031" stroke="#26344b" stroke-width="5">
+      <path d="M219 402 V349 Q219 310 256 310 Q293 310 293 349 V402 Z"/>
+      <path d="M122 283 V252 Q122 235 139 235 Q156 235 156 252 V283 Z"/>
+      <path d="M356 283 V252 Q356 235 373 235 Q390 235 390 252 V283 Z"/>
+    </g>
+    <g fill="#ffd36b" stroke="#4e3822" stroke-width="4">
+      <rect x="130" y="251" width="18" height="29" rx="7"/>
+      <rect x="364" y="251" width="18" height="29" rx="7"/>
+    </g>
+    <path d="M228 401 V348 Q228 320 256 320 Q284 320 284 348 V401" fill="#5b351c" stroke="#25180f" stroke-width="5"/>
+    <g stroke="#2d1d12" stroke-width="4"><path d="M241 325 V400 M256 319 V400 M271 325 V400"/><path d="M229 351 H283 M229 375 H283"/></g>
+
+    <g stroke="#2b3544" stroke-width="5" stroke-linecap="round">
+      <path d="M151 107 V64"/><path d="M360 107 V68"/>
+    </g>
+    <path d="M153 67 C177 55 197 72 218 60 V91 C193 105 176 85 153 97 Z" fill="#4d82e5" stroke="#243d82" stroke-width="4"/>
+    <path d="M362 71 C382 62 399 75 418 67 V94 C397 104 382 89 362 99 Z" fill="#dc3b4e" stroke="#781d2a" stroke-width="4"/>
+
+    <!-- Heraldyczna kaczka: mały, poważny absurd zamiast napisu. -->
+    <g transform="translate(256 190)" stroke="#6f4b11" stroke-width="3" stroke-linejoin="round">
+      <ellipse cx="0" cy="9" rx="23" ry="14" fill="#f2bd35"/>
+      <circle cx="14" cy="-3" r="12" fill="#ffd95b"/>
+      <path d="M25 -2 L39 3 L25 7 Z" fill="#e87326"/>
+      <circle cx="17" cy="-6" r="2.5" fill="#1c2029" stroke="none"/>
+      <path d="M3 -16 L9 -29 L15 -18 L23 -29 L25 -13 Z" fill="#e5bd4e"/>
+    </g>
+
+    <!-- Skrzyżowane pióro i miecz: kronika kontra bitwa. -->
+    <g filter="url(#shadow)">
+      <g transform="translate(258 422) rotate(-42)">
+        <rect x="-8" y="-74" width="16" height="134" rx="7" fill="#8a5623" stroke="#3d2715" stroke-width="5"/>
+        <path d="M0 -176 L22 -78 L0 -55 L-22 -78 Z" fill="url(#metal)" stroke="#354153" stroke-width="5"/>
+        <path d="M0 -169 V-63" stroke="#ffffff" stroke-width="4" opacity="0.68"/>
+        <path d="M-36 -58 H36" stroke="#d8a933" stroke-width="13" stroke-linecap="round"/>
+        <circle cx="0" cy="72" r="13" fill="#d8a933" stroke="#704813" stroke-width="5"/>
+      </g>
+      <g transform="translate(250 424) rotate(39)">
+        <path d="M0 72 C-4 15 -2 -52 9 -127" stroke="#e7d7af" stroke-width="8" stroke-linecap="round"/>
+        <path d="M8 -129 C58 -109 59 -51 18 -9 C18 -44 6 -74 8 -129 Z" fill="#f3ead2" stroke="#7b6b59" stroke-width="5"/>
+        <path d="M10 -121 C-29 -104 -42 -54 -7 -16 C-6 -50 6 -82 10 -121 Z" fill="#d9e5ec" stroke="#7b6b59" stroke-width="5"/>
+        <path d="M8 -119 L0 -18" stroke="#8a7b67" stroke-width="3"/>
+      </g>
+    </g>
+    <path d="M82 432 Q256 463 430 432 L448 512 H64 Z" fill="#10251c" opacity="0.78"/>
+  </g>
+</svg>

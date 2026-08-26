@@ -1,7 +1,8 @@
-/* Castle Calamity PWA — Service Worker
-   Cache-first: gra działa w pełni offline po pierwszym otwarciu. */
-const CACHE = "castle-calamity-v4.6";
-const ASSETS = [
+/* Castle Calamity PWA v4.9 — odporne działanie offline.
+   Dokument HTML: network-first z powrotem do cache.
+   Zasoby gry: cache-first i aktualizacja pamięci w tle. */
+const CACHE = "castle-calamity-v4.9";
+const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
@@ -14,30 +15,54 @@ const ASSETS = [
   "./assets/icons/icon-maskable-512.png"
 ];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
-});
-
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    ).then(() => self.clients.claim())
+self.addEventListener("install", (event) => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((cache) => cache.addAll(APP_SHELL))
+      .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET") return;
-  e.respondWith(
-    caches.match(e.request, { ignoreSearch: true }).then((cached) =>
-      cached ||
-      fetch(e.request).then((resp) => {
-        if (resp.ok && new URL(e.request.url).origin === location.origin) {
-          const clone = resp.clone();
-          caches.open(CACHE).then((c) => c.put(e.request, clone));
-        }
-        return resp;
-      }).catch(() => caches.match("./index.html"))
-    )
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
+});
+
+function remember(request, response) {
+  if (!response || !response.ok || new URL(request.url).origin !== self.location.origin) return response;
+  const copy = response.clone();
+  caches.open(CACHE).then((cache) => cache.put(request, copy)).catch(() => {});
+  return response;
+}
+
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
+
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then((response) => remember(request, response))
+        .catch(() => caches.match(request, { ignoreSearch: true })
+          .then((cached) => cached || caches.match("./index.html")))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(request, { ignoreSearch: true }).then((cached) => {
+      if (cached) {
+        event.waitUntil(fetch(request).then((response) => remember(request, response)).catch(() => {}));
+        return cached;
+      }
+      return fetch(request).then((response) => remember(request, response));
+    })
+  );
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });

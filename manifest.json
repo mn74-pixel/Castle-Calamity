@@ -1,11 +1,13 @@
 {
   "name": "Castle Calamity",
   "short_name": "Calamity",
+  "id": "./",
   "description": "Absurdalnie poważna bitwa zamków. Buduj armię, rzucaj czary i przetrwaj królewską niekompetencję.",
   "lang": "pl",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
   "orientation": "landscape",
   "background_color": "#1a2340",
   "theme_color": "#1a2340",
