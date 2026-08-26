@@ -4,8 +4,14 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v4.9
+## Co zawiera wersja v5.0
 - 12 poziomów i 14 dostępnych jednostek,
+- policjanta o tej samej skali bazowej co żołnierze — zarówno podczas bitwy, jak i w intrze,
+- zasięg oszczepnika 175 jednostek, czyli nieco większy od zasięgu łucznika 170,
+- stałą symulację 60 Hz niezależną od liczby klatek renderowania,
+- ciągłe wykrywanie kolizji na całej drodze pocisku, dzięki czemu szybkie strzały, oszczepy i kule nie przeskakują przez cel,
+- dokładne całkowanie grawitacji oraz efekty wstrząsu i błysku liczone czasem symulacji,
+- lekkie cienie kontaktowe piechoty i cienie pod lecącymi strzałami, bełtami oraz oszczepami,
 - odporny tryb offline: dokument gry wraca z pamięci, a brakujący skrypt nie jest zastępowany błędnym HTML-em,
 - automatyczny tryb oszczędny dla starszych telefonów: mniejszy bufor Retina, około 30 kl./s i niższa gęstość wyłącznie dekoracyjnych efektów,
 - zatrzymanie renderowania i dźwięku po schowaniu aplikacji bez nadrabiania bitwy po powrocie,
@@ -66,6 +72,7 @@ na pełnym ekranie i **offline**.
 | `docs/ZNISZCZENIA-I-POCISKI-V4.7.md` | Progi uszkodzeń zamków, efekty pocisków i nowa ikona PWA |
 | `docs/AUDIO-I-KAMPANIA-V4.8.md` | System audio, mapa kampanii i trwały zapis ulepszeń |
 | `docs/WYDANIE-PWA-V4.9.md` | Tryb offline, optymalizacja pamięci i starszych telefonów |
+| `docs/GRAFIKA-I-FIZYKA-V5.0.md` | Skala policjanta, balans oszczepnika i stabilna fizyka pocisków |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -85,7 +92,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v4.9` → `castle-calamity-v5.0`.
+np. `castle-calamity-v5.0` → `castle-calamity-v5.1`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

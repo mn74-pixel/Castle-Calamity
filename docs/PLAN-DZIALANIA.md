@@ -131,6 +131,19 @@ Status: **wdrożone i sprawdzone automatycznie; pozostaje próba na fizycznym iP
 - balans, liczba jednostek, audio, kampania i wygląd na mocniejszym sprzęcie pozostają bez zmian,
 - szczegóły i zakres testów znajdują się w `WYDANIE-PWA-V4.9.md`.
 
+## Grafika i fizyka v5.0
+
+Status: **wdrożone i sprawdzone automatycznie**
+
+- policjant korzysta z tej samej skali bazowej co żołnierze w bitwie i obu wariantach intro,
+- zasięg oszczepnika wynosi 175, więc nie jest mniejszy od zasięgu łucznika 170,
+- pocisk oszczepnika jest dłuższy, ma czytelniejszy grot, lotki, smugę i cień na ziemi,
+- piechota otrzymała lekkie cienie kontaktowe, które nie wymagają kosztownego rozmycia,
+- logika walki pracuje stałym krokiem 60 Hz, podczas gdy obraz może nadal działać w trybie 30 lub 60 kl./s,
+- szybkie pociski sprawdzają cały odcinek ruchu w danym kroku, a nie tylko pozycję końcową,
+- grawitacja uwzględnia pełne przesunięcie w kroku, a czas błysków i wstrząsów nie zależy od tempa renderowania,
+- szczegóły i testy znajdują się w `GRAFIKA-I-FIZYKA-V5.0.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -142,9 +155,10 @@ Status: **wdrożone i sprawdzone automatycznie; pozostaje próba na fizycznym iP
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v4.8 gotowa do testu gracza**
+Status: **wersja v5.0 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
+- zasięg oszczepnika ustawiony na 175 i sprawdzony względem łucznika,
 - zasięg czarownika ustawiony na 180,
 - armata otrzymała kontrolowaną, wysoką parabolę, czytelną kulę, smugę i efekt trafienia,
 - sylwetka łucznika została ustawiona profilem do kierunku strzału,
@@ -183,9 +197,11 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 ## Etap 4 — grafika i animacja
 
 - ujednolicono proporcje kluczowych postaci i zachowano wspólną skalę telefonu oraz komputera,
+- policjant ma teraz wysokość odpowiadającą żołnierzom i tę samą zasadę skali w intrze,
 - poprawiono sylwetkę łucznika oraz przebudowano animacje mnicha, golema i oszczepnika,
 - rozbudowano tła o wolne warstwy głębi bez zasłaniania pola walki,
 - dopracowano progresywne zniszczenia zamków i efekty pocisków specjalnych,
+- wdrożono stały krok symulacji, ciągłe kolizje pocisków i lekkie cienie kontaktowe,
 - wdrożono nowe ikony aplikacji zgodne z jakością grafiki w grze.
 
 ## Etap 5 — audio i kampania

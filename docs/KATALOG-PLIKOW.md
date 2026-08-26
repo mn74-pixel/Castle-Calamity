@@ -28,6 +28,7 @@ castle-calamity/
     ├── ZNISZCZENIA-I-POCISKI-V4.7.md
     ├── AUDIO-I-KAMPANIA-V4.8.md
     ├── WYDANIE-PWA-V4.9.md
+    ├── GRAFIKA-I-FIZYKA-V5.0.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -53,6 +54,7 @@ castle-calamity/
 | `docs/ZNISZCZENIA-I-POCISKI-V4.7.md` | Progi zniszczeń, odrębne efekty trafień i testy ikon PWA | Przy zmianie wyglądu zamków, pocisków lub ikony |
 | `docs/AUDIO-I-KAMPANIA-V4.8.md` | Rodziny dźwięków, ustawienia audio, mapa kampanii i trwałe ulepszenia | Przy zmianie dźwięków, nagród lub postępu kampanii |
 | `docs/WYDANIE-PWA-V4.9.md` | Odporność offline, automatyczny budżet grafiki oraz testy wydania | Przy zmianie service workera albo optymalizacji urządzeń |
+| `docs/GRAFIKA-I-FIZYKA-V5.0.md` | Wspólna skala postaci, zasięg oszczepnika, stały krok symulacji i kolizje ciągłe | Przy zmianie fizyki, balistyki albo czytelności jednostek |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
