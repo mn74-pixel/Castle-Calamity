@@ -8,6 +8,7 @@
   */
   root.CASTLE_ERAS = {
     active: "medieval",
+    next: "early-modern",
     schemaVersion: 1,
     packs: {
       medieval: {
@@ -30,6 +31,24 @@
             [91.5,76],[74.5,76],[57.5,76],[40.5,76],[23.5,76],[6.5,76]
           ]
         }
+      },
+
+      /* Fundament Epoki II. Pakiet pozostaje celowo wyłączony, dopóki nie ma
+         własnych poziomów, jednostek i balansu. Dzięki temu v5.3 niczego nie
+         pokazuje w połowie, ale następny etap może korzystać z tego samego
+         silnika kampanii bez przebudowy zapisów gracza. */
+      "early-modern": {
+        id: "early-modern",
+        enabled: false,
+        unlockAfter: { eraId: "medieval", completedLevels: 12 },
+        levelIds: [],
+        sceneSet: "early-modern-frontier",
+        castleStyle: "brick-bastion",
+        unitSet: "powder-and-pikes",
+        projectileSet: "muskets-mortars-machines",
+        humorPool: "early-modern-absurd",
+        balanceProfile: "campaign-v2",
+        campaign: { titleKey: "campaign.era2", levelIds: [], mapPoints: [] }
       }
     }
   };

@@ -4,8 +4,22 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v5.1
+## Co zawiera wersja v5.3
 - 12 poziomów i 14 dostępnych jednostek,
+- pełny audyt zasad wszystkich 14 jednostek: 11 bojowników atakuje poprawnie, trzy role wsparcia są rozdzielone, a bossowie pozostają poza talią,
+- Kamieniarza wykonującego do trzech kursów; każda dostawa natychmiast lekko naprawia mur i pokazuje postęp, a trzeci kurs kończy etap rozbudowy,
+- wyraźny błysk zaprawy, rusztowanie, bloki i trzy nity postępu przy zamku zamiast niemal niewidocznego wyniku pracy Kamieniarza,
+- nowe pełne sylwetki Czarownika i Kamieniarza oraz zgodne z nimi ikony kart,
+- rzadki gag samolotu w poziomach 7–12: spadochroniarz brudzi najbliższego żołnierza bez obrażeń, ląduje, odcina czaszę i ucieka,
+- pranie tylko na jednym zamku w poziomie 7; poziom 1 ma teraz wędkarza wyławiającego but,
+- wyłączony fundament Epoki II „Proch i Mechanika”, gotowy do rozwinięcia w v6.0 bez pokazywania graczowi niedokończonej zawartości,
+- naprawę korka tworzonego przez Drwali przeciwnika przed Golemem, Czarownikiem i kolejnymi jednostkami,
+- pociski dystansowe trafiają teraz Drwali i Kamieniarzy zamiast utrzymywać ich jako niezniszczalny cel,
+- priorytet prawdziwych jednostek bojowych nad zapleczem oraz krótki zasięg przechwytywania wsparcia przez ciężką piechotę,
+- krótki raport po bitwie pokazujący trzy najbardziej przydatne jednostki zamiast kolejnego panelu podczas walki,
+- rzeczywisty pomiar obrażeń jednostek i zamku, leczenia Mnicha, złota Drwala oraz dostaw i napraw Kamieniarza,
+- zapisywanie skuteczności osobno dla każdego poziomu; po porażce najlepsza sprawdzona jednostka może uzupełnić projektową podpowiedź składu,
+- brak ukrytego skalowania przeciwnika na podstawie wyników gracza — dane służą wyłącznie raportowi i wskazówkom,
 - maksymalnie 8 kart w jednej bitwie; pełny katalog jednostek rotuje zależnie od zagrożenia i kontr poziomu,
 - złote oznaczenie szczególnie przydatnych jednostek bez ukrytej premii do statystyk,
 - krótki raport przed Królem Demonów z czterema właściwymi kontrami: Oszczepnikiem, Mnichem, Czarownikiem i Golemem,
@@ -32,7 +46,7 @@ na pełnym ekranie i **offline**.
 - krótkie motywy wejścia i kolejnych faz Władcy Krwawej Łuny oraz Króla Demonów,
 - fundament jednego silnika obsługującego w przyszłości pakiety różnych epok,
 - poprawione skalowanie postaci oraz HUD-u na telefonach w poziomie,
-- trzy całkowicie przebudowane sylwetki premium: mnich z animacją leczenia, ciężki golem z artykułowanymi kończynami oraz profilowy oszczepnik z pustą dłonią po rzucie,
+- pięć całkowicie przebudowanych sylwetek premium: mnich, Kamieniarz, golem, Czarownik oraz profilowy oszczepnik z pustą dłonią po rzucie,
 - wielowarstwowe tła z bardzo wolną paralaksą chmur, wzgórz i gór, mgłą atmosferyczną oraz odległymi ruinami,
 - rozbudowane efekty Mrozu i Zewu Bitwy bez zmiany ich balansu,
 - przywróconą, lżejszą oprawę Deszczu Strzał z v4.5 — bez szerokich pasów cienia i dodatkowych kręgów,
@@ -45,7 +59,7 @@ na pełnym ekranie i **offline**.
 - przeprojektowanego łucznika ustawionego profilem do celu,
 - wysoką, kontrolowaną parabolę kuli armatniej z cieniem, smugą i efektem uderzenia,
 - naprawiony pełny rzut oszczepnika: wypuszczenie z dłoni, czytelna smuga i balistyczny lot,
-- kamieniarza od poziomu 7: maksymalnie dwóch naraz, automatyczna dostawa i trzy wizualne etapy rozbudowy zamku,
+- kamieniarza od poziomu 7: maksymalnie dwóch naraz, do trzech kursów na postać, natychmiastową naprawę po każdej dostawie i trzy wizualne etapy rozbudowy zamku,
 - każda ukończona rozbudowa dodaje 7,5% maksymalnego HP zamku (łącznie 22,5%); późniejsze dostawy lekko naprawiają mury,
 - krótsze, 13,35-sekundowe intro bez napisów i HUD: policjant wystawia mandat kuli armatniej, po czym regulamin przegrywa,
 - pięć doktryn przeciwnika: zrównoważoną, defensywną, agresywną, oblężniczą i chaotyczną,
@@ -55,7 +69,7 @@ na pełnym ekranie i **offline**.
 - Władcę Łuny z aurą, rozkazem, szarżą i jednorazową przerwą na herbatę oraz Króla Demonów z seriami ognia, portalami i teleportem,
 - celowany Deszcz Strzał w trzech falach,
 - Mróz trwający 3,8 s i obejmujący nowe jednostki wroga,
-- dwanaście rzadkich gagów wizualnych — inny na każdym poziomie i najwyżej jeden podczas bitwy; kartki latającego biurka nie przeskakują już między końcami pętli,
+- dwanaście właściwych gagów poziomów oraz jeden rzadki wariant samolotu — nadal najwyżej jeden podczas bitwy; kartki latającego biurka nie przeskakują między końcami pętli,
 - osobny dyskretny absurd scenograficzny na każdym z 12 poziomów,
 - latającą rybę z łatwo zmienianym proporcem reklamowym,
 - trwały zapis postępu i własnych herbów w pamięci urządzenia.
@@ -80,6 +94,9 @@ na pełnym ekranie i **offline**.
 | `docs/WYDANIE-PWA-V4.9.md` | Tryb offline, optymalizacja pamięci i starszych telefonów |
 | `docs/GRAFIKA-I-FIZYKA-V5.0.md` | Skala policjanta, balans oszczepnika i stabilna fizyka pocisków |
 | `docs/ROTACJA-I-ZAMKI-V5.1.md` | Talie do 8 kart, raport Króla Demonów, ewolucja zamków i fizyka szyku |
+| `docs/RAPORT-BITEWNY-V5.2.md` | Pomiar skuteczności jednostek, raport po bitwie i adaptacyjne podpowiedzi |
+| `docs/NAPRAWA-KORKOW-V5.2.1.md` | Naprawa niezniszczalnych Drwali, priorytetów celu i blokowania szyku |
+| `docs/AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md` | Audyt 14 jednostek, czytelny Kamieniarz, nowe sylwetki i gag spadochroniarza |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -99,7 +116,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v5.1` → `castle-calamity-v5.2`.
+np. `castle-calamity-v5.3` → `castle-calamity-v6.0`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

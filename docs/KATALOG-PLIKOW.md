@@ -30,6 +30,9 @@ castle-calamity/
     ├── WYDANIE-PWA-V4.9.md
     ├── GRAFIKA-I-FIZYKA-V5.0.md
     ├── ROTACJA-I-ZAMKI-V5.1.md
+    ├── RAPORT-BITEWNY-V5.2.md
+    ├── NAPRAWA-KORKOW-V5.2.1.md
+    ├── AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -57,6 +60,9 @@ castle-calamity/
 | `docs/WYDANIE-PWA-V4.9.md` | Odporność offline, automatyczny budżet grafiki oraz testy wydania | Przy zmianie service workera albo optymalizacji urządzeń |
 | `docs/GRAFIKA-I-FIZYKA-V5.0.md` | Wspólna skala postaci, zasięg oszczepnika, stały krok symulacji i kolizje ciągłe | Przy zmianie fizyki, balistyki albo czytelności jednostek |
 | `docs/ROTACJA-I-ZAMKI-V5.1.md` | Talie do 8 kart, polecane kontry, raport Króla Demonów, ewolucja zamków i fizyka szyku | Przy zmianie składów poziomów, oznaczeń kontr lub wyglądu zamku |
+| `docs/RAPORT-BITEWNY-V5.2.md` | Pomiar skuteczności, trzykartowy raport końcowy i podpowiedzi po przegranej | Przy zmianie oceniania jednostek, ekonomii albo rekomendacji |
+| `docs/NAPRAWA-KORKOW-V5.2.1.md` | Priorytety celu, trafianie jednostek wsparcia i test odblokowania szyku | Przy zmianie namierzania, kolizji pocisków albo odstępów formacji |
+| `docs/AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md` | Zasady wszystkich jednostek, trzy kursy Kamieniarza, nowe sylwetki i gag samolotu | Przed zmianą balansu, mechaniki wsparcia, humoru albo przejściem do Epoki II |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
@@ -65,16 +71,19 @@ castle-calamity/
 - Rzadziej lub częściej: edytuj `timing.nextMin` i `timing.nextMax`.
 - Rzadki gag przy Deszczu Strzał: edytuj `timing.abilityGagChance` (obecnie `0.08`, czyli 8%).
 - Włączenie/wyłączenie gagu: zmień pole `enabled` przy wybranym wpisie.
-- Dostępnych jest 12 ruchomych gagów — po jednym dla każdego poziomu; poziom 4 ma rycerza na chmurze, a poziom 5 konserwatora polerującego księżyc.
+- Dostępnych jest 12 właściwych gagów poziomów oraz rzadki wariant samolotu na poziomach 7–12; poziom 4 ma rycerza na chmurze, a poziom 5 konserwatora polerującego księżyc.
 - Podczas jednej bitwy gag przelotowy pojawia się najwyżej raz.
 - Każdy ruchomy gag jest usuwany dopiero po przekroczeniu przeciwnej krawędzi ekranu.
 - Stałe absurdy poziomów są rysowane przez `drawLevelAbsurdity()` w `index.html` — jeden motyw dla każdego z 12 poziomów.
 - Nowy żart bieżący: najpierw dodaj zatwierdzony wpis do `topicalGags`, wraz z datą wygaśnięcia i notatką o źródle, a potem dołącz jego prostą animację w `index.html`.
-- Kamieniarz, kamieniołomy, automatyczne dostawy i trzy etapy graficznej rozbudowy zamku są częścią wspólnego silnika w `index.html`; jednostka jest dostępna dopiero od poziomu 7.
+- Kamieniarz, kamieniołomy, trzy automatyczne kursy, natychmiastowa naprawa po dostawie i trzy etapy graficznej rozbudowy zamku są częścią wspólnego silnika w `index.html`; jednostka jest dostępna dopiero od poziomu 7.
 - System rozbudowy celowo nie ma osobnej waluty ani dodatkowego panelu. Koszt jest płacony w złocie przy zakupie Kamieniarza, a postęp widać bezpośrednio przy zamku.
 - Bossowie są częścią wspólnego silnika w `index.html`; zwykłe jednostki nie mogą ich kupić ani wylosować w kolejce AI.
 - Pełny katalog ma 14 jednostek, ale każda talia poziomu jest automatycznie ograniczana do 8 unikalnych kart łącznie z zapleczem.
 - Pranie, czajnik i przysypiający strażnik są pojedynczymi gagami zamkowymi poziomów 7, 9 i 11; nie należy powielać ich na wszystkich zamkach.
+- Statystyki skuteczności są zbierane w `index.html` i zapisywane osobno dla każdego poziomu. Nie wolno używać ich do ukrytego wzmacniania przeciwnika.
+- Raport po bitwie pokazuje najwyżej trzy jednostki, nawet jeśli talia poziomu zawiera osiem kart.
+- Drwal i Kamieniarz mogą zostać trafieni. Jednostki bojowe mają jednak pierwszeństwo, aby zaplecze nie zatrzymywało natarcia.
 
 ## Ważne przy publikacji
 

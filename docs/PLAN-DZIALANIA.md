@@ -157,6 +157,46 @@ Status: **wdrożone i sprawdzone automatycznie oraz na renderach referencyjnych*
 - maszerujące jednostki zachowują lekki odstęp, dzięki czemu sylwetki nie tworzą jednego stosu,
 - szczegóły i testy znajdują się w `ROTACJA-I-ZAMKI-V5.1.md`.
 
+## Raport bitewny i wywiad jednostek v5.2
+
+Status: **wdrożone i sprawdzone automatycznie**
+
+- każda kupiona jednostka gracza ma osobny licznik kosztu i wystawień,
+- obrażenia z walki wręcz, pocisków, wybuchów i trafień zamku są przypisywane właściwej jednostce,
+- Mnich raportuje leczenie, Drwal dostarczone złoto, a Kamieniarz dostawy i rzeczywistą naprawę murów,
+- ekran końca bitwy pokazuje tylko trzy najbardziej przydatne jednostki, aby nie przeciążać gracza tabelą,
+- wyniki są zapisywane osobno dla każdego poziomu,
+- po przegranej najlepsza sprawdzona jednostka może wejść do czterech złotych rekomendacji przy ponownej próbie,
+- dane nie wzmacniają AI, nie zmieniają obrażeń i nie tworzą ukrytego skalowania trudności,
+- kosztów jednostek nie zmieniono jeszcze automatycznie; raport daje wiarygodną podstawę do korekty po testach gracza,
+- szczegóły i testy znajdują się w `RAPORT-BITEWNY-V5.2.md`.
+
+## Poprawka blokowania szyku v5.2.1
+
+Status: **wdrożona i sprawdzona automatycznie**
+
+- pociski mogą zabijać Drwali i Kamieniarzy, których wcześniej dało się wybrać, ale nie trafić,
+- jednostki bojowe mają pierwszeństwo przed zapleczem,
+- ciężka piechota nie ściga Drwali daleko od swojej drogi,
+- Czarownik porzuca cel pomocniczy, gdy pojawi się przeciwnik bojowy,
+- test czterech kolejnych Drwali potwierdza usunięcie blokady i dalszy marsz całego szyku,
+- szczegóły znajdują się w `NAPRAWA-KORKOW-V5.2.1.md`.
+
+## Zamknięcie Epoki I v5.3
+
+Status: **wdrożone i sprawdzone automatycznie oraz na renderach referencyjnych**
+
+- sprawdzono statystyki, role, ataki i odwołania kontr wszystkich 14 jednostek,
+- każdy z 11 bojowników potrafi zaatakować; Armata strzela, a role Drwala, Kamieniarza i Mnicha pozostają rozdzielone,
+- Kamieniarz wykonuje do trzech kursów, a każda dostawa od razu naprawia mur i pokazuje postęp przy zamku,
+- jedna postać może ukończyć pełny etap rozbudowy, nadal z limitem dwóch Kamieniarzy naraz i łącznym limitem +22,5% HP,
+- Czarownik i Kamieniarz mają nowe pełne sylwetki, animacje oraz odpowiadające im ikony kart,
+- dodano lekkie cząstki kroków z limitem trybu oszczędnego,
+- samolot i spadochroniarz są rzadkim wariantem poziomów 7–12; cały żart jest niebojowy i nie odbiera HP,
+- pranie pozostało wyłącznie na zamku poziomu 7, a poziom 1 otrzymał inny absurd scenograficzny,
+- dodano wyłączony fundament Epoki II `early-modern`, bez ujawniania niedokończonej kampanii,
+- szczegóły znajdują się w `AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -168,7 +208,7 @@ Status: **wdrożone i sprawdzone automatycznie oraz na renderach referencyjnych*
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v5.1 gotowa do testu gracza**
+Status: **wersja v5.3 gotowa do końcowego testu Epoki I**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg oszczepnika ustawiony na 175 i sprawdzony względem łucznika,
@@ -188,9 +228,9 @@ Kryterium zakończenia: trzy pełne rozgrywki na telefonie i komputerze bez bł�
 
 ## Etap 2 — biblioteka humoru i reklama
 
-Status: **pierwsza biblioteka gotowa; kolejne gagi po wspólnej decyzji**
+Status: **biblioteka Epoki I gotowa; kolejne gagi trafią już również do Epoki II**
 
-- obecnie działa 12 gagów ruchomych, po jednym dla każdego poziomu i najwyżej jeden podczas bitwy,
+- działa 12 właściwych gagów poziomów oraz jeden rzadki wariant samolotu; nadal najwyżej jeden podczas bitwy,
 - osobna pula żartów z Polski, świata, kultury, muzyki i sportu,
 - każdy gag bieżący otrzymuje źródło, datę publikacji i datę wyłączenia,
 - przygotować 2–3 formaty reklamowe: proporzec ryby, herb sponsora i dyskretna plansza między poziomami,
@@ -206,8 +246,8 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - wdrożono unikalne zachowania bossów poziomów 10 i 12,
 - wdrożono talie bitewne dobierane do zagrożenia poziomu oraz oznaczenia polecanych kontr,
 - wdrożono krótki raport taktyczny przed Królem Demonów,
-- korekta ekonomii złota oraz kosztów,
-- mierzenie skuteczności jednostek po każdej bitwie.
+- korekta ekonomii złota oraz kosztów na podstawie zebranych wyników z prawdziwych rozgrywek,
+- wdrożono mierzenie skuteczności jednostek po każdej bitwie i trzykartowe podsumowanie.
 
 ## Etap 4 — grafika i animacja
 
@@ -220,6 +260,7 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - wdrożono lekki odstęp szyku dla maszerujących jednostek,
 - wdrożono dwa subtelne progi ewolucji zamku oraz trzy niepowtarzane gagi scenograficzne,
 - wdrożono nowe ikony aplikacji zgodne z jakością grafiki w grze.
+- Czarownik i Kamieniarz otrzymali osobne sylwetki premium, a ruch postaci lekko wzbudza kurz przy podłożu.
 
 ## Etap 5 — audio i kampania
 
@@ -236,6 +277,15 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - pozostał końcowy test dotykowy i miksu audio na fizycznym iPhonie oraz Androidzie,
 - później opakowanie do sklepów mobilnych.
 
+## Następny etap — v6.0, Epoka II „Proch i Mechanika”
+
+- odblokowanie po ukończeniu 12 poziomów Epoki I,
+- nowa mapa i pierwsze poziomy wczesnej nowożytności,
+- forty bastionowe oraz stopniowa zmiana architektury zamiast wymiany całej grafiki naraz,
+- rdzeń armii oparty na pikach, muszkietach, moździerzach i prostych maszynach,
+- maksymalnie osiem kart na bitwę oraz dobór jednostek do zagrożenia poziomu,
+- osobna pula rzadkich gagów epoki przy zachowaniu limitu jednego żartu w bitwie.
+
 ## Najbliższa sesja z Marcinem
 
 Potrzebne są trzy decyzje:
@@ -243,3 +293,4 @@ Potrzebne są trzy decyzje:
 1. Czy proporcje głośności łuku, armaty, magii i bossów są dobre na głośniku telefonu?
 2. Czy mapa kampanii jest czytelna bez instrukcji i nie wymaga przewijania na używanym telefonie?
 3. Czy trwałe ulepszenia nie ułatwiają zbyt mocno późniejszych poziomów?
+4. Czy po przejściu poziomu 12 przejście do Epoki II powinno nastąpić automatycznie, czy przez osobny przycisk na mapie?

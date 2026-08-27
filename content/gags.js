@@ -7,7 +7,7 @@
     dzięki czemu nie trzeba grzebać w silniku gry.
   */
   root.CASTLE_CONTENT = {
-    version: "2026-08-24-v3",
+    version: "2026-08-27-v5.3",
 
     timing: {
       firstMin: 32,
@@ -34,7 +34,13 @@
       { id: "fire-marshal", type: "firemarshal", enabled: true, weight: 1, levels: [9] },
       { id: "tea-balloon", type: "teaballoon", enabled: true, weight: 1, levels: [10] },
       { id: "snow-clerk", type: "snowclerk", enabled: true, weight: 1, levels: [11] },
-      { id: "vacuum-demon", type: "vacuumdemon", enabled: true, weight: 1, levels: [12] }
+      { id: "vacuum-demon", type: "vacuumdemon", enabled: true, weight: 1, levels: [12] },
+
+      /* Rzadki gag alternatywny późnej kampanii. Występuje obok jednego
+         właściwego żartu poziomu, lecz nadal obowiązuje limit jednego gagu
+         w całej bitwie. Waga 0,22 daje ok. 18% szansy tylko na poziomach
+         7–12, więc spadochroniarz pozostaje niespodzianką. */
+      { id: "airdrop-regret", type: "airdrop", enabled: true, weight: 0.22, levels: [7,8,9,10,11,12] }
     ],
 
     flyingFishAd: {

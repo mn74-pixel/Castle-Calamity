@@ -24,10 +24,16 @@ Pakiet epoki będzie określał:
 - profil balansu i zachowanie przeciwników,
 - własną pulę humoru oraz scenografię poziomów.
 
-## Obecny pakiet
+## Obecny pakiet i następny krok
 
 Aktywny jest wyłącznie pakiet `medieval`. Jego rejestr znajduje się w
-`content/eras.js`. Najpierw dopracowujemy go jako wzorzec jakości całej gry.
+`content/eras.js`. Wersja v5.3 zamyka jego audyt jako wzorca jakości całej gry.
+
+W rejestrze istnieje już wyłączony pakiet `early-modern` — Epoka II „Proch i
+Mechanika”. Nie ma jeszcze poziomów i nie jest widoczny dla gracza. Jego
+zadaniem jest ustalenie granicy danych przed pracą nad v6.0: odblokowanie po 12
+bitwach, forty bastionowe, piki, muszkiety, moździerze i maszyny zachowają ten
+sam silnik walki, zapis, limit ośmiu kart oraz zasady rzadkiego humoru.
 
 ## Kolejność rozwoju
 
@@ -44,9 +50,8 @@ Aktywny jest wyłącznie pakiet `medieval`. Jego rejestr znajduje się w
 - Pakiety epok używają identyfikatorów tłumaczeń, a nie gotowych napisów.
 - Wybrany język jest zapamiętywany na urządzeniu.
 
-## Możliwe epoki — dopiero później
+## Dalsze możliwe epoki
 
-Kolejność nie jest jeszcze zatwierdzona. Naturalny rozwój może prowadzić od
-średniowiecza przez epokę prochu i przemysłu do XX wieku, współczesności lub
-absurdalnej przyszłości. O wyborze zdecydujemy po ukończeniu silnika i testach
-grywalności pierwszej kampanii.
+Po Epokach I i II naturalny rozwój może prowadzić przez przemysł do XX wieku,
+współczesności lub absurdalnej przyszłości. Każdy następny pakiet powstanie
+dopiero po potwierdzeniu, że poprzedni nie wymaga kopiowania wspólnego silnika.

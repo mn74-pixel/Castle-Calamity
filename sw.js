@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v5.1 — odporne działanie offline.
+/* Castle Calamity PWA v5.3 — odporne działanie offline.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v5.1";
+const CACHE = "castle-calamity-v5.3";
 const APP_SHELL = [
   "./",
   "./index.html",
