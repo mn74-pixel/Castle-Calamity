@@ -4,8 +4,14 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v5.0
+## Co zawiera wersja v5.1
 - 12 poziomów i 14 dostępnych jednostek,
+- maksymalnie 8 kart w jednej bitwie; pełny katalog jednostek rotuje zależnie od zagrożenia i kontr poziomu,
+- złote oznaczenie szczególnie przydatnych jednostek bez ukrytej premii do statystyk,
+- krótki raport przed Królem Demonów z czterema właściwymi kontrami: Oszczepnikiem, Mnichem, Czarownikiem i Golemem,
+- subtelną zmianę sylwetki i detali zamku po poziomie 6 oraz drugi niewielki krok od poziomu 11,
+- trzy pojedyncze gagi zamkowe zamiast powtarzanego motywu: pranie na poziomie 7, czajnik na poziomie 9 i przysypiający strażnik na poziomie 11,
+- lekki fizyczny odstęp maszerujących jednostek, dzięki któremu postacie nie zlewają się w jeden stos,
 - policjanta o tej samej skali bazowej co żołnierze — zarówno podczas bitwy, jak i w intrze,
 - zasięg oszczepnika 175 jednostek, czyli nieco większy od zasięgu łucznika 170,
 - stałą symulację 60 Hz niezależną od liczby klatek renderowania,
@@ -73,6 +79,7 @@ na pełnym ekranie i **offline**.
 | `docs/AUDIO-I-KAMPANIA-V4.8.md` | System audio, mapa kampanii i trwały zapis ulepszeń |
 | `docs/WYDANIE-PWA-V4.9.md` | Tryb offline, optymalizacja pamięci i starszych telefonów |
 | `docs/GRAFIKA-I-FIZYKA-V5.0.md` | Skala policjanta, balans oszczepnika i stabilna fizyka pocisków |
+| `docs/ROTACJA-I-ZAMKI-V5.1.md` | Talie do 8 kart, raport Króla Demonów, ewolucja zamków i fizyka szyku |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -92,7 +99,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v5.0` → `castle-calamity-v5.1`.
+np. `castle-calamity-v5.1` → `castle-calamity-v5.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

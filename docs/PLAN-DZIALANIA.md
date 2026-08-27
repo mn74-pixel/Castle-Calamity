@@ -144,6 +144,19 @@ Status: **wdrożone i sprawdzone automatycznie**
 - grawitacja uwzględnia pełne przesunięcie w kroku, a czas błysków i wstrząsów nie zależy od tempa renderowania,
 - szczegóły i testy znajdują się w `GRAFIKA-I-FIZYKA-V5.0.md`.
 
+## Rotacja jednostek i ewolucja zamków v5.1
+
+Status: **wdrożone i sprawdzone automatycznie oraz na renderach referencyjnych**
+
+- pełny katalog 14 jednostek pozostaje w grze, ale jedna bitwa pokazuje najwyżej 8 kart łącznie z zapleczem,
+- talie gracza i AI są dobierane do doktryny, ciężaru armii i kontr danego poziomu oraz nie zawierają duplikatów,
+- szczególnie przydatne jednostki są oznaczane małą złotą gwiazdką bez ukrytego bonusu do statystyk,
+- poziom 12 otrzymał krótki raport o seriach ognia, portalach i trzech kulach Króla Demonów,
+- zamek po poziomie 6 zmienia sylwetkę i detale tylko nieznacznie, a od poziomu 11 przechodzi drugi lekki krok,
+- pranie występuje wyłącznie jako gag poziomu 7 po stronie gracza; poziomy 9 i 11 mają inne pojedyncze gagi zamkowe,
+- maszerujące jednostki zachowują lekki odstęp, dzięki czemu sylwetki nie tworzą jednego stosu,
+- szczegóły i testy znajdują się w `ROTACJA-I-ZAMKI-V5.1.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.
@@ -155,7 +168,7 @@ Status: **wdrożone i sprawdzone automatycznie**
 
 ## Etap 1 — stabilizacja i balans
 
-Status: **wersja v5.0 gotowa do testu gracza**
+Status: **wersja v5.1 gotowa do testu gracza**
 
 - zasięg łucznika ustawiony na 170 i sprawdzony automatycznie,
 - zasięg oszczepnika ustawiony na 175 i sprawdzony względem łucznika,
@@ -168,7 +181,7 @@ Status: **wersja v5.0 gotowa do testu gracza**
 - intro otrzymało nową sekwencję policjanta bez napisów ekranowych i bocznych cieni,
 - każdy z 12 poziomów ma własny dyskretny absurd scenograficzny,
 - pozostał test odczucia balansu na prawdziwym telefonie i monitorze,
-- sprawdzenie, czy wszystkie 14 jednostek ma wyraźną rolę,
+- wdrożono rotację maksymalnie 8 kart na bitwę, dzięki czemu wszystkie 14 jednostek ma wyraźniejszą rolę w różnych poziomach,
 - zebranie uwag Marcina po każdej wersji testowej.
 
 Kryterium zakończenia: trzy pełne rozgrywki na telefonie i komputerze bez błędu blokującego.
@@ -191,6 +204,8 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - wdrożono czytelne, umiarkowane kontry jednostek,
 - wdrożono profile AI: defensywny, agresywny, oblężniczy i chaotyczny,
 - wdrożono unikalne zachowania bossów poziomów 10 i 12,
+- wdrożono talie bitewne dobierane do zagrożenia poziomu oraz oznaczenia polecanych kontr,
+- wdrożono krótki raport taktyczny przed Królem Demonów,
 - korekta ekonomii złota oraz kosztów,
 - mierzenie skuteczności jednostek po każdej bitwie.
 
@@ -202,6 +217,8 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - rozbudowano tła o wolne warstwy głębi bez zasłaniania pola walki,
 - dopracowano progresywne zniszczenia zamków i efekty pocisków specjalnych,
 - wdrożono stały krok symulacji, ciągłe kolizje pocisków i lekkie cienie kontaktowe,
+- wdrożono lekki odstęp szyku dla maszerujących jednostek,
+- wdrożono dwa subtelne progi ewolucji zamku oraz trzy niepowtarzane gagi scenograficzne,
 - wdrożono nowe ikony aplikacji zgodne z jakością grafiki w grze.
 
 ## Etap 5 — audio i kampania

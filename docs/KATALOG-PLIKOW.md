@@ -29,6 +29,7 @@ castle-calamity/
     ├── AUDIO-I-KAMPANIA-V4.8.md
     ├── WYDANIE-PWA-V4.9.md
     ├── GRAFIKA-I-FIZYKA-V5.0.md
+    ├── ROTACJA-I-ZAMKI-V5.1.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -55,6 +56,7 @@ castle-calamity/
 | `docs/AUDIO-I-KAMPANIA-V4.8.md` | Rodziny dźwięków, ustawienia audio, mapa kampanii i trwałe ulepszenia | Przy zmianie dźwięków, nagród lub postępu kampanii |
 | `docs/WYDANIE-PWA-V4.9.md` | Odporność offline, automatyczny budżet grafiki oraz testy wydania | Przy zmianie service workera albo optymalizacji urządzeń |
 | `docs/GRAFIKA-I-FIZYKA-V5.0.md` | Wspólna skala postaci, zasięg oszczepnika, stały krok symulacji i kolizje ciągłe | Przy zmianie fizyki, balistyki albo czytelności jednostek |
+| `docs/ROTACJA-I-ZAMKI-V5.1.md` | Talie do 8 kart, polecane kontry, raport Króla Demonów, ewolucja zamków i fizyka szyku | Przy zmianie składów poziomów, oznaczeń kontr lub wyglądu zamku |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
@@ -71,6 +73,8 @@ castle-calamity/
 - Kamieniarz, kamieniołomy, automatyczne dostawy i trzy etapy graficznej rozbudowy zamku są częścią wspólnego silnika w `index.html`; jednostka jest dostępna dopiero od poziomu 7.
 - System rozbudowy celowo nie ma osobnej waluty ani dodatkowego panelu. Koszt jest płacony w złocie przy zakupie Kamieniarza, a postęp widać bezpośrednio przy zamku.
 - Bossowie są częścią wspólnego silnika w `index.html`; zwykłe jednostki nie mogą ich kupić ani wylosować w kolejce AI.
+- Pełny katalog ma 14 jednostek, ale każda talia poziomu jest automatycznie ograniczana do 8 unikalnych kart łącznie z zapleczem.
+- Pranie, czajnik i przysypiający strażnik są pojedynczymi gagami zamkowymi poziomów 7, 9 i 11; nie należy powielać ich na wszystkich zamkach.
 
 ## Ważne przy publikacji
 

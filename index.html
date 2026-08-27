@@ -33,9 +33,11 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 .cd:hover{transform:translateY(-3px);}
 .cd:active{transform:scale(0.92);}
 .cd.off{opacity:.35;cursor:not-allowed;transform:none;filter:grayscale(.6);}
-.cd .iconWrap{width:50px;height:50px;border-radius:6px;background:linear-gradient(180deg,#e8d4a8,#c4a878);border:2px solid #5a3a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);}
+.cd .iconWrap{width:58px;height:58px;border-radius:7px;background:linear-gradient(180deg,#e8d4a8,#c4a878);border:2px solid #5a3a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);}
 .cd:hover .iconWrap{border-color:#ffcc44;box-shadow:0 4px 12px rgba(255,200,80,.5);}
-.cd canvas{display:block;width:46px;height:46px;}
+.cd canvas{display:block;width:54px;height:54px;}
+.cd.recommended .iconWrap{border-color:#f0c95f;box-shadow:0 0 0 2px rgba(240,201,95,.18),0 4px 13px rgba(232,177,55,.42),inset 0 1px 2px rgba(255,255,255,.35);}
+.recBadge{position:absolute;left:-4px;top:-5px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff1a3,#cf8a19 72%);border:1px solid #fff0a6;color:#442300;font-size:11px;line-height:1;font-weight:900;text-shadow:none;box-shadow:0 2px 5px rgba(0,0,0,.55);z-index:3;}
 .cdc{font-size:13px;color:#ffee44;font-weight:900;margin-top:3px;text-shadow:1px 1px 2px rgba(0,0,0,.9);}
 .cdk{position:absolute;top:-3px;right:-3px;font-size:10px;color:#fff;font-weight:900;background:#3366cc;border:2px solid #fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;}
 .cd .tip{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(10,10,30,.97);border:1px solid #5a5aaa;border-radius:7px;padding:8px 12px;white-space:nowrap;color:#eee;font-size:11px;line-height:1.7;pointer-events:none;z-index:50;min-width:140px;text-align:left;}
@@ -128,6 +130,17 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 .audioRow input{width:100%;accent-color:#d8ad55;touch-action:pan-x;}
 .audioRow output{color:#f0d785;text-align:right;font-size:.65rem;}
 #audioClose{display:block;margin:16px auto 0;min-width:120px;}
+#briefing{position:absolute;inset:0;background:rgba(3,4,12,.88);display:none;align-items:center;justify-content:center;z-index:46;padding:12px;}
+#briefingBox{width:min(520px,94vw);max-height:92vh;overflow-y:auto;background:radial-gradient(circle at 50% 0,rgba(117,55,126,.24),transparent 45%),linear-gradient(155deg,#171c36,#080914 72%);border:2px solid rgba(229,189,98,.7);border-radius:15px;padding:20px 22px;box-shadow:0 20px 65px rgba(0,0,0,.75),inset 0 1px rgba(255,255,255,.11);text-align:center;}
+#briefingEyebrow{color:#a99a6d;font-size:9px;font-weight:900;letter-spacing:2.6px;margin-bottom:5px;}
+#briefingTitle{font:900 clamp(1.05rem,4vw,1.45rem) Georgia,serif;color:#f0d785;letter-spacing:2px;margin-bottom:8px;}
+#briefingBody{color:#c9cde0;font-size:12px;line-height:1.55;max-width:445px;margin:0 auto 13px;}
+#briefingRecommended{color:#f0cc70;font-size:10px;font-weight:900;letter-spacing:1.5px;margin-bottom:8px;}
+#briefingUnits{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:13px;}
+.briefingUnit{width:72px;color:#e3e5ee;font-size:10px;font-weight:800;line-height:1.15;}
+.briefingUnit canvas{width:54px;height:54px;display:block;margin:0 auto 4px;border-radius:8px;background:linear-gradient(180deg,#ead8b0,#b89a68);border:2px solid #e0b34f;box-shadow:0 3px 9px rgba(0,0,0,.45);}
+#briefingFoot{color:#8e97b8;font-size:10px;line-height:1.35;margin-bottom:13px;}
+#briefingActions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 /* === LEKKI SAMOUCZEK W PIERWSZEJ PRAWDZIWEJ BITWIE === */
 #tutorialLayer{position:absolute;inset:0;display:none;z-index:38;pointer-events:none;overflow:hidden;}
 #tutorialLayer.show{display:block;}
@@ -166,16 +179,16 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 /* === RESPONSIVE - MOBILE === */
 /* === Tablet (iPad portrait / landscape) === */
 @media (min-width: 601px) and (max-width: 1024px) {
-  .cd .iconWrap{width:48px;height:48px;}
-  .cd canvas{width:44px;height:44px;}
+  .cd .iconWrap{width:56px;height:56px;}
+  .cd canvas{width:52px;height:52px;}
   .cdc{font-size:12px;}
   #cds{gap:5px;}
   .cd .tip{font-size:10px;min-width:120px;}
 }
 /* === Telefon - małe ekrany === */
 @media (max-width: 600px) {
-  .cd .iconWrap{width:42px;height:42px;}
-  .cd canvas{width:38px;height:38px;}
+  .cd .iconWrap{width:48px;height:48px;}
+  .cd canvas{width:44px;height:44px;}
   .cdc{font-size:11px;}
   .cdk{width:15px;height:15px;font-size:9px;}
   #cds{gap:4px;}
@@ -186,8 +199,8 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 }
 /* === Bardzo małe ekrany (iPhone SE itp.) === */
 @media (max-width: 400px) {
-  .cd .iconWrap{width:36px;height:36px;}
-  .cd canvas{width:32px;height:32px;}
+  .cd .iconWrap{width:44px;height:44px;}
+  .cd canvas{width:40px;height:40px;}
   .cdc{font-size:10px;}
   .cdk{width:13px;height:13px;font-size:8px;}
   #cds{gap:3px;}
@@ -197,8 +210,8 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
    Dlatego skalujemy HUD również według wysokości, nie tylko szerokości. */
 @media (orientation:landscape) and (max-height:520px) {
   #hud{padding-top:4px;gap:2px;}
-  .cd .iconWrap{width:40px;height:40px;}
-  .cd canvas{width:36px;height:36px;}
+  .cd .iconWrap{width:48px;height:48px;}
+  .cd canvas{width:44px;height:44px;}
   .cdc{font-size:10px;margin-top:1px;}
   .cdk{width:15px;height:15px;font-size:8px;}
   #cds{gap:4px;padding-bottom:4px;}
@@ -207,6 +220,10 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
   #cornerBtns{bottom:max(6px,env(safe-area-inset-bottom));}
   #cornerBtns button{width:38px;height:38px;}
   #cornerQuit{bottom:max(6px,env(safe-area-inset-bottom));padding:7px 13px;}
+  #briefingBox{padding:13px 17px;}
+  #briefingBody{font-size:11px;margin-bottom:9px;}
+  #briefingUnits{margin-bottom:8px;gap:8px;}
+  .briefingUnit{width:64px;font-size:9px;}.briefingUnit canvas{width:46px;height:46px;}
 }
 /* === LANDSCAPE INDICATOR - tylko gdy aspect bardzo pionowy (telefon) === */
 #rotateHint{display:none;position:absolute;inset:0;background:#000;color:#ffd880;z-index:100;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;font-size:1.1rem;line-height:1.6;}
@@ -294,6 +311,17 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
     <label class="audioRow"><span id="audioMasterLabel">Głośność</span><input id="audioMaster" type="range" min="0" max="100" value="72"><output id="audioMasterValue">72%</output></label>
     <label class="audioRow"><span id="audioMusicLabel">Motywy bossów</span><input id="audioMusic" type="range" min="0" max="100" value="45"><output id="audioMusicValue">45%</output></label>
     <button class="btn" id="audioClose">GOTOWE</button>
+  </div>
+</div>
+<div id="briefing" role="dialog" aria-modal="true" aria-labelledby="briefingTitle">
+  <div id="briefingBox">
+    <div id="briefingEyebrow">RAPORT ZWIADOWCÓW</div>
+    <h2 id="briefingTitle">KRÓL DEMONÓW</h2>
+    <div id="briefingBody"></div>
+    <div id="briefingRecommended">POLECANE JEDNOSTKI</div>
+    <div id="briefingUnits"></div>
+    <div id="briefingFoot"></div>
+    <div id="briefingActions"><button class="btn" id="briefingStart">DO BOJU</button><button class="btn btns" id="briefingBack">WRÓĆ</button></div>
   </div>
 </div>
 
@@ -548,27 +576,44 @@ var UD = {
   moonlord: {n:"Władca Krwawej Łuny",c:0,h:1200,a:31,ac:24,s:30,r:44,worker:false,cannon:false,spl:0,R:150,G:30,B:52,tier:5,boss:true,bossKind:"moon",bounty:150},
   demonking:{n:"Król Demonów",c:0,h:1700,a:34,ac:28,s:25,r:185,worker:false,cannon:false,spl:18,R:112,G:35,B:125,tier:5,boss:true,bossKind:"demon",bounty:250}
 };
-/* Kolejność w UI: wszystkie jednostki, od najtańszej do najdroższej. */
+/* Pełny katalog jednostek. W pojedynczej bitwie pojawia się tylko inteligentnie
+   dobrana talia poziomu — maksymalnie osiem kart łącznie z zapleczem. */
 var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","crossbow","monk","knight","wizard","templar","golem","cannon"];
-var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8","9","0","-","=","]","["];
+var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
+var MAX_BATTLE_CARDS = 8;
 
 /* ── Levels ── */
-/* PROGRESJA: kolejne poziomy poszerzają rotację 14 jednostek.
-   ad = cooldown spawnu AI (ms) — większe = wolniejsze pojawianie się wrogów. */
+/* PROGRESJA: pełny katalog ma 14 jednostek, ale każda bitwa wybiera najwyżej
+   8 kart o konkretnych rolach. `recommended` wskazuje kontry na zagrożenie
+   poziomu; nie daje ukrytego bonusu. ad = cooldown spawnu AI (ms). */
 var LV = [
-  {id:1, n:"Zielone Pola",       pH:1000,eH:1000,gm:1.8,ad:8500,sc:0,profile:"balanced", ai:["drwal","warrior","drwal","warrior"], ul:["drwal","warrior"]},
-  {id:2, n:"Jesienny Zmierzch",  pH:1200,eH:1200,gm:1.9,ad:7500,sc:1,profile:"defensive",ai:["drwal","warrior","pikeman","warrior"], ul:["drwal","warrior","pikeman"]},
-  {id:3, n:"Nocna Twierdza",     pH:1500,eH:1500,gm:2.0,ad:6800,sc:2,profile:"aggressive",ai:["drwal","pikeman","archer","warrior"], ul:["drwal","warrior","pikeman","archer"]},
-  {id:4, n:"Świt nad Wzgórzami", pH:1800,eH:1800,gm:2.2,ad:6000,sc:3,profile:"chaotic",  ai:["drwal","warrior","spearman","archer","knight"], ul:["drwal","warrior","spearman","archer","knight"]},
-  {id:5, n:"Cytadela",           pH:2200,eH:2200,gm:2.4,ad:5400,sc:4,profile:"defensive",ai:["drwal","warrior","archer","monk","knight","cannon"], ul:["drwal","warrior","spearman","archer","monk","knight","cannon"]},
-  {id:6, n:"Pustynia Khepri",    pH:2600,eH:2600,gm:2.5,ad:4800,sc:5,profile:"aggressive",ai:["drwal","archer","knight","wizard","warrior"], ul:["drwal","warrior","monk","archer","knight","cannon","wizard"]},
-  {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,profile:"defensive",ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","archer","mason","crossbow","knight","cannon","wizard"]},
-  {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,profile:"siege",    ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","cannon","wizard"]},
-  {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,profile:"siege",    ai:["drwal","mason","cannon","wizard","golem","templar","cannon"], ul:["drwal","warrior","spearman","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,profile:"aggressive",ai:["drwal","mason","knight","wizard","templar","cannon","golem","wizard"], ul:["drwal","warrior","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true,bossKey:"moonlord"},
-  {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,profile:"defensive",ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"]},
-  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,profile:"chaotic",  ai:["drwal","mason","templar","wizard","cannon","golem","templar","wizard","cannon"], ul:["drwal","warrior","spearman","monk","archer","mason","crossbow","berserk","golem","knight","templar","cannon","wizard"], boss:true,bossKey:"demonking"}
+  {id:1, n:"Zielone Pola",       pH:1000,eH:1000,gm:1.8,ad:8500,sc:0,profile:"balanced", ai:["drwal","warrior"], ul:["drwal","warrior"],recommended:["warrior"]},
+  {id:2, n:"Jesienny Zmierzch",  pH:1200,eH:1200,gm:1.9,ad:7500,sc:1,profile:"defensive",ai:["drwal","warrior","pikeman"], ul:["drwal","warrior","pikeman"],recommended:["warrior","pikeman"]},
+  {id:3, n:"Nocna Twierdza",     pH:1500,eH:1500,gm:2.0,ad:6800,sc:2,profile:"aggressive",ai:["drwal","pikeman","archer","warrior"], ul:["drwal","warrior","pikeman","archer"],recommended:["archer","warrior"]},
+  {id:4, n:"Świt nad Wzgórzami", pH:1800,eH:1800,gm:2.2,ad:6000,sc:3,profile:"chaotic",  ai:["drwal","warrior","spearman","archer","knight"], ul:["drwal","warrior","spearman","archer","knight"],recommended:["spearman","knight"]},
+  {id:5, n:"Cytadela",           pH:2200,eH:2200,gm:2.4,ad:5400,sc:4,profile:"defensive",ai:["drwal","warrior","archer","monk","knight","cannon"], ul:["drwal","warrior","spearman","archer","monk","knight","cannon"],recommended:["archer","monk","cannon"]},
+  {id:6, n:"Pustynia Khepri",    pH:2600,eH:2600,gm:2.5,ad:4800,sc:5,profile:"aggressive",ai:["drwal","archer","knight","wizard","warrior"], ul:["drwal","warrior","monk","archer","knight","cannon","wizard"],recommended:["archer","knight","wizard"]},
+  {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,profile:"defensive",ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","berserk","mason","crossbow","knight","wizard"],recommended:["berserk","crossbow","wizard"]},
+  {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,profile:"siege",    ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","spearman","mason","crossbow","monk","berserk","wizard","templar"],recommended:["spearman","crossbow","wizard","templar"]},
+  {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,profile:"siege",    ai:["drwal","mason","cannon","wizard","golem","templar"], ul:["drwal","warrior","mason","crossbow","berserk","knight","wizard","cannon"],recommended:["berserk","knight","wizard","cannon"]},
+  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,profile:"aggressive",ai:["drwal","mason","knight","wizard","templar","cannon","golem"], ul:["drwal","warrior","mason","crossbow","monk","wizard","templar","golem"],recommended:["crossbow","monk","wizard","golem"],boss:true,bossKey:"moonlord"},
+  {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,profile:"defensive",ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","mason","crossbow","monk","berserk","knight","wizard","golem"],recommended:["berserk","knight","wizard","golem"]},
+  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,profile:"chaotic",  ai:["drwal","mason","templar","wizard","cannon","golem","crossbow","berserk"], ul:["drwal","mason","spearman","monk","crossbow","wizard","templar","golem"],recommended:["spearman","monk","wizard","golem"],briefing:"briefing.demonBody",boss:true,bossKey:"demonking"}
 ];
+
+function sanitizeLevelDeck(list){
+  var clean=[],seen={};
+  for(var i=0;i<(list||[]).length&&clean.length<MAX_BATTLE_CARDS;i++){
+    var key=list[i];
+    if(!seen[key]&&UD[key]&&!UD[key].boss){seen[key]=true;clean.push(key);}
+  }
+  return clean;
+}
+for(var lvDeckI=0;lvDeckI<LV.length;lvDeckI++){
+  LV[lvDeckI].ul=sanitizeLevelDeck(LV[lvDeckI].ul);
+  LV[lvDeckI].ai=sanitizeLevelDeck(LV[lvDeckI].ai);
+  LV[lvDeckI].recommended=sanitizeLevelDeck(LV[lvDeckI].recommended).filter(function(key){return LV[lvDeckI].ul.indexOf(key)>=0;});
+}
 
 var G=null, LI=0, RAF=null, PAUSED=false;
 var CONTENT=window.CASTLE_CONTENT||{
@@ -586,7 +631,7 @@ function randBetween(min,max){
 var UPG={}, XP=0, XP_NEXT=60, UPTS=0;
 var UPG_MAX=3;
 var UPG_COSTS={atk:[1,2,3],hp:[1,2,3],spd:[1,2,3],cost:[1,2,4]};
-var upgDone=null;
+var upgDone=null,UPG_TARGET_LI=null;
 
 /* ═══════════════════════════════════════════════
    UMIEJĘTNOŚCI GRACZA (czary z cooldownem)
@@ -868,9 +913,10 @@ function addXP(amt){
   while(XP>=XP_NEXT){XP-=XP_NEXT;UPTS++;XP_NEXT=Math.round(XP_NEXT*1.25);}
 }
 
-function showUpgradeScreen(cb){
+function showUpgradeScreen(cb,targetLevelIndex){
   upgDone=cb;
-  if(UPTS<=0){if(cb)cb();return;}
+  UPG_TARGET_LI=(typeof targetLevelIndex==="number")?Math.max(0,Math.min(targetLevelIndex,LV.length-1)):null;
+  if(UPTS<=0){UPG_TARGET_LI=null;if(cb)cb();return;}
   document.getElementById("upgPtsVal").textContent=UPTS;
   buildUpgradeGrid();
   document.getElementById("upg").style.display="flex";
@@ -886,7 +932,8 @@ function buildUpgradeGrid(){
     grid.appendChild(msg);
     return;
   }
-  var ul=LV[Math.min(LI+1,LV.length-1)].ul;
+  var targetLI=UPG_TARGET_LI===null?Math.min(LI+1,LV.length-1):UPG_TARGET_LI;
+  var ul=LV[targetLI].ul;
   var sKeys=["atk","hp","spd","cost"];
   var sLabel={atk:tr("upgrade.atk"),hp:tr("upgrade.hp"),spd:tr("upgrade.speed"),cost:tr("upgrade.cost")};
   var sLabelDrwal={atk:tr("upgrade.atk"),hp:tr("upgrade.hp"),spd:tr("upgrade.workerSpeed"),cost:tr("upgrade.cost")};
@@ -923,6 +970,7 @@ function buildUpgradeGrid(){
 }
 document.getElementById("upgNext").addEventListener("click",function(){
   document.getElementById("upg").style.display="none";
+  UPG_TARGET_LI=null;
   if(upgDone){var cb=upgDone;upgDone=null;cb();}
 });
 
@@ -1061,20 +1109,23 @@ document.getElementById("tutorialSkip").onclick=function(){stopTutorial(true);};
 function buildCards(){
   var row=document.getElementById("cds");row.innerHTML="";
   var ul=G.lv.ul;
+  var recommended=G.lv.recommended||[];
   var keyIdx=0;
   for(var ki=0;ki<UK.length;ki++){
     var key=UK[ki],found=false;
     for(var ui=0;ui<ul.length;ui++)if(ul[ui]===key){found=true;break;}
     if(!found)continue;
-    var ud=UD[key];
-    var card=document.createElement("div");card.className="cd";card.id="cd_"+key;
+    var ud=UD[key],isRecommended=recommended.indexOf(key)>=0;
+    var card=document.createElement("div");card.className="cd"+(isRecommended?" recommended":"");card.id="cd_"+key;
     var hotkey=UNIT_HOTKEYS[keyIdx]||"";
     card.dataset.hotkey=hotkey;
     var kbd=document.createElement("div");kbd.className="cdk";kbd.textContent=hotkey;
     var wrap=document.createElement("div");wrap.className="iconWrap";
-    var ic=document.createElement("canvas");ic.width=46;ic.height=46;
-    paintIconOn(ic.getContext("2d"),key,46,46);
+    var ic=document.createElement("canvas");ic.width=56;ic.height=56;
+    paintIconOn(ic.getContext("2d"),key,56,56);
     wrap.appendChild(ic);
+    var recBadge=null;
+    if(isRecommended){recBadge=document.createElement("div");recBadge.className="recBadge";recBadge.textContent="★";recBadge.title=tr("tip.recommended");}
     var cc=document.createElement("div");cc.className="cdc";cc.id="cdc_"+key;cc.textContent=effStat(key,"c");
     var tip=document.createElement("div");tip.className="tip";
     var tipHTML="<b>"+ud.n+"</b> <span style='color:#88aaff'>["+hotkey+"]</span><br>";
@@ -1094,11 +1145,12 @@ function buildCards(){
       else if(aRatio > 0 && aRatio < 0.6) tipHTML+="<br><span style='color:#cc6622'>🏰 "+tr("tip.siege")+"</span>";
     }
     if(key==="archer")tipHTML+="<br><span style='color:#d8bd68'>◎ "+tr("tip.archerFormation")+"</span>";
+    if(isRecommended)tipHTML+="<br><span style='color:#f0cc70'>★ "+tr("tip.recommended")+"</span>";
     var counterKey="tip.counter."+key,counterText=tr(counterKey);
     if(counterText!==counterKey)tipHTML+="<br><span style='color:#79d9e8'>◆ "+counterText+"</span>";
     if(ud.cannon) tipHTML+="<br><span style='color:#cc6622'>🏰 "+tr("tip.siege")+"</span>";
     tip.innerHTML=tipHTML;
-    card.appendChild(kbd);card.appendChild(wrap);card.appendChild(cc);card.appendChild(tip);
+    card.appendChild(kbd);if(recBadge)card.appendChild(recBadge);card.appendChild(wrap);card.appendChild(cc);card.appendChild(tip);
     (function(k){
       var lastSpawnTime = 0;
       function doSpawn(){
@@ -1537,6 +1589,31 @@ function approachVx(u,target,dt,acc){
   var diff=target-u.vx,st=acc*dt;
   if(Math.abs(diff)<=st)u.vx=target;
   else u.vx+=(diff>0?1:-1)*st;
+}
+/* Lekka fizyka szyku: maszerujące jednostki tej samej strony nie zajmują
+   dokładnie tego samego punktu. Nie dodajemy osobnych linii ani sterowania —
+   tylko odsuwamy tylną postać, gdy sylwetki zaczynają się zlewać. */
+function resolveFriendlyFormation(){
+  if(!G||!G.units||G.units.length<2)return;
+  var minGap=10*combatScale();
+  for(var side=0;side<2;side++){
+    var isP=side===0,list=[];
+    for(var i=0;i<G.units.length;i++){
+      var u=G.units[i];
+      if(!u||u.isP!==isP||u.state==="dead"||u.ud.worker||u.ud.mason||u.ud.cannon||u.ud.boss)continue;
+      list.push(u);
+    }
+    list.sort(isP?function(a,b){return b.x-a.x;}:function(a,b){return a.x-b.x;});
+    var dir=isP?1:-1;
+    for(var j=1;j<list.length;j++){
+      var front=list[j-1],back=list[j],gap=(front.x-back.x)*dir;
+      if(gap>=minGap||back.state!=="march")continue;
+      back.x=front.x-dir*minGap;
+      var ownEdge=isP?G.p.x+G.p.w+3:G.e.x-3;
+      if(isP)back.x=Math.max(ownEdge,back.x);else back.x=Math.min(ownEdge,back.x);
+      if(back.vx*dir>0)back.vx*=.22;
+    }
+  }
 }
 function spawnDeathFX(u){
   for(var i=0;i<perfCount(8,4);i++)G.dust.push({x:u.x+(Math.random()-0.5)*8,y:u.y-10-Math.random()*15,vx:(Math.random()-0.5)*70,vy:-30-Math.random()*50,life:0.7+Math.random()*0.3,sz:1.5+Math.random()*1.5});
@@ -2124,6 +2201,7 @@ function tick(dt){
       u.step+=(spd*0.028+0.06)*dt*6;
     }
   }
+  resolveFriendlyFormation();
 
   // === MNICH: leczenie pobliskich sojuszników ===
   for(var mi=0;mi<G.units.length;mi++){
@@ -4961,6 +5039,92 @@ function drawCastleDamageOverlay(c,x,y,w,actualH,hpPct,li,mi,dk){
   CT.restore();
 }
 
+/* Subtelna ewolucja kampanijna zamku po pierwszych sześciu poziomach.
+   Jest niezależna od rozbudowy Kamieniarza: zmienia sylwetkę i detale, ale
+   nie daje dodatkowego HP. Gagi scenograficzne występują tylko w konkretnych
+   bitwach i po jednej stronie, nigdy na każdym zamku. */
+function drawCampaignCastleEvolution(c,geom){
+  var levelId=G&&G.lv?Number(G.lv.id)||1:1;
+  if(levelId<7||!geom||geom.collapse>=.32)return;
+  var x=geom.x,y=geom.y,w=geom.w,h=geom.actualH,T=geom.T,isP=c.isP;
+  CT.save();
+
+  // Etap II kampanii: cienki nowy pas kamienia i cztery mosiężne kotwy.
+  var bandY=y+h*.22;
+  CT.globalAlpha=Math.max(.28,Math.min(.72,geom.hpPct));
+  CT.strokeStyle=geom.li;CT.lineWidth=2;
+  CT.beginPath();CT.moveTo(x+5,bandY);CT.lineTo(x+w-5,bandY);CT.stroke();
+  CT.strokeStyle="rgba(25,24,28,.42)";CT.lineWidth=.7;
+  CT.beginPath();CT.moveTo(x+5,bandY+2);CT.lineTo(x+w-5,bandY+2);CT.stroke();
+  var anchors=[.12,.36,.64,.88];
+  for(var ai=0;ai<anchors.length;ai++){
+    var ax=x+w*anchors[ai];
+    CT.fillStyle="#9a6a22";CT.fillRect(ax-1.5,bandY-2,3,6);
+    CT.fillStyle="#e4bb58";CT.beginPath();CT.arc(ax,bandY,1,0,Math.PI*2);CT.fill();
+  }
+
+  // Ostatnie dwa poziomy: dwa bardzo małe herby na narożach muru.
+  if(levelId>=11){
+    var shieldXs=[x+w*.17,x+w*.83];
+    for(var si=0;si<shieldXs.length;si++){
+      var sx=shieldXs[si],sy=y+h*.38;
+      CT.fillStyle=geom.dk;CT.beginPath();CT.moveTo(sx-4,sy-4);CT.lineTo(sx+4,sy-4);CT.lineTo(sx+3,sy+3);CT.lineTo(sx,sy+6);CT.lineTo(sx-3,sy+3);CT.closePath();CT.fill();
+      CT.fillStyle=geom.flagL;CT.beginPath();CT.moveTo(sx-3,sy-3);CT.lineTo(sx+3,sy-3);CT.lineTo(sx+2,sy+2);CT.lineTo(sx,sy+4);CT.lineTo(sx-2,sy+2);CT.closePath();CT.fill();
+      CT.strokeStyle="#e0b84f";CT.lineWidth=.7;CT.stroke();
+    }
+  }
+  CT.globalAlpha=1;
+
+  if(geom.hpPct>.55&&geom.collapse<.08&&levelId===7&&isP){
+    // Jedyny zamek z praniem: trzy różne sztuki płótna poruszane wiatrem.
+    var lx1=x+w*.04,lx2=x+w*.56,ly1=y+4,ly2=y+8;
+    CT.strokeStyle="rgba(55,42,30,.9)";CT.lineWidth=1;
+    CT.beginPath();CT.moveTo(lx1,ly1);CT.quadraticCurveTo((lx1+lx2)/2,(ly1+ly2)/2+2,lx2,ly2);CT.stroke();
+    var clothCols=["#e8e1cf","#b94d46","#4675a8"];
+    for(var ci=0;ci<3;ci++){
+      var ct=(ci+1)/4,cx=lx1+(lx2-lx1)*ct,cy=ly1+(ly2-ly1)*ct+Math.sin(ct*Math.PI)*1.5;
+      var cw=Math.max(6,w*.055),ch=Math.max(8,h*.045),sway=Math.sin(T*2.1+ci*1.7)*1.4;
+      CT.fillStyle=clothCols[ci];CT.strokeStyle="rgba(20,15,12,.45)";CT.lineWidth=.5;
+      if(ci===0){
+        // Biała koszula z rękawami.
+        CT.beginPath();CT.moveTo(cx-cw*.25,cy);CT.lineTo(cx+cw*.25,cy);CT.lineTo(cx+cw*.52,cy+ch*.28);CT.lineTo(cx+cw*.32+sway,cy+ch*.45);CT.lineTo(cx+cw*.24+sway,cy+ch);CT.lineTo(cx-cw*.24+sway*.2,cy+ch);CT.lineTo(cx-cw*.32,cy+ch*.45);CT.lineTo(cx-cw*.52,cy+ch*.28);CT.closePath();CT.fill();CT.stroke();
+      }else if(ci===1){
+        // Czerwone spodnie — dwa osobne nogawki odróżniają je od flagi.
+        CT.fillRect(cx-cw*.4,cy,cw*.8,ch*.32);CT.strokeRect(cx-cw*.4,cy,cw*.8,ch*.32);
+        CT.beginPath();CT.moveTo(cx-cw*.36,cy+ch*.28);CT.lineTo(cx-sway*.1,cy+ch*.28);CT.lineTo(cx-cw*.05+sway,cy+ch);CT.lineTo(cx-cw*.36+sway*.25,cy+ch);CT.closePath();CT.fill();CT.stroke();
+        CT.beginPath();CT.moveTo(cx+sway*.1,cy+ch*.28);CT.lineTo(cx+cw*.36,cy+ch*.28);CT.lineTo(cx+cw*.36+sway*.25,cy+ch);CT.lineTo(cx+cw*.05+sway,cy+ch);CT.closePath();CT.fill();CT.stroke();
+      }else{
+        // Niebieskie prześcieradło lekko faluje na wietrze.
+        CT.beginPath();CT.moveTo(cx-cw/2,cy);CT.lineTo(cx+cw/2,cy);CT.lineTo(cx+cw/2+sway,cy+ch);CT.quadraticCurveTo(cx+sway*.4,cy+ch-2,cx-cw/2+sway*.15,cy+ch);CT.closePath();CT.fill();CT.stroke();
+      }
+      CT.fillStyle="#9b7b42";CT.fillRect(cx-cw/2-1,cy-1,2,2);CT.fillRect(cx+cw/2-1,cy-1,2,2);
+    }
+  }else if(geom.hpPct>.55&&geom.collapse<.08&&levelId===9&&!isP){
+    // Parujący czajnik na blankach — jeden mały gag w poziomie wulkanicznym.
+    var kx=x+w*.72,ky=y-8,ks=Math.max(.78,w/155);
+    CT.fillStyle="#3d332f";CT.strokeStyle="#171313";CT.lineWidth=1;
+    CT.beginPath();CT.ellipse(kx,ky,5*ks,3.5*ks,0,0,Math.PI*2);CT.fill();CT.stroke();
+    CT.beginPath();CT.arc(kx-5*ks,ky-1*ks,3*ks,Math.PI*.55,Math.PI*1.45);CT.stroke();
+    CT.beginPath();CT.moveTo(kx+4*ks,ky-1*ks);CT.lineTo(kx+8*ks,ky-3*ks);CT.lineTo(kx+5*ks,ky+1*ks);CT.stroke();
+    CT.fillStyle="#b88a45";CT.fillRect(kx-1.5*ks,ky-5*ks,3*ks,1.5*ks);
+    for(var st=0;st<2;st++){
+      var prog=(T*.32+st*.48)%1,steamX=kx+Math.sin(prog*5+st)*2*ks,steamY=ky-7*ks-prog*12*ks;
+      CT.strokeStyle="rgba(225,225,220,"+((1-prog)*.42)+")";CT.lineWidth=1.2*ks;
+      CT.beginPath();CT.moveTo(steamX,steamY+4*ks);CT.quadraticCurveTo(steamX+3*ks,steamY+1*ks,steamX,steamY-2*ks);CT.stroke();
+    }
+  }else if(geom.hpPct>.55&&geom.collapse<.08&&levelId===11&&isP){
+    // Przysypiający strażnik: bez napisów i bez wpływu na walkę.
+    var gx=x+w*.76,gy=y-5,nod=Math.sin(T*.75)*.08-.10;
+    CT.save();CT.translate(gx,gy);CT.rotate(nod);
+    CT.fillStyle="#b9865f";CT.beginPath();CT.arc(0,-4,3.2,0,Math.PI*2);CT.fill();
+    CT.fillStyle="#586779";CT.beginPath();CT.arc(0,-5,4.2,Math.PI,Math.PI*2);CT.lineTo(4,-4);CT.lineTo(-4,-4);CT.closePath();CT.fill();
+    CT.fillStyle="#263344";CT.fillRect(-4,-2,8,6);
+    CT.strokeStyle="#2a2018";CT.lineWidth=1.2;CT.beginPath();CT.moveTo(-5,2);CT.lineTo(5,2);CT.stroke();
+    CT.restore();
+  }
+  CT.restore();
+}
+
 function drawCastle(c,sc){
   if(!c)return;
   var x=c.x,w=c.w,h=c.h,T=G.T,isP=c.isP;
@@ -4970,6 +5134,7 @@ function drawCastle(c,sc){
   var sinkY=collapse*h*0.55,y=G.GY-h+sinkY,actualH=Math.max(4,h-sinkY);
   var shX=c.shake>0?(Math.random()-0.5)*c.shake*6:0;
   var shY=c.shake>0?(Math.random()-0.5)*c.shake*4:0;
+  var campaignTier=(G&&G.lv&&G.lv.id>=11)?2:((G&&G.lv&&G.lv.id>=7)?1:0);
 
   /* === TILT ROTATION — zamek przechyla się przy burzeniu ===
      Gracz przechyla się w prawo (w stronę wroga), wróg w lewo.
@@ -5838,7 +6003,7 @@ function drawCastle(c,sc){
     }
 
     /* === SIDE TOWER (taller, with conical roof) === */
-    var twW=w*0.28, twH=h*1.05-sinkY*0.7;
+    var twW=w*0.28, twH=h*(1.05+campaignTier*.02)-sinkY*0.7;
     if(twH>10){
       var twX = isP ? x - twW*0.5 : x + w - twW*0.5;
       var twY = G.GY - twH;
@@ -5919,7 +6084,7 @@ function drawCastle(c,sc){
        Stoi nad bramą, góruje nad wszystkim
        ═══════════════════════════════════════════════════ */
     var dgW = w * 0.40;
-    var dgH = h * 0.45 - sinkY * 0.5; // dodaje 45% wysokości NAD murem
+    var dgH = h * (0.45+campaignTier*.015) - sinkY * 0.5; // lekko rośnie po 6. i 10. poziomie
     var dgX = x + (w - dgW) / 2;
     var dgY = y - dgH; // zaczyna się na szczycie muru, idzie w GÓRĘ
     var dgCornH = 5; // ZAWSZE zadeklarowane - używane też poza ifem
@@ -6132,7 +6297,7 @@ function drawCastle(c,sc){
     }
 
     /* === Battlements main wall (above cornice) === */
-    drawCrenellation(x,y-cornH,w,7,li,mi,dk);
+    drawCrenellation(x,y-cornH,w,7+campaignTier,li,mi,dk);
 
     /* === SZTANDARKI NA ROGACH MURU (dekoracja) === */
     if(actualH > 50 && collapse < 0.3){
@@ -6388,6 +6553,12 @@ function drawCastle(c,sc){
     }
   }
 
+  drawCampaignCastleEvolution(c,{
+    x:x,y:y,w:w,actualH:actualH,T:T,hpPct:hpPct,collapse:collapse,
+    li:li,mi:mi,dk:dk,flagL:flagL,flagD:flagD,
+    twX:twX,twY:twY,twW:twW,twH:twH,dgX:dgX,dgY:dgY,dgW:dgW,dgH:dgH,
+    gtX:gtX,gtY:gtY,gtW:gtW
+  });
   drawCastleDamageOverlay(c,x,y,w,actualH,hpPct,li,mi,dk);
 
   /* Fires */
@@ -8923,6 +9094,61 @@ function drawKnightIcon(ctx, cx, cy, cw, ch){
   ctx.beginPath();ctx.arc(sx - 2*f, sy, 0.8*f, 0, Math.PI*2);ctx.fill();
 }
 
+/* ══════════════════════════════════════════════
+   KRÓTKI RAPORT PRZED BOSSEM
+   Nie tworzy dodatkowego systemu zarządzania. Pokazuje tylko istniejące
+   kontry oraz cztery polecane karty z talii danego poziomu.
+   ══════════════════════════════════════════════ */
+var BRIEFING_CONTINUE=null;
+function hideLevelBriefing(){
+  var panel=document.getElementById("briefing");if(panel)panel.style.display="none";
+  BRIEFING_CONTINUE=null;
+}
+function showLevelBriefing(levelIndex,cb){
+  var lv=LV[levelIndex],panel=document.getElementById("briefing");
+  if(!lv||!lv.briefing||!panel){if(cb)cb();return;}
+  BRIEFING_CONTINUE=cb;
+  document.getElementById("briefingEyebrow").textContent=tr("briefing.eyebrow");
+  document.getElementById("briefingTitle").textContent=lv.n;
+  document.getElementById("briefingBody").textContent=tr(lv.briefing);
+  document.getElementById("briefingRecommended").textContent=tr("briefing.recommended");
+  document.getElementById("briefingFoot").textContent=tr("briefing.foot");
+  document.getElementById("briefingStart").textContent=tr("briefing.start");
+  document.getElementById("briefingBack").textContent=tr("briefing.back");
+  var units=document.getElementById("briefingUnits");units.innerHTML="";
+  var rec=lv.recommended||[];
+  for(var i=0;i<rec.length;i++){
+    var key=rec[i],item=document.createElement("div");item.className="briefingUnit";
+    var ic=document.createElement("canvas");ic.width=56;ic.height=56;
+    paintIconOn(ic.getContext("2d"),key,56,56);
+    var name=document.createElement("div");name.textContent=UD[key].n;
+    item.appendChild(ic);item.appendChild(name);units.appendChild(item);
+  }
+  panel.style.display="flex";
+}
+function startLevelFlow(levelIndex,options){
+  options=options||{};levelIndex=Math.max(0,Math.min(levelIndex,LV.length-1));
+  initAudio();
+  document.getElementById("title").style.display="none";
+  initUpgrades();
+  var launch=function(){
+    var begin=function(){load(levelIndex);startLoop();};
+    if(UPTS>0)showUpgradeScreen(begin,levelIndex);else begin();
+  };
+  if(!options.skipBriefing&&LV[levelIndex].briefing)showLevelBriefing(levelIndex,launch);
+  else launch();
+}
+document.getElementById("briefingStart").onclick=function(){
+  var cb=BRIEFING_CONTINUE;hideLevelBriefing();if(cb)cb();
+};
+document.getElementById("briefingBack").onclick=function(){
+  hideLevelBriefing();
+  document.getElementById("hud").style.display="none";
+  document.getElementById("cornerBtns").classList.remove("show");
+  document.getElementById("cornerQuit").classList.remove("show");
+  buildLevelSelect();document.getElementById("title").style.display="flex";
+};
+
 /* ── End screen ── */
 function showEnd(won){
   stopTutorial(TUTORIAL.active);
@@ -8965,7 +9191,7 @@ function showEnd(won){
       document.getElementById("end").style.display="none";
       if(wonNow&&hasNextNow){
         var targetLI=currentLINow+1;
-        showUpgradeScreen(function(){load(targetLI);startLoop();});
+        startLevelFlow(targetLI);
       }else if(wonNow&&!hasNextNow){
         document.getElementById("hud").style.display="none";
         document.getElementById("cornerBtns").classList.remove("show");
@@ -9029,11 +9255,7 @@ function buildLevelSelect(){
     if(unlocked){
       (function(idx){
         btn.onclick=function(){
-          initAudio();
-          document.getElementById("title").style.display="none";
-          initUpgrades();
-          if(UPTS>0)showUpgradeScreen(function(){load(idx);startLoop();});
-          else{load(idx);startLoop();}
+          startLevelFlow(idx);
         };
       })(i);
     }
@@ -10732,9 +10954,7 @@ function startIntro(){
 startIntro();
 
 document.getElementById("pb").onclick=function(){
-  initAudio(); // audio context po user gesture
-  document.getElementById("title").style.display="none";
-  initUpgrades();load(0);startLoop();
+  startLevelFlow(0,{skipBriefing:true});
 };
 
 var langPLBtn=document.getElementById("langPL"),langENBtn=document.getElementById("langEN");
