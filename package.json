@@ -1,0 +1,19 @@
+{
+  "name": "slingtoon-web",
+  "version": "0.7.0",
+  "private": true,
+  "type": "module",
+  "description": "SlingToon HTML5 Canvas PWA",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "validate": "node scripts/validate.mjs",
+    "syntax": "node --check src/main.js && node --check src/game.js && node --check src/render.js && node --check src/audio.js && node --check src/face-studio.js && node --check sw.js",
+    "check": "npm run validate && npm run syntax && npm test",
+    "build": "node scripts/build-static.mjs",
+    "smoke": "node scripts/http-smoke.mjs",
+    "serve": "python3 -m http.server 4173"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

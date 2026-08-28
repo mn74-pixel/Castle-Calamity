@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#42356c"/>
+      <stop offset="0.58" stop-color="#7560a1"/>
+      <stop offset="1" stop-color="#a66f93"/>
+    </linearGradient>
+    <linearGradient id="sunrise" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5b57bb"/>
+      <stop offset="0.48" stop-color="#ff7f87"/>
+      <stop offset="1" stop-color="#ffd376"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#55304e"/>
+      <stop offset="1" stop-color="#291b38"/>
+    </linearGradient>
+    <linearGradient id="bed" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff827e"/>
+      <stop offset="1" stop-color="#e84875"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ef9d59"/>
+      <stop offset="1" stop-color="#a9534f"/>
+    </linearGradient>
+    <radialGradient id="lampGlow" cx="0.5" cy="0.45" r="0.65">
+      <stop offset="0" stop-color="#fff4a8" stop-opacity="0.68"/>
+      <stop offset="1" stop-color="#fff4a8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#wall)"/>
+  <path d="M0 0h1280v44H0z" fill="#261c44" opacity="0.44"/>
+  <path d="M0 0h430L860 586H420z" fill="#ffc77b" opacity="0.085"/>
+
+  <!-- Subtle wallpaper rhythm -->
+  <g fill="#fff4d6" opacity="0.08">
+    <circle cx="455" cy="88" r="5"/><circle cx="510" cy="88" r="5"/><circle cx="565" cy="88" r="5"/>
+    <circle cx="620" cy="88" r="5"/><circle cx="675" cy="88" r="5"/><circle cx="730" cy="88" r="5"/>
+    <circle cx="455" cy="143" r="5"/><circle cx="510" cy="143" r="5"/><circle cx="565" cy="143" r="5"/>
+    <circle cx="620" cy="143" r="5"/><circle cx="675" cy="143" r="5"/><circle cx="730" cy="143" r="5"/>
+    <circle cx="895" cy="104" r="5"/><circle cx="950" cy="104" r="5"/><circle cx="1005" cy="104" r="5"/>
+    <circle cx="1060" cy="104" r="5"/><circle cx="1115" cy="104" r="5"/><circle cx="1170" cy="104" r="5"/>
+    <circle cx="895" cy="159" r="5"/><circle cx="950" cy="159" r="5"/><circle cx="1005" cy="159" r="5"/>
+    <circle cx="1060" cy="159" r="5"/><circle cx="1115" cy="159" r="5"/><circle cx="1170" cy="159" r="5"/>
+  </g>
+
+  <!-- Dawn window -->
+  <g stroke="#1b1633" stroke-width="6" stroke-linejoin="round">
+    <rect x="48" y="58" width="348" height="264" rx="24" fill="#2b234a"/>
+    <rect x="63" y="73" width="318" height="232" rx="13" fill="url(#sunrise)"/>
+    <circle cx="295" cy="204" r="49" fill="#ffd968" stroke="none" opacity="0.94"/>
+    <g fill="#504a83" stroke="none">
+      <path d="M63 235l37-28 29 18 42-64 49 61 45-31 35 31 44-42 37 30v95H63z"/>
+      <path d="M63 265h318v40H63z" fill="#31284e"/>
+      <path d="M83 244h48v61H83zM150 226h62v79h-62zM237 246h45v59h-45zM302 218h57v87h-57z" fill="#382e5e"/>
+    </g>
+    <g fill="#ffd96b" stroke="none" opacity="0.78">
+      <rect x="95" y="260" width="8" height="12" rx="2"/><rect x="113" y="278" width="8" height="12" rx="2"/>
+      <rect x="167" y="244" width="8" height="12" rx="2"/><rect x="188" y="267" width="8" height="12" rx="2"/>
+      <rect x="318" y="237" width="8" height="12" rx="2"/><rect x="339" y="263" width="8" height="12" rx="2"/>
+    </g>
+    <path d="M222 73v232M63 189h318" fill="none" stroke="#30264c" stroke-width="10"/>
+    <path d="M47 323h350l18 18H29z" fill="#f4b26d"/>
+  </g>
+  <g fill="#fffaf0" opacity="0.72">
+    <ellipse cx="120" cy="122" rx="45" ry="17"/><ellipse cx="157" cy="113" rx="37" ry="24"/><ellipse cx="192" cy="124" rx="42" ry="15"/>
+  </g>
+
+  <!-- Premium background furniture and visual jokes -->
+  <g stroke="#1b1633" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+    <rect x="438" y="59" width="205" height="145" rx="15" fill="#f5d983"/>
+    <rect x="452" y="73" width="177" height="117" rx="8" fill="#342b55"/>
+    <path d="M500 159c24-39 42-52 62-52 23 0 31 19 47 52" fill="#ff647d"/>
+    <circle cx="554" cy="111" r="24" fill="#ffd192"/>
+    <path d="M531 102c9-27 42-27 48 4-13-6-31-5-48-4z" fill="#392446"/>
+    <circle cx="546" cy="111" r="3" fill="#1b1633" stroke="none"/><circle cx="564" cy="111" r="3" fill="#1b1633" stroke="none"/>
+    <path d="M548 125q8 8 16 0" fill="none"/>
+    <path d="M458 82l-20-24M622 82l24-24" fill="none" stroke="#ffd86f"/>
+    <rect x="500" y="164" width="109" height="19" rx="8" fill="#ffd85c"/>
+  </g>
+  <text x="554" y="180" fill="#372443" font-family="Arial, sans-serif" font-size="13" font-weight="900" text-anchor="middle">7 MIN LATE</text>
+
+  <g stroke="#1b1633" stroke-width="5" stroke-linejoin="round">
+    <rect x="913" y="60" width="276" height="48" rx="22" fill="#2c2447"/>
+    <circle cx="944" cy="84" r="10" fill="#58dfbc"/>
+    <path d="M970 84h184" stroke="#fff2d5" stroke-width="6" stroke-linecap="round"/>
+    <rect x="904" y="122" width="294" height="118" rx="17" fill="#3b315c"/>
+    <path d="M922 221h258" stroke="#efb167"/>
+    <rect x="935" y="148" width="32" height="73" rx="6" fill="#ff6c80"/>
+    <rect x="973" y="139" width="47" height="82" rx="7" fill="#58c9be"/>
+    <rect x="1026" y="157" width="31" height="64" rx="6" fill="#f4c457"/>
+    <rect x="1063" y="145" width="55" height="76" rx="7" fill="#8a72dc"/>
+    <path d="M1130 216c-13-23-11-54 9-70 13 7 21 23 20 40 11-10 22-13 29-10 1 21-12 38-30 43z" fill="#62d793"/>
+    <path d="M1154 174v47" fill="none" stroke="#244a45" stroke-width="4"/>
+  </g>
+  <text x="996" y="97" fill="#fff4d9" font-family="Arial, sans-serif" font-size="19" font-weight="900">SLEEP SCHEDULE</text>
+
+  <!-- Rug and wooden floor -->
+  <rect x="0" y="566" width="1280" height="74" fill="url(#floor)"/>
+  <path d="M0 566h1280" stroke="#1b1633" stroke-width="9"/>
+  <g stroke="#7d4960" stroke-width="3" opacity="0.52">
+    <path d="M75 566l-15 74M230 566l-7 74M385 566v74M540 566l9 74M695 566l16 74M850 566l24 74M1005 566l31 74M1160 566l39 74"/>
+  </g>
+  <ellipse cx="660" cy="599" rx="392" ry="37" fill="#25213f" opacity="0.47"/>
+  <path d="M331 603c119-38 517-43 668 0-156 32-514 34-668 0z" fill="#e95878" opacity="0.68"/>
+  <path d="M389 600c116-22 429-24 555 0-127 15-431 16-555 0z" fill="#ffbf61" opacity="0.38"/>
+
+  <!-- Bed/couch surrounding the slingshot -->
+  <g stroke="#1b1633" stroke-width="6" stroke-linejoin="round">
+    <path d="M0 401h243q49 0 49 49v116H0z" fill="url(#bed)"/>
+    <path d="M0 418h254q19 0 29 17l8 19H0z" fill="#ff9a8f"/>
+    <path d="M0 504h293v62H0z" fill="#b92f61"/>
+    <rect x="20" y="364" width="135" height="70" rx="30" fill="#f5d6aa" transform="rotate(-5 20 364)"/>
+    <path d="M31 395c22 8 44 8 65 0 15-6 31-6 47 0" fill="none" stroke="#d8a979" stroke-width="4"/>
+    <path d="M9 555h293" fill="none" stroke="#ffb19d" stroke-width="5"/>
+  </g>
+  <g stroke="#1b1633" stroke-width="4" stroke-linecap="round">
+    <path d="M71 353c-15-20 7-32 20-15 10-21 36-11 31 10 24-3 30 23 10 31" fill="#fff2d8"/>
+    <path d="M94 345q7 7 14 0" fill="none"/>
+    <path d="M59 533q24-16 49 0t50 0t50 0" fill="none" stroke="#dd6b7d"/>
+  </g>
+
+  <!-- Nightstand reserved for the animated alarm target -->
+  <g stroke="#1b1633" stroke-width="6" stroke-linejoin="round">
+    <path d="M1046 520h169l20 66h-209z" fill="url(#wood)"/>
+    <path d="M1056 546h148" fill="none" stroke="#6f3650"/>
+    <circle cx="1131" cy="565" r="8" fill="#ffd361"/>
+    <path d="M1052 584l-8 42M1208 584l9 42" fill="none" stroke="#1b1633" stroke-width="11"/>
+  </g>
+
+  <!-- Lamp glow and ridiculous emergency snooze mallet -->
+  <circle cx="1230" cy="346" r="170" fill="url(#lampGlow)"/>
+  <g stroke="#1b1633" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M1218 525V340" fill="none" stroke="#e7b15f" stroke-width="12"/>
+    <path d="M1165 360h106l-24-79h-58z" fill="#ffd45d"/>
+    <ellipse cx="1218" cy="530" rx="57" ry="13" fill="#815078"/>
+    <path d="M1006 306l78 74" stroke="#ef8c60" stroke-width="16"/>
+    <rect x="970" y="270" width="83" height="45" rx="17" fill="#ff5b78" transform="rotate(13 970 270)"/>
+  </g>
+  <text x="1051" y="280" fill="#fff0d2" font-family="Arial, sans-serif" font-size="13" font-weight="900" text-anchor="middle" transform="rotate(13 1051 280)">EMERGENCY</text>
+
+  <!-- Environmental micro-gags -->
+  <g stroke="#1b1633" stroke-width="4" stroke-linejoin="round">
+    <path d="M705 144c11-22 45-22 56 0l-11 36h-34z" fill="#ffcf59"/>
+    <path d="M719 181h29v18h-29z" fill="#755691"/>
+    <path d="M725 124q9-18 18 0" fill="none" stroke="#fff1bd"/>
+    <path d="M684 217h111" fill="none" stroke="#2b2347" stroke-width="10"/>
+    <path d="M701 222c4 33 29 43 53 16 8 31 36 32 42 0" fill="#65d5bd"/>
+    <path d="M754 221v17" fill="none"/>
+  </g>
+  <text x="734" y="211" fill="#fff0cf" font-family="Arial, sans-serif" font-size="13" font-weight="900" text-anchor="middle">DO NOT WAKE</text>
+
+  <g transform="translate(331 364) rotate(-8)" stroke="#1b1633" stroke-width="4" stroke-linejoin="round">
+    <rect width="83" height="74" rx="12" fill="#f2d278"/>
+    <path d="M22 17q20-13 39 0l-8 22H30z" fill="#ff727f"/>
+    <circle cx="33" cy="29" r="3" fill="#1b1633" stroke="none"/><circle cx="50" cy="29" r="3" fill="#1b1633" stroke="none"/>
+    <path d="M35 43q8 7 15 0" fill="none"/>
+    <path d="M15 58h52"/>
+  </g>
+  <text x="370" y="444" fill="#f8e5c4" font-family="Arial, sans-serif" font-size="12" font-weight="900" text-anchor="middle" transform="rotate(-8 370 444)">EMPLOYEE OF THE NAP</text>
+
+  <!-- Foreground dust motes -->
+  <g fill="#fff4c9" opacity="0.31">
+    <circle cx="427" cy="296" r="4"/><circle cx="484" cy="335" r="3"/><circle cx="553" cy="277" r="5"/>
+    <circle cx="642" cy="344" r="3"/><circle cx="881" cy="304" r="4"/><circle cx="905" cy="373" r="3"/>
+    <circle cx="1111" cy="341" r="4"/><circle cx="1173" cy="226" r="3"/>
+  </g>
+</svg>
