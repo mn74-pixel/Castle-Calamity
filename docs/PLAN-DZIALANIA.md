@@ -197,6 +197,26 @@ Status: **wdrożone i sprawdzone automatycznie oraz na renderach referencyjnych*
 - dodano wyłączony fundament Epoki II `early-modern`, bez ujawniania niedokończonej kampanii,
 - szczegóły znajdują się w `AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md`.
 
+## Otwarcie Epoki II v6.0
+
+Status: **wdrożone i sprawdzone automatycznie oraz na renderach iPhone**
+
+- widoczny obszar gry korzysta z `visualViewport`, offsetu Safari oraz czterech
+  bezpiecznych marginesów; płótno nie wymusza już rozmiaru większego od ekranu,
+- poziom 1 ma trzy drzewa, limit trzech odrostów, spokojniejszy mnożnik złota,
+  wolniejszą kolejkę AI i zamki o 1400 HP,
+- liczba i pasek HP korzystają z jednego, zaokrąglonego odczytu bieżącego stanu,
+- Epoka II odblokowuje się po 12 zwycięstwach i zapisuje ukończenia osobno,
+- pierwsze cztery bitwy wprowadzają Pikiniera, Muszkietera, Sapera i Moździerz,
+  zawsze w talii ograniczonej do najwyżej ośmiu unikalnych kart,
+- Muszkieter ma szybki pocisk i długie przeładowanie, a Moździerz wysoki łuk,
+  cztery ładunki i osobny efekt trafienia,
+- ceglane bastiony zmieniają się lekko z każdym poziomem; tła mają manufaktury,
+  kominy i most, a humor Epoki II ma osobną mechaniczną kaczkę,
+- Kamieniarz na czwartym poziomie Epoki II otrzymuje trzy kamieniołomy, więc
+  każda dostępna karta ma rzeczywisty cel i działanie,
+- szczegóły znajdują się w `EPOKA-II-I-IPHONE-V6.0.md`.
+
 ## Zasady, których trzymamy się od wersji v4.1
 
 1. Humor jest rzadki, losowy i nie może zasłaniać rozgrywki.

@@ -3,8 +3,8 @@
 
   /*
     Rejestr pakietów epok. Silnik pozostaje wspólny; pakiet określa wygląd,
-    dostępne jednostki, pociski, dźwięki i pulę humoru. Na razie aktywny jest
-    wyłącznie dopracowywany pakiet średniowieczny.
+    dostępne jednostki, pociski, dźwięki i pulę humoru. Wersja v6.0 udostępnia
+    pełne średniowiecze oraz pierwszy zamknięty rozdział Epoki II.
   */
   root.CASTLE_ERAS = {
     active: "medieval",
@@ -33,22 +33,24 @@
         }
       },
 
-      /* Fundament Epoki II. Pakiet pozostaje celowo wyłączony, dopóki nie ma
-         własnych poziomów, jednostek i balansu. Dzięki temu v5.3 niczego nie
-         pokazuje w połowie, ale następny etap może korzystać z tego samego
-         silnika kampanii bez przebudowy zapisów gracza. */
+      /* Pierwszy zamknięty rozdział Epoki II. Odblokowuje się po pełnej
+         kampanii średniowiecznej i korzysta z tego samego silnika oraz zapisu. */
       "early-modern": {
         id: "early-modern",
-        enabled: false,
+        enabled: true,
         unlockAfter: { eraId: "medieval", completedLevels: 12 },
-        levelIds: [],
+        levelIds: [1,2,3,4],
         sceneSet: "early-modern-frontier",
         castleStyle: "brick-bastion",
         unitSet: "powder-and-pikes",
         projectileSet: "muskets-mortars-machines",
         humorPool: "early-modern-absurd",
         balanceProfile: "campaign-v2",
-        campaign: { titleKey: "campaign.era2", levelIds: [], mapPoints: [] }
+        campaign: {
+          titleKey: "campaign.era2",
+          levelIds: [1,2,3,4],
+          mapPoints: [[12,28],[37,70],[63,28],[88,70]]
+        }
       }
     }
   };

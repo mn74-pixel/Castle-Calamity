@@ -33,6 +33,7 @@ castle-calamity/
     ├── RAPORT-BITEWNY-V5.2.md
     ├── NAPRAWA-KORKOW-V5.2.1.md
     ├── AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md
+    ├── EPOKA-II-I-IPHONE-V6.0.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -44,7 +45,7 @@ castle-calamity/
 | `index.html` | Silnik gry, grafika Canvas, jednostki, poziomy, intro i interfejs | Przy zmianach mechaniki lub grafiki |
 | `content/gags.js` | Częstotliwość humoru, lista gagów i treść reklamy na latającej rybie | Przy bieżących żartach i zmianie partnera reklamowego |
 | `content/i18n.js` | Polskie i angielskie teksty interfejsu, samouczka, jednostek i poziomów | Przy każdym nowym tekście widocznym dla gracza |
-| `content/eras.js` | Rejestr pakietów epok; obecnie aktywne jest średniowiecze | Przy dodawaniu epoki albo zmianie jej zestawów grafiki i balansu |
+| `content/eras.js` | Rejestr aktywnych pakietów średniowiecza i Epoki II | Przy dodawaniu epoki albo zmianie jej zestawów grafiki i balansu |
 | `manifest.json` | Nazwa PWA, tryb pełnoekranowy, orientacja i ścieżki ikon | Przy zmianie nazwy lub ikon |
 | `sw.js` | Pliki działające offline i numer pamięci podręcznej | Przy każdej opublikowanej wersji |
 | `assets/icons/` | Ikony aplikacji na telefon i komputer | Przy nowej identyfikacji wizualnej |
@@ -63,6 +64,7 @@ castle-calamity/
 | `docs/RAPORT-BITEWNY-V5.2.md` | Pomiar skuteczności, trzykartowy raport końcowy i podpowiedzi po przegranej | Przy zmianie oceniania jednostek, ekonomii albo rekomendacji |
 | `docs/NAPRAWA-KORKOW-V5.2.1.md` | Priorytety celu, trafianie jednostek wsparcia i test odblokowania szyku | Przy zmianie namierzania, kolizji pocisków albo odstępów formacji |
 | `docs/AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md` | Zasady wszystkich jednostek, trzy kursy Kamieniarza, nowe sylwetki i gag samolotu | Przed zmianą balansu, mechaniki wsparcia, humoru albo przejściem do Epoki II |
+| `docs/EPOKA-II-I-IPHONE-V6.0.md` | Bezpieczny viewport iPhone, balans poziomu 1, synchronizacja HP i cztery bitwy Epoki II | Przy zmianie skalowania iPhone, Epoki II albo nowych jednostek prochowych |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
@@ -76,10 +78,10 @@ castle-calamity/
 - Każdy ruchomy gag jest usuwany dopiero po przekroczeniu przeciwnej krawędzi ekranu.
 - Stałe absurdy poziomów są rysowane przez `drawLevelAbsurdity()` w `index.html` — jeden motyw dla każdego z 12 poziomów.
 - Nowy żart bieżący: najpierw dodaj zatwierdzony wpis do `topicalGags`, wraz z datą wygaśnięcia i notatką o źródle, a potem dołącz jego prostą animację w `index.html`.
-- Kamieniarz, kamieniołomy, trzy automatyczne kursy, natychmiastowa naprawa po dostawie i trzy etapy graficznej rozbudowy zamku są częścią wspólnego silnika w `index.html`; jednostka jest dostępna dopiero od poziomu 7.
+- Kamieniarz, kamieniołomy, trzy automatyczne kursy, natychmiastowa naprawa po dostawie i trzy etapy graficznej rozbudowy zamku są częścią wspólnego silnika w `index.html`; w średniowieczu pojawia się od poziomu 7, a w Epocie II tylko na planszy z działającymi złożami.
 - System rozbudowy celowo nie ma osobnej waluty ani dodatkowego panelu. Koszt jest płacony w złocie przy zakupie Kamieniarza, a postęp widać bezpośrednio przy zamku.
 - Bossowie są częścią wspólnego silnika w `index.html`; zwykłe jednostki nie mogą ich kupić ani wylosować w kolejce AI.
-- Pełny katalog ma 14 jednostek, ale każda talia poziomu jest automatycznie ograniczana do 8 unikalnych kart łącznie z zapleczem.
+- Pełny katalog ma 18 jednostek dwóch epok, ale każda talia poziomu jest automatycznie ograniczana do 8 unikalnych kart łącznie z zapleczem.
 - Pranie, czajnik i przysypiający strażnik są pojedynczymi gagami zamkowymi poziomów 7, 9 i 11; nie należy powielać ich na wszystkich zamkach.
 - Statystyki skuteczności są zbierane w `index.html` i zapisywane osobno dla każdego poziomu. Nie wolno używać ich do ukrytego wzmacniania przeciwnika.
 - Raport po bitwie pokazuje najwyżej trzy jednostki, nawet jeśli talia poziomu zawiera osiem kart.

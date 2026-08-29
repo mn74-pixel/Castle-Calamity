@@ -2,7 +2,7 @@
   "name": "Castle Calamity",
   "short_name": "Calamity",
   "id": "./",
-  "description": "Absurdalnie poważna bitwa zamków. Buduj armię, rzucaj czary i przetrwaj królewską niekompetencję.",
+  "description": "Absurdalnie poważna strategia w dwóch epokach. Buduj armię, rozwijaj zamek i przetrwaj królewską niekompetencję.",
   "lang": "pl",
   "start_url": "./index.html",
   "scope": "./",

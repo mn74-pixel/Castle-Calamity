@@ -24,24 +24,25 @@ Pakiet epoki będzie określał:
 - profil balansu i zachowanie przeciwników,
 - własną pulę humoru oraz scenografię poziomów.
 
-## Obecny pakiet i następny krok
+## Obecne pakiety
 
-Aktywny jest wyłącznie pakiet `medieval`. Jego rejestr znajduje się w
-`content/eras.js`. Wersja v5.3 zamyka jego audyt jako wzorca jakości całej gry.
+Pakiet `medieval` zawiera pełne 12 poziomów Epoki I. Pakiet `early-modern` jest
+aktywny od v6.0 i tworzy pierwszy zamknięty rozdział Epoki II „Proch i
+Mechanika”. Odblokowuje się po ukończeniu średniowiecza i zawiera cztery bitwy,
+ceglane bastiony, Pikiniera, Muszkietera, Sapera oraz Moździerz.
 
-W rejestrze istnieje już wyłączony pakiet `early-modern` — Epoka II „Proch i
-Mechanika”. Nie ma jeszcze poziomów i nie jest widoczny dla gracza. Jego
-zadaniem jest ustalenie granicy danych przed pracą nad v6.0: odblokowanie po 12
-bitwach, forty bastionowe, piki, muszkiety, moździerze i maszyny zachowają ten
-sam silnik walki, zapis, limit ośmiu kart oraz zasady rzadkiego humoru.
+Oba pakiety korzystają z jednego silnika walki, wspólnego katalogu ulepszeń i
+limitu ośmiu kart, ale mają osobne ukończenia, mapy, tła i pulę humoru. Nowe
+pociski wykorzystują ten sam system ciągłego wykrywania kolizji: muszkiet leci
+prawie prosto, a moździerz korzysta z wysokiego łuku i większego rozrzutu.
 
 ## Kolejność rozwoju
 
 1. Stabilny i użyteczny silnik: samouczek, PL/EN, zapis, skalowanie, PWA.
 2. Spójna grafika i komplet animacji wszystkich średniowiecznych jednostek.
 3. Balans 12 poziomów, bossowie, dźwięk, wydajność i testy urządzeń.
-4. Dopiero po zamknięciu fundamentu — drugi pakiet epoki jako test architektury.
-5. Kolejne epoki po potwierdzeniu, że nie wymagają kopiowania silnika.
+4. Drugi pakiet epoki jako test architektury — ukończony w v6.0.
+5. Rozbudowa Epoki II po testach jej czterech pierwszych bitew, bez kopiowania silnika.
 
 ## Zasady lokalizacji
 

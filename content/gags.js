@@ -7,7 +7,7 @@
     dzięki czemu nie trzeba grzebać w silniku gry.
   */
   root.CASTLE_CONTENT = {
-    version: "2026-08-27-v5.3",
+    version: "2026-08-28-v6.0",
 
     timing: {
       firstMin: 32,
@@ -23,24 +23,29 @@
       najwyżej raz, więc animacja nie zdradza pętli i żart nie męczy gracza.
     */
     gags: [
-      { id: "crowned-chicken", type: "chicken", enabled: true, weight: 1, levels: [1] },
-      { id: "runaway-bathtub", type: "bathtub", enabled: true, weight: 1, levels: [2] },
-      { id: "polite-policeman", type: "policeman", enabled: true, weight: 1, levels: [3] },
-      { id: "cloud-knight", type: "cloudknight", enabled: true, weight: 1, levels: [4] },
-      { id: "moon-janitor", type: "moonjanitor", enabled: true, weight: 1, levels: [5] },
-      { id: "flying-fish-ad", type: "skyfish", enabled: true, weight: 1, levels: [6] },
-      { id: "duck-patrol", type: "duckpatrol", enabled: true, weight: 1, levels: [7] },
-      { id: "airborne-office", type: "flyingdesk", enabled: true, weight: 1, levels: [8] },
-      { id: "fire-marshal", type: "firemarshal", enabled: true, weight: 1, levels: [9] },
-      { id: "tea-balloon", type: "teaballoon", enabled: true, weight: 1, levels: [10] },
-      { id: "snow-clerk", type: "snowclerk", enabled: true, weight: 1, levels: [11] },
-      { id: "vacuum-demon", type: "vacuumdemon", enabled: true, weight: 1, levels: [12] },
+      { id: "crowned-chicken", type: "chicken", enabled: true, weight: 1, eras: ["medieval"], levels: [1] },
+      { id: "runaway-bathtub", type: "bathtub", enabled: true, weight: 1, eras: ["medieval"], levels: [2] },
+      { id: "polite-policeman", type: "policeman", enabled: true, weight: 1, eras: ["medieval"], levels: [3] },
+      { id: "cloud-knight", type: "cloudknight", enabled: true, weight: 1, eras: ["medieval"], levels: [4] },
+      { id: "moon-janitor", type: "moonjanitor", enabled: true, weight: 1, eras: ["medieval"], levels: [5] },
+      { id: "flying-fish-ad", type: "skyfish", enabled: true, weight: 1, eras: ["medieval"], levels: [6] },
+      { id: "duck-patrol", type: "duckpatrol", enabled: true, weight: 1, eras: ["medieval"], levels: [7] },
+      { id: "airborne-office", type: "flyingdesk", enabled: true, weight: 1, eras: ["medieval"], levels: [8] },
+      { id: "fire-marshal", type: "firemarshal", enabled: true, weight: 1, eras: ["medieval"], levels: [9] },
+      { id: "tea-balloon", type: "teaballoon", enabled: true, weight: 1, eras: ["medieval"], levels: [10] },
+      { id: "snow-clerk", type: "snowclerk", enabled: true, weight: 1, eras: ["medieval"], levels: [11] },
+      { id: "vacuum-demon", type: "vacuumdemon", enabled: true, weight: 1, eras: ["medieval"], levels: [12] },
 
       /* Rzadki gag alternatywny późnej kampanii. Występuje obok jednego
          właściwego żartu poziomu, lecz nadal obowiązuje limit jednego gagu
          w całej bitwie. Waga 0,22 daje ok. 18% szansy tylko na poziomach
          7–12, więc spadochroniarz pozostaje niespodzianką. */
-      { id: "airdrop-regret", type: "airdrop", enabled: true, weight: 0.22, levels: [7,8,9,10,11,12] }
+      { id: "airdrop-regret", type: "airdrop", enabled: true, weight: 0.22, eras: ["medieval"], levels: [7,8,9,10,11,12] },
+
+      /* Pierwszy gag Epoki II jest osobną, rzadką niespodzianką. Mechaniczna
+         kaczka przechodzi przez pole bitwy, nakręcając się kluczykiem i
+         puszczając parę. Nie pojawia się w zamkach ani w średniowieczu. */
+      { id: "clockwork-duck", type: "clockworkduck", enabled: true, weight: 1, eras: ["early-modern"], levels: [1,2,3,4] }
     ],
 
     flyingFishAd: {
