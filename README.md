@@ -4,10 +4,18 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v6.0
+## Co zawiera wersja v6.1
 - 16 poziomów w dwóch epokach i 18 dostępnych jednostek, nadal najwyżej 8 kart w pojedynczej bitwie,
+- twardy limit najwyżej 8 aktywnych bojowników na stronę we wszystkich poziomach; dziewiąty zakup nie pobiera złota,
+- osobny limit dwóch Drwali i dwóch Kamieniarzy na stronę, aby zaplecze nie tworzyło korków,
+- obniżone HP zamków, mnożniki drewna i tempo odrostu drzew od pierwszej bitwy; poziom 1 ma zamki po 950 HP,
+- licznik aktywnej armii `⚔ 0/8` przy obu zamkach i czytelne zablokowanie kart po osiągnięciu limitu,
+- mniejszy wspólny budżet cząstek pyłu, iskier, dymu, żaru i wybuchów, szczególnie ważny w poziomie 12,
+- samodzielne ceglane forty Epoki II — bez średniowiecznego zamku widocznego pod nową grafiką,
+- dwa nowe rzadkie warianty humoru: uciekający sztandar i urzędnik prochowy; nadal najwyżej jeden gag na bitwę,
+- wspólną skalę żołnierza dla wszystkich humorystycznych postaci ludzkich na komputerze i telefonie,
 - poprawiony widoczny obszar i bezpieczne marginesy dla różnych iPhone’ów, wycięć ekranu oraz zwijanego paska Safari,
-- pierwszy poziom z trzema drzewami, limitem trzech odrostów, wolniejszą ekonomią i zamkami o 1400 HP,
+- pierwszy poziom z trzema drzewami, limitem trzech odrostów, wolniejszą ekonomią i zamkami o 950 HP,
 - liczby HP pod zamkami aktualizowane z tego samego odczytu co szerokość pasków,
 - pierwszy zamknięty rozdział Epoki II „Proch i Mechanika”: 4 poziomy, Pikinier, Muszkieter, Saper i Moździerz,
 - ceglane bastiony, manufaktury, dym prochowy, fizyka muszkietów i moździerzy oraz osobna pula dyskretnego absurdu Epoki II,
@@ -103,6 +111,7 @@ na pełnym ekranie i **offline**.
 | `docs/NAPRAWA-KORKOW-V5.2.1.md` | Naprawa niezniszczalnych Drwali, priorytetów celu i blokowania szyku |
 | `docs/AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md` | Audyt 14 jednostek, czytelny Kamieniarz, nowe sylwetki i gag spadochroniarza |
 | `docs/EPOKA-II-I-IPHONE-V6.0.md` | Poprawki iPhone, balans poziomu 1, synchronizacja HP i pierwszy rozdział Epoki II |
+| `docs/BALANS-WYDAJNOSC-I-FORTY-V6.1.md` | Limity aktywnej armii, ekonomia, poziom 12, forty Epoki II i skala humoru |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -122,7 +131,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v6.0` → `castle-calamity-v6.1`.
+np. `castle-calamity-v6.1` → `castle-calamity-v6.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

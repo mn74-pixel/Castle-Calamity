@@ -34,6 +34,7 @@ castle-calamity/
     ├── NAPRAWA-KORKOW-V5.2.1.md
     ├── AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md
     ├── EPOKA-II-I-IPHONE-V6.0.md
+    ├── BALANS-WYDAJNOSC-I-FORTY-V6.1.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -65,6 +66,7 @@ castle-calamity/
 | `docs/NAPRAWA-KORKOW-V5.2.1.md` | Priorytety celu, trafianie jednostek wsparcia i test odblokowania szyku | Przy zmianie namierzania, kolizji pocisków albo odstępów formacji |
 | `docs/AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md` | Zasady wszystkich jednostek, trzy kursy Kamieniarza, nowe sylwetki i gag samolotu | Przed zmianą balansu, mechaniki wsparcia, humoru albo przejściem do Epoki II |
 | `docs/EPOKA-II-I-IPHONE-V6.0.md` | Bezpieczny viewport iPhone, balans poziomu 1, synchronizacja HP i cztery bitwy Epoki II | Przy zmianie skalowania iPhone, Epoki II albo nowych jednostek prochowych |
+| `docs/BALANS-WYDAJNOSC-I-FORTY-V6.1.md` | Limity armii, ekonomia, wydajność poziomu 12, forty i skala humoru | Przy zmianie liczby jednostek, drzew, zamków, efektów albo gagów ludzkich |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany

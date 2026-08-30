@@ -297,12 +297,25 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 - pozostał końcowy test dotykowy i miksu audio na fizycznym iPhonie oraz Androidzie,
 - później opakowanie do sklepów mobilnych.
 
-## Następny etap — v6.0, Epoka II „Proch i Mechanika”
+## Stabilizacja v6.1 — balans, wydajność i forty
 
-- odblokowanie po ukończeniu 12 poziomów Epoki I,
-- nowa mapa i pierwsze poziomy wczesnej nowożytności,
-- forty bastionowe oraz stopniowa zmiana architektury zamiast wymiany całej grafiki naraz,
-- rdzeń armii oparty na pikach, muszkietach, moździerzach i prostych maszynach,
+Status: **wdrożona i sprawdzona automatycznie oraz na renderach iPhone**
+
+- wszystkie poziomy mają limit ośmiu aktywnych bojowników na stronę, niezależny od ośmiu kart w talii,
+- Drwale i Kamieniarze mają osobne limity po dwie postacie na stronę,
+- od poziomu 1 obniżono nagrody za drzewa, tempo odrostu i HP zamków, aby bitwy nie rozrastały się w nieskończoność,
+- poziom 12 przeszedł wydłużoną symulację ze śledzeniem szczytowej liczby postaci, pocisków i efektów,
+- obniżono limity cząstek bez usuwania rodzajów trafień i efektów specjalnych,
+- Epoka II korzysta z samodzielnego renderera niskiego fortu ceglanego zamiast nakładki na średniowieczny zamek,
+- każda postać ludzka w gagach korzysta ze skali żołnierza,
+- dodano dwa warianty absurdu bez zwiększania zasady najwyżej jednego gagu na bitwę,
+- szczegóły znajdują się w `BALANS-WYDAJNOSC-I-FORTY-V6.1.md`.
+
+## Następny etap — rozwój Epoki II
+
+- rozbudowa mapy Epoki II poza pierwsze cztery poziomy,
+- stopniowe warianty fortów zależne od regionu i poziomu uszkodzeń,
+- kolejne zagrożenia wykorzystujące piki, muszkiety, moździerze i proste maszyny,
 - maksymalnie osiem kart na bitwę oraz dobór jednostek do zagrożenia poziomu,
 - osobna pula rzadkich gagów epoki przy zachowaniu limitu jednego żartu w bitwie.
 

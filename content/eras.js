@@ -3,7 +3,7 @@
 
   /*
     Rejestr pakietów epok. Silnik pozostaje wspólny; pakiet określa wygląd,
-    dostępne jednostki, pociski, dźwięki i pulę humoru. Wersja v6.0 udostępnia
+    dostępne jednostki, pociski, dźwięki i pulę humoru. Wersja v6.1 udostępnia
     pełne średniowiecze oraz pierwszy zamknięty rozdział Epoki II.
   */
   root.CASTLE_ERAS = {

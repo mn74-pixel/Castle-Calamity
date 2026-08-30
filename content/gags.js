@@ -7,7 +7,7 @@
     dzięki czemu nie trzeba grzebać w silniku gry.
   */
   root.CASTLE_CONTENT = {
-    version: "2026-08-28-v6.0",
+    version: "2026-08-30-v6.1",
 
     timing: {
       firstMin: 32,
@@ -42,10 +42,16 @@
          7–12, więc spadochroniarz pozostaje niespodzianką. */
       { id: "airdrop-regret", type: "airdrop", enabled: true, weight: 0.22, eras: ["medieval"], levels: [7,8,9,10,11,12] },
 
+      /* Dwa warianty powtórek zwiększają różnorodność, nie częstotliwość.
+         Nadal losowany jest najwyżej jeden gag w całej bitwie, a ludzkie
+         postacie korzystają dokładnie ze skali wojskowych. */
+      { id: "banner-with-own-plan", type: "runawaybanner", enabled: true, weight: 0.24, eras: ["medieval"], levels: [2,4,6,8,10,12] },
+
       /* Pierwszy gag Epoki II jest osobną, rzadką niespodzianką. Mechaniczna
          kaczka przechodzi przez pole bitwy, nakręcając się kluczykiem i
          puszczając parę. Nie pojawia się w zamkach ani w średniowieczu. */
-      { id: "clockwork-duck", type: "clockworkduck", enabled: true, weight: 1, eras: ["early-modern"], levels: [1,2,3,4] }
+      { id: "clockwork-duck", type: "clockworkduck", enabled: true, weight: 1, eras: ["early-modern"], levels: [1,2,3,4] },
+      { id: "powder-paperwork", type: "powderclerk", enabled: true, weight: 0.32, eras: ["early-modern"], levels: [1,2,3,4] }
     ],
 
     flyingFishAd: {

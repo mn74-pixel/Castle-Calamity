@@ -643,6 +643,30 @@ var UD = {
 var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","crossbow","monk","knight","wizard","templar","golem","cannon","pikeguard","musketeer","sapper","mortar"];
 var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
 var MAX_BATTLE_CARDS = 8;
+var MAX_ACTIVE_WORKERS_PER_SIDE = 2;
+var DEFAULT_ACTIVE_COMBAT_CAP = 8;
+
+function isCombatDefinition(ud){
+  return !!ud&&!ud.worker&&!ud.mason&&!ud.boss;
+}
+function activeCombatCount(isP){
+  var n=0;if(!G||!G.units)return n;
+  for(var i=0;i<G.units.length;i++){
+    var u=G.units[i];
+    if(u&&u.isP===isP&&u.state!=="dead"&&isCombatDefinition(u.ud))n++;
+  }
+  return n;
+}
+function combatCapForSide(){
+  return Math.max(6,Math.min(12,Number(G&&G.lv&&G.lv.unitCap)||DEFAULT_ACTIVE_COMBAT_CAP));
+}
+function passiveGoldRate(isP){
+  var lv=G&&G.lv||{};
+  return Math.max(0,Number(isP?lv.passiveP:lv.passiveE)||(isP?1.25:1.42));
+}
+function treeRespawnSeconds(){
+  return Math.max(18,Math.min(36,Number(G&&G.lv&&G.lv.treeRespawn)||25));
+}
 
 /* ── Levels ── */
 /* PROGRESJA: pełny katalog ma 18 jednostek dwóch epok, ale każda bitwa wybiera najwyżej
@@ -652,27 +676,27 @@ var MEDIEVAL_LEVELS = [
   /* Pierwsza bitwa ma mniej elementów gospodarczych i wyraźnie dłuższy
      oddech. Trzy drzewa pozostają limitem również przy odrastaniu, a mocniejsze
      mury nie pozwalają zakończyć samouczka jedną krótką falą Wojowników. */
-  {id:1, n:"Zielone Pola",       pH:1400,eH:1400,gm:1.55,ad:9000,sc:0,treeCount:3,treeCap:3,profile:"balanced", ai:["drwal","warrior"], ul:["drwal","warrior"],recommended:["warrior"]},
-  {id:2, n:"Jesienny Zmierzch",  pH:1200,eH:1200,gm:1.9,ad:7500,sc:1,profile:"defensive",ai:["drwal","warrior","pikeman"], ul:["drwal","warrior","pikeman"],recommended:["warrior","pikeman"]},
-  {id:3, n:"Nocna Twierdza",     pH:1500,eH:1500,gm:2.0,ad:6800,sc:2,profile:"aggressive",ai:["drwal","pikeman","archer","warrior"], ul:["drwal","warrior","pikeman","archer"],recommended:["archer","warrior"]},
-  {id:4, n:"Świt nad Wzgórzami", pH:1800,eH:1800,gm:2.2,ad:6000,sc:3,profile:"chaotic",  ai:["drwal","warrior","spearman","archer","knight"], ul:["drwal","warrior","spearman","archer","knight"],recommended:["spearman","knight"]},
-  {id:5, n:"Cytadela",           pH:2200,eH:2200,gm:2.4,ad:5400,sc:4,profile:"defensive",ai:["drwal","warrior","archer","monk","knight","cannon"], ul:["drwal","warrior","spearman","archer","monk","knight","cannon"],recommended:["archer","monk","cannon"]},
-  {id:6, n:"Pustynia Khepri",    pH:2600,eH:2600,gm:2.5,ad:4800,sc:5,profile:"aggressive",ai:["drwal","archer","knight","wizard","warrior"], ul:["drwal","warrior","monk","archer","knight","cannon","wizard"],recommended:["archer","knight","wizard"]},
-  {id:7, n:"Bagno Cieni",        pH:3000,eH:3000,gm:2.7,ad:4200,sc:6,profile:"defensive",ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","berserk","mason","crossbow","knight","wizard"],recommended:["berserk","crossbow","wizard"]},
-  {id:8, n:"Lodowa Ciasnina",    pH:3500,eH:3500,gm:2.9,ad:3600,sc:7,profile:"siege",    ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","spearman","mason","crossbow","monk","berserk","wizard","templar"],recommended:["spearman","crossbow","wizard","templar"]},
-  {id:9, n:"Wulkan Mor'Drakar",  pH:4200,eH:4200,gm:3.1,ad:3200,sc:8,profile:"siege",    ai:["drwal","mason","cannon","wizard","golem","templar"], ul:["drwal","warrior","mason","crossbow","berserk","knight","wizard","cannon"],recommended:["berserk","knight","wizard","cannon"]},
-  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:5000,eH:6000,gm:3.5,ad:2800,sc:9,profile:"aggressive",ai:["drwal","mason","knight","wizard","templar","cannon","golem"], ul:["drwal","warrior","mason","crossbow","monk","wizard","templar","golem"],recommended:["crossbow","monk","wizard","golem"],boss:true,bossKey:"moonlord"},
-  {id:11,n:"Lodowa Otchłań",     pH:5500,eH:6800,gm:3.6,ad:2500,sc:7,profile:"defensive",ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","mason","crossbow","monk","berserk","knight","wizard","golem"],recommended:["berserk","knight","wizard","golem"]},
-  {id:12,n:"KRÓL DEMONÓW",       pH:6500,eH:8500,gm:4.0,ad:2200,sc:9,profile:"chaotic",  ai:["drwal","mason","templar","wizard","cannon","golem","crossbow","berserk"], ul:["drwal","mason","spearman","monk","crossbow","wizard","templar","golem"],recommended:["spearman","monk","wizard","golem"],briefing:"briefing.demonBody",boss:true,bossKey:"demonking"}
+  {id:1, n:"Zielone Pola",       pH:950, eH:950, gm:1.00,passiveP:1.05,passiveE:1.14,ad:9000,sc:0,treeCount:3,treeCap:3,treeRespawn:28,unitCap:8, profile:"balanced", ai:["drwal","warrior"], ul:["drwal","warrior"],recommended:["warrior"]},
+  {id:2, n:"Jesienny Zmierzch",  pH:1000,eH:1000,gm:1.05,passiveP:1.08,passiveE:1.18,ad:7500,sc:1,treeCount:3,treeCap:3,treeRespawn:28,unitCap:8, profile:"defensive",ai:["drwal","warrior","pikeman"], ul:["drwal","warrior","pikeman"],recommended:["warrior","pikeman"]},
+  {id:3, n:"Nocna Twierdza",     pH:1150,eH:1150,gm:1.08,passiveP:1.10,passiveE:1.22,ad:6800,sc:2,treeCount:3,treeCap:3,treeRespawn:27,unitCap:8, profile:"aggressive",ai:["drwal","pikeman","archer","warrior"], ul:["drwal","warrior","pikeman","archer"],recommended:["archer","warrior"]},
+  {id:4, n:"Świt nad Wzgórzami", pH:1300,eH:1300,gm:1.12,passiveP:1.13,passiveE:1.26,ad:6000,sc:3,treeCount:3,treeCap:3,treeRespawn:27,unitCap:8, profile:"chaotic",  ai:["drwal","warrior","spearman","archer","knight"], ul:["drwal","warrior","spearman","archer","knight"],recommended:["spearman","knight"]},
+  {id:5, n:"Cytadela",           pH:1500,eH:1500,gm:1.16,passiveP:1.16,passiveE:1.30,ad:5400,sc:4,treeCount:4,treeCap:4,treeRespawn:26,unitCap:8, profile:"defensive",ai:["drwal","warrior","archer","monk","knight","cannon"], ul:["drwal","warrior","spearman","archer","monk","knight","cannon"],recommended:["archer","monk","cannon"]},
+  {id:6, n:"Pustynia Khepri",    pH:1700,eH:1700,gm:1.20,passiveP:1.18,passiveE:1.34,ad:4800,sc:5,treeCount:4,treeCap:4,treeRespawn:26,unitCap:8, profile:"aggressive",ai:["drwal","archer","knight","wizard","warrior"], ul:["drwal","warrior","monk","archer","knight","cannon","wizard"],recommended:["archer","knight","wizard"]},
+  {id:7, n:"Bagno Cieni",        pH:1950,eH:1950,gm:1.24,passiveP:1.20,passiveE:1.38,ad:4200,sc:6,treeCount:4,treeCap:4,treeRespawn:25,unitCap:8,profile:"defensive",ai:["drwal","wizard","spearman","crossbow","warrior"], ul:["drwal","warrior","spearman","berserk","mason","crossbow","knight","wizard"],recommended:["berserk","crossbow","wizard"]},
+  {id:8, n:"Lodowa Ciasnina",    pH:2200,eH:2200,gm:1.28,passiveP:1.22,passiveE:1.42,ad:3600,sc:7,treeCount:4,treeCap:4,treeRespawn:25,unitCap:8,profile:"siege",    ai:["drwal","mason","golem","berserk","crossbow","knight"], ul:["drwal","spearman","mason","crossbow","monk","berserk","wizard","templar"],recommended:["spearman","crossbow","wizard","templar"]},
+  {id:9, n:"Wulkan Mor'Drakar",  pH:2450,eH:2450,gm:1.32,passiveP:1.24,passiveE:1.46,ad:3200,sc:8,treeCount:4,treeCap:4,treeRespawn:24,unitCap:8,profile:"siege",    ai:["drwal","mason","cannon","wizard","golem","templar"], ul:["drwal","warrior","mason","crossbow","berserk","knight","wizard","cannon"],recommended:["berserk","knight","wizard","cannon"]},
+  {id:10,n:"WŁADCA KRWAWEJ ŁUNY",pH:2800,eH:3400,gm:1.36,passiveP:1.26,passiveE:1.50,ad:3100,sc:9,treeCount:4,treeCap:4,treeRespawn:24,unitCap:8,profile:"aggressive",ai:["drwal","mason","knight","wizard","templar","cannon","golem"], ul:["drwal","warrior","mason","crossbow","monk","wizard","templar","golem"],recommended:["crossbow","monk","wizard","golem"],boss:true,bossKey:"moonlord"},
+  {id:11,n:"Lodowa Otchłań",     pH:3000,eH:3600,gm:1.38,passiveP:1.28,passiveE:1.54,ad:2900,sc:7,treeCount:4,treeCap:4,treeRespawn:24,unitCap:8,profile:"defensive",ai:["drwal","mason","templar","golem","cannon","wizard","crossbow"], ul:["drwal","mason","crossbow","monk","berserk","knight","wizard","golem"],recommended:["berserk","knight","wizard","golem"]},
+  {id:12,n:"KRÓL DEMONÓW",       pH:3400,eH:4300,gm:1.42,passiveP:1.30,passiveE:1.58,ad:2800,sc:9,treeCount:4,treeCap:4,treeRespawn:24,unitCap:8,profile:"chaotic",  ai:["drwal","mason","templar","wizard","cannon","golem","crossbow","berserk"], ul:["drwal","mason","spearman","monk","crossbow","wizard","templar","golem"],recommended:["spearman","monk","wizard","golem"],briefing:"briefing.demonBody",boss:true,bossKey:"demonking"}
 ];
 
 /* Pierwszy zamknięty rozdział Epoki II. Cztery bitwy wprowadzają po jednej
    nowej roli i nie pokazują graczowi niedokończonego bossa ani pustych węzłów. */
 var EARLY_MODERN_LEVELS = [
-  {id:1,n:"Przedmieście w Dymie",pH:1700,eH:1700,gm:1.65,ad:8200,sc:10,treeCount:4,treeCap:4,profile:"balanced",ai:["drwal","pikeguard","musketeer"],ul:["drwal","pikeguard","musketeer"],recommended:["pikeguard","musketeer"]},
-  {id:2,n:"Most Trzech Pik",pH:2100,eH:2250,gm:1.8,ad:7000,sc:11,treeCount:4,treeCap:4,profile:"defensive",ai:["drwal","pikeguard","musketeer","sapper"],ul:["drwal","pikeguard","musketeer","sapper","monk"],recommended:["pikeguard","musketeer","monk"]},
-  {id:3,n:"Bastion Ceglanej Gwiazdy",pH:2600,eH:2900,gm:2.0,ad:5900,sc:12,profile:"siege",ai:["drwal","pikeguard","musketeer","sapper","mortar"],ul:["drwal","pikeguard","musketeer","sapper","monk","mortar"],recommended:["musketeer","sapper","mortar"]},
-  {id:4,n:"Warsztat Bez Instrukcji",pH:3200,eH:3650,gm:2.2,ad:5000,sc:10,profile:"chaotic",ai:["drwal","pikeguard","musketeer","sapper","mortar","knight"],ul:["drwal","pikeguard","musketeer","sapper","monk","mason","knight","mortar"],recommended:["pikeguard","musketeer","sapper","mortar"]}
+  {id:1,n:"Przedmieście w Dymie",pH:1200,eH:1200,gm:1.08,passiveP:1.10,passiveE:1.20,ad:8200,sc:10,treeCount:3,treeCap:3,treeRespawn:27,unitCap:8,profile:"balanced",ai:["drwal","pikeguard","musketeer"],ul:["drwal","pikeguard","musketeer"],recommended:["pikeguard","musketeer"]},
+  {id:2,n:"Most Trzech Pik",pH:1450,eH:1550,gm:1.14,passiveP:1.14,passiveE:1.27,ad:7000,sc:11,treeCount:3,treeCap:3,treeRespawn:26,unitCap:8,profile:"defensive",ai:["drwal","pikeguard","musketeer","sapper"],ul:["drwal","pikeguard","musketeer","sapper","monk"],recommended:["pikeguard","musketeer","monk"]},
+  {id:3,n:"Bastion Ceglanej Gwiazdy",pH:1800,eH:2000,gm:1.20,passiveP:1.18,passiveE:1.34,ad:5900,sc:12,treeCount:4,treeCap:4,treeRespawn:25,unitCap:8,profile:"siege",ai:["drwal","pikeguard","musketeer","sapper","mortar"],ul:["drwal","pikeguard","musketeer","sapper","monk","mortar"],recommended:["musketeer","sapper","mortar"]},
+  {id:4,n:"Warsztat Bez Instrukcji",pH:2150,eH:2450,gm:1.26,passiveP:1.22,passiveE:1.40,ad:5000,sc:10,treeCount:4,treeCap:4,treeRespawn:24,unitCap:8,profile:"chaotic",ai:["drwal","pikeguard","musketeer","sapper","mortar","knight"],ul:["drwal","pikeguard","musketeer","sapper","monk","mason","knight","mortar"],recommended:["pikeguard","musketeer","sapper","mortar"]}
 ];
 var ERA_LEVELS={medieval:MEDIEVAL_LEVELS,"early-modern":EARLY_MODERN_LEVELS};
 var LV=MEDIEVAL_LEVELS;
@@ -1216,7 +1240,7 @@ function load(idx){
   /* Zamki proporcjonalne - na małych ekranach %, na dużych z capem */
   var cw=Math.max(90, Math.min(Math.round(W*0.15), 200));
   var ch=Math.max(100, Math.min(Math.round(H*0.55), 260));
-  var trees=[],initialTreeCount=Math.max(1,Math.min(5,Number(lv.treeCount)||5));
+  var trees=[],initialTreeCount=Math.max(1,Math.min(4,Number(lv.treeCount)||4));
   for(var i=0;i<initialTreeCount;i++){
     for(var a=0;a<40;a++){
       var tx=Math.round(W*(0.28+0.44*Math.random()));
@@ -1248,7 +1272,7 @@ function load(idx){
     e:{hp:lv.eH,max:lv.eH,baseMax:lv.eH,buildStage:0,buildLoads:0,buildPulse:0,gold:35,x:W-cw,w:cw,h:ch,isP:false,fires:[],rubble:[],holes:[],lastFireT:0,lastSmokeT:0,collapseT:0,shake:0,bannerSeed:0.71,damageStage:0,damagePulse:0,lastHitX:0,lastHitY:0},
     units:[],projs:[],blasts:[],floats:[],dust:[],smoke:[],embers:[],sparks:[],coins:[],birds:[],bloodstains:[],gags:[],bossPortals:[],
     trees:trees,rocks:rocks,clouds:clouds,
-    treeT:0,aiT:0,aiI:0,aiProfile:lv.profile||"balanced",aiNextMs:lv.ad,aiLastKey:null,T:0,LT:0,simAcc:0,over:false,overT:0,sunAngle:0.47,
+    treeT:0,aiT:0,aiI:0,aiProfile:lv.profile||"balanced",aiNextMs:lv.ad,aiLastKey:null,T:0,LT:0,simAcc:0,over:false,overT:0,sunAngle:0.47,armyWarnT:-9,
     gagT:randBetween(CONTENT.timing.firstMin,CONTENT.timing.firstMax),gagShown:false,freezeField:0,freezeBurst:null,arrowRainFx:null,rallyFx:null,lastGagType:null,
     stats:{kills:0,losses:0,goldEarned:0,unitsSpawned:0,startTime:Date.now(),unitMetrics:{},intelRecorded:false,intelRows:null},
     killStreak:{count:0,lastKillT:-999},
@@ -1372,6 +1396,7 @@ function buildCards(){
     if(!ud.mason)tipHTML+="<span class='stat'>"+tr("tip.range")+":</span> <b>"+(ud.r>900?"∞":Math.round(ud.r))+"</b> "+(ud.r>900?"("+tr("tip.far")+")":ud.r>40?"("+tr("tip.ranged")+")":"("+tr("tip.melee")+")");
     if(ud.worker)tipHTML+="<br><span style='color:#cca044'>"+tr("tip.worker")+"</span>";
     if(ud.mason)tipHTML+="<span style='color:#bfc6c9'>"+tr("tip.mason")+"</span>";
+    if(isCombatDefinition(ud))tipHTML+="<br><span style='color:#d8c681'>⚔ "+tr("tip.armyLimit",{value:combatCapForSide()})+"</span>";
     if(ud.cannon)tipHTML+="<br><span style='color:#ff8844'>"+tr("tip.area")+"</span><br><span style='color:#ffcc44'>"+tr("tip.shots")+": "+(ud.shots||5)+" ("+tr("tip.thenGone")+")</span>";
     /* Specjalizacja */
     var aRatio = (ud.a > 0 && (ud.ac||0) > 0) ? (ud.a / (ud.ac||1)) : 0;
@@ -1414,11 +1439,14 @@ function buildCards(){
 
 function updHUD(){
   if(!G)return;
+  var combatFull=activeCombatCount(true)>=combatCapForSide();
   for(var ki=0;ki<UK.length;ki++){
     var k=UK[ki];
     var el=document.getElementById("cd_"+k);if(!el)continue;
     var cost=effStat(k,"c");
-    el.classList.toggle("off",G.p.gold<cost);
+    var ud=UD[k],roleFull=(ud&&ud.worker&&countActiveUnit("drwal",true)>=MAX_ACTIVE_WORKERS_PER_SIDE)||
+      (ud&&ud.mason&&countActiveUnit("mason",true)>=2);
+    el.classList.toggle("off",G.p.gold<cost||(isCombatDefinition(ud)&&combatFull)||roleFull);
     var cc=document.getElementById("cdc_"+k);if(cc)cc.textContent=cost;
   }
   updateAbilityUI();
@@ -1436,6 +1464,21 @@ function spawnUnit(key,isP,options){
   var ud=UD[key];if(!ud)return;
   var cas=isP?G.p:G.e;
   var cost=isP?effStat(key,"c"):ud.c;
+  if(ud.worker){
+    var activeWorkers=0;
+    for(var wi=0;wi<G.units.length;wi++){
+      var wu=G.units[wi];
+      if(wu&&wu.isP===isP&&wu.ud.worker&&wu.state!=="dead")activeWorkers++;
+    }
+    if(activeWorkers>=MAX_ACTIVE_WORKERS_PER_SIDE)return;
+  }
+  if(isCombatDefinition(ud)&&activeCombatCount(isP)>=combatCapForSide()){
+    if(isP&&G.T-(G.armyWarnT===undefined?-9:G.armyWarnT)>1.2){
+      G.armyWarnT=G.T;
+      addFlt(G.p.x+G.p.w*.58,G.GY-G.p.h-12,tr("combat.armyFull",{value:combatCapForSide()}),"#f0cf73");
+    }
+    return;
+  }
   if(ud.mason){
     if(!G.rocks||!G.rocks.length)return;
     var activeMasons=0;
@@ -2042,23 +2085,25 @@ function spawnSparks(x,y){
 var CROSSING_GAG_TYPES={
   chicken:1,skyfish:1,policeman:1,flyingdesk:1,bathtub:1,cloudknight:1,
   moonjanitor:1,duckpatrol:1,firemarshal:1,teaballoon:1,snowclerk:1,vacuumdemon:1,
-  airdrop:1,clockworkduck:1
+  airdrop:1,clockworkduck:1,runawaybanner:1,powderclerk:1
 };
 var GAG_MOTION={
   chicken:{pad:52,min:60,max:85,ground:true},
-  bathtub:{pad:88,min:72,max:92,ground:true},
-  policeman:{pad:64,min:48,max:60,ground:true},
-  cloudknight:{pad:128,min:38,max:49,sky:true},
-  moonjanitor:{pad:142,min:34,max:44,sky:true},
+  bathtub:{pad:150,min:72,max:92,ground:true},
+  policeman:{pad:105,min:48,max:60,ground:true},
+  cloudknight:{pad:180,min:38,max:49,sky:true},
+  moonjanitor:{pad:215,min:34,max:44,sky:true},
   skyfish:{pad:180,min:44,max:60,sky:true},
   duckpatrol:{pad:72,min:58,max:73,ground:true},
-  flyingdesk:{pad:118,min:32,max:43,sky:true},
-  firemarshal:{pad:92,min:66,max:82,ground:true},
+  flyingdesk:{pad:270,min:32,max:43,sky:true},
+  firemarshal:{pad:180,min:66,max:82,ground:true},
   teaballoon:{pad:150,min:29,max:38,sky:true},
   snowclerk:{pad:84,min:55,max:70,ground:true},
-  vacuumdemon:{pad:94,min:62,max:78,ground:true},
-  airdrop:{pad:150,min:92,max:112,sky:true},
-  clockworkduck:{pad:76,min:42,max:55,ground:true}
+  vacuumdemon:{pad:190,min:62,max:78,ground:true},
+  airdrop:{pad:230,min:92,max:112,sky:true},
+  clockworkduck:{pad:76,min:42,max:55,ground:true},
+  runawaybanner:{pad:185,min:66,max:82,ground:true},
+  powderclerk:{pad:190,min:70,max:88,ground:true}
 };
 
 function findGagSoldier(x){
@@ -2215,6 +2260,8 @@ function playerArmyShape(){
 }
 function aiUnitScore(key,profile,planned,shape){
   var ud=UD[key];if(!ud||G.e.gold<ud.c)return -1;
+  if(isCombatDefinition(ud)&&activeCombatCount(false)>=combatCapForSide())return -1;
+  if(ud.worker&&countActiveUnit("drwal",false)>=MAX_ACTIVE_WORKERS_PER_SIDE)return -1;
   if(ud.mason&&(!G.rocks||!G.rocks.length||countActiveUnit("mason",false)>=2))return -1;
   var score=1*(key===planned?1.32:1);
   if(profile==="defensive"){
@@ -2445,14 +2492,14 @@ function tick(dt){
   if(G.p&&G.p.flashAlpha>0)G.p.flashAlpha=Math.max(0,G.p.flashAlpha-dt*4);
   if(G.e&&G.e.flashAlpha>0)G.e.flashAlpha=Math.max(0,G.e.flashAlpha-dt*4);
   if(!G.over){
-    G.p.gold=Math.min(G.p.gold+2.5*dt,9999);
-    G.e.gold=Math.min(G.e.gold+3.0*dt,9999);
+    G.p.gold=Math.min(G.p.gold+passiveGoldRate(true)*dt,9999);
+    G.e.gold=Math.min(G.e.gold+passiveGoldRate(false)*dt,9999);
     G.treeT+=dt;
-    if(G.treeT>=18){
+    if(G.treeT>=treeRespawnSeconds()){
       G.treeT=0;
       var alive=[];for(var i=0;i<G.trees.length;i++)if(G.trees[i].w>0)alive.push(G.trees[i]);
       G.trees=alive;
-      var treeCap=Math.max(1,Math.min(5,Number(G.lv.treeCap)||5));
+      var treeCap=Math.max(1,Math.min(4,Number(G.lv.treeCap)||4));
       if(G.trees.length<treeCap){
         for(var a=0;a<30;a++){
           var nx2=Math.round(G.W*(0.28+0.44*Math.random())),ok2=true;
@@ -2466,7 +2513,7 @@ function tick(dt){
     if(!G.tutorialMode&&G.aiT>=(G.aiNextMs||G.lv.ad)){
       G.aiT=0;
       var aiK=selectAiUnit();
-      if(aiK){spawnUnit(aiK,false);G.aiLastKey=aiK;}
+      if(aiK){var aiSpawned=spawnUnit(aiK,false);if(aiSpawned)G.aiLastKey=aiK;}
       G.aiNextMs=nextAiInterval();
     }
     updateBossEncounter(dt);
@@ -2636,9 +2683,10 @@ function tick(dt){
   G.projs=lp;
 
   var lb=[];for(var i=0;i<G.blasts.length;i++){var b=G.blasts[i];var bdur=b.duration||0.5;if(b.duration===undefined)b.duration=0.5;b.life-=dt;b.r=b.mr*(1-b.life/bdur);if(b.life>0)lb.push(b);}G.blasts=lb;
+  var blastCap=perfCount(20,12);if(G.blasts.length>blastCap)G.blasts=G.blasts.slice(-blastCap);
   var lf=[];for(var i=0;i<G.floats.length;i++){var f=G.floats[i];f.y-=26*dt;f.life-=dt;if(f.life>0)lf.push(f);}G.floats=lf;
   var ld=[];for(var i=0;i<G.dust.length;i++){var d=G.dust[i];d.x+=d.vx*dt;d.y+=d.vy*dt;d.vy+=80*dt;d.life-=dt;if(d.life>0&&d.y<G.GY)ld.push(d);}G.dust=ld;
-  var dustCap=perfCount(60,36);if(G.dust.length>dustCap)G.dust=G.dust.slice(-dustCap);
+  var dustCap=perfCount(48,30);if(G.dust.length>dustCap)G.dust=G.dust.slice(-dustCap);
   for(var i=0;i<G.clouds.length;i++){var cl=G.clouds[i];cl.x+=cl.spd*dt;if(cl.x>G.W+200)cl.x=-200;}
   // Birds — nie pojawiają się w nocy, w wulkanie ani w krwawym księżycu
   var sceneNow = SC[G.lv.sc];
@@ -2658,14 +2706,26 @@ function tick(dt){
   }
   G.birds=lbi;
   var lsp=[];for(var i=0;i<G.sparks.length;i++){var sp=G.sparks[i];sp.x+=sp.vx*dt;sp.y+=sp.vy*dt;sp.vy+=120*dt;sp.life-=dt;if(sp.life>0)lsp.push(sp);}G.sparks=lsp;
-  var sparkCap=perfCount(80,48);if(G.sparks.length>sparkCap)G.sparks=G.sparks.slice(-sparkCap);
+  var sparkCap=perfCount(60,36);if(G.sparks.length>sparkCap)G.sparks=G.sparks.slice(-sparkCap);
   var lco=[];for(var i=0;i<G.coins.length;i++){var co=G.coins[i];co.x+=co.vx*dt;co.y+=co.vy*dt;co.vy+=80*dt;co.life-=dt;co.rot+=dt*8;if(co.life>0&&co.y<G.GY+20)lco.push(co);}G.coins=lco;
 
   castleFX(G.p,dt);castleFX(G.e,dt);
   var lsm=[];for(var i=0;i<G.smoke.length;i++){var s=G.smoke[i];s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy-=8*dt;s.vx*=(1-dt*0.4);s.life-=dt;s.r+=dt*12;if(s.life>0)lsm.push(s);}G.smoke=lsm;
-  var smokeCap=perfCount(50,30);if(G.smoke.length>smokeCap)G.smoke=G.smoke.slice(-smokeCap);
+  var smokeCap=perfCount(36,22);if(G.smoke.length>smokeCap)G.smoke=G.smoke.slice(-smokeCap);
   var lem=[];for(var i=0;i<G.embers.length;i++){var em=G.embers[i];em.x+=em.vx*dt;em.y+=em.vy*dt;em.vy+=30*dt;em.life-=dt;if(em.life>0&&em.y<G.GY)lem.push(em);}G.embers=lem;
-  var emberCap=perfCount(40,24);if(G.embers.length>emberCap)G.embers=G.embers.slice(-emberCap);
+  var emberCap=perfCount(28,18);if(G.embers.length>emberCap)G.embers=G.embers.slice(-emberCap);
+  /* Jeden wspólny budżet zatrzymuje kaskadę różnych efektów w finałowej bitwie.
+     Zachowujemy proporcje rodzajów cząstek, zamiast wycinać jeden efekt całkiem. */
+  var fxGroups=[G.dust,G.sparks,G.smoke,G.embers,G.blasts],fxTotal=0,fxBudget=perfCount(120,72);
+  for(var fgi=0;fgi<fxGroups.length;fgi++)fxTotal+=fxGroups[fgi].length;
+  if(fxTotal>fxBudget){
+    var fxRatio=fxBudget/fxTotal;
+    G.dust=G.dust.slice(-Math.floor(G.dust.length*fxRatio));
+    G.sparks=G.sparks.slice(-Math.floor(G.sparks.length*fxRatio));
+    G.smoke=G.smoke.slice(-Math.floor(G.smoke.length*fxRatio));
+    G.embers=G.embers.slice(-Math.floor(G.embers.length*fxRatio));
+    G.blasts=G.blasts.slice(-Math.floor(G.blasts.length*fxRatio));
+  }
   if(G.p.shake>0)G.p.shake=Math.max(0,G.p.shake-dt*3);
   if(G.e.shake>0)G.e.shake=Math.max(0,G.e.shake-dt*3);
   if(G.p.damagePulse>0)G.p.damagePulse=Math.max(0,G.p.damagePulse-dt);
@@ -3333,7 +3393,8 @@ function castleFX(c,dt){
 }
 
 /* ── RENDER ── */
-function policemanUnitScale(){return getUnitDrawSize()/22;}
+function humorousHumanScale(){return getUnitDrawSize()/22;}
+function policemanUnitScale(){return humorousHumanScale();}
 function drawPolicemanGag(g,bob,scale){
   /* Policjant korzysta z tej samej bazy 22 px co żołnierze. Wcześniej był
      rysowany w surowych pikselach, więc na dużym ekranie miał pół ich wzrostu. */
@@ -3373,7 +3434,7 @@ function drawPolicemanGag(g,bob,scale){
 }
 
 function drawFlyingDeskGag(g){
-  CT.translate(g.x,g.y+Math.sin(g.phase*2.1)*7);CT.scale(g.dir,1);
+  var hs=policemanUnitScale();CT.translate(g.x,g.y+Math.sin(g.phase*2.1)*7*hs);CT.scale(g.dir*hs,hs);
   // Parasol jest napędem zatwierdzonym przez dział procedur lotniczych.
   CT.strokeStyle="#34313b";CT.lineWidth=1.6;CT.beginPath();CT.moveTo(2,-27);CT.lineTo(2,-58);CT.stroke();
   CT.fillStyle="#6d2944";CT.beginPath();CT.arc(2,-58,18,Math.PI,Math.PI*2);CT.lineTo(20,-58);CT.closePath();CT.fill();
@@ -3408,7 +3469,7 @@ function drawFlyingDeskGag(g){
 }
 
 function drawBathtubGag(g,bob){
-  CT.translate(g.x,g.y+bob);CT.scale(g.dir,1);
+  var hs=policemanUnitScale();CT.translate(g.x,g.y+bob*hs);CT.scale(g.dir*hs,hs);
   CT.fillStyle="rgba(0,0,0,.3)";CT.beginPath();CT.ellipse(0,3,31,4,0,0,Math.PI*2);CT.fill();
   var spin=g.phase*16;
   for(var wi=0;wi<2;wi++){
@@ -3431,7 +3492,7 @@ function drawBathtubGag(g,bob){
 }
 
 function drawCloudKnightGag(g){
-  CT.translate(g.x,g.y+Math.sin(g.phase*1.8)*7);CT.scale(g.dir,1);
+  var hs=policemanUnitScale();CT.translate(g.x,g.y+Math.sin(g.phase*1.8)*7*hs);CT.scale(g.dir*hs,hs);
   CT.fillStyle="rgba(235,244,255,.82)";CT.strokeStyle="rgba(95,120,145,.45)";CT.lineWidth=1.2;
   CT.beginPath();CT.arc(-24,3,15,0,Math.PI*2);CT.arc(-7,-3,20,0,Math.PI*2);CT.arc(14,2,16,0,Math.PI*2);CT.arc(30,7,11,0,Math.PI*2);CT.closePath();CT.fill();CT.stroke();
   // Rycerz siedzi tyłem do kierunku lotu i spokojnie pije herbatę.
@@ -3444,7 +3505,7 @@ function drawCloudKnightGag(g){
 }
 
 function drawMoonJanitorGag(g){
-  CT.translate(g.x,g.y+Math.sin(g.phase*1.35)*5);CT.scale(g.dir,1);
+  var hs=policemanUnitScale();CT.translate(g.x,g.y+Math.sin(g.phase*1.35)*5*hs);CT.scale(g.dir*hs,hs);
   // Drabina leci poziomo, bo dział utrzymania nie otrzymał schodów.
   CT.strokeStyle="#b48a4b";CT.lineWidth=3;CT.beginPath();CT.moveTo(-42,10);CT.lineTo(23,-28);CT.moveTo(-36,18);CT.lineTo(29,-20);CT.stroke();
   CT.lineWidth=1.5;for(var li=0;li<7;li++){var lx=-31+li*10,ly=12-li*5.7;CT.beginPath();CT.moveTo(lx,ly);CT.lineTo(lx+6,ly+8);CT.stroke();}
@@ -3469,7 +3530,7 @@ function drawDuckPatrolGag(g,bob){
 }
 
 function drawFireMarshalGag(g,bob){
-  CT.translate(g.x,g.y+bob);CT.scale(g.dir,1);
+  var hs=policemanUnitScale();CT.translate(g.x,g.y+bob*hs);CT.scale(g.dir*hs,hs);
   CT.fillStyle="rgba(0,0,0,.25)";CT.beginPath();CT.ellipse(0,3,31,4,0,0,Math.PI*2);CT.fill();
   CT.fillStyle="#252d38";CT.fillRect(-6,-29,14,28);CT.fillStyle="#d8a77a";CT.beginPath();CT.arc(1,-35,6,0,Math.PI*2);CT.fill();
   CT.fillStyle="#d9d23a";CT.beginPath();CT.arc(1,-39,8,Math.PI,Math.PI*2);CT.lineTo(11,-38);CT.lineTo(-9,-38);CT.closePath();CT.fill();
@@ -3503,7 +3564,7 @@ function drawSnowClerkGag(g,bob){
 }
 
 function drawVacuumDemonGag(g,bob){
-  CT.translate(g.x,g.y+bob);CT.scale(g.dir,1);
+  var hs=policemanUnitScale();CT.translate(g.x,g.y+bob*hs);CT.scale(g.dir*hs,hs);
   CT.fillStyle="rgba(0,0,0,.3)";CT.beginPath();CT.ellipse(0,3,34,4,0,0,Math.PI*2);CT.fill();
   CT.fillStyle="#8b2638";CT.strokeStyle="#35101a";CT.lineWidth=1.2;CT.fillRect(-8,-29,16,27);CT.strokeRect(-8,-29,16,27);
   CT.beginPath();CT.arc(0,-36,8,0,Math.PI*2);CT.fill();CT.stroke();
@@ -3517,7 +3578,9 @@ function drawVacuumDemonGag(g,bob){
 
 function drawAirdropGag(g){
   initAirdropGag(g);
-  var s=Math.max(.72,Math.min(1.16,H/500));
+  /* Pilot i spadochroniarz korzystają z tej samej skali bazowej co wojsko.
+     Samolot jest przez to nieco większy, ale nadal pozostaje w tle i nie ma hitboxa. */
+  var s=policemanUnitScale();
   if(!g.planeOff){
     CT.save();CT.translate(g.x,g.y);CT.scale(g.dir*s,s);
     // Mały samolot śmigłowy wygląda całkowicie nie na miejscu w średniowieczu.
@@ -3570,6 +3633,36 @@ function drawAirdropGag(g){
     var a=Math.max(0,g.splat.life/g.splat.max);CT.save();CT.translate(g.splat.x,g.splat.y);CT.globalAlpha=a;CT.fillStyle="#76502a";
     CT.beginPath();for(var sp=0;sp<12;sp++){var ang=sp*Math.PI/6,rr=sp%2?4:10;CT.lineTo(Math.cos(ang)*rr,Math.sin(ang)*rr);}CT.closePath();CT.fill();CT.restore();
   }
+}
+
+function drawRunawayBannerGag(g,bob){
+  var hs=policemanUnitScale(),run=Math.sin(g.phase*17)*6;
+  CT.translate(g.x,g.y+bob*hs);CT.scale(g.dir*hs,hs);
+  CT.fillStyle="rgba(0,0,0,.25)";CT.beginPath();CT.ellipse(-4,2,25,3.5,0,0,Math.PI*2);CT.fill();
+  /* Paź jest w skali wojska, ale proporzec ma ambicje większe od zamku. */
+  CT.strokeStyle="#3b2a1c";CT.lineWidth=2.4;CT.beginPath();CT.moveTo(4,-31);CT.lineTo(30,-72);CT.stroke();
+  var flap=Math.sin(g.phase*6)*5;CT.fillStyle="#7e2740";CT.strokeStyle="#3d1421";CT.lineWidth=1;
+  CT.beginPath();CT.moveTo(28,-70);CT.quadraticCurveTo(3+flap,-81,-22,-68);CT.lineTo(-15,-50);CT.quadraticCurveTo(7+flap,-61,29,-55);CT.closePath();CT.fill();CT.stroke();
+  CT.fillStyle="#e4c15a";CT.beginPath();CT.arc(3+flap*.15,-66,5,0,Math.PI*2);CT.fill();
+  CT.strokeStyle="#253446";CT.lineWidth=4;CT.lineCap="round";CT.beginPath();CT.moveTo(-3,-14);CT.lineTo(-6-run,0);CT.moveTo(4,-14);CT.lineTo(7+run,0);CT.stroke();
+  CT.fillStyle="#36536f";CT.strokeStyle="#18283a";CT.lineWidth=1;CT.beginPath();CT.moveTo(-8,-32);CT.lineTo(8,-32);CT.lineTo(7,-13);CT.lineTo(-7,-13);CT.closePath();CT.fill();CT.stroke();
+  CT.strokeStyle="#36536f";CT.lineWidth=3.2;CT.beginPath();CT.moveTo(-6,-27);CT.lineTo(-12-run*.5,-18);CT.moveTo(6,-27);CT.lineTo(13+run*.5,-20);CT.stroke();
+  CT.fillStyle="#d4aa82";CT.beginPath();CT.arc(0,-39,6,0,Math.PI*2);CT.fill();CT.fillStyle="#55351f";CT.beginPath();CT.arc(0,-42,6.5,Math.PI,Math.PI*2);CT.fill();
+  CT.fillStyle="#111";CT.beginPath();CT.arc(2.3,-39,1,0,Math.PI*2);CT.fill();CT.lineCap="butt";
+}
+
+function drawPowderClerkGag(g,bob){
+  var hs=policemanUnitScale(),run=Math.sin(g.phase*19)*6,roll=g.phase*8;
+  CT.translate(g.x,g.y+bob*hs);CT.scale(g.dir*hs,hs);
+  CT.fillStyle="rgba(0,0,0,.26)";CT.beginPath();CT.ellipse(0,2,34,4,0,0,Math.PI*2);CT.fill();
+  /* Beczka jedzie pierwsza, urzędnik dopiero próbuje zatwierdzić jej kierunek. */
+  CT.save();CT.translate(24,-12);CT.rotate(roll);CT.fillStyle="#6e4325";CT.strokeStyle="#28170d";CT.lineWidth=1.2;CT.beginPath();CT.arc(0,0,12,0,Math.PI*2);CT.fill();CT.stroke();CT.strokeStyle="#b28b50";CT.beginPath();CT.arc(0,0,8,0,Math.PI*2);CT.stroke();CT.beginPath();CT.moveTo(-10,0);CT.lineTo(10,0);CT.stroke();CT.restore();
+  CT.strokeStyle="#2d3340";CT.lineWidth=4;CT.lineCap="round";CT.beginPath();CT.moveTo(-11,-14);CT.lineTo(-14-run,0);CT.moveTo(-4,-14);CT.lineTo(-1+run,0);CT.stroke();
+  CT.fillStyle="#4b5363";CT.strokeStyle="#222834";CT.lineWidth=1;CT.fillRect(-16,-33,15,20);CT.strokeRect(-16,-33,15,20);
+  CT.fillStyle="#d5aa80";CT.beginPath();CT.arc(-8,-40,6,0,Math.PI*2);CT.fill();CT.fillStyle="#20242b";CT.beginPath();CT.arc(-8,-43,6,Math.PI,Math.PI*2);CT.fill();
+  CT.strokeStyle="#4b5363";CT.lineWidth=3;CT.beginPath();CT.moveTo(-3,-28);CT.lineTo(9,-22+run*.2);CT.stroke();
+  CT.fillStyle="#f0ead8";CT.strokeStyle="#8b7b63";CT.lineWidth=.7;CT.fillRect(-30,-31,13,17);CT.strokeRect(-30,-31,13,17);for(var l=0;l<3;l++){CT.beginPath();CT.moveTo(-28,-27+l*4);CT.lineTo(-20,-27+l*4);CT.stroke();}
+  CT.fillStyle="#111";CT.beginPath();CT.arc(-5.8,-40,1,0,Math.PI*2);CT.fill();CT.lineCap="butt";
 }
 
 function drawAbsurdGags(){
@@ -3657,11 +3750,15 @@ function drawAbsurdGags(){
       CT.strokeRect(-16,-4,7,8);CT.restore();
       // Dwa dyskretne obłoczki pary, nigdy zasłaniające jednostek.
       CT.fillStyle="rgba(238,236,218,.46)";for(var dp=0;dp<2;dp++){var pa=(g.phase*16+dp*13)%24;CT.beginPath();CT.arc(-16-pa*.55,-24-pa*.55,2.8+pa*.08,0,Math.PI*2);CT.fill();}
+    }else if(g.type==="runawaybanner"){
+      drawRunawayBannerGag(g,bob);
+    }else if(g.type==="powderclerk"){
+      drawPowderClerkGag(g,bob);
     }else if(g.type==="airdrop"){
       drawAirdropGag(g);
     }else if(g.type==="inspector"){
       var fade=Math.min(1,(g.max-g.life)*3,g.life*2);
-      CT.translate(g.x,g.y);CT.globalAlpha=Math.max(0,fade);
+      var ihs=policemanUnitScale();CT.translate(g.x,g.y);CT.scale(ihs,ihs);CT.globalAlpha=Math.max(0,fade);
       CT.fillStyle="rgba(0,0,0,.3)";CT.beginPath();CT.ellipse(0,2,12,3,0,0,Math.PI*2);CT.fill();
       // Parasol pozostaje otwarty, inspektor nadal wypełnia formularz.
       CT.strokeStyle="#4d402f";CT.lineWidth=2;CT.beginPath();CT.moveTo(0,-10);CT.lineTo(0,-56);CT.stroke();
@@ -3715,13 +3812,17 @@ function drawLevelAbsurdity(){
   var p=G.p,e=G.e,px=p.x+p.w*.56,py=G.GY-p.h-7,ex=e.x+e.w*.44,ey=G.GY-e.h-7;
   CT.save();CT.lineCap="round";CT.lineJoin="round";
   if(id===1){
-    // Wędkarz na wieży łowi but. Pranie pozostaje unikalnym gagiem poziomu 7.
-    var rodX=p.x+p.w*.62,rodY=py-5*s,bootSwing=Math.sin(t*.8)*4*s;
-    CT.strokeStyle="#76502d";CT.lineWidth=1.7*s;CT.beginPath();CT.moveTo(rodX,rodY);CT.quadraticCurveTo(rodX+18*s,rodY-24*s,rodX+34*s,rodY-20*s);CT.stroke();
-    CT.strokeStyle="#d7d0b4";CT.lineWidth=.8*s;CT.beginPath();CT.moveTo(rodX+34*s,rodY-20*s);CT.quadraticCurveTo(rodX+39*s,rodY+12*s,rodX+35*s+bootSwing,rodY+29*s);CT.stroke();
-    CT.save();CT.translate(rodX+35*s+bootSwing,rodY+30*s);CT.rotate(-.25+Math.sin(t*.8)*.12);CT.fillStyle="#3a281b";CT.strokeStyle="#17100b";CT.lineWidth=.8;
-    CT.beginPath();CT.moveTo(-4*s,-8*s);CT.lineTo(4*s,-8*s);CT.lineTo(3*s,1*s);CT.lineTo(10*s,3*s);CT.quadraticCurveTo(7*s,8*s,-3*s,5*s);CT.closePath();CT.fill();CT.stroke();CT.restore();
-    CT.fillStyle="#c59a72";CT.beginPath();CT.arc(rodX-3*s,rodY-7*s,4*s,0,Math.PI*2);CT.fill();CT.fillStyle="#49617a";CT.fillRect(rodX-8*s,rodY-3*s,10*s,6*s);
+    // Wędkarz łowi but przy fosie. Postać ma tę samą bazową skalę co wojsko.
+    var fs=policemanUnitScale(),fishX=p.x+p.w+15*fs,fishY=G.GY-1,bootSwing=Math.sin(t*.8)*3;
+    CT.save();CT.translate(fishX,fishY);CT.scale(fs,fs);
+    CT.fillStyle="rgba(0,0,0,.24)";CT.beginPath();CT.ellipse(0,2,13,3,0,0,Math.PI*2);CT.fill();
+    CT.strokeStyle="#314354";CT.lineWidth=4;CT.lineCap="round";CT.beginPath();CT.moveTo(-3,-13);CT.lineTo(-5,0);CT.moveTo(3,-13);CT.lineTo(5,0);CT.stroke();
+    CT.fillStyle="#49617a";CT.strokeStyle="#24313d";CT.lineWidth=1;CT.fillRect(-7,-31,14,19);CT.strokeRect(-7,-31,14,19);
+    CT.fillStyle="#c59a72";CT.beginPath();CT.arc(0,-38,6,0,Math.PI*2);CT.fill();CT.fillStyle="#58402a";CT.beginPath();CT.arc(0,-41,6.5,Math.PI,Math.PI*2);CT.fill();
+    CT.strokeStyle="#76502d";CT.lineWidth=1.7;CT.beginPath();CT.moveTo(5,-27);CT.quadraticCurveTo(23,-52,43,-47);CT.stroke();
+    CT.strokeStyle="#d7d0b4";CT.lineWidth=.7;CT.beginPath();CT.moveTo(43,-47);CT.quadraticCurveTo(48,-17,43+bootSwing,-2);CT.stroke();
+    CT.save();CT.translate(43+bootSwing,-2);CT.rotate(-.25+Math.sin(t*.8)*.12);CT.fillStyle="#3a281b";CT.strokeStyle="#17100b";CT.lineWidth=.8;CT.beginPath();CT.moveTo(-4,-8);CT.lineTo(4,-8);CT.lineTo(3,1);CT.lineTo(10,3);CT.quadraticCurveTo(7,8,-3,5);CT.closePath();CT.fill();CT.stroke();CT.restore();
+    CT.restore();
   }else if(id===2){
     // Sygnalizacja na blankach. Wszystkie światła świecą jednocześnie.
     CT.strokeStyle="#30343a";CT.lineWidth=2*s;CT.beginPath();CT.moveTo(ex,ey+8*s);CT.lineTo(ex,ey-22*s);CT.stroke();
@@ -3969,29 +4070,92 @@ function drawEarlyModernBackdrop(sc){
 }
 
 function drawEarlyModernCastleDetails(c){
-  if(!G||G.eraId!=="early-modern"||!c||(c.collapseT||0)>.05)return;
+  if(!G||G.eraId!=="early-modern"||!c)return;
   var id=G.lv.id||1,x=c.x,w=c.w,h=c.h,top=G.GY-h,isP=c.isP;
-  var brick=isP?"rgba(154,104,71,.72)":"rgba(129,78,58,.75)",mortar="rgba(225,200,155,.24)",iron="rgba(33,35,36,.8)";
-  CT.save();
-  // Ceglana okładzina i strzelnice zmieniają charakter bez zasłaniania herbu.
-  CT.strokeStyle=mortar;CT.lineWidth=.7;for(var row=0;row<5;row++){var yy=top+h*(.18+row*.145);CT.beginPath();CT.moveTo(x+5,yy);CT.lineTo(x+w-5,yy);CT.stroke();}
-  CT.strokeStyle=brick;CT.lineWidth=2;for(var col=0;col<5;col++){var xx=x+w*(.12+col*.19);CT.beginPath();CT.moveTo(xx,top+h*.22);CT.lineTo(xx+(col%2?4:-4),top+h*.77);CT.stroke();}
-  CT.fillStyle=iron;for(var em=0;em<3;em++){var ex=x+w*(.28+em*.22);CT.beginPath();CT.ellipse(ex,top+h*.36,4.2,2,0,0,Math.PI*2);CT.fill();}
+  var brick=isP?"#9a6548":"#7d493b",brickLight=isP?"#bd8060":"#9c604d",brickDark=isP?"#563a2e":"#442b27";
+  var earth=isP?"#625b43":"#59483d",mortar="rgba(235,211,170,.34)",iron="#292d2f",copper=id>=3?"#5f887d":"#667c76";
+  var fortTop=top+h*.38,base=G.GY-1,center=x+w*.5,collapse=Math.max(0,c.collapseT||0);
+  if(collapse>=.98)return;
+  CT.save();CT.lineJoin="round";CT.lineCap="round";
+  var shX=c.shake>0?(Math.random()-.5)*c.shake*6:0,shY=c.shake>0?(Math.random()-.5)*c.shake*4:0;
+  CT.translate(shX,shY);
+  if(collapse>.01){
+    CT.translate(center,G.GY);CT.rotate(collapse*(isP?-.20:.20));CT.translate(-center,-G.GY);
+    CT.globalAlpha=Math.max(.12,1-collapse*.78);
+  }
+
+  /* Szeroki cień od razu odróżnia niski fort od pionowej warowni Epoki I. */
+  CT.fillStyle="rgba(0,0,0,.27)";CT.beginPath();CT.ellipse(center,G.GY+4,w*.68,8,0,0,Math.PI*2);CT.fill();
+
+  /* Epoka II ma własną bryłę: niski fort artyleryjski z wysuniętymi barkami.
+     To pełna, nieprzezroczysta forma, a nie faktura na średniowiecznym zamku. */
+  CT.fillStyle=brick;CT.strokeStyle=brickDark;CT.lineWidth=1.4;
+  /* Trzy zwarte pawilony zakrywają dawny donżon i blanki. */
+  CT.fillRect(x-7,top+h*.27,w*.31,h*.73+1);CT.strokeRect(x-7,top+h*.27,w*.31,h*.73+1);
+  CT.fillRect(x+w*.70,top+h*.27,w*.31+7,h*.73+1);CT.strokeRect(x+w*.70,top+h*.27,w*.31+7,h*.73+1);
+  CT.fillStyle=brickLight;CT.fillRect(x+w*.21,top+h*.18,w*.58,h*.82+1);CT.strokeRect(x+w*.21,top+h*.18,w*.58,h*.82+1);
+  /* Dachy są na tyle szerokie, by stara średniowieczna linia nie przebijała. */
+  CT.fillStyle=copper;CT.strokeStyle="#263d3a";CT.lineWidth=1.2;
+  CT.beginPath();CT.moveTo(x-13,top+h*.28);CT.lineTo(x+w*.145,top+h*.03);CT.lineTo(x+w*.34,top+h*.28);CT.closePath();CT.fill();CT.stroke();
+  CT.beginPath();CT.moveTo(x+w*.15,top+h*.19);CT.lineTo(center,top-12-id*2);CT.lineTo(x+w*.85,top+h*.19);CT.closePath();CT.fill();CT.stroke();
+  CT.beginPath();CT.moveTo(x+w*.66,top+h*.28);CT.lineTo(x+w*.855,top+h*.03);CT.lineTo(x+w+13,top+h*.28);CT.closePath();CT.fill();CT.stroke();
+  CT.strokeStyle="rgba(218,236,225,.28)";CT.lineWidth=.8;CT.beginPath();CT.moveTo(x+w*.17,top+h*.16);CT.lineTo(center,top-7-id*2);CT.lineTo(x+w*.83,top+h*.16);CT.stroke();
+
+  /* Flaga regimentowa Epoki II: prostokątna, na krótszym maszcie niż proporzec
+     średniowieczny. */
+  var flagX=isP?x+w*.22:x+w*.78,flagDir=isP?1:-1;
+  CT.strokeStyle="#3b3025";CT.lineWidth=1.5;CT.beginPath();CT.moveTo(flagX,top+h*.18);CT.lineTo(flagX,top-17);CT.stroke();
+  CT.fillStyle=isP?"#3168b7":"#b52c31";CT.strokeStyle=isP?"#193968":"#69181b";
+  CT.beginPath();CT.moveTo(flagX,top-16);CT.lineTo(flagX+flagDir*27,top-13);CT.lineTo(flagX+flagDir*27,top+1);CT.lineTo(flagX,top-2);CT.closePath();CT.fill();CT.stroke();
+  CT.strokeStyle="rgba(244,220,143,.72)";CT.lineWidth=1;CT.beginPath();CT.moveTo(flagX+flagDir*6,top-12);CT.lineTo(flagX+flagDir*21,top-9);CT.moveTo(flagX+flagDir*6,top-5);CT.lineTo(flagX+flagDir*21,top-2);CT.stroke();
+
+  CT.fillStyle=earth;CT.strokeStyle="#302920";CT.lineWidth=1.3;
+  CT.beginPath();CT.moveTo(x-18,base);CT.lineTo(x+10,fortTop+20);CT.lineTo(x+w*.25,fortTop+8);CT.lineTo(center,fortTop+20);CT.lineTo(x+w*.75,fortTop+8);CT.lineTo(x+w-10,fortTop+20);CT.lineTo(x+w+18,base);CT.closePath();CT.fill();CT.stroke();
+
+  CT.fillStyle=brick;CT.strokeStyle=brickDark;CT.lineWidth=1.4;
+  CT.beginPath();CT.moveTo(x-10,base);CT.lineTo(x+3,fortTop+14);CT.lineTo(x+w*.22,fortTop+3);CT.lineTo(x+w*.31,fortTop+15);CT.lineTo(x+w*.69,fortTop+15);CT.lineTo(x+w*.78,fortTop+3);CT.lineTo(x+w-3,fortTop+14);CT.lineTo(x+w+10,base);CT.closePath();CT.fill();CT.stroke();
+
+  /* Centralna brama z charakterystycznym schodkowym szczytem. */
+  var gh=Math.max(48,h*.34),gw=w*.39,gx=center-gw*.5,gy=base-gh;
+  CT.fillStyle=brickLight;CT.beginPath();CT.moveTo(gx,base);CT.lineTo(gx,gy+12);CT.lineTo(gx+gw*.18,gy+12);CT.lineTo(gx+gw*.18,gy+5);CT.lineTo(gx+gw*.35,gy+5);CT.lineTo(center,gy-9);CT.lineTo(gx+gw*.65,gy+5);CT.lineTo(gx+gw*.82,gy+5);CT.lineTo(gx+gw*.82,gy+12);CT.lineTo(gx+gw,gy+12);CT.lineTo(gx+gw,base);CT.closePath();CT.fill();CT.stroke();
+  CT.fillStyle="#2c2522";CT.beginPath();CT.arc(center,base-20,gw*.18,Math.PI,0);CT.lineTo(center+gw*.18,base);CT.lineTo(center-gw*.18,base);CT.closePath();CT.fill();
+  CT.strokeStyle="#b99b65";CT.lineWidth=1.4;for(var gb=-1;gb<=1;gb+=2){CT.beginPath();CT.moveTo(center+gb*gw*.11,base-20);CT.lineTo(center+gb*gw*.11,base-2);CT.stroke();}
+
+  /* Małe daszki platform spinają górną i dolną część fortu. */
+  CT.fillStyle=copper;CT.strokeStyle="#263d3a";CT.lineWidth=1.1;
+  for(var roof=-1;roof<=1;roof+=2){var rc=center+roof*w*.31,rw=w*.16;CT.beginPath();CT.moveTo(rc-rw,fortTop+7);CT.lineTo(rc,fortTop-18-id*2);CT.lineTo(rc+rw,fortTop+7);CT.closePath();CT.fill();CT.stroke();}
+
+  /* Cegły i poziome strzelnice są ograniczone do nowej bryły. */
+  CT.strokeStyle=mortar;CT.lineWidth=.75;for(var row=0;row<4;row++){var yy=fortTop+18+row*(base-fortTop-22)/4;CT.beginPath();CT.moveTo(x+5,yy);CT.lineTo(x+w-5,yy);CT.stroke();}
+  CT.fillStyle=iron;for(var em=0;em<4;em++){var ex=x+w*(.18+em*.215);CT.beginPath();CT.ellipse(ex,fortTop+24+(em%2)*7,5,2.2,0,0,Math.PI*2);CT.fill();}
+
   if(id>=2){
-    // Niskie, ziemne barki bastionu — subtelny krok rozbudowy.
-    CT.fillStyle=isP?"#655a42":"#604b3d";CT.strokeStyle="#332c22";CT.lineWidth=1;
-    CT.beginPath();CT.moveTo(x-8,G.GY);CT.lineTo(x+19,G.GY);CT.lineTo(x+27,G.GY-23);CT.lineTo(x+8,G.GY-17);CT.closePath();CT.fill();CT.stroke();
-    CT.beginPath();CT.moveTo(x+w+8,G.GY);CT.lineTo(x+w-19,G.GY);CT.lineTo(x+w-27,G.GY-23);CT.lineTo(x+w-8,G.GY-17);CT.closePath();CT.fill();CT.stroke();
+    /* Ravelin ma kształt grotu i wizualnie wysuwa fort w pole bitwy. */
+    var front=isP?1:-1,fx=isP?x+w-3:x+3;
+    CT.fillStyle=brickDark;CT.strokeStyle="#241d19";CT.beginPath();CT.moveTo(fx,base);CT.lineTo(fx+front*30,base-14);CT.lineTo(fx+front*10,base-30);CT.lineTo(fx-front*8,base-18);CT.closePath();CT.fill();CT.stroke();
+    CT.strokeStyle="#cfb27a";CT.lineWidth=1;CT.beginPath();CT.moveTo(fx+front*7,base-21);CT.lineTo(fx+front*24,base-14);CT.stroke();
   }
   if(id>=3){
-    // Mała platforma artyleryjska; bez nowego panelu i bez wpływu na statystyki.
-    var side=isP?1:-1,px=isP?x+w*.73:x+w*.27;CT.fillStyle="#4b4437";CT.strokeStyle="#28231d";CT.fillRect(px-13,top-5,26,7);CT.strokeRect(px-13,top-5,26,7);
-    CT.save();CT.translate(px,top-8);CT.scale(side,1);CT.rotate(-.22);CT.fillStyle="#4a4c4b";CT.fillRect(-3,-3,17,6);CT.fillStyle="#252626";CT.fillRect(12,-4,4,8);CT.restore();
+    /* Dwie platformy działowe zamiast pojedynczej armaty na blankach. */
+    for(var gun=-1;gun<=1;gun+=2){var px=center+gun*w*.27,dir=isP?1:-1;CT.fillStyle="#47433a";CT.strokeStyle="#24211d";CT.fillRect(px-15,fortTop-1,30,8);CT.strokeRect(px-15,fortTop-1,30,8);CT.save();CT.translate(px,fortTop-6);CT.scale(dir,1);CT.rotate(-.17);CT.fillStyle="#3d4243";CT.fillRect(-4,-4,21,7);CT.fillStyle="#1f2223";CT.fillRect(15,-5,5,9);CT.restore();}
   }
   if(id>=4){
-    // Ostatni etap dostaje tylko żuraw z kołem — czytelny, lecz nie monumentalny.
-    var hx=isP?x+w*.18:x+w*.82;CT.strokeStyle="#5c3d24";CT.lineWidth=2;CT.beginPath();CT.moveTo(hx,top+10);CT.lineTo(hx,top-24);CT.lineTo(hx+(isP?18:-18),top-24);CT.stroke();
-    CT.beginPath();CT.arc(hx,top-7,7,0,Math.PI*2);CT.stroke();CT.strokeStyle="#b09a70";CT.lineWidth=.8;CT.beginPath();CT.moveTo(hx+(isP?18:-18),top-24);CT.lineTo(hx+(isP?18:-18),top+2);CT.stroke();
+    /* Warsztat poziomu 4: smukła wieża zegarowa i komin zmieniają linię dachu. */
+    var wt=w*.24,wx=center-wt*.5,wy=gy-38;
+    CT.fillStyle=brickLight;CT.strokeStyle=brickDark;CT.fillRect(wx,wy,wt,32);CT.strokeRect(wx,wy,wt,32);
+    CT.fillStyle=copper;CT.beginPath();CT.moveTo(wx-4,wy);CT.lineTo(center,wy-22);CT.lineTo(wx+wt+4,wy);CT.closePath();CT.fill();CT.stroke();
+    CT.fillStyle="#e5d4a5";CT.beginPath();CT.arc(center,wy+14,6,0,Math.PI*2);CT.fill();CT.strokeStyle="#54452f";CT.beginPath();CT.moveTo(center,wy+14);CT.lineTo(center+1,wy+9);CT.moveTo(center,wy+14);CT.lineTo(center+4,wy+16);CT.stroke();
+    var chimney=isP?wx-8:wx+wt+8;CT.fillStyle=brickDark;CT.fillRect(chimney-4,wy-7,8,25);CT.fillStyle="#292625";CT.fillRect(chimney-6,wy-9,12,4);
+  }
+  if((c.damageStage||0)>0){
+    CT.strokeStyle="rgba(47,27,23,.82)";CT.lineWidth=1.5;var crackX=center+(isP?1:-1)*w*.18;CT.beginPath();CT.moveTo(crackX,fortTop+20);CT.lineTo(crackX-5,fortTop+35);CT.lineTo(crackX+3,fortTop+48);if(c.damageStage>1)CT.lineTo(crackX-7,fortTop+63);CT.stroke();
+  }
+  if(c.holes&&c.holes.length){
+    for(var hi=0;hi<c.holes.length;hi++){
+      var ho=c.holes[hi],hx=Math.max(x+5,Math.min(x+w-5,ho.x)),hy=Math.max(fortTop+18,Math.min(base-18,ho.y));
+      CT.fillStyle="rgba(20,13,11,.9)";CT.strokeStyle="rgba(219,169,116,.5)";CT.lineWidth=1;
+      CT.beginPath();CT.arc(hx,hy,Math.max(2.5,Math.min(7,ho.r||4)),0,Math.PI*2);CT.fill();CT.stroke();
+    }
   }
   CT.restore();
 }
@@ -4720,8 +4884,11 @@ function render(){
     CT.restore();
   }
   // Castles
-  drawCastle(G.p,sc);drawCastle(G.e,sc);
-  drawEarlyModernCastleDetails(G.p);drawEarlyModernCastleDetails(G.e);
+  if(G.eraId==="early-modern"){
+    drawEarlyModernCastleDetails(G.p);drawEarlyModernCastleDetails(G.e);
+  }else{
+    drawCastle(G.p,sc);drawCastle(G.e,sc);
+  }
   drawCastleExpansion(G.p);drawCastleExpansion(G.e);
   drawLevelAbsurdity();
   // Smoke
@@ -5674,13 +5841,16 @@ function drawCampaignCastleEvolution(c,geom){
       CT.beginPath();CT.moveTo(steamX,steamY+4*ks);CT.quadraticCurveTo(steamX+3*ks,steamY+1*ks,steamX,steamY-2*ks);CT.stroke();
     }
   }else if(geom.hpPct>.55&&geom.collapse<.08&&levelId===11&&isP){
-    // Przysypiający strażnik: bez napisów i bez wpływu na walkę.
-    var gx=x+w*.76,gy=y-5,nod=Math.sin(T*.75)*.08-.10;
-    CT.save();CT.translate(gx,gy);CT.rotate(nod);
-    CT.fillStyle="#b9865f";CT.beginPath();CT.arc(0,-4,3.2,0,Math.PI*2);CT.fill();
-    CT.fillStyle="#586779";CT.beginPath();CT.arc(0,-5,4.2,Math.PI,Math.PI*2);CT.lineTo(4,-4);CT.lineTo(-4,-4);CT.closePath();CT.fill();
-    CT.fillStyle="#263344";CT.fillRect(-4,-2,8,6);
-    CT.strokeStyle="#2a2018";CT.lineWidth=1.2;CT.beginPath();CT.moveTo(-5,2);CT.lineTo(5,2);CT.stroke();
+    // Przysypiający strażnik: pełna skala wojskowego, bez wpływu na walkę.
+    var ghs=policemanUnitScale(),gx=x+w*.77,gy=y-2,nod=Math.sin(T*.75)*.08-.10;
+    CT.save();CT.translate(gx,gy);CT.scale(ghs,ghs);CT.rotate(nod);
+    CT.strokeStyle="#263344";CT.lineWidth=4;CT.lineCap="round";CT.beginPath();CT.moveTo(-3,-13);CT.lineTo(-5,0);CT.moveTo(3,-13);CT.lineTo(5,0);CT.stroke();
+    CT.fillStyle="#263344";CT.strokeStyle="#111a25";CT.lineWidth=1;CT.fillRect(-7,-31,14,19);CT.strokeRect(-7,-31,14,19);
+    CT.fillStyle="#b9865f";CT.beginPath();CT.arc(0,-38,6,0,Math.PI*2);CT.fill();
+    CT.fillStyle="#586779";CT.beginPath();CT.arc(0,-41,7,Math.PI,Math.PI*2);CT.lineTo(8,-40);CT.lineTo(-7,-40);CT.closePath();CT.fill();
+    CT.strokeStyle="#2a2018";CT.lineWidth=2;CT.beginPath();CT.moveTo(-10,-28);CT.lineTo(10,-28);CT.stroke();
+    CT.strokeStyle="#68451f";CT.lineWidth=2;CT.beginPath();CT.moveTo(8,-29);CT.lineTo(10,0);CT.stroke();
+    CT.strokeStyle="#15110e";CT.lineWidth=1;CT.beginPath();CT.moveTo(-3,-38);CT.lineTo(-1,-37);CT.moveTo(2,-38);CT.lineTo(4,-37);CT.stroke();
     CT.restore();
   }
   CT.restore();
@@ -7174,7 +7344,7 @@ function drawCastle(c,sc){
 
   /* Player gold pill / enemy count */
   if(isP){
-    var goldText="🌳 "+Math.floor(G.p.gold);
+    var goldText="🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true)+"/"+combatCapForSide();
     CT.font="bold 12px Arial";
     var gtw=CT.measureText(goldText).width+16;
     var goldX=bx2,goldY=by2+barH+6;
@@ -7185,14 +7355,9 @@ function drawCastle(c,sc){
     CT.fillStyle="#aadd33";CT.textAlign="left";CT.textBaseline="middle";
     CT.fillText(goldText,goldX+8,goldY+9);
   } else {
-    var eCount=0;
-    for(var ec=0;ec<G.units.length;ec++){
-      var ue=G.units[ec];
-      if(!ue||ue.state==="dead"||ue.isP||ue.ud.worker)continue;
-      eCount++;
-    }
+    var eCount=activeCombatCount(false);
     if(eCount>0){
-      var enText="⚔ "+eCount;
+      var enText="⚔ "+eCount+"/"+combatCapForSide();
       CT.font="bold 12px Arial";
       var etw=CT.measureText(enText).width+16;
       var enX=bx2+barW,enY=by2+barH+6;
