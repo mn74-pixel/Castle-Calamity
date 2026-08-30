@@ -311,6 +311,18 @@ Status: **wdrożona i sprawdzona automatycznie oraz na renderach iPhone**
 - dodano dwa warianty absurdu bez zwiększania zasady najwyżej jednego gagu na bitwę,
 - szczegóły znajdują się w `BALANS-WYDAJNOSC-I-FORTY-V6.1.md`.
 
+## Poprawka v6.1.1 — stabilny HUD i wędkarz
+
+Status: **wdrożona i sprawdzona automatycznie oraz na renderach iPhone**
+
+- wędkarz poziomu 1 został przeniesiony z dołu planszy na boczny taras zamku,
+- postać ma 90% skali żołnierza, więc pozostaje czytelna, ale nie dominuje sceny,
+- po 12 sekundach zwija wędkę i but, a około 16. sekundy znika za wieżą,
+- ceny i klasy kart wojsk są aktualizowane tylko wtedy, gdy wartość naprawdę się zmienia,
+- usunięto ruch i skalowanie całego kafelka podczas dotyku oraz najechania,
+- pełna regresja mechaniki i test PWA pozostają wymagane przed każdą publikacją,
+- szczegóły znajdują się w `POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md`.
+
 ## Następny etap — rozwój Epoki II
 
 - rozbudowa mapy Epoki II poza pierwsze cztery poziomy,

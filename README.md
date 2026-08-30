@@ -4,7 +4,9 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v6.1
+## Co zawiera wersja v6.1.1
+- wędkarz z poziomu 1 stoi na bocznym tarasie zamku, jest o 10% mniejszy od żołnierza i po około 16 sekundach znika,
+- stabilne karty wyboru wojsk: bez zapisywania tej samej ceny 60 razy na sekundę oraz bez przesuwania i skalowania całego kafelka przy dotyku,
 - 16 poziomów w dwóch epokach i 18 dostępnych jednostek, nadal najwyżej 8 kart w pojedynczej bitwie,
 - twardy limit najwyżej 8 aktywnych bojowników na stronę we wszystkich poziomach; dziewiąty zakup nie pobiera złota,
 - osobny limit dwóch Drwali i dwóch Kamieniarzy na stronę, aby zaplecze nie tworzyło korków,
@@ -131,7 +133,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v6.1` → `castle-calamity-v6.2`.
+np. `castle-calamity-v6.1.1` → `castle-calamity-v6.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)
