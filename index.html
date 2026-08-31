@@ -180,7 +180,7 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
   #tutorialCard.topMode{top:max(52px,env(safe-area-inset-top));bottom:auto;}
   #tutorialText{font-size:12px;}#tutorialActions{margin-top:6px;}#tutorialNext,#tutorialSkip{min-height:30px;padding:5px 12px;}
 }
-/* === SEKCJA HERBÓW === */
+/* === SEKCJA TWARZY NA ZAMKACH === */
 #crestSection{margin-top:12px;padding:14px 18px;background:rgba(20,20,40,.45);border:1px solid #3a3a6a;border-radius:10px;max-width:380px;width:95%;margin-bottom:auto;}
 .crestLabel{color:#aab;font-size:.7rem;letter-spacing:3px;text-align:center;margin-bottom:10px;}
 .crestRow{display:flex;gap:18px;justify-content:center;}
@@ -287,22 +287,22 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
   <div id="levelSelect"></div>
   <div class="hint" id="menuHint">Skróty na kartach = jednostki &nbsp;|&nbsp; Q / W / E = zdolności &nbsp;|&nbsp; P / Spacja = pauza</div>
   <div id="crestSection">
-    <div class="crestLabel" id="crestTitle">TWOJE HERBY</div>
+    <div class="crestLabel" id="crestTitle">TWARZE NA ZAMKACH</div>
     <div class="crestRow">
       <div class="crestSlot">
-        <div class="crestLbl" id="crestPlayerLabel">Twój herb</div>
+        <div class="crestLbl" id="crestPlayerLabel">Twoja twarz</div>
         <canvas id="crestPreviewP" width="60" height="60"></canvas>
         <div class="crestBtns">
-          <button class="crestBtn" id="crestLoadP">Wgraj</button>
+          <button class="crestBtn" id="crestLoadP">Dodaj zdjęcie</button>
           <button class="crestBtn crestRm" id="crestResetP">Usuń</button>
         </div>
         <input type="file" id="crestFileP" accept="image/*" style="display:none">
       </div>
       <div class="crestSlot">
-        <div class="crestLbl" id="crestEnemyLabel">Herb wroga</div>
+        <div class="crestLbl" id="crestEnemyLabel">Twarz wroga</div>
         <canvas id="crestPreviewE" width="60" height="60"></canvas>
         <div class="crestBtns">
-          <button class="crestBtn" id="crestLoadE">Wgraj</button>
+          <button class="crestBtn" id="crestLoadE">Dodaj zdjęcie</button>
           <button class="crestBtn crestRm" id="crestResetE">Usuń</button>
         </div>
         <input type="file" id="crestFileE" accept="image/*" style="display:none">
@@ -5576,7 +5576,7 @@ function drawFlagWithCrest(fx, fy, length, height, col1, col2, T, seed, crestImg
   // Rysuj obraz wypełniając płótno (z marginesem 2px dla obwódki tła)
   try{
     CT.globalAlpha = 0.95;
-    CT.drawImage(crestImg, fx + 1, fy0 + 1, length - 2, height - 2);
+    drawCrestImageContained(CT,crestImg,fx+1,fy0+1,length-2,height-2,1);
     CT.globalAlpha = 1;
   } catch(err){}
   // 3. Obrys złoty
@@ -6542,7 +6542,7 @@ function drawCastle(c,sc){
         CT.rect(innerX, innerY, innerW, innerH);
         CT.clip();
         try{
-          CT.drawImage(crestImg, innerX, innerY, innerW, innerH);
+          drawCrestImageContained(CT,crestImg,innerX,innerY,innerW,innerH,1);
         } catch(err){}
         CT.restore();
       } else {
@@ -7018,7 +7018,7 @@ function drawCastle(c,sc){
         CT.closePath();
         CT.clip();
         try{
-          CT.drawImage(donCrestImg, bnX + 1, bnY + 1, bnW - 2, bnH - 3);
+          drawCrestImageContained(CT,donCrestImg,bnX+1,bnY+1,bnW-2,bnH-3,1);
         } catch(err){}
         CT.restore();
         // Złota obwódka
@@ -10180,12 +10180,177 @@ function buildLevelSelect(){
 }
 
 /* ══════════════════════════════════════════════
-   MODUŁ HERBÓW — gracz może wgrać własne obrazy.
+   MODUŁ TWARZY/HERBÓW — gracz może wgrać własne zdjęcia.
    LocalStorage zachowuje dane także po zamknięciu karty.
    ══════════════════════════════════════════════ */
 var PLAYER_CREST = null;
 var ENEMY_CREST = null;
-var CREST_MAX_SIZE = 128;
+var CREST_MAX_SIZE = 192;
+var FACE_DETECT_MAX = 720;
+
+function imageSourceSize(source){
+  return {
+    w:source ? (source.naturalWidth||source.videoWidth||source.width||0) : 0,
+    h:source ? (source.naturalHeight||source.videoHeight||source.height||0) : 0
+  };
+}
+
+/* Zachowuje proporcje zdjęcia. Wcześniej kwadratowa twarz była rozciągana
+   do pionowego bannera, przez co nawet dobry portret wyglądał nienaturalnie. */
+function drawCrestImageContained(ctx,img,x,y,w,h,pad){
+  if(!ctx||!img||w<=0||h<=0)return;
+  var dims=imageSourceSize(img),iw=dims.w,ih=dims.h;
+  if(!iw||!ih)return;
+  pad=Math.max(0,pad||0);
+  var aw=Math.max(1,w-pad*2),ah=Math.max(1,h-pad*2);
+  var scale=Math.min(aw/iw,ah/ih),dw=iw*scale,dh=ih*scale;
+  ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);
+}
+
+function clampFaceBox(box,w,h){
+  if(!box||!w||!h)return null;
+  var x=Number(box.x!==undefined?box.x:box.left)||0;
+  var y=Number(box.y!==undefined?box.y:box.top)||0;
+  var bw=Math.max(1,Number(box.width)||0),bh=Math.max(1,Number(box.height)||0);
+  x=Math.max(0,Math.min(w-1,x));y=Math.max(0,Math.min(h-1,y));
+  bw=Math.max(1,Math.min(w-x,bw));bh=Math.max(1,Math.min(h-y,bh));
+  return {x:x,y:y,width:bw,height:bh};
+}
+
+function fallbackPortraitFaceBox(source){
+  var dims=imageSourceSize(source),w=dims.w,h=dims.h;
+  if(!w||!h)return null;
+  var portrait=h>w;
+  var fw=Math.min(w*(portrait ? .58 : .42),h*(portrait ? .42 : .52));
+  var fh=fw*1.16;
+  var cy=h*(portrait ? .32 : .40);
+  return clampFaceBox({x:w*.5-fw*.5,y:cy-fh*.5,width:fw,height:fh},w,h);
+}
+
+/* Mały, całkowicie lokalny tryb zapasowy dla przeglądarek bez FaceDetector.
+   Szuka spójnego obszaru odcieni skóry, preferując twarz blisko środka zdjęcia. */
+function detectFaceBySkin(source){
+  try{
+    var dims=imageSourceSize(source),w=dims.w,h=dims.h;
+    if(!w||!h)return null;
+    var maxSide=128,scale=Math.min(1,maxSide/Math.max(w,h));
+    var sw=Math.max(24,Math.round(w*scale)),sh=Math.max(24,Math.round(h*scale));
+    var scan=document.createElement("canvas");scan.width=sw;scan.height=sh;
+    var sctx=scan.getContext("2d",{willReadFrequently:true});
+    sctx.drawImage(source,0,0,sw,sh);
+    var pixels=sctx.getImageData(0,0,sw,sh).data,total=sw*sh;
+    var skin=new Uint8Array(total),seen=new Uint8Array(total);
+    for(var i=0;i<total;i++){
+      var r=pixels[i*4],g=pixels[i*4+1],b=pixels[i*4+2];
+      var yv=.299*r+.587*g+.114*b;
+      var cb=128-.168736*r-.331264*g+.5*b;
+      var cr=128+.5*r-.418688*g-.081312*b;
+      var spread=Math.max(r,g,b)-Math.min(r,g,b);
+      if(yv>38&&spread>10&&cb>72&&cb<138&&cr>126&&cr<188&&r>g*.82&&r>b*.88)skin[i]=1;
+    }
+    var queue=new Int32Array(total),best=null,minCount=Math.max(18,Math.round(total*.0025));
+    for(var start=0;start<total;start++){
+      if(!skin[start]||seen[start])continue;
+      var qh=0,qt=0;queue[qt++]=start;seen[start]=1;
+      var count=0,minX=sw,maxX=0,minY=sh,maxY=0;
+      while(qh<qt){
+        var p=queue[qh++],px=p%sw,py=(p/sw)|0;count++;
+        if(px<minX)minX=px;if(px>maxX)maxX=px;if(py<minY)minY=py;if(py>maxY)maxY=py;
+        var n;
+        if(px>0){n=p-1;if(skin[n]&&!seen[n]){seen[n]=1;queue[qt++]=n;}}
+        if(px<sw-1){n=p+1;if(skin[n]&&!seen[n]){seen[n]=1;queue[qt++]=n;}}
+        if(py>0){n=p-sw;if(skin[n]&&!seen[n]){seen[n]=1;queue[qt++]=n;}}
+        if(py<sh-1){n=p+sw;if(skin[n]&&!seen[n]){seen[n]=1;queue[qt++]=n;}}
+      }
+      if(count<minCount)continue;
+      var bw=maxX-minX+1,bh=maxY-minY+1,ratio=bw/bh,boxArea=bw*bh;
+      if(ratio<.38||ratio>1.9||boxArea/total>.34||count/boxArea<.16)continue;
+      var cx=(minX+maxX)*.5/sw,cy=(minY+maxY)*.5/sh;
+      var central=1-Math.min(1,Math.hypot((cx-.5)*1.45,(cy-.40)*1.05));
+      var faceShape=1-Math.min(1,Math.abs(ratio-.78));
+      var score=count*(.55+central*.8+faceShape*.35);
+      if(!best||score>best.score)best={x:minX,y:minY,width:bw,height:bh,score:score};
+    }
+    if(!best)return null;
+    return clampFaceBox({x:best.x/scale,y:best.y/scale,width:best.width/scale,height:best.height/scale},w,h);
+  }catch(err){return null;}
+}
+
+function makeFaceDetectionCanvas(source){
+  var dims=imageSourceSize(source),scale=Math.min(1,FACE_DETECT_MAX/Math.max(dims.w,dims.h));
+  var canvas=document.createElement("canvas");
+  canvas.width=Math.max(1,Math.round(dims.w*scale));canvas.height=Math.max(1,Math.round(dims.h*scale));
+  var ctx=canvas.getContext("2d");ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";
+  ctx.drawImage(source,0,0,canvas.width,canvas.height);
+  return {canvas:canvas,scale:scale};
+}
+
+function detectLargestFace(source){
+  var dims=imageSourceSize(source);
+  if(typeof FaceDetector!=="function")return Promise.resolve(null);
+  try{
+    var det=makeFaceDetectionCanvas(source);
+    var detector=new FaceDetector({fastMode:true,maxDetectedFaces:6});
+    return detector.detect(det.canvas).then(function(faces){
+      if(!faces||!faces.length)return null;
+      var best=null,bestScore=-1;
+      for(var i=0;i<faces.length;i++){
+        var raw=faces[i].boundingBox||faces[i],box=clampFaceBox(raw,det.canvas.width,det.canvas.height);
+        if(!box)continue;
+        var cx=(box.x+box.width*.5)/det.canvas.width,cy=(box.y+box.height*.5)/det.canvas.height;
+        var central=1-Math.min(1,Math.hypot(cx-.5,(cy-.42)*.8));
+        var score=box.width*box.height*(1+central*.3);
+        if(score>bestScore){bestScore=score;best=box;}
+      }
+      return best?clampFaceBox({x:best.x/det.scale,y:best.y/det.scale,width:best.width/det.scale,height:best.height/det.scale},dims.w,dims.h):null;
+    }).catch(function(){return null;});
+  }catch(err){return Promise.resolve(null);}
+}
+
+/* Wyjściowy PNG zachowuje prawdziwe kolory zdjęcia. Zmieniany jest wyłącznie
+   kadr i kanał alfa na miękkiej owalnej krawędzi — bez cartoon i kwantyzacji. */
+function createFaceCutoutCanvas(source,faceBox){
+  var dims=imageSourceSize(source),w=dims.w,h=dims.h,size=CREST_MAX_SIZE;
+  var box=clampFaceBox(faceBox,w,h)||fallbackPortraitFaceBox(source);
+  var cropSide=Math.max(box.width*1.58,box.height*1.42);
+  cropSide=Math.max(8,Math.min(Math.max(w,h),cropSide));
+  var cx=box.x+box.width*.5,cy=box.y+box.height*.49;
+  var sx=cx-cropSide*.5,sy=cy-cropSide*.49;
+  var srcX=Math.max(0,sx),srcY=Math.max(0,sy);
+  var srcR=Math.min(w,sx+cropSide),srcB=Math.min(h,sy+cropSide);
+  var srcW=Math.max(1,srcR-srcX),srcH=Math.max(1,srcB-srcY);
+  var dx=(srcX-sx)/cropSide*size,dy=(srcY-sy)/cropSide*size;
+  var dw=srcW/cropSide*size,dh=srcH/cropSide*size;
+  var out=document.createElement("canvas");out.width=size;out.height=size;
+  var ctx=out.getContext("2d");ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";
+  ctx.drawImage(source,srcX,srcY,srcW,srcH,dx,dy,dw,dh);
+  var maskCx=(box.x+box.width*.5-sx)/cropSide*size;
+  var maskCy=(box.y+box.height*.5-sy)/cropSide*size;
+  var maskRx=Math.min(size*.47,box.width/cropSide*size*.64);
+  var maskRy=Math.min(size*.52,box.height/cropSide*size*.64);
+  maskRx=Math.max(size*.31,maskRx);maskRy=Math.max(size*.39,maskRy);
+  var mask=document.createElement("canvas");mask.width=size;mask.height=size;
+  var m=mask.getContext("2d");m.save();m.translate(maskCx,maskCy);m.scale(1,maskRy/maskRx);
+  var grad=m.createRadialGradient(0,0,maskRx*.78,0,0,maskRx);
+  grad.addColorStop(0,"rgba(255,255,255,1)");grad.addColorStop(.78,"rgba(255,255,255,1)");grad.addColorStop(1,"rgba(255,255,255,0)");
+  m.fillStyle=grad;m.fillRect(-size,-size,size*2,size*2);m.restore();
+  ctx.globalCompositeOperation="destination-in";ctx.drawImage(mask,0,0);ctx.globalCompositeOperation="source-over";
+  return out;
+}
+
+function extractFaceImage(source){
+  return detectLargestFace(source).then(function(nativeBox){
+    var skinBox=nativeBox?null:detectFaceBySkin(source);
+    var box=nativeBox||skinBox||fallbackPortraitFaceBox(source);
+    return {canvas:createFaceCutoutCanvas(source,box),box:box,method:nativeBox?"native":(skinBox?"skin":"portrait")};
+  });
+}
+
+function setCrestBusy(isP,busy){
+  var btn=document.getElementById(isP?"crestLoadP":"crestLoadE");
+  if(!btn)return;
+  btn.disabled=!!busy;btn.textContent=busy?tr("menu.faceProcessing"):tr("menu.upload");
+}
 
 function loadCrestFromStorage(){
   try{
@@ -10233,36 +10398,31 @@ function processCrestImage(file, isP){
     alert("Plik za duży (max 8MB)");
     return;
   }
+  setCrestBusy(isP,true);
   var reader = new FileReader();
   reader.onload = function(ev){
     var img = new Image();
     img.onload = function(){
-      var size = Math.min(img.width, img.height);
-      var sx = (img.width - size) / 2;
-      var sy = (img.height - size) / 2;
-      var canvas = document.createElement("canvas");
-      canvas.width = CREST_MAX_SIZE;
-      canvas.height = CREST_MAX_SIZE;
-      var ctx = canvas.getContext("2d");
-      ctx.drawImage(img, sx, sy, size, size, 0, 0, CREST_MAX_SIZE, CREST_MAX_SIZE);
-      var dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-      var finalImg = new Image();
-      finalImg.onload = function(){
-        if(isP){
-          PLAYER_CREST = finalImg;
-          renderCrestPreview("crestPreviewP", PLAYER_CREST, true);
-        } else {
-          ENEMY_CREST = finalImg;
-          renderCrestPreview("crestPreviewE", ENEMY_CREST, false);
-        }
-        saveCrestToStorage();
-      };
-      finalImg.src = dataUrl;
+      extractFaceImage(img).then(function(result){
+        var dataUrl=result.canvas.toDataURL("image/png");
+        var finalImg=new Image();
+        finalImg.onload=function(){
+          finalImg.faceMethod=result.method;
+          if(isP){
+            PLAYER_CREST=finalImg;renderCrestPreview("crestPreviewP",PLAYER_CREST,true);
+          }else{
+            ENEMY_CREST=finalImg;renderCrestPreview("crestPreviewE",ENEMY_CREST,false);
+          }
+          saveCrestToStorage();setCrestBusy(isP,false);
+        };
+        finalImg.onerror=function(){setCrestBusy(isP,false);alert("Nie udało się przygotować twarzy");};
+        finalImg.src=dataUrl;
+      }).catch(function(){setCrestBusy(isP,false);alert("Nie udało się znaleźć twarzy na zdjęciu");});
     };
-    img.onerror = function(){ alert("Nie udało się wczytać obrazu"); };
+    img.onerror = function(){ setCrestBusy(isP,false);alert("Nie udało się wczytać obrazu"); };
     img.src = ev.target.result;
   };
-  reader.onerror = function(){ alert("Błąd odczytu pliku"); };
+  reader.onerror = function(){ setCrestBusy(isP,false);alert("Błąd odczytu pliku"); };
   reader.readAsDataURL(file);
 }
 
@@ -10275,7 +10435,7 @@ function renderCrestPreview(canvasId, img, isP){
   if(img){
     ctx.fillStyle = isP ? "#2a3a6a" : "#6a2a2a";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 4, 4, canvas.width - 8, canvas.height - 8);
+    drawCrestImageContained(ctx,img,4,4,canvas.width-8,canvas.height-8,0);
     ctx.strokeStyle = "#ddaa20";
     ctx.lineWidth = 2;
     ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
@@ -10341,7 +10501,7 @@ function resetCrest(isP){
   loadCrestFromStorage();
 })();
 
-/* Korekta: saveProgress (level) musi też zachować herby */
+/* Korekta: saveProgress (level) musi też zachować twarze */
 var _origSaveProgress = saveProgress;
 saveProgress = function(level){
   _origSaveProgress(level);

@@ -37,6 +37,7 @@ castle-calamity/
     ├── BALANS-WYDAJNOSC-I-FORTY-V6.1.md
     ├── POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md
     ├── POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md
+    ├── TWARZE-NA-ZAMKACH-V6.1.3.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -71,6 +72,7 @@ castle-calamity/
 | `docs/BALANS-WYDAJNOSC-I-FORTY-V6.1.md` | Limity armii, ekonomia, wydajność poziomu 12, forty i skala humoru | Przy zmianie liczby jednostek, drzew, zamków, efektów albo gagów ludzkich |
 | `docs/POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md` | Stabilizacja kart wyboru oraz położenie, skala i czas obecności wędkarza | Przy zmianie HUD-u kart albo stałych gagów scenograficznych |
 | `docs/POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md` | Korekta limitu armii, całkowicie statyczne karty oraz chowanie wędkarza w wieży | Przy zmianie ekonomii rekrutacji, limitu talii, HUD-u kart lub wędkarza |
+| `docs/TWARZE-NA-ZAMKACH-V6.1.3.md` | Lokalne wykrywanie, kadrowanie, przezroczysta maska i renderowanie twarzy na zamkach | Przy zmianie personalizacji zdjęciem, jakości wycięcia lub miejsc wyświetlania twarzy |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
@@ -89,6 +91,7 @@ castle-calamity/
 - Bossowie są częścią wspólnego silnika w `index.html`; zwykłe jednostki nie mogą ich kupić ani wylosować w kolejce AI.
 - Pełny katalog ma 18 jednostek dwóch epok, ale każda talia poziomu jest automatycznie ograniczana do 8 unikalnych kart łącznie z zapleczem.
 - Pranie, czajnik i przysypiający strażnik są pojedynczymi gagami zamkowymi poziomów 7, 9 i 11; nie należy powielać ich na wszystkich zamkach.
+- Twarze są wykrywane, kadrowane i maskowane lokalnie w `index.html`; fotografia nie jest wysyłana do zewnętrznej usługi. Zachowaj PNG i proporcje obrazu przy dodawaniu nowych miejsc ekspozycji.
 - Statystyki skuteczności są zbierane w `index.html` i zapisywane osobno dla każdego poziomu. Nie wolno używać ich do ukrytego wzmacniania przeciwnika.
 - Raport po bitwie pokazuje najwyżej trzy jednostki, nawet jeśli talia poziomu zawiera osiem kart.
 - Drwal i Kamieniarz mogą zostać trafieni. Jednostki bojowe mają jednak pierwszeństwo, aby zaplecze nie zatrzymywało natarcia.

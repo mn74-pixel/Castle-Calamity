@@ -335,6 +335,19 @@ Status: **wdrożona i sprawdzona automatycznie oraz na renderach iPhone**
 - wędkarz jest widoczny od pasa w górę we wnęce centralnej wieży, podciąga but, a potem chowa się pionowo za parapetem,
 - szczegóły znajdują się w `POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md`.
 
+## Personalizacja v6.1.3 — prawdziwe twarze na zamkach
+
+Status: **wdrożona i sprawdzona lokalnie oraz w pełnej regresji gry**
+
+- zdjęcie jest przetwarzane wyłącznie na urządzeniu gracza,
+- największa twarz jest automatycznie lokalizowana i powiększana,
+- przeglądarki bez natywnego wykrywacza korzystają z lokalnej analizy obrazu i bezpiecznego kadru portretowego,
+- wynik ma 192×192 px, przezroczyste tło i miękką krawędź wokół głowy,
+- nie ma filtra cartoon, redukcji kolorów ani zmiany rysów twarzy,
+- proporcje pozostają poprawne na tarczy, bannerze i chorągwi zamku,
+- wcześniejsze zapisane JPEG-i pozostają czytelne, lecz trzeba ponownie dodać oryginalne zdjęcie, aby zastosować nowe wyszparowanie,
+- szczegóły znajdują się w `TWARZE-NA-ZAMKACH-V6.1.3.md`.
+
 ## Następny etap — rozwój Epoki II
 
 - rozbudowa mapy Epoki II poza pierwsze cztery poziomy,

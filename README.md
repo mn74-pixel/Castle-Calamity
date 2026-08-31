@@ -4,7 +4,12 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v6.1.2
+## Co zawiera wersja v6.1.3
+- lokalne wykrywanie największej twarzy na zdjęciu, automatyczne powiększenie i zapis przezroczystego wycięcia 192×192,
+- prawdziwe kolory fotografii bez filtra cartoon, kwantyzacji i wysyłania zdjęcia poza urządzenie,
+- miękka maska usuwająca otoczenie głowy oraz lokalny tryb zapasowy dla urządzeń bez natywnego wykrywacza twarzy,
+- zachowane proporcje twarzy na głównej tarczy zamku, pionowym bannerze i chorągwi,
+- menu „Twarze na zamkach” zamiast mylącego opisu herbów; starsze zdjęcie trzeba dodać ponownie, aby otrzymało nowe wycięcie,
 - wędkarz z poziomu 1 jest małą półpostacią we wnęce centralnej wieży: najpierw wciąga but, a następnie chowa się pionowo za parapetem bez zanikania,
 - całkowicie stabilne karty wyboru wojsk: bez pulsowania jasności, przełączania klas, zapisywania tej samej ceny 60 razy na sekundę ani przesuwania i skalowania kafelka,
 - 16 poziomów w dwóch epokach i 18 dostępnych jednostek, nadal najwyżej 8 kart w pojedynczej bitwie,
@@ -87,7 +92,7 @@ na pełnym ekranie i **offline**.
 - dwanaście właściwych gagów poziomów oraz jeden rzadki wariant samolotu — nadal najwyżej jeden podczas bitwy; kartki latającego biurka nie przeskakują między końcami pętli,
 - osobny dyskretny absurd scenograficzny na każdym z 12 poziomów,
 - latającą rybę z łatwo zmienianym proporcem reklamowym,
-- trwały zapis postępu i własnych herbów w pamięci urządzenia.
+- trwały zapis postępu i własnych twarzy zamkowych w pamięci urządzenia.
 
 ## Zawartość paczki
 | Plik | Rola |
@@ -115,6 +120,7 @@ na pełnym ekranie i **offline**.
 | `docs/EPOKA-II-I-IPHONE-V6.0.md` | Poprawki iPhone, balans poziomu 1, synchronizacja HP i pierwszy rozdział Epoki II |
 | `docs/BALANS-WYDAJNOSC-I-FORTY-V6.1.md` | Limity aktywnej armii, ekonomia, poziom 12, forty Epoki II i skala humoru |
 | `docs/POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md` | Nieruchome karty, wędkarz w wieży i armia regulowana zasobami zamiast limitem liczebności |
+| `docs/TWARZE-NA-ZAMKACH-V6.1.3.md` | Lokalne wykrywanie, kadrowanie i wyszparowanie prawdziwej twarzy bez cartoon |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -134,7 +140,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v6.1.2` → `castle-calamity-v6.2`.
+np. `castle-calamity-v6.1.3` → `castle-calamity-v6.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)
