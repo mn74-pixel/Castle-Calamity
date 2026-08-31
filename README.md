@@ -4,7 +4,10 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v6.1.3
+## Co zawiera wersja v6.1.4
+- przycisk pełnego ekranu dostępny zarówno w menu, jak i podczas bitwy,
+- natywne wejście i wyjście z pełnego ekranu na zgodnych przeglądarkach oraz ponowne przeliczenie bezpiecznego obszaru po każdej zmianie,
+- uruchamianie zainstalowanej PWA poziomo bez paska przeglądarki; na iPhonie Safari przycisk pokazuje krótką instrukcję „Do ekranu początkowego”,
 - lokalne wykrywanie największej twarzy na zdjęciu, automatyczne powiększenie i zapis przezroczystego wycięcia 192×192,
 - prawdziwe kolory fotografii bez filtra cartoon, kwantyzacji i wysyłania zdjęcia poza urządzenie,
 - miękka maska usuwająca otoczenie głowy oraz lokalny tryb zapasowy dla urządzeń bez natywnego wykrywacza twarzy,
@@ -121,6 +124,7 @@ na pełnym ekranie i **offline**.
 | `docs/BALANS-WYDAJNOSC-I-FORTY-V6.1.md` | Limity aktywnej armii, ekonomia, poziom 12, forty Epoki II i skala humoru |
 | `docs/POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md` | Nieruchome karty, wędkarz w wieży i armia regulowana zasobami zamiast limitem liczebności |
 | `docs/TWARZE-NA-ZAMKACH-V6.1.3.md` | Lokalne wykrywanie, kadrowanie i wyszparowanie prawdziwej twarzy bez cartoon |
+| `docs/TRYB-PELNOEKRANOWY-V6.1.4.md` | Przycisk pełnego ekranu, bezpieczny viewport i zachowanie iPhone PWA |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -140,7 +144,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v6.1.3` → `castle-calamity-v6.2`.
+np. `castle-calamity-v6.1.4` → `castle-calamity-v6.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

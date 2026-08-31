@@ -24,6 +24,8 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
 html{height:-webkit-fill-available;}
 body{position:relative;min-height:-webkit-fill-available;font-family:"Avenir Next","Trebuchet MS",Arial,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none;overscroll-behavior:none;}
 #appViewport{position:absolute;left:var(--app-left);top:var(--app-top);width:var(--app-width);height:var(--app-height);overflow:hidden;background:#080814;contain:layout paint size;}
+#appViewport:fullscreen{left:0!important;top:0!important;width:100vw!important;height:100vh!important;}
+#appViewport:-webkit-full-screen{left:0!important;top:0!important;width:100vw!important;height:100vh!important;}
 #safeProbe{position:absolute;visibility:hidden;pointer-events:none;z-index:-1;padding-top:env(safe-area-inset-top,0px);padding-right:env(safe-area-inset-right,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);}
 canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;touch-action:none;background:#080814;}
 #hud{position:absolute;top:env(safe-area-inset-top,0);left:0;right:0;padding:8px 10px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right));display:none;flex-direction:column;align-items:center;gap:4px;z-index:10;pointer-events:none;background:linear-gradient(180deg,rgba(8,8,20,.5),rgba(8,8,20,0));}
@@ -76,6 +78,7 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 #titleTools{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;}
 .langBtn,#tutorialMenuBtn{background:rgba(20,24,48,.88);border:1px solid rgba(229,189,98,.45);border-radius:16px;color:#aeb8d9;font-size:.66rem;font-weight:900;letter-spacing:1px;padding:7px 12px;cursor:pointer;min-height:32px;}
 .langBtn.active{color:#fff0a6;border-color:#e5bd62;background:rgba(91,55,23,.78);box-shadow:inset 0 0 9px rgba(229,189,98,.16);}
+#fullscreenMenuBtn.fullscreenActive,#btnFullscreen.fullscreenActive{color:#bfe6a4;border-color:#8fbd70;}
 #tutorialMenuBtn{border-radius:7px;color:#d7cda9;}
 .langBtn:hover,#tutorialMenuBtn:hover,.langBtn:active,#tutorialMenuBtn:active{border-color:#fff0a6;color:#fff0a6;}
 #levelSelect{margin-top:4px;width:min(690px,calc(100% - 8px));}
@@ -148,6 +151,13 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 .audioRow input{width:100%;accent-color:#d8ad55;touch-action:pan-x;}
 .audioRow output{color:#f0d785;text-align:right;font-size:.65rem;}
 #audioClose{display:block;margin:16px auto 0;min-width:120px;}
+#fullscreenHelp{position:absolute;inset:0;background:rgba(0,0,0,.86);display:none;align-items:center;justify-content:center;z-index:105;padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));}
+#fullscreenHelp.show{display:flex;}
+#fullscreenHelpBox{width:min(430px,94%);background:linear-gradient(160deg,#151a32,#080914);border:2px solid rgba(229,189,98,.65);border-radius:15px;padding:21px 23px;text-align:center;box-shadow:0 18px 58px rgba(0,0,0,.75),inset 0 1px rgba(255,255,255,.12);}
+#fullscreenHelpIcon{font-size:36px;line-height:1;color:#f0d785;margin-bottom:8px;}
+#fullscreenHelpTitle{font:900 1.12rem Georgia,serif;letter-spacing:2px;color:#f0d785;margin-bottom:8px;}
+#fullscreenHelpBody{color:#c8cde0;font-size:.76rem;line-height:1.55;margin:0 auto 15px;max-width:355px;}
+#fullscreenHelpClose{min-width:140px;}
 #briefing{position:absolute;inset:0;background:rgba(3,4,12,.88);display:none;align-items:center;justify-content:center;z-index:46;padding:12px;}
 #briefingBox{width:min(520px,94%);max-height:92%;overflow-y:auto;background:radial-gradient(circle at 50% 0,rgba(117,55,126,.24),transparent 45%),linear-gradient(155deg,#171c36,#080914 72%);border:2px solid rgba(229,189,98,.7);border-radius:15px;padding:20px 22px;box-shadow:0 20px 65px rgba(0,0,0,.75),inset 0 1px rgba(255,255,255,.11);text-align:center;}
 #briefingEyebrow{color:#a99a6d;font-size:9px;font-weight:900;letter-spacing:2.6px;margin-bottom:5px;}
@@ -273,6 +283,7 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 <div id="cornerBtns">
   <button id="btnPause" title="Pauza">II</button>
   <button id="btnSound" title="Dźwięk">♪</button>
+  <button id="btnFullscreen" title="Pełny ekran" aria-pressed="false">⛶</button>
 </div>
 <button id="cornerQuit">WYJDŹ</button>
 <div id="intro" style="position:absolute;inset:0;background:transparent;z-index:50;pointer-events:auto;cursor:pointer;">
@@ -282,7 +293,7 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
   <div class="brandSeal" aria-hidden="true">♜</div>
   <h1>CASTLE<br><span>CALAMITY</span></h1>
   <p id="titleTagline">16 BITEW • 2 EPOKI • ZERO KOMPETENTNYCH DORADCÓW</p>
-  <div id="titleTools"><button class="langBtn" id="langPL" data-lang="pl">PL</button><button class="langBtn" id="langEN" data-lang="en">EN</button><button id="tutorialMenuBtn">? SAMOUCZEK</button><button id="audioMenuBtn" class="langBtn">♪ AUDIO</button></div>
+  <div id="titleTools"><button class="langBtn" id="langPL" data-lang="pl">PL</button><button class="langBtn" id="langEN" data-lang="en">EN</button><button id="tutorialMenuBtn">? SAMOUCZEK</button><button id="audioMenuBtn" class="langBtn">♪ AUDIO</button><button id="fullscreenMenuBtn" class="langBtn" aria-pressed="false">⛶ PEŁNY EKRAN</button></div>
   <button id="pb">DO BOJU</button>
   <div id="levelSelect"></div>
   <div class="hint" id="menuHint">Skróty na kartach = jednostki &nbsp;|&nbsp; Q / W / E = zdolności &nbsp;|&nbsp; P / Spacja = pauza</div>
@@ -335,6 +346,14 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
     <label class="audioRow"><span id="audioMasterLabel">Głośność</span><input id="audioMaster" type="range" min="0" max="100" value="72"><output id="audioMasterValue">72%</output></label>
     <label class="audioRow"><span id="audioMusicLabel">Motywy bossów</span><input id="audioMusic" type="range" min="0" max="100" value="45"><output id="audioMusicValue">45%</output></label>
     <button class="btn" id="audioClose">GOTOWE</button>
+  </div>
+</div>
+<div id="fullscreenHelp" role="dialog" aria-modal="true" aria-labelledby="fullscreenHelpTitle">
+  <div id="fullscreenHelpBox">
+    <div id="fullscreenHelpIcon" aria-hidden="true">⛶</div>
+    <h2 id="fullscreenHelpTitle">PEŁNY EKRAN NA iPHONIE</h2>
+    <p id="fullscreenHelpBody">W Safari stuknij Udostępnij, wybierz „Do ekranu początkowego”, a potem uruchom grę z nowej ikony.</p>
+    <button class="btn" id="fullscreenHelpClose">ROZUMIEM</button>
   </div>
 </div>
 <div id="briefing" role="dialog" aria-modal="true" aria-labelledby="briefingTitle">
@@ -528,6 +547,69 @@ function scheduleResize(){
   if(RESIZE_RAF!==null)return;
   RESIZE_RAF=requestAnimationFrame(function(){RESIZE_RAF=null;rsz();repositionWorld();});
 }
+function fullscreenElement(){
+  return document.fullscreenElement||document.webkitFullscreenElement||null;
+}
+function standaloneDisplay(){
+  if(navigator.standalone===true)return true;
+  if(typeof window.matchMedia!=="function")return false;
+  try{return window.matchMedia("(display-mode: fullscreen)").matches||window.matchMedia("(display-mode: standalone)").matches;}
+  catch(e){return false;}
+}
+function fullscreenActive(){return !!fullscreenElement()||standaloneDisplay();}
+function resizeAfterFullscreen(){
+  scheduleResize();
+  setTimeout(scheduleResize,80);setTimeout(scheduleResize,280);setTimeout(scheduleResize,700);
+}
+function updateFullscreenUI(){
+  var active=fullscreenActive(),canExit=!!fullscreenElement();
+  var menuBtn=document.getElementById("fullscreenMenuBtn"),battleBtn=document.getElementById("btnFullscreen");
+  if(menuBtn){
+    menuBtn.textContent=tr(active?"menu.fullscreenActive":"menu.fullscreen");
+    menuBtn.title=tr(canExit?"ui.exitFullscreen":active?"ui.fullscreenActive":"ui.fullscreen");
+    menuBtn.setAttribute("aria-pressed",active?"true":"false");
+    menuBtn.classList.toggle("fullscreenActive",active);
+  }
+  if(battleBtn){
+    battleBtn.textContent=canExit?"↙":"⛶";
+    battleBtn.title=tr(canExit?"ui.exitFullscreen":active?"ui.fullscreenActive":"ui.fullscreen");
+    battleBtn.setAttribute("aria-pressed",active?"true":"false");
+    battleBtn.classList.toggle("fullscreenActive",active);
+  }
+}
+function showFullscreenHelp(){
+  var panel=document.getElementById("fullscreenHelp");
+  if(panel)panel.classList.add("show");
+}
+function closeFullscreenHelp(){
+  var panel=document.getElementById("fullscreenHelp");
+  if(panel)panel.classList.remove("show");
+}
+function requestGameFullscreen(){
+  if(standaloneDisplay()){updateFullscreenUI();resizeAfterFullscreen();return;}
+  var request=APP&&(APP.requestFullscreen||APP.webkitRequestFullscreen);
+  if(!request){showFullscreenHelp();return;}
+  var result;
+  try{result=request.call(APP,{navigationUI:"hide"});}
+  catch(firstError){
+    try{result=request.call(APP);}
+    catch(secondError){showFullscreenHelp();return;}
+  }
+  Promise.resolve(result).then(function(){
+    try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock("landscape").catch(function(){});}catch(e){}
+    updateFullscreenUI();resizeAfterFullscreen();
+  }).catch(showFullscreenHelp);
+}
+function toggleGameFullscreen(){
+  if(fullscreenElement()){
+    var exit=document.exitFullscreen||document.webkitExitFullscreen;
+    if(exit){
+      try{Promise.resolve(exit.call(document)).catch(function(){});}catch(e){}
+    }
+    return;
+  }
+  requestGameFullscreen();
+}
 window.addEventListener("resize", scheduleResize, {passive:true});
 window.addEventListener("orientationchange", function(){
   setTimeout(scheduleResize,100);
@@ -584,6 +666,8 @@ if(document.readyState === "loading"){
 }
 // Load event - czeka aż wszystkie assety (CSS) się załadują
 window.addEventListener("load", function(){ rsz(); repositionWorld(); });
+document.addEventListener("fullscreenchange",function(){updateFullscreenUI();resizeAfterFullscreen();});
+document.addEventListener("webkitfullscreenchange",function(){updateFullscreenUI();resizeAfterFullscreen();});
 
 /* ── Scenes ── */
 var SC = [
@@ -879,6 +963,8 @@ function applyLanguage(code,persist){
   setLocalizedText("audioMenuBtn","audio.open");setLocalizedText("audioTitle","audio.title");
   setLocalizedText("audioSub","audio.subtitle");setLocalizedText("audioMasterLabel","audio.master");
   setLocalizedText("audioMusicLabel","audio.motifs");setLocalizedText("audioClose","audio.done");
+  setLocalizedText("fullscreenHelpTitle","fullscreen.title");setLocalizedText("fullscreenHelpBody","fullscreen.body");
+  setLocalizedText("fullscreenHelpClose","fullscreen.done");
   var pauseBtn=document.getElementById("btnPause"),soundBtn=document.getElementById("btnSound");
   if(pauseBtn)pauseBtn.title=tr("ui.pause");if(soundBtn)soundBtn.title=tr("ui.sound");
   var langPL=document.getElementById("langPL"),langEN=document.getElementById("langEN");
@@ -889,6 +975,7 @@ function applyLanguage(code,persist){
   ABILITIES.freeze.n=tr("ability.freeze.name");ABILITIES.freeze.desc=tr("ability.freeze.desc");
   ABILITIES.rally.n=tr("ability.rally.name");ABILITIES.rally.desc=tr("ability.rally.desc");
   if(typeof syncAudioUI==="function")syncAudioUI();
+  updateFullscreenUI();
   buildLevelSelect();
   if(G){buildCards();buildAbilityBar();}
   if(typeof updateTutorialUI==="function")updateTutorialUI();
@@ -12035,6 +12122,13 @@ document.getElementById("pb").onclick=function(){
 var langPLBtn=document.getElementById("langPL"),langENBtn=document.getElementById("langEN");
 if(langPLBtn)langPLBtn.onclick=function(){applyLanguage("pl",true);};
 if(langENBtn)langENBtn.onclick=function(){applyLanguage("en",true);};
+var fullscreenMenuBtn=document.getElementById("fullscreenMenuBtn"),btnFullscreen=document.getElementById("btnFullscreen");
+if(fullscreenMenuBtn)fullscreenMenuBtn.onclick=toggleGameFullscreen;
+if(btnFullscreen)btnFullscreen.onclick=toggleGameFullscreen;
+var fullscreenHelp=document.getElementById("fullscreenHelp"),fullscreenHelpClose=document.getElementById("fullscreenHelpClose");
+if(fullscreenHelpClose)fullscreenHelpClose.onclick=closeFullscreenHelp;
+if(fullscreenHelp)fullscreenHelp.onclick=function(e){if(e.target===fullscreenHelp)closeFullscreenHelp();};
+updateFullscreenUI();
 var tutorialMenuBtn=document.getElementById("tutorialMenuBtn");
 if(tutorialMenuBtn)tutorialMenuBtn.onclick=function(){
   initAudio();

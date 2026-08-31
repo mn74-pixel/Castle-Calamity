@@ -38,6 +38,7 @@ castle-calamity/
     ├── POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md
     ├── POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md
     ├── TWARZE-NA-ZAMKACH-V6.1.3.md
+    ├── TRYB-PELNOEKRANOWY-V6.1.4.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -73,6 +74,7 @@ castle-calamity/
 | `docs/POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md` | Stabilizacja kart wyboru oraz położenie, skala i czas obecności wędkarza | Przy zmianie HUD-u kart albo stałych gagów scenograficznych |
 | `docs/POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md` | Korekta limitu armii, całkowicie statyczne karty oraz chowanie wędkarza w wieży | Przy zmianie ekonomii rekrutacji, limitu talii, HUD-u kart lub wędkarza |
 | `docs/TWARZE-NA-ZAMKACH-V6.1.3.md` | Lokalne wykrywanie, kadrowanie, przezroczysta maska i renderowanie twarzy na zamkach | Przy zmianie personalizacji zdjęciem, jakości wycięcia lub miejsc wyświetlania twarzy |
+| `docs/TRYB-PELNOEKRANOWY-V6.1.4.md` | Natywny pełny ekran, tryb zainstalowanej PWA, bezpieczny viewport i instrukcja iPhone | Przy zmianie kontrolek ekranu, manifestu, orientacji albo skalowania urządzeń |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany
@@ -92,6 +94,7 @@ castle-calamity/
 - Pełny katalog ma 18 jednostek dwóch epok, ale każda talia poziomu jest automatycznie ograniczana do 8 unikalnych kart łącznie z zapleczem.
 - Pranie, czajnik i przysypiający strażnik są pojedynczymi gagami zamkowymi poziomów 7, 9 i 11; nie należy powielać ich na wszystkich zamkach.
 - Twarze są wykrywane, kadrowane i maskowane lokalnie w `index.html`; fotografia nie jest wysyłana do zewnętrznej usługi. Zachowaj PNG i proporcje obrazu przy dodawaniu nowych miejsc ekspozycji.
+- Pełny ekran jest przełączany przez `toggleGameFullscreen()` w `index.html`. Na iPhonie bez Fullscreen API właściwą drogą pozostaje uruchomienie PWA z ikony na ekranie początkowym.
 - Statystyki skuteczności są zbierane w `index.html` i zapisywane osobno dla każdego poziomu. Nie wolno używać ich do ukrytego wzmacniania przeciwnika.
 - Raport po bitwie pokazuje najwyżej trzy jednostki, nawet jeśli talia poziomu zawiera osiem kart.
 - Drwal i Kamieniarz mogą zostać trafieni. Jednostki bojowe mają jednak pierwszeństwo, aby zaplecze nie zatrzymywało natarcia.

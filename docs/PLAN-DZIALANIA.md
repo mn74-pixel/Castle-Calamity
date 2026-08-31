@@ -356,6 +356,18 @@ Status: **wdrożona i sprawdzona lokalnie oraz w pełnej regresji gry**
 - maksymalnie osiem kart na bitwę oraz dobór jednostek do zagrożenia poziomu,
 - osobna pula rzadkich gagów epoki przy zachowaniu limitu jednego żartu w bitwie.
 
+## Poprawka v6.1.4 — tryb pełnoekranowy
+
+Status: **wdrożona i sprawdzona automatycznie**
+
+- przycisk pełnego ekranu jest dostępny w menu oraz podczas bitwy,
+- zgodne przeglądarki używają natywnego Fullscreen API z możliwością wyjścia,
+- po każdej zmianie trybu gra ponownie mierzy viewport, safe area i położenie zamków,
+- zainstalowana PWA pozostaje w trybie poziomym i pełnoekranowym zgodnie z manifestem,
+- iPhone Safari bez Fullscreen API pokazuje krótką instrukcję dodania gry do ekranu początkowego,
+- teksty przycisku i instrukcji mają wersję polską i angielską,
+- regresja obejmuje wejście, wyjście, ścieżkę iPhone, cztery viewporty iPhone i pełny test offline.
+
 ## Najbliższa sesja z Marcinem
 
 Potrzebne są trzy decyzje:
