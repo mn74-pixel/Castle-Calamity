@@ -36,6 +36,7 @@ castle-calamity/
     ├── EPOKA-II-I-IPHONE-V6.0.md
     ├── BALANS-WYDAJNOSC-I-FORTY-V6.1.md
     ├── POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md
+    ├── POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -69,6 +70,7 @@ castle-calamity/
 | `docs/EPOKA-II-I-IPHONE-V6.0.md` | Bezpieczny viewport iPhone, balans poziomu 1, synchronizacja HP i cztery bitwy Epoki II | Przy zmianie skalowania iPhone, Epoki II albo nowych jednostek prochowych |
 | `docs/BALANS-WYDAJNOSC-I-FORTY-V6.1.md` | Limity armii, ekonomia, wydajność poziomu 12, forty i skala humoru | Przy zmianie liczby jednostek, drzew, zamków, efektów albo gagów ludzkich |
 | `docs/POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md` | Stabilizacja kart wyboru oraz położenie, skala i czas obecności wędkarza | Przy zmianie HUD-u kart albo stałych gagów scenograficznych |
+| `docs/POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md` | Korekta limitu armii, całkowicie statyczne karty oraz chowanie wędkarza w wieży | Przy zmianie ekonomii rekrutacji, limitu talii, HUD-u kart lub wędkarza |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany

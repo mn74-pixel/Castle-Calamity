@@ -301,7 +301,7 @@ Kryterium zakończenia: każdy poziom ma inny gag, a obiekt zawsze kończy pełn
 
 Status: **wdrożona i sprawdzona automatycznie oraz na renderach iPhone**
 
-- wszystkie poziomy mają limit ośmiu aktywnych bojowników na stronę, niezależny od ośmiu kart w talii,
+- pierwotny limit ośmiu aktywnych bojowników został wdrożony w v6.1, ale po teście gracza wycofano go w v6.1.2; osiem oznacza wyłącznie liczbę różnych kart w talii,
 - Drwale i Kamieniarze mają osobne limity po dwie postacie na stronę,
 - od poziomu 1 obniżono nagrody za drzewa, tempo odrostu i HP zamków, aby bitwy nie rozrastały się w nieskończoność,
 - poziom 12 przeszedł wydłużoną symulację ze śledzeniem szczytowej liczby postaci, pocisków i efektów,
@@ -322,6 +322,18 @@ Status: **wdrożona i sprawdzona automatycznie oraz na renderach iPhone**
 - usunięto ruch i skalowanie całego kafelka podczas dotyku oraz najechania,
 - pełna regresja mechaniki i test PWA pozostają wymagane przed każdą publikacją,
 - szczegóły znajdują się w `POPRAWKA-HUD-I-WEDKARZ-V6.1.1.md`.
+
+## Korekta v6.1.2 — nieruchomy HUD i armia regulowana zasobami
+
+Status: **wdrożona i sprawdzona automatycznie oraz na renderach iPhone**
+
+- usunięto sztywny limit liczby żywych bojowników po obu stronach,
+- limit ośmiu dotyczy wyłącznie różnych kart dostępnych w danej bitwie,
+- kolejne jednostki można wystawiać, dopóki gracz lub AI ma wymagane drewno; czas zdobywania drewna jest drugim naturalnym ograniczeniem tempa,
+- limity dwóch Drwali i dwóch Kamieniarzy pozostają osobnymi zabezpieczeniami zaplecza przed korkiem,
+- kafelki nie zmieniają położenia, skali, jasności ani klasy w reakcji na chwilowy stan zasobów,
+- wędkarz jest widoczny od pasa w górę we wnęce centralnej wieży, podciąga but, a potem chowa się pionowo za parapetem,
+- szczegóły znajdują się w `POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md`.
 
 ## Następny etap — rozwój Epoki II
 

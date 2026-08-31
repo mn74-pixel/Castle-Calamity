@@ -4,14 +4,14 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
-## Co zawiera wersja v6.1.1
-- wędkarz z poziomu 1 stoi na bocznym tarasie zamku, jest o 10% mniejszy od żołnierza i po około 16 sekundach znika,
-- stabilne karty wyboru wojsk: bez zapisywania tej samej ceny 60 razy na sekundę oraz bez przesuwania i skalowania całego kafelka przy dotyku,
+## Co zawiera wersja v6.1.2
+- wędkarz z poziomu 1 jest małą półpostacią we wnęce centralnej wieży: najpierw wciąga but, a następnie chowa się pionowo za parapetem bez zanikania,
+- całkowicie stabilne karty wyboru wojsk: bez pulsowania jasności, przełączania klas, zapisywania tej samej ceny 60 razy na sekundę ani przesuwania i skalowania kafelka,
 - 16 poziomów w dwóch epokach i 18 dostępnych jednostek, nadal najwyżej 8 kart w pojedynczej bitwie,
-- twardy limit najwyżej 8 aktywnych bojowników na stronę we wszystkich poziomach; dziewiąty zakup nie pobiera złota,
+- brak sztywnego limitu żywych bojowników: można wystawiać kolejne jednostki, dopóki wystarcza drewna; czas potrzebny na zdobycie zasobu naturalnie reguluje tempo armii,
 - osobny limit dwóch Drwali i dwóch Kamieniarzy na stronę, aby zaplecze nie tworzyło korków,
 - obniżone HP zamków, mnożniki drewna i tempo odrostu drzew od pierwszej bitwy; poziom 1 ma zamki po 950 HP,
-- licznik aktywnej armii `⚔ 0/8` przy obu zamkach i czytelne zablokowanie kart po osiągnięciu limitu,
+- prosty licznik żywej armii `⚔ liczba` przy obu zamkach, bez sztucznego sufitu i bez przygaszania kart,
 - mniejszy wspólny budżet cząstek pyłu, iskier, dymu, żaru i wybuchów, szczególnie ważny w poziomie 12,
 - samodzielne ceglane forty Epoki II — bez średniowiecznego zamku widocznego pod nową grafiką,
 - dwa nowe rzadkie warianty humoru: uciekający sztandar i urzędnik prochowy; nadal najwyżej jeden gag na bitwę,
@@ -114,6 +114,7 @@ na pełnym ekranie i **offline**.
 | `docs/AUDYT-JEDNOSTEK-I-HUMOR-V5.3.md` | Audyt 14 jednostek, czytelny Kamieniarz, nowe sylwetki i gag spadochroniarza |
 | `docs/EPOKA-II-I-IPHONE-V6.0.md` | Poprawki iPhone, balans poziomu 1, synchronizacja HP i pierwszy rozdział Epoki II |
 | `docs/BALANS-WYDAJNOSC-I-FORTY-V6.1.md` | Limity aktywnej armii, ekonomia, poziom 12, forty Epoki II i skala humoru |
+| `docs/POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md` | Nieruchome karty, wędkarz w wieży i armia regulowana zasobami zamiast limitem liczebności |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -133,7 +134,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v6.1.1` → `castle-calamity-v6.2`.
+np. `castle-calamity-v6.1.2` → `castle-calamity-v6.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

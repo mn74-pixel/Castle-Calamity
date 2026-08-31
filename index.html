@@ -32,9 +32,8 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 #hud *{pointer-events:auto;}
 #cds{display:flex;gap:6px;align-items:flex-start;justify-content:flex-start;flex-wrap:nowrap;width:max-content;max-width:calc(100% - 4px);overflow-x:auto;overflow-y:visible;padding:4px 5px 8px;scrollbar-width:none;overscroll-behavior-inline:contain;touch-action:pan-x;}
 #cds::-webkit-scrollbar{display:none;}
-.cd{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;flex-shrink:0;transform:none;transition:opacity .16s linear;contain:layout paint;}
+.cd{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;flex-shrink:0;transform:none;transition:none;contain:layout paint;}
 .cd:active{transform:none;}
-.cd.off{opacity:.35;cursor:not-allowed;transform:none;}
 .cd .iconWrap{width:58px;height:58px;border-radius:7px;background:linear-gradient(180deg,#e8d4a8,#c4a878);border:2px solid #5a3a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);}
 @media (hover: hover) and (pointer: fine) {
   .cd:hover .iconWrap{border-color:#ffcc44;box-shadow:0 3px 9px rgba(255,200,80,.42);}
@@ -645,7 +644,6 @@ var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","cro
 var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
 var MAX_BATTLE_CARDS = 8;
 var MAX_ACTIVE_WORKERS_PER_SIDE = 2;
-var DEFAULT_ACTIVE_COMBAT_CAP = 8;
 
 function isCombatDefinition(ud){
   return !!ud&&!ud.worker&&!ud.mason&&!ud.boss;
@@ -657,9 +655,6 @@ function activeCombatCount(isP){
     if(u&&u.isP===isP&&u.state!=="dead"&&isCombatDefinition(u.ud))n++;
   }
   return n;
-}
-function combatCapForSide(){
-  return Math.max(6,Math.min(12,Number(G&&G.lv&&G.lv.unitCap)||DEFAULT_ACTIVE_COMBAT_CAP));
 }
 function passiveGoldRate(isP){
   var lv=G&&G.lv||{};
@@ -1397,7 +1392,6 @@ function buildCards(){
     if(!ud.mason)tipHTML+="<span class='stat'>"+tr("tip.range")+":</span> <b>"+(ud.r>900?"∞":Math.round(ud.r))+"</b> "+(ud.r>900?"("+tr("tip.far")+")":ud.r>40?"("+tr("tip.ranged")+")":"("+tr("tip.melee")+")");
     if(ud.worker)tipHTML+="<br><span style='color:#cca044'>"+tr("tip.worker")+"</span>";
     if(ud.mason)tipHTML+="<span style='color:#bfc6c9'>"+tr("tip.mason")+"</span>";
-    if(isCombatDefinition(ud))tipHTML+="<br><span style='color:#d8c681'>⚔ "+tr("tip.armyLimit",{value:combatCapForSide()})+"</span>";
     if(ud.cannon)tipHTML+="<br><span style='color:#ff8844'>"+tr("tip.area")+"</span><br><span style='color:#ffcc44'>"+tr("tip.shots")+": "+(ud.shots||5)+" ("+tr("tip.thenGone")+")</span>";
     /* Specjalizacja */
     var aRatio = (ud.a > 0 && (ud.ac||0) > 0) ? (ud.a / (ud.ac||1)) : 0;
@@ -1440,18 +1434,13 @@ function buildCards(){
 
 function updHUD(){
   if(!G)return;
-  var combatFull=activeCombatCount(true)>=combatCapForSide();
   for(var ki=0;ki<UK.length;ki++){
     var k=UK[ki];
     var el=document.getElementById("cd_"+k);if(!el)continue;
     var cost=effStat(k,"c");
-    var ud=UD[k],roleFull=(ud&&ud.worker&&countActiveUnit("drwal",true)>=MAX_ACTIVE_WORKERS_PER_SIDE)||
-      (ud&&ud.mason&&countActiveUnit("mason",true)>=2);
-    var unavailable=G.p.gold<cost||(isCombatDefinition(ud)&&combatFull)||roleFull;
-    /* DOM kart zmienia się tylko przy realnej zmianie stanu. Wcześniej to samo
-       textContent było zapisywane nawet 60 razy/s, co na Safari powodowało
-       kosztowne przerysowania i optyczne drżenie całego paska. */
-    if(el.classList.contains("off")!==unavailable)el.classList.toggle("off",unavailable);
+    /* Kafelki pozostają wizualnie niezmienne przez całą bitwę. Brak zasobów
+       blokuje sam zakup w spawnUnit(), ale nie przełącza już klasy, cienia,
+       przezroczystości ani filtra karty na Safari. */
     var cc=document.getElementById("cdc_"+k),costText=String(cost);
     if(cc&&cc.textContent!==costText)cc.textContent=costText;
   }
@@ -1477,13 +1466,6 @@ function spawnUnit(key,isP,options){
       if(wu&&wu.isP===isP&&wu.ud.worker&&wu.state!=="dead")activeWorkers++;
     }
     if(activeWorkers>=MAX_ACTIVE_WORKERS_PER_SIDE)return;
-  }
-  if(isCombatDefinition(ud)&&activeCombatCount(isP)>=combatCapForSide()){
-    if(isP&&G.T-(G.armyWarnT===undefined?-9:G.armyWarnT)>1.2){
-      G.armyWarnT=G.T;
-      addFlt(G.p.x+G.p.w*.58,G.GY-G.p.h-12,tr("combat.armyFull",{value:combatCapForSide()}),"#f0cf73");
-    }
-    return;
   }
   if(ud.mason){
     if(!G.rocks||!G.rocks.length)return;
@@ -2266,7 +2248,6 @@ function playerArmyShape(){
 }
 function aiUnitScore(key,profile,planned,shape){
   var ud=UD[key];if(!ud||G.e.gold<ud.c)return -1;
-  if(isCombatDefinition(ud)&&activeCombatCount(false)>=combatCapForSide())return -1;
   if(ud.worker&&countActiveUnit("drwal",false)>=MAX_ACTIVE_WORKERS_PER_SIDE)return -1;
   if(ud.mason&&(!G.rocks||!G.rocks.length||countActiveUnit("mason",false)>=2))return -1;
   var score=1*(key===planned?1.32:1);
@@ -3818,22 +3799,42 @@ function drawLevelAbsurdity(){
   var p=G.p,e=G.e,px=p.x+p.w*.56,py=G.GY-p.h-7,ex=e.x+e.w*.44,ey=G.GY-e.h-7;
   CT.save();CT.lineCap="round";CT.lineJoin="round";
   if(id===1){
-    /* Wędkarz łowi but z bocznego tarasu zamku. Jest nieco mniejszy od
-       bojowników i po chwili zwija sprzęt oraz chowa się za wieżą. */
-    var fishLeave=Math.max(0,Math.min(1,(t-12)/3.2));
-    if(t<16){
-    var fs=policemanUnitScale()*.90,fishX=p.x+p.w*.74-fishLeave*28*fs,fishY=G.GY-p.h+17*fs,bootSwing=Math.sin(t*.8)*3;
-    CT.save();CT.globalAlpha=t>15?Math.max(0,16-t):1;CT.translate(fishX,fishY);CT.scale(fs,fs);
-    CT.fillStyle="rgba(0,0,0,.24)";CT.beginPath();CT.ellipse(0,2,13,3,0,0,Math.PI*2);CT.fill();
-    CT.strokeStyle="#314354";CT.lineWidth=4;CT.lineCap="round";CT.beginPath();CT.moveTo(-3,-13);CT.lineTo(-5,0);CT.moveTo(3,-13);CT.lineTo(5,0);CT.stroke();
-    CT.fillStyle="#49617a";CT.strokeStyle="#24313d";CT.lineWidth=1;CT.fillRect(-7,-31,14,19);CT.strokeRect(-7,-31,14,19);
-    CT.fillStyle="#c59a72";CT.beginPath();CT.arc(0,-38,6,0,Math.PI*2);CT.fill();CT.fillStyle="#58402a";CT.beginPath();CT.arc(0,-41,6.5,Math.PI,Math.PI*2);CT.fill();
-    var rodTipX=43-fishLeave*28,rodTipY=-47+fishLeave*22,bootY=-2-fishLeave*35;
-    CT.strokeStyle="#76502d";CT.lineWidth=1.7;CT.beginPath();CT.moveTo(5,-27);CT.quadraticCurveTo(23,-52,rodTipX,rodTipY);CT.stroke();
-    CT.strokeStyle="#d7d0b4";CT.lineWidth=.7;CT.beginPath();CT.moveTo(rodTipX,rodTipY);CT.quadraticCurveTo(48-fishLeave*20,-17,43+bootSwing-fishLeave*18,bootY);CT.stroke();
-    CT.save();CT.translate(43+bootSwing-fishLeave*18,bootY);CT.rotate(-.25+Math.sin(t*.8)*.12);CT.fillStyle="#3a281b";CT.strokeStyle="#17100b";CT.lineWidth=.8;CT.beginPath();CT.moveTo(-4,-8);CT.lineTo(4,-8);CT.lineTo(3,1);CT.lineTo(10,3);CT.quadraticCurveTo(7,8,-3,5);CT.closePath();CT.fill();CT.stroke();CT.restore();
+    /* Wędkarz wychyla się z łukowej wnęki donżonu. Kamienny parapet zasłania
+       go od pasa w dół; po podciągnięciu buta postać przykuca i rzeczywiście
+       chowa się w wieży, bez bocznego odjazdu ani zanikania. */
+    var reelRaw=Math.max(0,Math.min(1,(t-9.7)/.85)),reel=reelRaw*reelRaw*(3-2*reelRaw);
+    var fishRaw=Math.max(0,Math.min(1,(t-10.65)/.8));
+    var fishDuck=fishRaw*fishRaw*(3-2*fishRaw),fs=policemanUnitScale()*.72;
+    var donjonH=p.h*.45,donjonY=G.GY-p.h-donjonH;
+    var fishX=p.x+p.w*.59,sillY=donjonY+donjonH*.73;
+    var openingW=19*fs,openingH=40*fs,openingL=fishX-openingW*.5,openingT=sillY-openingH;
+    /* Ciemna wnęka zostaje częścią wieży również po schowaniu wędkarza. */
+    var openingGr=CT.createLinearGradient(openingL,openingT,openingL,sillY);openingGr.addColorStop(0,"#100b0a");openingGr.addColorStop(1,"#28201a");
+    CT.fillStyle=openingGr;CT.strokeStyle="#4b566b";CT.lineWidth=Math.max(1,fs*.8);
+    CT.beginPath();CT.moveTo(openingL,sillY);CT.lineTo(openingL,openingT+openingW*.48);
+    CT.quadraticCurveTo(fishX,openingT,openingL+openingW,openingT+openingW*.48);CT.lineTo(openingL+openingW,sillY);CT.closePath();CT.fill();CT.stroke();
+    var fishBase=sillY+2*fs+fishDuck*40*fs;
+    CT.save();CT.beginPath();CT.rect(openingL+1,openingT+1,openingW-2,openingH-1);CT.clip();
+    CT.translate(fishX,fishBase);CT.scale(fs,fs);
+    CT.fillStyle="#49617a";CT.strokeStyle="#24313d";CT.lineWidth=1;CT.fillRect(-7,-31,14,20);CT.strokeRect(-7,-31,14,20);
+    CT.strokeStyle="#49617a";CT.lineWidth=3.2;CT.beginPath();CT.moveTo(5,-27);CT.lineTo(10,-20);CT.stroke();
+    CT.fillStyle="#c59a72";CT.strokeStyle="#513522";CT.lineWidth=.7;CT.beginPath();CT.arc(0,-38,6,0,Math.PI*2);CT.fill();CT.stroke();
+    CT.fillStyle="#58402a";CT.beginPath();CT.arc(0,-41,6.5,Math.PI,Math.PI*2);CT.lineTo(6,-39);CT.lineTo(-6,-39);CT.closePath();CT.fill();
+    CT.fillStyle="#17100b";CT.beginPath();CT.arc(2.2,-38,1,0,Math.PI*2);CT.fill();
     CT.restore();
+    /* Wędka i but wsuwają się do tej samej wnęki, zamiast nagle znikać. */
+    if(reel<.985){
+      var handX=fishX+8*fs,handY=fishBase-23*fs;
+      var rodFarX=fishX+(46-38*reel)*fs,rodFarY=fishBase+(-46+23*reel)*fs;
+      var bootX=fishX+(49-40*reel+Math.sin(t*.8)*1.8*(1-reel))*fs;
+      var bootY=sillY+(17-39*reel)*fs;
+      CT.strokeStyle="#76502d";CT.lineWidth=1.7*fs;CT.beginPath();CT.moveTo(handX,handY);CT.quadraticCurveTo(fishX+24*fs,fishBase-49*fs,rodFarX,rodFarY);CT.stroke();
+      CT.strokeStyle="#d7d0b4";CT.lineWidth=Math.max(.65,.7*fs);CT.beginPath();CT.moveTo(rodFarX,rodFarY);CT.quadraticCurveTo(rodFarX+4*fs,(rodFarY+bootY)*.5,bootX,bootY);CT.stroke();
+      CT.save();CT.translate(bootX,bootY);CT.scale(fs,fs);CT.rotate(-.25+Math.sin(t*.8)*.1*(1-reel));CT.fillStyle="#3a281b";CT.strokeStyle="#17100b";CT.lineWidth=.8;CT.beginPath();CT.moveTo(-4,-8);CT.lineTo(4,-8);CT.lineTo(3,1);CT.lineTo(10,3);CT.quadraticCurveTo(7,8,-3,5);CT.closePath();CT.fill();CT.stroke();CT.restore();
     }
+    /* Kamienny parapet jest na pierwszym planie i naturalnie odcina tułów. */
+    var sillGr=CT.createLinearGradient(openingL,sillY-3*fs,openingL,sillY+3*fs);sillGr.addColorStop(0,"#b5bfd0");sillGr.addColorStop(1,"#56657d");
+    CT.fillStyle=sillGr;CT.strokeStyle="#30394b";CT.lineWidth=Math.max(.8,fs*.55);CT.fillRect(openingL-2*fs,sillY-2*fs,openingW+4*fs,5*fs);CT.strokeRect(openingL-2*fs,sillY-2*fs,openingW+4*fs,5*fs);
   }else if(id===2){
     // Sygnalizacja na blankach. Wszystkie światła świecą jednocześnie.
     CT.strokeStyle="#30343a";CT.lineWidth=2*s;CT.beginPath();CT.moveTo(ex,ey+8*s);CT.lineTo(ex,ey-22*s);CT.stroke();
@@ -7355,7 +7356,7 @@ function drawCastle(c,sc){
 
   /* Player gold pill / enemy count */
   if(isP){
-    var goldText="🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true)+"/"+combatCapForSide();
+    var goldText="🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true);
     CT.font="bold 12px Arial";
     var gtw=CT.measureText(goldText).width+16;
     var goldX=bx2,goldY=by2+barH+6;
@@ -7368,7 +7369,7 @@ function drawCastle(c,sc){
   } else {
     var eCount=activeCombatCount(false);
     if(eCount>0){
-      var enText="⚔ "+eCount+"/"+combatCapForSide();
+      var enText="⚔ "+eCount;
       CT.font="bold 12px Arial";
       var etw=CT.measureText(enText).width+16;
       var enX=bx2+barW,enY=by2+barH+6;

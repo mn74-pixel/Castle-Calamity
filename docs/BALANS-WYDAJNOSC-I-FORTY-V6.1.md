@@ -1,5 +1,9 @@
 # Castle Calamity v6.1 — balans, wydajność i forty
 
+> Uwaga historyczna: opisany niżej limit ośmiu aktywnych bojowników został
+> wycofany w v6.1.2. Aktualnie osiem oznacza wyłącznie liczbę różnych kart
+> w talii, a liczebność wojska regulują czas i zdobywane drewno.
+
 ## Cel etapu
 
 Etap ogranicza przeciążenie ekranu i długość bitew od pierwszego poziomu,
