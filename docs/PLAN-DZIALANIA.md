@@ -2,9 +2,15 @@
 
 ## Priorytet nadrzędny
 
+Obowiązuje kolejność:
+
+**FUN > GAME FEEL > GAMEPLAY > CLARITY > PERFORMANCE > ART > FEATURES**
+
 Najpierw kończymy jeden stabilny, skalowalny i użyteczny silnik oraz pełną
 kampanię średniowieczną. Następne epoki będą pakietami danych i grafiki, nie
-kopiami projektu. Szczegóły: `ARCHITEKTURA-EPOK.md`.
+kopiami projektu. Każda wersja przechodzi pięciowarstwowy audyt i bramkę
+wydania opisaną w `MASTER-ZASADY-PRODUKCJI.md`. Granice wspólnego silnika
+opisuje `ARCHITEKTURA-EPOK.md`.
 
 ## Fundament v4.1
 
@@ -350,11 +356,17 @@ Status: **wdrożona i sprawdzona lokalnie oraz w pełnej regresji gry**
 
 ## Następny etap — rozwój Epoki II
 
-- rozbudowa mapy Epoki II poza pierwsze cztery poziomy,
+- rozbudowa mapy Epoki II poza pierwsze cztery poziomy jako mini-łuki
+  `INTRO → DISCOVERY → CHALLENGE → TWIST → RESOLUTION`,
 - stopniowe warianty fortów zależne od regionu i poziomu uszkodzeń,
-- kolejne zagrożenia wykorzystujące piki, muszkiety, moździerze i proste maszyny,
+- kolejne zagrożenia wykorzystujące najpierw nowe kombinacje pik, muszkietów,
+  saperów i moździerzy zamiast samego zwiększania HP oraz liczby przeciwników,
 - maksymalnie osiem kart na bitwę oraz dobór jednostek do zagrożenia poziomu,
-- osobna pula rzadkich gagów epoki przy zachowaniu limitu jednego żartu w bitwie.
+- osobna pula rzadkich gagów epoki przy zachowaniu limitu jednego żartu w bitwie,
+- stopniowe wydzielanie statycznych danych epok i poziomów z dużego pliku
+  `index.html`, bez jednorazowego ryzykownego przepisywania silnika,
+- przed publikacją: pełna próba gry, test czterech viewportów iPhone, długa
+  symulacja, audyt audio, test PL/EN, zapis kampanii i PWA offline.
 
 ## Poprawka v6.1.4 — tryb pełnoekranowy
 

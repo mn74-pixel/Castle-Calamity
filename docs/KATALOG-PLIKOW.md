@@ -39,6 +39,7 @@ castle-calamity/
     ├── POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md
     ├── TWARZE-NA-ZAMKACH-V6.1.3.md
     ├── TRYB-PELNOEKRANOWY-V6.1.4.md
+    ├── MASTER-ZASADY-PRODUKCJI.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
 ```
@@ -57,6 +58,7 @@ castle-calamity/
 | `assets/icons/icon-master.svg` | Wektorowe źródło wszystkich czterech ikon PWA | Przy zmianie kompozycji ikony |
 | `assets/icons/render-icons.js` | Generator wariantów 192/512 oraz maskowalnych | Po zmianie pliku źródłowego SVG |
 | `README.md` | Instrukcja uruchomienia i publikacji | Przy zmianie sposobu wdrażania |
+| `docs/MASTER-ZASADY-PRODUKCJI.md` | Kompas `FUN > ... > FEATURES`, art direction, zasady audytu i bramka wydania | Przed decyzją o nowym systemie albo zmianą priorytetów projektu |
 | `docs/PLAN-DZIALANIA.md` | Kolejność dalszego rozwoju i kryteria odbioru | Po każdej większej decyzji projektowej |
 | `docs/AUDYT-V4.4.md` | Stan techniczny, wykryte problemy, poprawki i ryzyka po audycie v4.4 | Po większym audycie lub przed publikacją |
 | `docs/ETAP-BOSSOW-V4.5.md` | Fazy, ataki, balans i testy dwóch końcowych bossów | Przy zmianie zachowań poziomów 10 i 12 |

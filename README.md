@@ -4,6 +4,11 @@ Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
 na pełnym ekranie i **offline**.
 
+Rozwój projektu podlega nadrzędnemu kompasowi
+`FUN > GAME FEEL > GAMEPLAY > CLARITY > PERFORMANCE > ART > FEATURES`.
+Operacyjne kryteria projektowania, audytu i wydania opisuje
+`docs/MASTER-ZASADY-PRODUKCJI.md`.
+
 ## Co zawiera wersja v6.1.4
 - przycisk pełnego ekranu dostępny zarówno w menu, jak i podczas bitwy,
 - natywne wejście i wyjście z pełnego ekranu na zgodnych przeglądarkach oraz ponowne przeliczenie bezpiecznego obszaru po każdej zmianie,
@@ -108,6 +113,7 @@ na pełnym ekranie i **offline**.
 | `sw.js` | Service worker i pamięć offline |
 | `assets/icons/` | Zwykłe i maskowalne ikony aplikacji |
 | `docs/KATALOG-PLIKOW.md` | Mapa paczki i wskazówki, gdzie wprowadzać zmiany |
+| `docs/MASTER-ZASADY-PRODUKCJI.md` | Nadrzędny kompas projektu, pięć warstw audytu i bramka każdego wydania |
 | `docs/PLAN-DZIALANIA.md` | Etapy dalszego rozwoju gry |
 | `docs/AUDYT-V4.4.md` | Wyniki audytu, wykonane poprawki i pozostawione ryzyka |
 | `docs/ETAP-BOSSOW-V4.5.md` | Zachowania, balans i testy bossów poziomów 10 i 12 |
