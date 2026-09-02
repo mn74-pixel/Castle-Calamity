@@ -392,6 +392,18 @@ Status: **wdrożona i sprawdzona w pełnej regresji**
 - kontrolki są semantycznymi przyciskami i zachowują niezmienną geometrię,
 - regresja obejmuje progi poziomów 1–5, całą Epokę II, pełny ekran, iPhone i PWA.
 
+## Etap v6.1.7 — czytelne karty wsparcia
+
+Status: **wdrożony i sprawdzony w pełnej regresji**
+
+- dok trzech zdolności w pełnym ekranie został obniżony o 18 px, zachowując
+  odstęp od dolnych kontrolek oraz bezpiecznej strefy iPhone’a,
+- po uruchomieniu dwóch Drwali ich karta pokazuje spokojną blokadę `2/2`,
+- po śmierci jednego Drwala karta natychmiast wraca do stanu dostępnego,
+- ten sam system obsługuje limit dwóch Kamieniarzy i brak kamieniołomu,
+- nakładka nie zmienia geometrii karty, nie skaluje jej i nie używa filtrów,
+  dzięki czemu nie przywraca migania znanego z Safari.
+
 ## Najbliższa sesja z Marcinem
 
 Potrzebne są trzy decyzje:

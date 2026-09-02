@@ -40,6 +40,7 @@ castle-calamity/
     ├── TWARZE-NA-ZAMKACH-V6.1.3.md
     ├── TRYB-PELNOEKRANOWY-V6.1.4.md
     ├── POPRAWKA-ZDOLNOSCI-FULLSCREEN-V6.1.5.md
+    ├── CZYTELNE-KARTY-WSPARCIA-V6.1.7.md
     ├── MASTER-ZASADY-PRODUKCJI.md
     ├── KATALOG-PLIKOW.md
     └── PLAN-DZIALANIA.md
@@ -79,6 +80,7 @@ castle-calamity/
 | `docs/TWARZE-NA-ZAMKACH-V6.1.3.md` | Lokalne wykrywanie, kadrowanie, przezroczysta maska i renderowanie twarzy na zamkach | Przy zmianie personalizacji zdjęciem, jakości wycięcia lub miejsc wyświetlania twarzy |
 | `docs/TRYB-PELNOEKRANOWY-V6.1.4.md` | Natywny pełny ekran, tryb zainstalowanej PWA, bezpieczny viewport i instrukcja iPhone | Przy zmianie kontrolek ekranu, manifestu, orientacji albo skalowania urządzeń |
 | `docs/POPRAWKA-ZDOLNOSCI-FULLSCREEN-V6.1.5.md` | Bezpieczny mobilny dok zdolności i ciągłe odblokowanie między epokami | Przy zmianie zdolności, ich progów lub dolnego HUD-u |
+| `docs/CZYTELNE-KARTY-WSPARCIA-V6.1.7.md` | Obniżony dok i nieruchome stany limitów jednostek wsparcia | Przy zmianie HUD-u kart, limitu Drwali lub Kamieniarzy |
 | `docs/ARCHITEKTURA-EPOK.md` | Granica między wspólnym silnikiem a zawartością poszczególnych epok | Przed rozpoczęciem nowej epoki |
 
 ## Najprostsze bieżące zmiany

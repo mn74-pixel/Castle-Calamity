@@ -36,7 +36,7 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 #cds::-webkit-scrollbar{display:none;}
 .cd{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;flex-shrink:0;transform:none;transition:none;contain:layout paint;}
 .cd:active{transform:none;}
-.cd .iconWrap{width:58px;height:58px;border-radius:7px;background:linear-gradient(180deg,#e8d4a8,#c4a878);border:2px solid #5a3a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);}
+.cd .iconWrap{width:58px;height:58px;position:relative;border-radius:7px;background:linear-gradient(180deg,#e8d4a8,#c4a878);border:2px solid #5a3a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);}
 @media (hover: hover) and (pointer: fine) {
   .cd:hover .iconWrap{border-color:#ffcc44;box-shadow:0 3px 9px rgba(255,200,80,.42);}
 }
@@ -45,6 +45,12 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 .recBadge{position:absolute;left:-4px;top:-5px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff1a3,#cf8a19 72%);border:1px solid #fff0a6;color:#442300;font-size:11px;line-height:1;font-weight:900;text-shadow:none;box-shadow:0 2px 5px rgba(0,0,0,.55);z-index:3;}
 .cdc{font-size:13px;color:#ffee44;font-weight:900;margin-top:3px;text-shadow:1px 1px 2px rgba(0,0,0,.9);}
 .cdk{position:absolute;top:-3px;right:-3px;font-size:10px;color:#fff;font-weight:900;background:#3366cc;border:2px solid #fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;}
+.cdState{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(18,20,27,.58);color:#fff3cf;font-size:12px;font-weight:900;letter-spacing:.35px;text-shadow:0 2px 3px #000;z-index:2;pointer-events:none;}
+.cd.unitUnavailable{cursor:not-allowed;}
+.cd.unitUnavailable .iconWrap{border-color:#77736a;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.12);}
+.cd.unitUnavailable canvas{opacity:.38;}
+.cd.unitUnavailable .cdState{display:flex;}
+.cd.unitUnavailable .cdc{color:#b8b09a;}
 .cd .tip{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(10,10,30,.97);border:1px solid #5a5aaa;border-radius:7px;padding:8px 12px;white-space:nowrap;color:#eee;font-size:11px;line-height:1.7;pointer-events:none;z-index:50;min-width:140px;text-align:left;}
 /* Tooltip tylko na urządzeniach z prawdziwym hover (myszka), nie touch */
 @media (hover: hover) and (pointer: fine) {
@@ -249,7 +255,7 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
   /* W natywnym fullscreenie i zainstalowanej PWA trzy zdolności tworzą
      bezpieczny dok nad przyciskami systemowymi. Nie polegamy tu wyłącznie na
      env(safe-area), bo część wersji Safari zwraca w fullscreenie wartość 0. */
-  #appViewport.fullscreenMode #abBar{bottom:calc(max(6px,env(safe-area-inset-bottom)) + 46px);max-width:calc(100% - 24px);padding:3px 6px;border-radius:12px;background:linear-gradient(180deg,rgba(8,10,24,.18),rgba(8,10,24,.68));box-shadow:0 5px 15px rgba(0,0,0,.24);z-index:18;}
+  #appViewport.fullscreenMode #abBar{bottom:calc(max(6px,env(safe-area-inset-bottom)) + 28px);max-width:calc(100% - 24px);padding:3px 6px;border-radius:12px;background:linear-gradient(180deg,rgba(8,10,24,.18),rgba(8,10,24,.68));box-shadow:0 5px 15px rgba(0,0,0,.24);z-index:18;}
   #cornerBtns{bottom:max(6px,env(safe-area-inset-bottom));}
   #eb{padding:14px 18px;max-width:520px;}
   #unitReportGrid{gap:5px;}.unitReportCard{padding:4px 4px 3px;}.unitReportCard canvas{width:34px;height:34px;}
@@ -1469,6 +1475,34 @@ document.getElementById("tutorialNext").onclick=tutorialAdvance;
 document.getElementById("tutorialSkip").onclick=function(){stopTutorial(true);};
 
 /* ── Cards ── */
+function unitCardAvailability(key,isP){
+  var ud=UD[key],active=0,limit=0,reason="",message="";
+  if(!G||!ud)return {available:false,reason:"game",active:0,limit:0,message:""};
+  if(ud.worker){
+    limit=MAX_ACTIVE_WORKERS_PER_SIDE;active=countActiveUnit("drwal",isP);
+    if(active>=limit){reason="workerLimit";message=tr("card.workerLimit",{active:active,limit:limit});}
+  }else if(ud.mason){
+    limit=2;active=countActiveUnit("mason",isP);
+    if(!G.rocks||!G.rocks.length){reason="noQuarry";message=tr("card.noQuarry");}
+    else if(active>=limit){reason="masonLimit";message=tr("card.masonLimit",{active:active,limit:limit});}
+  }
+  return {available:!reason,reason:reason,active:active,limit:limit,message:message};
+}
+function updateUnitCardState(key,el){
+  if(!el)return;
+  var state=unitCardAvailability(key,true),signature=state.reason+":"+state.active+":"+state.limit;
+  if(el.dataset.availability===signature)return;
+  el.dataset.availability=signature;
+  el.dataset.blockReason=state.reason;
+  el.classList.toggle("unitUnavailable",!state.available);
+  el.setAttribute("aria-disabled",state.available?"false":"true");
+  el.setAttribute("aria-label",tr("unit."+key)+(state.message?" — "+state.message:""));
+  var badge=document.getElementById("cdstate_"+key);
+  if(badge){
+    badge.textContent=state.reason==="noQuarry"?"—":(!state.available?"🔒 "+state.active+"/"+state.limit:"");
+    badge.title=state.message;
+  }
+}
 function buildCards(){
   var row=document.getElementById("cds");row.innerHTML="";
   var ul=G.lv.ul;
@@ -1487,6 +1521,7 @@ function buildCards(){
     var ic=document.createElement("canvas");ic.width=56;ic.height=56;
     paintIconOn(ic.getContext("2d"),key,56,56);
     wrap.appendChild(ic);
+    var cardState=document.createElement("div");cardState.className="cdState";cardState.id="cdstate_"+key;cardState.setAttribute("aria-hidden","true");wrap.appendChild(cardState);
     var recBadge=null;
     if(isRecommended){recBadge=document.createElement("div");recBadge.className="recBadge";recBadge.textContent="★";recBadge.title=tr("tip.recommended");}
     var cc=document.createElement("div");cc.className="cdc";cc.id="cdc_"+key;cc.textContent=effStat(key,"c");
@@ -1516,9 +1551,10 @@ function buildCards(){
     if(ud.cannon) tipHTML+="<br><span style='color:#cc6622'>🏰 "+tr("tip.siege")+"</span>";
     tip.innerHTML=tipHTML;
     card.appendChild(kbd);if(recBadge)card.appendChild(recBadge);card.appendChild(wrap);card.appendChild(cc);card.appendChild(tip);
-    (function(k){
+    (function(k,cardEl){
       var lastSpawnTime = 0;
       function doSpawn(){
+        if(!unitCardAvailability(k,true).available){updateUnitCardState(k,cardEl);return;}
         var now = Date.now();
         if(now - lastSpawnTime < 80) return;
         lastSpawnTime = now;
@@ -1534,8 +1570,9 @@ function buildCards(){
         if(e.cancelable) e.preventDefault();
         doSpawn();
       }, { passive: false });
-    })(key);
+    })(key,card);
     row.appendChild(card);
+    updateUnitCardState(key,card);
     keyIdx++;
   }
 }
@@ -1546,11 +1583,12 @@ function updHUD(){
     var k=UK[ki];
     var el=document.getElementById("cd_"+k);if(!el)continue;
     var cost=effStat(k,"c");
-    /* Kafelki pozostają wizualnie niezmienne przez całą bitwę. Brak zasobów
-       blokuje sam zakup w spawnUnit(), ale nie przełącza już klasy, cienia,
-       przezroczystości ani filtra karty na Safari. */
+    /* Geometria kafelków jest stała. Stan zmienia wyłącznie spokojną nakładkę,
+       gdy jednostka wsparcia osiągnie swój limit — bez filtrów i animacji,
+       które powodowały drżenie kart w Safari. */
     var cc=document.getElementById("cdc_"+k),costText=String(cost);
     if(cc&&cc.textContent!==costText)cc.textContent=costText;
+    updateUnitCardState(k,el);
   }
   updateAbilityUI();
 }

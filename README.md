@@ -9,7 +9,10 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Co zawiera wersja v6.1.5
+## Co zawiera wersja v6.1.7
+- obniżony dok Deszczu Strzał, Mrozu i Zewu Bitwy w pełnym ekranie,
+- czytelna, nieruchoma blokada `2/2` na karcie Drwala po osiągnięciu limitu,
+- wspólny stan dostępności dla Drwala i Kamieniarza bez filtrów powodujących miganie Safari,
 - bezpieczny dok Deszczu Strzał, Mrozu i Zewu Bitwy w pełnym ekranie telefonu,
 - zachowanie wszystkich poznanych zdolności po przejściu z Epoki I do Epoki II,
 - prawdziwe przyciski zdolności z pewniejszą obsługą dotyku,
@@ -135,6 +138,7 @@ Operacyjne kryteria projektowania, audytu i wydania opisuje
 | `docs/TWARZE-NA-ZAMKACH-V6.1.3.md` | Lokalne wykrywanie, kadrowanie i wyszparowanie prawdziwej twarzy bez cartoon |
 | `docs/TRYB-PELNOEKRANOWY-V6.1.4.md` | Przycisk pełnego ekranu, bezpieczny viewport i zachowanie iPhone PWA |
 | `docs/POPRAWKA-ZDOLNOSCI-FULLSCREEN-V6.1.5.md` | Widoczny dok zdolności oraz trwałe odblokowanie między epokami |
+| `docs/CZYTELNE-KARTY-WSPARCIA-V6.1.7.md` | Obniżony dok zdolności i stabilne oznaczenie limitu Drwali oraz Kamieniarzy |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -154,7 +158,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v6.1.5` → `castle-calamity-v6.2`.
+np. `castle-calamity-v6.1.7` → `castle-calamity-v6.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)
