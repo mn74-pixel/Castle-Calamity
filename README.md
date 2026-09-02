@@ -9,7 +9,10 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Co zawiera wersja v6.1.4
+## Co zawiera wersja v6.1.5
+- bezpieczny dok Deszczu Strzał, Mrozu i Zewu Bitwy w pełnym ekranie telefonu,
+- zachowanie wszystkich poznanych zdolności po przejściu z Epoki I do Epoki II,
+- prawdziwe przyciski zdolności z pewniejszą obsługą dotyku,
 - przycisk pełnego ekranu dostępny zarówno w menu, jak i podczas bitwy,
 - natywne wejście i wyjście z pełnego ekranu na zgodnych przeglądarkach oraz ponowne przeliczenie bezpiecznego obszaru po każdej zmianie,
 - uruchamianie zainstalowanej PWA poziomo bez paska przeglądarki; na iPhonie Safari przycisk pokazuje krótką instrukcję „Do ekranu początkowego”,
@@ -131,6 +134,7 @@ Operacyjne kryteria projektowania, audytu i wydania opisuje
 | `docs/POPRAWKA-HUD-WEDKARZ-I-ARMIA-V6.1.2.md` | Nieruchome karty, wędkarz w wieży i armia regulowana zasobami zamiast limitem liczebności |
 | `docs/TWARZE-NA-ZAMKACH-V6.1.3.md` | Lokalne wykrywanie, kadrowanie i wyszparowanie prawdziwej twarzy bez cartoon |
 | `docs/TRYB-PELNOEKRANOWY-V6.1.4.md` | Przycisk pełnego ekranu, bezpieczny viewport i zachowanie iPhone PWA |
+| `docs/POPRAWKA-ZDOLNOSCI-FULLSCREEN-V6.1.5.md` | Widoczny dok zdolności oraz trwałe odblokowanie między epokami |
 | `docs/ARCHITEKTURA-EPOK.md` | Zasady wspólnego silnika i przyszłych epok |
 
 ## Wdrożenie — GitHub Pages (darmowe, 5 minut)
@@ -150,7 +154,7 @@ Wymóg: **HTTPS** (service worker nie działa po HTTP). Certyfikat Let's Encrypt
 
 ## Aktualizacja gry
 Podmień zmienione pliki na hostingu i zwiększ w `sw.js` wersję cache,
-np. `castle-calamity-v6.1.4` → `castle-calamity-v6.2`.
+np. `castle-calamity-v6.1.5` → `castle-calamity-v6.2`.
 Gracze dostaną nową wersję przy następnym otwarciu z internetem.
 
 ## Test lokalny (opcjonalnie)

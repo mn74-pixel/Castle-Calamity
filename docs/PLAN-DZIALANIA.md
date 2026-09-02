@@ -380,6 +380,18 @@ Status: **wdrożona i sprawdzona automatycznie**
 - teksty przycisku i instrukcji mają wersję polską i angielską,
 - regresja obejmuje wejście, wyjście, ścieżkę iPhone, cztery viewporty iPhone i pełny test offline.
 
+## Poprawka v6.1.5 — zdolności w pełnym ekranie
+
+Status: **wdrożona i sprawdzona w pełnej regresji**
+
+- Deszcz Strzał, Mróz i Zew Bitwy tworzą na niskim ekranie pełnoekranowym
+  bezpieczny dok nad przyciskami oraz dolną strefą systemową,
+- zdolności poznane w średniowieczu nie są ponownie blokowane po przejściu do
+  Epoki II,
+- odblokowanie i samo rzucenie zdolności korzystają z jednego wspólnego warunku,
+- kontrolki są semantycznymi przyciskami i zachowują niezmienną geometrię,
+- regresja obejmuje progi poziomów 1–5, całą Epokę II, pełny ekran, iPhone i PWA.
+
 ## Najbliższa sesja z Marcinem
 
 Potrzebne są trzy decyzje:
