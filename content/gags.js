@@ -50,8 +50,8 @@
       /* Pierwszy gag Epoki II jest osobną, rzadką niespodzianką. Mechaniczna
          kaczka przechodzi przez pole bitwy, nakręcając się kluczykiem i
          puszczając parę. Nie pojawia się w zamkach ani w średniowieczu. */
-      { id: "clockwork-duck", type: "clockworkduck", enabled: true, weight: 1, eras: ["early-modern"], levels: [1,2,3,4] },
-      { id: "powder-paperwork", type: "powderclerk", enabled: true, weight: 0.32, eras: ["early-modern"], levels: [1,2,3,4] }
+      { id: "clockwork-duck", type: "clockworkduck", enabled: true, weight: 1, eras: ["early-modern"], levels: [1,2,3,4,5,6] },
+      { id: "powder-paperwork", type: "powderclerk", enabled: true, weight: 0.32, eras: ["early-modern"], levels: [1,2,3,4,5,6] }
     ],
 
     flyingFishAd: {

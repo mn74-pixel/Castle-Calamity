@@ -39,7 +39,7 @@
         id: "early-modern",
         enabled: true,
         unlockAfter: { eraId: "medieval", completedLevels: 12 },
-        levelIds: [1,2,3,4],
+        levelIds: [1,2,3,4,5,6],
         sceneSet: "early-modern-frontier",
         castleStyle: "brick-bastion",
         unitSet: "powder-and-pikes",
@@ -48,8 +48,8 @@
         balanceProfile: "campaign-v2",
         campaign: {
           titleKey: "campaign.era2",
-          levelIds: [1,2,3,4],
-          mapPoints: [[12,28],[37,70],[63,28],[88,70]]
+          levelIds: [1,2,3,4,5,6],
+          mapPoints: [[9,28],[25,70],[42,28],[58,70],[75,28],[91,70]]
         }
       }
     }

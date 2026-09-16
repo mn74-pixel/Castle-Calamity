@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v6.1.7 — odporne działanie offline.
+/* Castle Calamity PWA v6.2 — trwałe oblężenie i sześć bitew Epoki II.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v6.1.7";
+const CACHE = "castle-calamity-v6.2";
 const APP_SHELL = [
   "./",
   "./index.html",

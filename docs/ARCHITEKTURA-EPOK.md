@@ -28,7 +28,7 @@ Pakiet epoki będzie określał:
 
 Pakiet `medieval` zawiera pełne 12 poziomów Epoki I. Pakiet `early-modern` jest
 aktywny od v6.0 i tworzy pierwszy zamknięty rozdział Epoki II „Proch i
-Mechanika”. Odblokowuje się po ukończeniu średniowiecza i zawiera cztery bitwy,
+Mechanika”. Odblokowuje się po ukończeniu średniowiecza i od v6.2 zawiera sześć bitew,
 ceglane bastiony, Pikiniera, Muszkietera, Sapera oraz Moździerz.
 
 Oba pakiety korzystają z jednego silnika walki, wspólnego katalogu ulepszeń i

@@ -404,6 +404,14 @@ Status: **wdrożony i sprawdzony w pełnej regresji**
 - nakładka nie zmienia geometrii karty, nie skaluje jej i nie używa filtrów,
   dzięki czemu nie przywraca migania znanego z Safari.
 
+## Etap v6.2 — trwałe oblężenie i rozwój Epoki II
+
+- Naprawiono wspólne usuwanie bojowników po dotarciu do zamku.
+- Dodano bitwy 5–6 Epoki II z odmiennymi składami, paletami i ekonomią.
+- Regresja 18 bitew, jednostek i PWA przechodzi; ręczna ocena telefonu pozostaje otwarta.
+- Następny krok: ocena tempa trwałego oblężenia, potem projekt rozdziału przemysłowego.
+- Szczegóły: `OBLEZENIE-I-KAMPANIA-V6.2.md`.
+
 ## Najbliższa sesja z Marcinem
 
 Potrzebne są trzy decyzje:

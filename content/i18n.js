@@ -7,7 +7,7 @@
   */
   root.CASTLE_I18N = {
     pl: {
-      "menu.tagline":"16 BITEW • 2 EPOKI • ZERO KOMPETENTNYCH DORADCÓW",
+      "menu.tagline":"18 BITEW • 2 EPOKI • ZERO KOMPETENTNYCH DORADCÓW",
       "menu.play":"DO BOJU",
       "menu.tutorial":"? SAMOUCZEK",
       "menu.fullscreen":"⛶ PEŁNY EKRAN",
@@ -167,6 +167,8 @@
       "era2.level.2":"Most Trzech Pik",
       "era2.level.3":"Bastion Ceglanej Gwiazdy",
       "era2.level.4":"Warsztat Bez Instrukcji",
+      "era2.level.5":"Kanał Zgubionych Rozkazów",
+      "era2.level.6":"Odlewnia Ostatniego Guzika",
       "end.victory":"Zwycięstwo!",
       "end.triumph":"TRIUMF!",
       "end.defeat":"Porażka!",
@@ -197,7 +199,7 @@
       "report.used":"Wystawiono ×{value}"
     },
     en: {
-      "menu.tagline":"16 BATTLES • 2 ERAS • ZERO QUALIFIED ADVISERS",
+      "menu.tagline":"18 BATTLES • 2 ERAS • ZERO QUALIFIED ADVISERS",
       "menu.play":"TO BATTLE",
       "menu.tutorial":"? TUTORIAL",
       "menu.fullscreen":"⛶ FULL SCREEN",
@@ -357,6 +359,8 @@
       "era2.level.2":"Bridge of Three Pikes",
       "era2.level.3":"Brick Star Bastion",
       "era2.level.4":"Workshop without Instructions",
+      "era2.level.5":"Canal of Lost Orders",
+      "era2.level.6":"The Last Button Foundry",
       "end.victory":"Victory!",
       "end.triumph":"TRIUMPH!",
       "end.defeat":"Defeat!",

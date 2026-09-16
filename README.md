@@ -9,7 +9,14 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Co zawiera wersja v6.1.7
+## Co zawiera wersja v6.2
+- trwała walka przy zamku: oddziały nie giną po samym dotarciu do zasięgu,
+- wspólna obsługa pocisków przy walce z jednostką i ostrzale muru,
+- 18 bitew: 12 średniowiecznych i 6 w epoce Prochu i Mechaniki,
+- kanał wymagający ochrony muszkieterów oraz nocna odlewnia artyleryjska,
+- szczegóły i ograniczenia testów: `docs/OBLEZENIE-I-KAMPANIA-V6.2.md`.
+
+### Zachowane poprawki v6.1.7
 - obniżony dok Deszczu Strzał, Mrozu i Zewu Bitwy w pełnym ekranie,
 - czytelna, nieruchoma blokada `2/2` na karcie Drwala po osiągnięciu limitu,
 - wspólny stan dostępności dla Drwala i Kamieniarza bez filtrów powodujących miganie Safari,
