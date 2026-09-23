@@ -412,6 +412,14 @@ Status: **wdrożony i sprawdzony w pełnej regresji**
 - Następny krok: ocena tempa trwałego oblężenia, potem projekt rozdziału przemysłowego.
 - Szczegóły: `OBLEZENIE-I-KAMPANIA-V6.2.md`.
 
+## Etap v7.0 — cztery epoki i szybki szturm
+
+- Zastąpiono trwałe oblężenie pojedynczym ciosem przy bramie zgodnie z korektą Marcina.
+- Dodano epoki Para i Żelazo oraz Wiek Iskry: po cztery bitwy i cztery własne jednostki.
+- Poprawiono kontrolę miksu i rozróżnienie broni w audio.
+- Dalszy priorytet: ludzka ocena tempa, miksu i telefonu; balans przed kolejnym rozszerzeniem.
+- Szczegóły: `CZTERY-EPOKI-V7.0.md`.
+
 ## Najbliższa sesja z Marcinem
 
 Potrzebne są trzy decyzje:

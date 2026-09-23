@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v6.2 — trwałe oblężenie i sześć bitew Epoki II.
+/* Castle Calamity PWA v7.0 — cztery epoki i jednorazowy szturm.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v6.2";
+const CACHE = "castle-calamity-v7.0";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const APP_SHELL = [
   "./content/gags.js",
   "./content/i18n.js",
   "./content/eras.js",
+  "./content/future-eras.js",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable-192.png",

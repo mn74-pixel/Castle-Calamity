@@ -9,7 +9,15 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Co zawiera wersja v6.2
+## Co zawiera wersja v7.0
+- jednorazowy mocny cios przy bramie i śmierć zwykłego bojownika; brak kolejki,
+- Czarownik dochodzi do bramy przed ostatnim ciosem, zamiast znikać na 3/4 drogi,
+- 26 bitew w 4 epokach: Średniowiecze, Proch i Mechanika, Para i Żelazo, Wiek Iskry,
+- 8 nowych typów wojsk, odmienne bazy oraz pociski; najwyżej 8 kart na bitwę,
+- poprawione efekty audio, limit głosów oraz kompresja sumy,
+- szczegóły: `docs/CZTERY-EPOKI-V7.0.md`.
+
+## Poprzedni etap v6.2 (zasada trwałego oblężenia zastąpiona w v7.0)
 - trwała walka przy zamku: oddziały nie giną po samym dotarciu do zasięgu,
 - wspólna obsługa pocisków przy walce z jednostką i ostrzale muru,
 - 18 bitew: 12 średniowiecznych i 6 w epoce Prochu i Mechaniki,

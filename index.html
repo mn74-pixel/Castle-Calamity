@@ -88,7 +88,7 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 #tutorialMenuBtn{border-radius:7px;color:#d7cda9;}
 .langBtn:hover,#tutorialMenuBtn:hover,.langBtn:active,#tutorialMenuBtn:active{border-color:#fff0a6;color:#fff0a6;}
 #levelSelect{margin-top:4px;width:min(690px,calc(100% - 8px));}
-.eraTabs{display:flex;gap:7px;justify-content:center;margin:0 0 7px;}
+.eraTabs{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:0 0 7px;}
 .eraTab{min-width:150px;border:1px solid rgba(116,131,174,.48);border-radius:9px;background:linear-gradient(180deg,rgba(31,39,70,.92),rgba(12,16,34,.95));color:#8592b7;padding:7px 12px;font-size:.62rem;font-weight:900;letter-spacing:1px;cursor:pointer;box-shadow:inset 0 1px rgba(255,255,255,.08);}
 .eraTab.active{border-color:#e2bd64;color:#ffe9a4;background:linear-gradient(180deg,rgba(101,69,29,.9),rgba(43,29,18,.96));}
 .eraTab.locked{opacity:.48;cursor:not-allowed;}
@@ -386,6 +386,7 @@ var SWORD_SFX_2="T2dnUwACAAAAAAAAAACSNI+fAAAAAHdTiP4BHgF2b3JiaXMAAAAAASJWAAAAAAA
 <script src="content/gags.js"></script>
 <script src="content/i18n.js"></script>
 <script src="content/eras.js"></script>
+<script src="content/future-eras.js"></script>
 <script>
 (function(){
 "use strict";
@@ -738,6 +739,9 @@ var UD = {
 /* Pełny katalog jednostek. W pojedynczej bitwie pojawia się tylko inteligentnie
    dobrana talia poziomu — maksymalnie osiem kart łącznie z zapleczem. */
 var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","crossbow","monk","knight","wizard","templar","golem","cannon","pikeguard","musketeer","sapper","mortar"];
+var FUTURE=window.CASTLE_FUTURE;
+if(FUTURE){for(var futureKey in FUTURE.units){UD[futureKey]=FUTURE.units[futureKey];UK.push(futureKey);}}
+if(FUTURE)SC=SC.concat(FUTURE.scenes);
 var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
 var MAX_BATTLE_CARDS = 8;
 var MAX_ACTIVE_WORKERS_PER_SIDE = 2;
@@ -794,6 +798,8 @@ var EARLY_MODERN_LEVELS = [
   {id:6,n:"Odlewnia Ostatniego Guzika",pH:2250,eH:2450,gm:1.28,passiveP:1.24,passiveE:1.40,ad:5500,sc:14,treeCount:4,treeCap:4,treeRespawn:26,unitCap:8,profile:"siege",ai:["drwal","pikeguard","mortar","musketeer","mason"],ul:["drwal","pikeguard","musketeer","sapper","monk","mason","knight","mortar"],recommended:["sapper","knight","mortar"]}
 ];
 var ERA_LEVELS={medieval:MEDIEVAL_LEVELS,"early-modern":EARLY_MODERN_LEVELS};
+if(FUTURE){for(var futureEra in FUTURE.levels){ERA_LEVELS[futureEra]=FUTURE.levels[futureEra];}}
+var ERA_ORDER=["medieval","early-modern","industrial","electric"];
 var LV=MEDIEVAL_LEVELS;
 
 function sanitizeLevelDeck(list){
@@ -951,7 +957,7 @@ var abilityCooldowns = {}; // {name: remaining seconds}
 function abilityCampaignLevel(){
   if(ACTIVE_ERA_ID==="medieval")return LI+1;
   var total=MEDIEVAL_LEVELS.length;
-  var order=["early-modern"];
+  var order=ERA_ORDER.slice(1);
   for(var i=0;i<order.length;i++){
     var eraId=order[i];
     if(eraId===ACTIVE_ERA_ID)return total+LI+1;
@@ -967,7 +973,7 @@ function setLocalizedText(id,key,asHTML){
 }
 function localizeLevelPacks(){
   for(var eraId in ERA_LEVELS){
-    var levels=ERA_LEVELS[eraId],prefix=eraId==="medieval"?"level.":"era2.level.";
+    var levels=ERA_LEVELS[eraId],prefix=eraId==="medieval"?"level.":(eraId==="early-modern"?"era2.level.":eraId+".level.");
     for(var li=0;li<levels.length;li++)levels[li].n=tr(prefix+levels[li].id);
   }
 }
@@ -1027,6 +1033,14 @@ try{
   }
 }catch(e){}
 var AC=null, AUDIO_MASTER=null, AUDIO_MOTIF=null, SFX_ON=AUDIO_SETTINGS.enabled, SFX_LAST={}, NOISE_BUFFER=null;
+var AUDIO_LIMITER=null,AUDIO_VOICES=[];
+function reserveAudioVoice(duration){
+  if(!AC)return false;
+  var now=AC.currentTime;
+  AUDIO_VOICES=AUDIO_VOICES.filter(function(end){return end>now;});
+  if(AUDIO_VOICES.length>=48)return false;
+  AUDIO_VOICES.push(now+duration+.05);return true;
+}
 var SAMPLES={}; // dekodowane AudioBuffer
 function saveAudioSettings(){
   AUDIO_SETTINGS.enabled=SFX_ON;
@@ -1045,7 +1059,13 @@ function initAudio(){
   try{
     AC=new (window.AudioContext||window.webkitAudioContext)();
     AUDIO_MASTER=AC.createGain();AUDIO_MOTIF=AC.createGain();
-    AUDIO_MOTIF.connect(AUDIO_MASTER);AUDIO_MASTER.connect(AC.destination);
+    AUDIO_MOTIF.connect(AUDIO_MASTER);
+    if(AC.createDynamicsCompressor){
+      AUDIO_LIMITER=AC.createDynamicsCompressor();
+      AUDIO_LIMITER.threshold.value=-10;AUDIO_LIMITER.knee.value=6;
+      AUDIO_LIMITER.ratio.value=8;AUDIO_LIMITER.attack.value=.004;AUDIO_LIMITER.release.value=.14;
+      AUDIO_MASTER.connect(AUDIO_LIMITER);AUDIO_LIMITER.connect(AC.destination);
+    }else AUDIO_MASTER.connect(AC.destination);
     applyAudioSettings();loadSamples();
   }catch(e){ AC=null;AUDIO_MASTER=null;AUDIO_MOTIF=null; }
 }
@@ -1065,6 +1085,7 @@ function loadSamples(){
 /* Odtwarza zdekodowany sample z głośnością i wariacją pitch */
 function playSample(name, vol, pitchVar){
   if(!AC||!SFX_ON||!SAMPLES[name])return false;
+  if(!reserveAudioVoice(SAMPLES[name].duration||.4))return true;
   try{
     var src=AC.createBufferSource();
     src.buffer=SAMPLES[name];
@@ -1073,17 +1094,19 @@ function playSample(name, vol, pitchVar){
     g.gain.value=vol||0.3;
     src.connect(g);g.connect(AUDIO_MASTER||AC.destination);
     src.start();
+    src.onended=function(){src.disconnect();g.disconnect();};
     return true;
   }catch(e){ return false; }
 }
 /* Throttle - nie graj tego samego dźwięku częściej niż co X ms */
 function sfxOk(name,minMs){
   var now=performance.now();
-  if(SFX_LAST[name]&&now-SFX_LAST[name]<minMs)return false;
+  if(SFX_LAST[name]!==undefined&&now-SFX_LAST[name]<minMs)return false;
   SFX_LAST[name]=now;return true;
 }
 function toneAt(freq,dur,type,vol,slideTo,delay,motif,pan){
   if(!AC||!SFX_ON)return;
+  if(!reserveAudioVoice(dur+(delay||0)))return;
   try{
     var start=AC.currentTime+(delay||0),o=AC.createOscillator(),g=AC.createGain(),out=g;
     o.type=type||"sine";o.frequency.value=freq;
@@ -1094,6 +1117,7 @@ function toneAt(freq,dur,type,vol,slideTo,delay,motif,pan){
     if(AC.createStereoPanner&&isFinite(pan)){var p=AC.createStereoPanner();p.pan.value=Math.max(-1,Math.min(1,pan));g.connect(p);out=p;}
     o.connect(g);out.connect(motif?(AUDIO_MOTIF||AUDIO_MASTER):(AUDIO_MASTER||AC.destination));
     o.start(start);o.stop(start+dur+.02);
+    o.onended=function(){o.disconnect();g.disconnect();if(out!==g)out.disconnect();};
   }catch(e){}
 }
 function tone(freq,dur,type,vol,slideTo){toneAt(freq,dur,type,vol,slideTo,0,false,0);}
@@ -1108,20 +1132,27 @@ function getNoiseBuffer(){
 }
 function noiseHit(dur,vol,cutoff,delay,motif){
   if(!AC||!SFX_ON)return;
+  if(!reserveAudioVoice(dur+(delay||0)))return;
   try{
     var start=AC.currentTime+(delay||0),src=AC.createBufferSource(),filter=AC.createBiquadFilter();src.buffer=getNoiseBuffer();
-    filter.type="lowpass";filter.frequency.value=cutoff||6500;
-    var g=AC.createGain();g.gain.setValueAtTime(vol||0.15,start);g.gain.exponentialRampToValueAtTime(.001,start+dur);
+    filter.type="lowpass";filter.frequency.value=(cutoff||6500)*(.92+Math.random()*.16);
+    src.playbackRate.value=.94+Math.random()*.12;
+    var g=AC.createGain();g.gain.setValueAtTime(.001,start);g.gain.exponentialRampToValueAtTime(vol||0.15,start+.003);g.gain.exponentialRampToValueAtTime(.001,start+dur);
     src.connect(filter);filter.connect(g);g.connect(motif?(AUDIO_MOTIF||AUDIO_MASTER):(AUDIO_MASTER||AC.destination));src.start(start);if(src.stop)src.stop(start+dur+.02);
+    src.onended=function(){src.disconnect();filter.disconnect();g.disconnect();};
   }catch(e){}
 }
 var SFX={
   spawn:    function(){ if(sfxOk("spawn",140)) tone(196,0.10,"sine",0.045,262); },
-  sword:    function(){ if(sfxOk("sword",55)){ var v=Math.random()<0.5?"sword":"sword2"; if(!playSample(v,0.32,0.12)) noiseHit(0.06,0.10); } },
+  sword:    function(){ if(sfxOk("sword",95)){ var v=Math.random()<0.5?"sword":"sword2"; if(!playSample(v,0.20,0.16)){noiseHit(.045,.06,3100);tone(780+Math.random()*240,.065,"triangle",.023,390);} } },
   bow:      function(){if(sfxOk("bow",85)){toneAt(245,.13,"triangle",.048,150,0,false,-.18);noiseHit(.045,.025,3200,.018,false);}},
   crossbow: function(){if(sfxOk("crossbow",95)){noiseHit(.028,.055,1800,0,false);toneAt(330,.085,"square",.032,185,.016,false,.18);}},
   spear:    function(){if(sfxOk("spear",105)){noiseHit(.09,.026,4200,0,false);toneAt(520,.12,"sine",.025,210,.012,false,0);}},
-  musket:   function(){if(sfxOk("musket",220)){noiseHit(.12,.11,2100,0,false);toneAt(150,.16,"square",.055,72,0,false,.08);}},
+  musket:   function(){if(sfxOk("musket",180)){noiseHit(.028,.08,5100,0,false);noiseHit(.16,.065,1400,.018,false);toneAt(135+Math.random()*20,.14,"triangle",.05,65,0,false,0);}},
+  rifle:    function(){if(sfxOk("rifle",145)){noiseHit(.035,.085,4200,0,false);toneAt(180+Math.random()*20,.09,"triangle",.035,80,0,false,0);noiseHit(.035,.026,1600,.065,false);}},
+  pulse:    function(){if(sfxOk("pulse",140)){toneAt(920+Math.random()*70,.13,"sine",.045,180,0,false,0);noiseHit(.04,.018,3800,0,false);}},
+  metal:    function(){if(sfxOk("metal",140)){toneAt(310+Math.random()*35,.13,"triangle",.04,125,0,false,0);noiseHit(.055,.045,1900,0,false);}},
+  coil:     function(){if(sfxOk("coil",320)){toneAt(210,.24,"triangle",.06,65,0,false,0);toneAt(1150,.17,"sine",.035,180,0,false,0);noiseHit(.12,.065,2600,0,false);}},
   arrow:    function(){this.bow();},
   castle:   function(){ if(sfxOk("castle",90)) { noiseHit(0.12,0.16); tone(90,0.15,"sine",0.10,50); } },
   cannon:   function(){if(sfxOk("cannonShot",300)){noiseHit(.32,.19,900,0,false);toneAt(74,.36,"sine",.13,38,0,false,0);}},
@@ -1195,7 +1226,7 @@ function loadCampaignState(){
     CAMPAIGN_STATE.upgradePoints=(MAX_UNLOCKED-1)*3;
   }
   bindCampaignEra(ACTIVE_ERA_ID);
-  updateEraUnlocked("medieval");updateEraUnlocked("early-modern");
+  for(var eraIndex=0;eraIndex<ERA_ORDER.length;eraIndex++)updateEraUnlocked(ERA_ORDER[eraIndex]);
   MAX_UNLOCKED=ERA_UNLOCKED[ACTIVE_ERA_ID]||1;
   if(legacy||(!hadSave&&MAX_UNLOCKED>1))saveCampaignState();
 }
@@ -1982,7 +2013,12 @@ var UNIT_COUNTERS={
   golem:{warrior:1.22,berserk:1.20},
   pikeguard:{knight:1.42,sapper:1.24},
   musketeer:{templar:1.30,pikeguard:1.25,golem:1.18},
-  sapper:{mortar:1.38,cannon:1.30}
+  sapper:{mortar:1.38,cannon:1.30},
+  riveter:{voltguard:1.22},
+  rifleman:{steamguard:1.25},
+  steamguard:{riveter:1.22},
+  voltguard:{pulser:1.20},
+  pulser:{steamguard:1.24,riveter:1.16}
 };
 function matchupMultiplier(attacker,target){
   if(!attacker||!target)return 1;
@@ -3139,16 +3175,17 @@ function doCannon(u,dt){
      kula nie leci już niemal poziomo, a na telefonie nadal mieści się w kadrze. */
   var ft=isMortar?Math.max(1.35,Math.min(3.8,Math.abs(dx)/(330*combatScale()))):Math.max(1.15,Math.min(3.6,Math.abs(dx)/(390*combatScale())));
   var arcH=isMortar?Math.max(112,Math.min(270,H*.38,Math.abs(dx)*.19)):Math.max(88,Math.min(240,H*.31,Math.abs(dx)*.145));
+  if(u.ud.electric){ft=Math.max(.8,Math.min(2.6,Math.abs(dx)/(560*combatScale())));arcH=Math.max(36,Math.min(90,H*.16));}
   var grav=(8*arcH)/(ft*ft);
   var cannonVx=dx/ft,cannonVy=(dy-0.5*grav*ft*ft)/ft;
   G.projs.push({
     x:u.x,y:u.y,vx:cannonVx,vy:cannonVy,grav:grav,
     atk:uAtk(u)*(0.85+Math.random()*0.3),
     atkC:uAtkCastle(u)*(0.85+Math.random()*0.3),
-    isP:u.isP,sourceKey:u.isP?u.key:null,life:ft+0.5,flightTime:ft,arcHeight:arcH,spl:u.ud.spl,type:isMortar?"mortar":"cannon",trail:[]
+    isP:u.isP,sourceKey:u.isP?u.key:null,life:ft+0.5,flightTime:ft,arcHeight:arcH,spl:u.ud.spl,type:isMortar?"mortar":"cannon",electric:!!u.ud.electric,trail:[]
   });
   u.cannonPitch=Math.atan2(cannonVy,cannonVx);
-  SFX.cannon();
+  if(u.ud.electric)SFX.coil();else SFX.cannon();
   u.shotsLeft--;
   u.atkPhase=1;
   var dir=u.isP?1:-1;
@@ -3257,13 +3294,13 @@ function doStoneReturn(u,dt){
 function unitAttackCooldown(u){
   var base=u.ud.r>40?1.8:(1.5-(u.ud.tier||0)*.15);
   if(u.ud.musket)base=2.25;
+  if(u.ud.future&&u.ud.musket)base=u.ud.electric?1.65:1.95;
   if(u.ud.boss)base=u.ud.bossKind==="demon"?1.72:1.02;
   if(u.key==="archer"&&u.archerAura)base*=.9;
   return Math.max(.6,base)+Math.random()*.4;
 }
-/* Jeden tor strzału obsługuje cel żywy i zamek. Dzięki temu każda jednostka
-   dystansowa zachowuje własną broń, animację oraz fizykę także podczas
-   oblężenia — nie znika już po niewidocznym, jednorazowym trafieniu. */
+/* Wspólna balistyka jednostek dystansowych. Szturm bramy jest osobnym,
+   jednorazowym ciosem wykonywanym dopiero przy murze. */
 function fireRangedShot(u,tx,ty,matchMul){
   matchMul=matchMul||1;
   var ratk=((u.key==="wizard")?uAtk(u)*2:uAtk(u)*1.6)*matchMul;
@@ -3290,9 +3327,9 @@ function fireRangedShot(u,tx,ty,matchMul){
     var mdx=tx-muzzleX,mdy=ty-muzzleY,mDist=Math.sqrt(mdx*mdx+mdy*mdy)||1,mSpeed=760*combatScale();
     G.projs.push({x:muzzleX,y:muzzleY,vx:mdx/mDist*mSpeed,vy:mdy/mDist*mSpeed,atk:ratk,atkC:uAtkCastle(u)*1.6,
       isP:u.isP,sourceKey:u.isP?u.key:null,life:mDist/mSpeed+.18,flightTime:mDist/mSpeed,spl:0,grav:0,
-      type:"musket",trail:[],counterMul:matchMul});
+      type:"musket",electric:!!u.ud.electric,trail:[],counterMul:matchMul});
     for(var mp=0;mp<5;mp++)G.smoke.push({x:muzzleX,y:muzzleY,vx:mdir*(12+Math.random()*24),vy:-5-Math.random()*11,r:2.8+Math.random()*3.8,life:.6+Math.random()*.45,col:"rgba(190,185,168,"});
-    u.musketFlash=.22;if(u.isP)SFX.musket();
+    u.musketFlash=.22;if(u.isP){if(u.ud.electric)SFX.pulse();else if(u.ud.future)SFX.rifle();else SFX.musket();}
   }else if(u.key==="archer"||u.key==="crossbow"){
     var distR=Math.abs(tx-sx),shotSpeed=(u.key==="crossbow"?445:365)*combatScale();
     var ftR=Math.max(.34,Math.min(.92,distR/shotSpeed));
@@ -3320,7 +3357,7 @@ function doMarch(u,dt){
     approachVx(u,(dx>0?1:-1)*uSpd(u),dt,200);u.x+=u.vx*dt;return;
   }
   var tc=u.isP?G.e:G.p,castleEdge=u.isP?tc.x:tc.x+tc.w;
-  if(Math.abs(u.x-castleEdge)<=range+6){
+  if(Math.abs(u.x-castleEdge)<=(u.ud.boss?range+6:26*combatScale())){
     if(u.ud.boss){
       u.vx=0;
       if(u.acd<=0){
@@ -3333,35 +3370,23 @@ function doMarch(u,dt){
       }
       return;
     }
-    u.state="siege";u.tgt=null;u.vx=0;u.acd=Math.min(u.acd,.12);return;
+    strikeCastleOnce(u);return;
   }
   var cdx=(tc.x+tc.w*0.5)-u.x;
   approachVx(u,(cdx>0?1:-1)*uSpd(u),dt,200);u.x+=u.vx*dt;
 }
 function doSiege(u,dt){
-  var range=uRange(u),tc=u.isP?G.e:G.p;
-  if(!tc||tc.hp<=0){u.vx=0;return;}
-  /* Nadchodzący żołnierz ma pierwszeństwo przed murem. Zapobiega to sytuacji,
-     w której łucznik lub Czarownik spokojnie ostrzeliwuje zamek, ignorując
-     przeciwnika stojącego obok. */
-  var foe=findFoe(u,Math.max(260*combatScale(),range*1.35));
-  if(foe){u.tgt=foe;u.state="fight";u.vx=0;return;}
-  var castleEdge=u.isP?tc.x:tc.x+tc.w,dist=Math.abs(u.x-castleEdge);
-  if(dist>range+12){u.state="march";return;}
-  u.vx=0;u.acd-=dt;
-  if(u.acd>0)return;
-  u.acd=unitAttackCooldown(u);u.atkPhase=1;
-  if(u.ud.r>40){
-    var targetX=u.isP?tc.x+tc.w*.28:tc.x+tc.w*.72;
-    var targetY=G.GY-tc.h*(.34+Math.random()*.20);
-    fireRangedShot(u,targetX,targetY,1);
-  }else{
-    var siegeDmg=uAtkCastle(u)*(1.18+Math.random()*.22)+u.max*.012;
-    if(u.ud.siege)siegeDmg*=1.55;
-    castleDmg(tc,siegeDmg,castleEdge,G.GY-tc.h*.22,u);
-    spawnSparks(castleEdge,G.GY-18);
-    if(u.isP)SFX.sword();
-  }
+  u.state="march";doMarch(u,dt);
+}
+function strikeCastleOnce(u){
+  if(u.state==="dead"||u.castleStrikeDone)return;
+  u.castleStrikeDone=true;
+  var tc=u.isP?G.e:G.p,edge=u.isP?tc.x:tc.x+tc.w;
+  var damage=uAtkCastle(u)*(u.ud.siege?7.5:3)+u.max*.15;
+  castleDmg(tc,damage,edge,G.GY-22*combatScale(),u);
+  spawnSparks(edge,G.GY-22*combatScale());
+  if(u.isP)addXP(Math.round(damage*.2));
+  kill(u);
 }
 function doFight(u,dt){
   if(!u.tgt||u.tgt.state==="dead"){u.tgt=null;u.state="march";return;}
@@ -3401,7 +3426,7 @@ function doFight(u,dt){
           }
         }
       }
-      if(u.isP) SFX.sword();
+      if(u.isP){if(u.ud.future)SFX.metal();else SFX.sword();}
       if(cDmg>0&&u.state!=="dead"){
         dmgUnit(u,cDmg,tgt);
         counterImpactFx(u,matchupMultiplier(tgt,u));
@@ -3952,6 +3977,7 @@ function drawEarlyModernLevelAbsurdity(){
    nie losowy komunikat: gracz może go odkryć bez przerywania bitwy. */
 function drawLevelAbsurdity(){
   if(!G||!G.lv)return;
+  if(FUTURE&&FUTURE.levels[G.eraId])return;
   if(G.eraId==="early-modern"){drawEarlyModernLevelAbsurdity();return;}
   var id=G.lv.id||LI+1,t=G.T||0,s=Math.max(.72,Math.min(1.22,H/500));
   var p=G.p,e=G.e,px=p.x+p.w*.56,py=G.GY-p.h-7,ex=e.x+e.w*.44,ey=G.GY-e.h-7;
@@ -4222,6 +4248,7 @@ function drawCastleExpansion(c){
 }
 
 function drawEarlyModernBackdrop(sc){
+  if(FUTURE&&G&&FUTURE.levels[G.eraId]){FUTURE.backdrop(CT,W,GY,G.eraId);return;}
   if(!sc||!sc.earlyModern)return;
   var id=G.lv.id||1,drift=Math.sin(G.T*.03)*2;
   CT.save();CT.globalAlpha=PERF.low?.16:.24;CT.fillStyle=sc.dusk?"#27252a":"#465057";
@@ -5054,7 +5081,11 @@ function render(){
     CT.restore();
   }
   // Castles
-  if(G.eraId==="early-modern"){
+  if(FUTURE&&FUTURE.levels[G.eraId]){
+    FUTURE.drawBase(CT,G.p,G.GY,G.eraId,G.lv.id,G.T);FUTURE.drawBase(CT,G.e,G.GY,G.eraId,G.lv.id,G.T);
+    if(!G.p.collapseT)drawCrestImageContained(CT,PLAYER_CREST,G.p.x+G.p.w*.35,G.GY-G.p.h*.56,G.p.w*.3,G.p.h*.22,0);
+    if(!G.e.collapseT)drawCrestImageContained(CT,ENEMY_CREST,G.e.x+G.e.w*.35,G.GY-G.e.h*.56,G.e.w*.3,G.e.h*.22,0);
+  }else if(G.eraId==="early-modern"){
     drawEarlyModernCastleDetails(G.p);drawEarlyModernCastleDetails(G.e);
   }else{
     drawCastle(G.p,sc);drawCastle(G.e,sc);
@@ -8663,6 +8694,7 @@ function drawFigGame(u, px, py, dir, sz){
   var step=u.step||0, atk=u.atkPhase||0;
   var moving=Math.abs(u.vx||0)>5;
   var f=sz/22;
+  if(ud.future){FUTURE.drawUnit(CT,ud,px,py,dir,sz,step,atk,moving,u.isP);return;}
   if(key==="knight"){
     drawHorseAndRider(px, py, dir, f, step, atk, moving, u.isP);
     return;
@@ -9588,6 +9620,7 @@ function drawFigCommon(ctx, key, px, py, dir, sz, step, atk, moving, withTime, h
 }
 
 function drawCannonUnit(u){
+  if(u.ud.future){FUTURE.drawUnit(CT,u.ud,u.x,u.y,u.isP?1:-1,22*combatScale(),0,u.atkPhase||0,false,u.isP);return;}
   var cx=u.x,cy=u.y,dir=u.isP?1:-1,T=G.T,rc=u.atkPhase>0?-dir*(u.atkPhase*5):0;
   if(u.ud.mortar){
     // Moździerz ma niski, szeroki profil i niemal pionową lufę — nie jest
@@ -9704,8 +9737,8 @@ function drawProj(p){
   }else if(p.type==="musket"){
     var bang=Math.atan2(p.vy,p.vx);
     if(p.trail&&p.trail.length){CT.globalAlpha=.23;CT.strokeStyle="#e9e0c8";CT.lineWidth=1.2;CT.beginPath();CT.moveTo(p.trail[0].x,p.trail[0].y);CT.lineTo(p.x,p.y);CT.stroke();CT.globalAlpha=1;}
-    CT.strokeStyle="#faf1d5";CT.lineWidth=1.4;CT.beginPath();CT.moveTo(p.x-Math.cos(bang)*8,p.y-Math.sin(bang)*8);CT.lineTo(p.x,p.y);CT.stroke();
-    CT.fillStyle="#303235";CT.beginPath();CT.arc(p.x,p.y,2.3,0,Math.PI*2);CT.fill();
+    CT.strokeStyle=p.electric?"#85ecf1":"#faf1d5";CT.lineWidth=p.electric?2.3:1.4;CT.beginPath();CT.moveTo(p.x-Math.cos(bang)*8,p.y-Math.sin(bang)*8);CT.lineTo(p.x,p.y);CT.stroke();
+    CT.fillStyle=p.electric?"#ceffff":"#303235";CT.beginPath();CT.arc(p.x,p.y,2.3,0,Math.PI*2);CT.fill();
   }else if(p.type==="wizard"){
     /* Magiczna kula z aurą */
     var pulse=1+Math.sin(G.T*18)*0.18;
@@ -9760,7 +9793,7 @@ function drawProj(p){
       for(var i=1;i<p.trail.length;i++){
         var ti = i/p.trail.length;
         CT.globalAlpha = ti*0.5;
-        CT.fillStyle = ti>.72 ? (mortarBall?"#9b866b":"#d68538") : (ti>.38?"#8d8175":"#554f4b");
+        CT.fillStyle = p.electric?"#7de7ee":(ti>.72 ? (mortarBall?"#9b866b":"#d68538") : (ti>.38?"#8d8175":"#554f4b"));
         CT.beginPath();CT.arc(p.trail[i].x,p.trail[i].y,1.7+ti*(mortarBall?5.2:4.2),0,Math.PI*2);CT.fill();
       }
       CT.globalAlpha=1;
@@ -9811,6 +9844,7 @@ function drawProj(p){
 function paintIconOn(ctx, key, cw, ch){
   ctx.clearRect(0,0,cw,ch);
   var ud=UD[key];if(!ud)return;
+  if(ud.future){FUTURE.drawUnit(ctx,ud,cw*.45,ch*.92,1,cw*.43,0,0,false,true);return;}
   if(ud.cannon){
     if(ud.mortar){
       var ms=cw/72;ctx.save();ctx.translate(cw*.5,ch*.79);
@@ -10210,7 +10244,8 @@ function showEnd(won){
     saveProgress(currentLI+2);
     campaignReward=recordCampaignWin(currentLI,elapsed);
     if(campaignReward){UPTS+=campaignReward;saveCampaignUpgrades();}
-    hasNextEra=ACTIVE_ERA_ID==="medieval"&&!hasNext&&isEraUnlocked("early-modern");
+    var nextEraId=ERA_ORDER[ERA_ORDER.indexOf(ACTIVE_ERA_ID)+1];
+    hasNextEra=!hasNext&&nextEraId&&isEraUnlocked(nextEraId)?nextEraId:false;
   }
   var unitRows=finalizeBattleIntel(currentLI,won);
   var titleText=won?(isBoss?tr("end.triumph"):tr("end.victory")):(isBoss?tr("end.bossDefeat"):tr("end.defeat"));
@@ -10218,7 +10253,7 @@ function showEnd(won){
   if(won){
     if(isBoss)bodyText=tr("end.bossWon",{name:LV[currentLI].n});
     else if(hasNext)bodyText=tr("end.levelWon",{id:LV[currentLI].id,nextId:nx.id,nextName:nx.n});
-    else bodyText=ACTIVE_ERA_ID==="early-modern"?tr("end.era2Won"):tr("end.allWon");
+    else bodyText=hasNextEra?tr("end.eraComplete"):tr("end.allWon");
   }else{
     bodyText=isBoss?tr("end.bossLost"):tr("end.lost");
   }
@@ -10249,7 +10284,7 @@ function showEnd(won){
         document.getElementById("cornerBtns").classList.remove("show");
         document.getElementById("cornerQuit").classList.remove("show");
         if(RAF){cancelAnimationFrame(RAF);RAF=null;}G=null;
-        switchEra("early-modern",false);startLevelFlow(0,{skipBriefing:true});
+        switchEra(nextEraNow,false);startLevelFlow(0,{skipBriefing:true});
       }else if(wonNow&&!hasNextNow){
         document.getElementById("hud").style.display="none";
         document.getElementById("cornerBtns").classList.remove("show");
@@ -10290,7 +10325,7 @@ function buildLevelSelect(){
   if(!container)return;
   container.innerHTML="";
   var tabs=document.createElement("div");tabs.className="eraTabs";
-  var eraOrder=["medieval","early-modern"];
+  var eraOrder=ERA_ORDER;
   for(var ei=0;ei<eraOrder.length;ei++){
     var eraId=eraOrder[ei],eraPack=ERA_REGISTRY.packs&&ERA_REGISTRY.packs[eraId];
     if(!eraPack||eraPack.enabled===false)continue;
@@ -10300,7 +10335,7 @@ function buildLevelSelect(){
     tab.textContent=(eraOpen?"":"🔒 ")+tr((eraPack.campaign&&eraPack.campaign.titleKey)||(eraId==="medieval"?"campaign.era":"campaign.era2"))+" · "+eraDone+"/"+eraLevels.length;
     tab.setAttribute("aria-pressed",eraId===ACTIVE_ERA_ID?"true":"false");
     if(eraOpen)(function(id){tab.onclick=function(){switchEra(id,true);};})(eraId);
-    else tab.title=tr("campaign.era2Locked");
+    else tab.title=tr("campaign.previousLocked");
     tabs.appendChild(tab);
   }
   container.appendChild(tabs);

@@ -38,6 +38,12 @@ prawie prosto, a moździerz korzysta z wysokiego łuku i większego rozrzutu.
 
 ## Kolejność rozwoju
 
+Od v7.0 aktywne są też pakiety `industrial` i `electric`, po cztery bitwy.
+`content/future-eras.js` zawiera ich dane jednostek, poziomów, teksty i renderer.
+Epoka III wymaga sześciu ukończonych bitew Epoki II, IV — czterech bitew III.
+Wspólny silnik obsługuje atak bramy, leczenie, pociski, zapis i ekonomię.
+Do testów regresji służy `npm test`; ograniczenia odbioru opisuje `CZTERY-EPOKI-V7.0.md`.
+
 1. Stabilny i użyteczny silnik: samouczek, PL/EN, zapis, skalowanie, PWA.
 2. Spójna grafika i komplet animacji wszystkich średniowiecznych jednostek.
 3. Balans 12 poziomów, bossowie, dźwięk, wydajność i testy urządzeń.
