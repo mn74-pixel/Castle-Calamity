@@ -15,6 +15,26 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  nextRulesAudit: function(){
+    var coherent=true,total=0;ERA_ORDER.forEach(function(id){total+=ERA_LEVELS[id].length;});
+    NEXT.ids.forEach(function(era){ERA_LEVELS[era].forEach(function(l){[l.ul,l.ai].forEach(function(deck){if(deck.length>8)coherent=false;deck.forEach(function(k){if(k!=="drwal"&&k!=="mason"&&UD[k].nextEra!==era)coherent=false;});});});});
+    G=null;endTestSession();var before=JSON.stringify(CAMPAIGN_STATE),healing=true,ammo=true,helpers=true,names=true;
+    NEXT.ids.forEach(function(era){
+      launchTestLevel(era,2);G.units=[];G.p.gold=9999;G.gagShown=true;
+      var medic=this.addUnit(era==="modern"?"combatmedic":"biomedic",true,W*.4),ally=this.addUnit(era==="modern"?"assault":"sentinel",true,W*.4+20);ally.hp-=40;var hp=ally.hp;tick(.02);healing=healing&&ally.hp>hp;
+      G.projs=[];var gun=this.addUnit(era==="modern"?"fieldgun":"railgun",true);gun.acd=0;var shots=gun.shotsLeft;doCannon(gun,0);ammo=ammo&&gun.shotsLeft===shots-1&&G.projs.length>0;
+      ["drwal","mason"].forEach(function(k){helpers=helpers&&!!NEXT.supportName(k,era,"pl");paintIconOn(CT,k,56,56);names=names&&unitDisplayName(k)===NEXT.supportName(k,era,LANG);});render();
+    },this);
+    G=null;endTestSession();var restored=JSON.stringify(CAMPAIGN_STATE)===before;
+    var saved=JSON.stringify(CAMPAIGN_STATE),unlock=true;
+    ["electric","modern"].forEach(function(id){ensureCampaignEra(id).completed={};});
+    unlock=unlock&&!isEraUnlocked("modern")&&!isEraUnlocked("orbital");
+    ERA_LEVELS.electric.forEach(function(l){ensureCampaignEra("electric").completed[String(l.id)]=true;});unlock=unlock&&isEraUnlocked("modern")&&!isEraUnlocked("orbital");
+    ERA_LEVELS.modern.forEach(function(l){ensureCampaignEra("modern").completed[String(l.id)]=true;});unlock=unlock&&isEraUnlocked("orbital");
+    CAMPAIGN_STATE=JSON.parse(saved);bindCampaignEra(ACTIVE_ERA_ID);
+    return {eras:ERA_ORDER.length,total:total,coherent:coherent,healing:healing,ammo:ammo,helpers:helpers,names:names,unlock:unlock,restored:restored,counters:UNIT_COUNTERS.plasma.sentinel>1&&UNIT_COUNTERS.assault.carbine>1};
+  },
+
   eraCrestAudit: function(){
     var oldP=PLAYER_CREST,oldE=ENEMY_CREST,original=drawCrestImageContained,calls=[];
     PLAYER_CREST={test:"player"};ENEMY_CREST={test:"enemy"};
@@ -461,7 +481,7 @@ window.__QA = {
   }
   ,futureScene: function(id,idx){
     this.futureEra(id,idx);G.units=[];G.p.gold=9999;G.e.gold=9999;G.T=12;
-    var keys=Object.keys(FUTURE.units).filter(function(k){return !!UD[k].electric===(id==="electric");});
+    var keys=Object.keys(FUTURE.units).filter(function(k){return NEXT.ids.indexOf(id)>=0?UD[k].nextEra===id:!UD[k].nextEra&&!!UD[k].electric===(id==="electric");});
     for(var i=0;i<keys.length;i++){var u=this.addUnit(keys[i],true,W*(.32+i*.12));u.atkPhase=.85;}
     render();return keys;
   }
@@ -646,6 +666,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "content", "i18n.js"), "utf8"), 
 vm.runInContext(fs.readFileSync(path.join(root, "content", "eras.js"), "utf8"), sandbox, { filename: "eras.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras-v73.js"), "utf8"), sandbox, { filename: "future-eras-v73.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "era-art-v73.js"), "utf8"), sandbox, { filename: "era-art-v73.js" });
+vm.runInContext(fs.readFileSync(path.join(root, "content", "next-eras-v74.js"), "utf8"), sandbox, { filename: "next-eras-v74.js" });
 vm.runInContext(gameSource, sandbox, { filename: "game.js" });
 
 const qa = sandbox.window.__QA;
@@ -734,11 +755,11 @@ check(armyFreedomAudit.pCombat===14&&armyFreedomAudit.eCombat===14&&armyFreedomA
 check(armyFreedomAudit.cardCap===8,"limit ośmiu pozostaje wyłącznie limitem rodzajów jednostek w talii");
 check(armyFreedomAudit.pWorkers===2&&armyFreedomAudit.eWorkers===2,"Drwale zachowują osobny limit dwóch na stronę, aby nie blokować drzew i szyku");
 const unitRulesAudit=qa.unitRulesAudit();
-check(unitRulesAudit.catalog===26&&unitRulesAudit.unique===26&&unitRulesAudit.valid&&unitRulesAudit.bossesOutside,"katalog ma 26 jednostek czterech epok, bossowie poza talią");
-check(unitRulesAudit.allAttack&&unitRulesAudit.cannonProjectile&&unitRulesAudit.mortarProjectile&&unitRulesAudit.counters,"każdy z 20 bojowników atakuje, artyleria strzela, a wszystkie odwołania kontr są poprawne");
+check(unitRulesAudit.catalog===34&&unitRulesAudit.unique===34&&unitRulesAudit.valid&&unitRulesAudit.bossesOutside,"katalog ma 34 jednostki sześciu epok, bossowie poza talią");
+check(unitRulesAudit.allAttack&&unitRulesAudit.cannonProjectile&&unitRulesAudit.mortarProjectile&&unitRulesAudit.counters,"każdy z 26 bojowników atakuje, artyleria strzela, a wszystkie odwołania kontr są poprawne");
 check(unitRulesAudit.worker&&unitRulesAudit.mason&&unitRulesAudit.healer,"Drwal, Kamieniarz i Mnich zachowują odrębne role wsparcia");
 const castleSiegeAudit=qa.castleSiegeAudit();
-check(castleSiegeAudit.count===20&&castleSiegeAudit.allPersist,"wszyscy 20 mobilni bojownicy uderzają dokładnie raz i giną przy bramie");
+check(castleSiegeAudit.count===26&&castleSiegeAudit.allPersist,"wszyscy 26 mobilni bojownicy uderzają dokładnie raz i giną przy bramie");
 check(castleSiegeAudit.walksToGate&&!castleSiegeAudit.wizard.alive&&castleSiegeAudit.wizard.damage>0,"Czarownik przechodzi od swojego zasięgu do bramy przed ostatnim ciosem");
 
 let lang=qa.setLang("en");
@@ -885,7 +906,7 @@ check(eraTwo.unlocked&&eraTwo.switched&&eraTwo.era==="early-modern"&&eraTwo.leve
 const eraTwoDeck=qa.deckAudit();
 check(eraTwoDeck.rows.length===6&&eraTwoDeck.largest<=8&&eraTwoDeck.rows.every(function(r){return new Set(r.player).size===r.player.length&&new Set(r.enemy).size===r.enemy.length;}),"sześć poziomów Epoki II zachowuje talie do 8 jednostek");
 const eraTwoUnits=qa.earlyModernUnitAudit();
-check(eraTwoUnits.catalog===26&&eraTwoUnits.pikeDamage>0&&eraTwoUnits.sapperDamage>0,"Pikinier i Saper mają działające role bojowe oraz kontry");
+check(eraTwoUnits.catalog===34&&eraTwoUnits.pikeDamage>0&&eraTwoUnits.sapperDamage>0,"Pikinier i Saper mają działające role bojowe oraz kontry");
 check(eraTwoUnits.musketType==="musket"&&eraTwoUnits.musketSpeed>500&&eraTwoUnits.mortarType==="mortar"&&eraTwoUnits.mortarArc>=112,"Muszkieter i Moździerz korzystają z odmiennych pocisków i fizyki");
 for(const eraIdx of [0,1,2,3,4,5]){const sr=qa.stressLevel(eraIdx);check(sr.finite&&sr.peakTotal<=36,`60 s symulacji Epoki II, poziom ${sr.level}, stabilna armia regulowana zasobami`);}
 const eraTwoGags=qa.earlyModernGagAudit();
@@ -898,7 +919,7 @@ qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});const eraTwoPhone=qa.e
 check(eraTwoPhone.scene&&eraTwoPhone.units.length===4,"nowe jednostki i bastion mieszczą się na iPhonie z bezpiecznymi marginesami");
 qa.gagScene("clockworkduck",1);save("gag-clockwork-duck.png");
 const restoredEra=qa.restoreMedieval();check(restoredEra.ok&&restoredEra.era==="medieval"&&restoredEra.levels===12,"powrót z Epoki II zachowuje kampanię średniowieczną");
-for(const era of ["industrial","electric"]){
+for(const era of ["industrial","electric","modern","orbital"]){
   const f=qa.futureEra(era,0);check(f.switched&&f.levels===4&&f.abilities,"nowa epoka "+era+" ma cztery bitwy i zachowuje zdolności");
   check(qa.deckAudit().largest<=8,"nowa epoka "+era+" zachowuje limit ośmiu kart");
   for(let i=0;i<4;i++){const r=qa.stressLevel(i,90);check(r.finite&&r.peakTotal<=40,era+" bitwa "+(i+1)+": 90 s stabilnej symulacji");}
@@ -906,6 +927,12 @@ for(const era of ["industrial","electric"]){
   qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});qa.futureScene(era,3);save(era+"-iphone.png");
   qa.setLang("en");check(!qa.futureEra(era,0).name.includes(".level."),era+" ma angielską nazwę poziomu");qa.setLang("pl");
 }
+check(qa.eraTransition("electric").era==="modern","finał IV otwiera epokę Silniki i Radio");
+check(qa.eraTransition("modern").era==="orbital","finał V otwiera Wyprawę Orbitalną");
+const nr=qa.nextRulesAudit();
+check(nr.total===34&&nr.eras===6&&nr.coherent,"34 bitwy w sześciu epokach; nowe talie obu stron zawierają wyłącznie wojska swojej epoki");
+check(nr.healing&&nr.ammo&&nr.helpers&&nr.names&&nr.counters,"nowi medycy leczą, działa zużywają amunicję, pomocnicy mają kostiumy i poprawne nazwy, kontry działają");
+check(nr.unlock&&nr.restored,"odblokowanie V/VI wymaga poprzedniego rozdziału, tryb testowy nie zmienia zapisu");
 const fw=qa.futureWeapons();check(fw.heals&&fw.shoots&&fw.electric,"Sanitariusz leczy, działo strzela, impuls ma własny efekt");
 const eq=qa.gateQueue();check(eq.cleared&&eq.enemy,"12 żołnierzy opuszcza bramę po ciosie, reguła działa także dla przeciwnika");
 check(qa.eraTransition("industrial").era==="electric","przycisk po finale Epoki III rzeczywiście otwiera Epokę IV");

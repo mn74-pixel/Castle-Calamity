@@ -388,6 +388,7 @@ var SWORD_SFX_2="T2dnUwACAAAAAAAAAACSNI+fAAAAAHdTiP4BHgF2b3JiaXMAAAAAASJWAAAAAAA
 <script src="content/eras.js"></script>
 <script src="content/future-eras-v73.js"></script>
 <script src="content/era-art-v73.js"></script>
+<script src="content/next-eras-v74.js"></script>
 <script>
 (function(){
 "use strict";
@@ -742,6 +743,7 @@ var UD = {
 var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","crossbow","monk","knight","wizard","templar","golem","cannon","pikeguard","musketeer","sapper","mortar"];
 var FUTURE=window.CASTLE_FUTURE;
 var ERA_ART=window.CASTLE_ERA_ART;
+var NEXT=window.CASTLE_NEXT;
 if(FUTURE){for(var futureKey in FUTURE.units){UD[futureKey]=FUTURE.units[futureKey];UK.push(futureKey);}}
 if(FUTURE)SC=SC.concat(FUTURE.scenes);
 var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
@@ -801,7 +803,7 @@ var EARLY_MODERN_LEVELS = [
 ];
 var ERA_LEVELS={medieval:MEDIEVAL_LEVELS,"early-modern":EARLY_MODERN_LEVELS};
 if(FUTURE){for(var futureEra in FUTURE.levels){ERA_LEVELS[futureEra]=FUTURE.levels[futureEra];}}
-var ERA_ORDER=["medieval","early-modern","industrial","electric"];
+var ERA_ORDER=["medieval","early-modern","industrial","electric"].concat(NEXT.ids);
 var LV=MEDIEVAL_LEVELS;
 
 function sanitizeLevelDeck(list){
@@ -904,7 +906,7 @@ function renderUnitReport(rows){
     var m=rows[i],card=document.createElement("div");card.className="unitReportCard"+(i===0?" mvp":"");
     var rank=document.createElement("div");rank.className="reportRank";rank.textContent=i===0?"♛":String(i+1);
     var icon=document.createElement("canvas");icon.width=56;icon.height=56;paintIconOn(icon.getContext("2d"),m.key,56,56);
-    var name=document.createElement("div");name.className="reportName";name.textContent=tr("unit."+m.key);
+    var name=document.createElement("div");name.className="reportName";name.textContent=unitDisplayName(m.key);
     var value=document.createElement("div");value.className="reportValue";value.textContent=metricPrimaryText(m);
     var uses=document.createElement("div");uses.className="reportUses";uses.textContent=tr("report.used",{value:m.spawned});
     card.appendChild(rank);card.appendChild(icon);card.appendChild(name);card.appendChild(value);card.appendChild(uses);grid.appendChild(card);
@@ -970,6 +972,8 @@ function abilityCampaignLevel(){
 }
 function isAbilityUnlocked(ab){return !!ab&&abilityCampaignLevel()>=ab.minLevel;}
 
+function unitDisplayName(key){return NEXT.supportName(key,ACTIVE_ERA_ID,LANG)||tr("unit."+key);}
+function refreshUnitNames(){for(var key in UD)UD[key].n=unitDisplayName(key);}
 function setLocalizedText(id,key,asHTML){
   var el=document.getElementById(id);if(!el)return;
   if(asHTML)el.innerHTML=tr(key);else el.textContent=tr(key);
@@ -1009,7 +1013,7 @@ function applyLanguage(code,persist){
   if(pauseBtn)pauseBtn.title=tr("ui.pause");if(soundBtn)soundBtn.title=tr("ui.sound");
   var langPL=document.getElementById("langPL"),langEN=document.getElementById("langEN");
   if(langPL)langPL.classList.toggle("active",LANG==="pl");if(langEN)langEN.classList.toggle("active",LANG==="en");
-  for(var key in UD)UD[key].n=tr("unit."+key);
+  refreshUnitNames();
   localizeLevelPacks();
   ABILITIES.arrowRain.n=tr("ability.arrowRain.name");ABILITIES.arrowRain.desc=tr("ability.arrowRain.desc");
   ABILITIES.freeze.n=tr("ability.freeze.name");ABILITIES.freeze.desc=tr("ability.freeze.desc");
@@ -1542,7 +1546,7 @@ function updateUnitCardState(key,el){
   el.dataset.blockReason=state.reason;
   el.classList.toggle("unitUnavailable",!state.available);
   el.setAttribute("aria-disabled",state.available?"false":"true");
-  el.setAttribute("aria-label",tr("unit."+key)+(state.message?" — "+state.message:""));
+  el.setAttribute("aria-label",unitDisplayName(key)+(state.message?" — "+state.message:""));
   var badge=document.getElementById("cdstate_"+key);
   if(badge){
     badge.textContent=state.reason==="funds"?"🔒":(state.reason==="noQuarry"?"—":(!state.available?"🔒 "+state.active+"/"+state.limit:""));
@@ -1550,6 +1554,7 @@ function updateUnitCardState(key,el){
   }
 }
 function buildCards(){
+  refreshUnitNames();
   var row=document.getElementById("cds");row.innerHTML="";
   var ul=G.lv.ul;
   var recommended=smartRecommendations(LI);
@@ -1678,6 +1683,10 @@ function spawnUnit(key,isP,options){
   var sx=ud.cannon?(isP?cas.x+cas.w*0.62:cas.x+cas.w*0.38):(isP?cas.x+cas.w+8:cas.x-10);
   if(options.x!==undefined&&isFinite(options.x))sx=options.x;
   var sy=ud.cannon?(G.GY-(isP?G.p.h:G.e.h)-8):G.GY;
+  if(ud.cannon&&NEXT.ids.indexOf(G.eraId)>=0){
+    sx=cas.x+cas.w*(isP?.88:.12);sy=G.GY-cas.h*(166/260)-4;
+    if(options.x!==undefined&&isFinite(options.x))sx=options.x;
+  }
   var effH=isP?Math.round(effStat(key,"h")):ud.h;
   var u={
     key:key,ud:ud,isP:isP,hp:effH,max:effH,
@@ -2031,6 +2040,7 @@ var UNIT_COUNTERS={
   voltguard:{pulser:1.20},
   pulser:{steamguard:1.24,riveter:1.16}
 };
+Object.assign(UNIT_COUNTERS,NEXT.counters);
 function matchupMultiplier(attacker,target){
   if(!attacker||!target)return 1;
   var aTier=attacker.ud.tier||0,dTier=target.ud.tier||0;
@@ -3687,6 +3697,7 @@ function drawMoonJanitorGag(g){
   CT.fillStyle="rgba(150,145,105,.28)";CT.beginPath();CT.arc(34,-42,4,0,Math.PI*2);CT.arc(45,-31,5,0,Math.PI*2);CT.fill();
   CT.fillStyle="#37536a";CT.fillRect(-1,-29,13,19);CT.fillStyle="#d7ab82";CT.beginPath();CT.arc(5,-35,6,0,Math.PI*2);CT.fill();
   CT.fillStyle="#efd64d";CT.beginPath();CT.arc(5,-39,7,Math.PI,Math.PI*2);CT.lineTo(13,-38);CT.lineTo(-2,-38);CT.closePath();CT.fill();
+  if(G&&G.eraId==="orbital"){CT.strokeStyle="#a7d7e0";CT.lineWidth=1.1;CT.beginPath();CT.ellipse(5,-35,10,11,0,0,Math.PI*2);CT.stroke();CT.fillStyle="rgba(181,229,239,.14)";CT.fill();}
   var mop=Math.sin(g.phase*5)*3;CT.strokeStyle="#76502c";CT.lineWidth=2;CT.beginPath();CT.moveTo(8,-22);CT.lineTo(30,-44+mop);CT.stroke();
   CT.strokeStyle="#d9ecf2";CT.lineWidth=5;CT.beginPath();CT.moveTo(27,-46+mop);CT.lineTo(35,-38+mop);CT.stroke();
 }
@@ -4977,6 +4988,7 @@ function render(){
   CT.restore();
   // Trees
   for(var i=0;i<G.trees.length;i++)if(G.trees[i].w>0)drawTree(G.trees[i]);
+  if(G.eraId==="orbital")NEXT.drawBiodomes(CT,G.trees);
   // Kamieniołomy (od poziomu 7)
   if(G.rocks)for(var ri=0;ri<G.rocks.length;ri++)drawRockDeposit(G.rocks[ri]);
   // Bloodstains
@@ -8575,6 +8587,7 @@ function drawFigGame(u, px, py, dir, sz){
   var step=u.step||0, atk=u.atkPhase||0;
   var moving=Math.abs(u.vx||0)>5;
   var f=sz/22;
+  if(NEXT.drawSupport(CT,key,G.eraId,px,py,dir,sz,step,atk,moving,u.isP))return;
   if(ud.future){FUTURE.drawUnit(CT,ud,px,py,dir,sz,step,atk,moving,u.isP);return;}
   if(key==="knight"){
     drawHorseAndRider(px, py, dir, f, step, atk, moving, u.isP);
@@ -9726,7 +9739,8 @@ function drawProj(p){
 function paintIconOn(ctx, key, cw, ch){
   ctx.clearRect(0,0,cw,ch);
   var ud=UD[key];if(!ud)return;
-  if(ud.future){FUTURE.drawUnit(ctx,ud,cw*.45,ch*.92,1,cw*.43,0,0,false,true);return;}
+  if(NEXT.drawSupport(ctx,key,ACTIVE_ERA_ID,cw*.4,ch*.94,1,cw*.39,0,0,false,true))return;
+  if(ud.future){FUTURE.drawUnit(ctx,ud,cw*(ud.nextEra?.40:.45),ch*.92,1,cw*(ud.nextEra?(ud.cannon?.36:.39):.43),0,0,false,true);return;}
   if(ud.cannon){
     if(ud.mortar){
       var ms=cw/72;ctx.save();ctx.translate(cw*.5,ch*.79);

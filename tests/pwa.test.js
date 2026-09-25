@@ -86,7 +86,7 @@ function check(ok, message) { if (!ok) throw new Error(message); console.log("OK
 (async () => {
   check(typeof handlers.install === "function" && typeof handlers.fetch === "function", "service worker rejestruje install i fetch");
   const install = eventFor(); handlers.install(install); await install.done();
-  check(stores.has("castle-calamity-v7.3.0") && stores.get("castle-calamity-v7.3.0").size === 12, "app shell v7.3.0 zapisuje komplet 12 zasobów");
+  check(stores.has("castle-calamity-v7.4.0") && stores.get("castle-calamity-v7.4.0").size === 13, "app shell v7.4.0 zapisuje komplet 13 zasobów");
 
   stores.set("castle-calamity-v4.8", new Map());
   const activate = eventFor(); handlers.activate(activate); await activate.done();
@@ -110,6 +110,6 @@ function check(ok, message) { if (!ok) throw new Error(message); console.log("OK
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
   check(manifest.id === "./" && manifest.display === "fullscreen" && manifest.display_override.includes("fullscreen") && manifest.display_override.includes("standalone") && manifest.orientation === "landscape", "manifest uruchamia PWA poziomo na pełnym ekranie z awaryjnym trybem standalone");
   for (const icon of manifest.icons) check(fs.existsSync(path.join(root, icon.src)), `ikona istnieje: ${icon.src}`);
-  console.log("PWA V7.3.0 COMPLETE");
+  console.log("PWA V7.4.0 COMPLETE");
 })().catch((error) => { console.error(error); process.exitCode = 1; });
 

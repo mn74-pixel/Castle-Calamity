@@ -431,3 +431,6 @@ Potrzebne są trzy decyzje:
 
 ## v7.2 — oprawa armii i epok
 Nowe 15 sylwetek piechoty, artyleria III–IV, dopasowane ikony oraz materiałowe detale fortów i warstwowe tła. Kolejna ocena: wygląd w rzeczywistej bitwie na telefonie, szczególnie przy dużej liczbie wojsk.
+
+## v7.4 — dwie kolejne epoki
+Silniki i Radio oraz Wyprawa Orbitalna: osiem bitew, osiem jednostek, rodzime składy armii i stroje pomocników. Testy obejmują przejścia IV→V→VI, medyków, amunicję i zachowanie zapisów. Następny priorytet: ocena tempa nowych bitew przez gracza, zanim zwiększymy skalę kampanii.

@@ -9,6 +9,13 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
+## Nowe rozdziały v7.4.0
+- 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,
+- osiem nowych jednostek bojowych, rodzime armie, własne bazy i kostiumy pomocników,
+- medycy, kontry, artyleria z czterema strzałami i umiarkowana ekonomia,
+- zachowane zapisy, zdjęcia, pełny ekran oraz tryb testowania dowolnej bitwy,
+- szczegóły: `docs/SZESC-EPOK-V7.4.md`.
+
 ## Oprawa epok v7.3.0
 - wszystkie 14 bitew epok II–IV: nowe forty, twierdze parowe i cytadele elektryczne,
 - odrębne sylwetki budowli, wspólna ze średniowieczem skala i rysunek,
