@@ -5112,13 +5112,12 @@ function render(){
   // Castles
   if(FUTURE&&FUTURE.levels[G.eraId]){
     FUTURE.drawBase(CT,G.p,G.GY,G.eraId,G.lv.id,G.T);FUTURE.drawBase(CT,G.e,G.GY,G.eraId,G.lv.id,G.T);
-    if(!G.p.collapseT)drawCrestImageContained(CT,PLAYER_CREST,G.p.x+G.p.w*.35,G.GY-G.p.h*.56,G.p.w*.3,G.p.h*.22,0);
-    if(!G.e.collapseT)drawCrestImageContained(CT,ENEMY_CREST,G.e.x+G.e.w*.35,G.GY-G.e.h*.56,G.e.w*.3,G.e.h*.22,0);
   }else if(G.eraId==="early-modern"){
     drawEarlyModernCastleDetails(G.p);drawEarlyModernCastleDetails(G.e);
   }else{
     drawCastle(G.p,sc);drawCastle(G.e,sc);
   }
+  if(G.eraId!=="medieval"){drawEraCrest(G.p);drawEraCrest(G.e);}
   drawCastleHUD(G.p);drawCastleHUD(G.e);
   drawCastleExpansion(G.p);drawCastleExpansion(G.e);
   drawLevelAbsurdity();
@@ -6088,6 +6087,18 @@ function drawCampaignCastleEvolution(c,geom){
   CT.restore();
 }
 
+function drawEraCrest(c){
+  var img=c.isP?PLAYER_CREST:ENEMY_CREST;
+  if(!img||c.collapseT||G.introMode)return;
+  var w=c.w*.42,h=c.h*.28,x=c.x+(c.w-w)*.5;
+  var y=G.GY-c.h*(G.eraId==="early-modern"?.70:.65);
+  CT.save();
+  CT.fillStyle=c.isP?"#253f59":"#58342f";CT.fillRect(x-3,y-3,w+6,h+6);
+  CT.strokeStyle=G.eraId==="electric"?"#9cbfc5":"#c4a775";CT.lineWidth=1.5;
+  CT.strokeRect(x-3,y-3,w+6,h+6);
+  drawCrestImageContained(CT,img,x,y,w,h,2);
+  CT.restore();
+}
 function drawCastleHUD(c){
   var x=c.x,w=c.w,isP=c.isP;
   CT.save();

@@ -15,6 +15,17 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  eraCrestAudit: function(){
+    var oldP=PLAYER_CREST,oldE=ENEMY_CREST,original=drawCrestImageContained,calls=[];
+    PLAYER_CREST={test:"player"};ENEMY_CREST={test:"enemy"};
+    drawCrestImageContained=function(ctx,img,x,y,w,h){calls.push({side:img.test,w:w,h:h});return true;};
+    var results=[];
+    try{for(var ei=1;ei<ERA_ORDER.length;ei++){
+      launchTestLevel(ERA_ORDER[ei],0);calls=[];render();
+      results.push(calls.length===2&&calls[0].side==="player"&&calls[1].side==="enemy"&&calls.every(function(c){return c.w>0&&c.h>0;}));
+    }}finally{drawCrestImageContained=original;PLAYER_CREST=oldP;ENEMY_CREST=oldE;G=null;endTestSession();}
+    return results.every(Boolean);
+  },
   regression71: function(){
     load(11);G.units=[];G.projs=[];
     var u=this.addUnit("warrior",true,W*.4),v=this.addUnit("warrior",false,W*.4+uRange(u)*2);
@@ -927,3 +938,5 @@ console.log("QA V7.0 COMPLETE", JSON.stringify({ desktop: cannonDesktop, phone: 
 const regression71=qa.regression71();check(regression71.noRemoteDamage&&regression71.opened&&regression71.isolated,"v7.1: zasięg ataku, dowolny poziom testowy i zachowanie kampanii");
 
 check(cardAvailability.poor&&cardAvailability.affordable&&cardAvailability.spent&&cardAvailability.funds,"karty blokują brak środków, odblokowują dokładny koszt i wracają do blokady po zakupie");
+
+check(qa.eraCrestAudit(),"zdjęcia obu stron renderują się w każdej późniejszej epoce");
