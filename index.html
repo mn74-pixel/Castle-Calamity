@@ -828,6 +828,7 @@ try{
   if(storedIntel&&storedIntel.version===1&&storedIntel.levels)BATTLE_INTEL=storedIntel;
 }catch(e){BATTLE_INTEL={version:1,levels:{}};}
 function saveBattleIntel(){
+  if(TEST_SESSION)return;
   try{localStorage.setItem(BATTLE_INTEL_KEY,JSON.stringify(BATTLE_INTEL));}catch(e){}
 }
 function ensureUnitMetric(key){
@@ -1190,6 +1191,7 @@ function bindCampaignEra(eraId){
   CAMPAIGN_STATE.completed=es.completed;CAMPAIGN_STATE.bestTimes=es.bestTimes;
 }
 function saveCampaignState(){
+  if(TEST_SESSION)return;
   try{
     var es=ensureCampaignEra(ACTIVE_ERA_ID);es.completed=CAMPAIGN_STATE.completed;es.bestTimes=CAMPAIGN_STATE.bestTimes;
     CAMPAIGN_STATE.version=2;CAMPAIGN_STATE.eraId=ACTIVE_ERA_ID;
@@ -1249,6 +1251,7 @@ function updateEraUnlocked(eraId){
   if(eraId===ACTIVE_ERA_ID)MAX_UNLOCKED=ERA_UNLOCKED[eraId];
 }
 function recordCampaignWin(levelIndex,elapsedSeconds){
+  if(TEST_SESSION)return 0;
   var lv=LV[levelIndex],key=String(lv.id),reward=0;
   if(!CAMPAIGN_STATE.completed[key]){
     CAMPAIGN_STATE.completed[key]=true;reward=3;CAMPAIGN_STATE.upgradePoints+=reward;
@@ -1277,6 +1280,7 @@ function switchEra(eraId,rebuild){
   return true;
 }
 function saveProgress(level){
+  if(TEST_SESSION)return;
   if(level>MAX_UNLOCKED){
     MAX_UNLOCKED=Math.min(level,LV.length);
     ERA_UNLOCKED[ACTIVE_ERA_ID]=MAX_UNLOCKED;
@@ -1445,6 +1449,7 @@ function markTutorialSeen(){
   try{localStorage.setItem("castleCalamityTutorialDone","1");}catch(e){}
 }
 function maybeStartTutorial(levelIndex){
+  if(TEST_SESSION)return;
   var forced=TUTORIAL.forceNext;TUTORIAL.forceNext=false;
   if(levelIndex!==0||(!forced&&tutorialWasSeen())){stopTutorial(false);return;}
   TUTORIAL.active=true;TUTORIAL.step=0;
@@ -3396,7 +3401,10 @@ function doFight(u,dt){
     if(priorityFoe&&!priorityFoe.ud.worker&&!priorityFoe.ud.mason)u.tgt=priorityFoe;
   }
   var tgt=u.tgt,dx=tgt.x-u.x,dy=tgt.y-u.y,d=Math.sqrt(dx*dx+dy*dy);
-  if(d>range*2.4){u.tgt=null;u.state="march";return;}
+  // Teleportation and moving targets must not leave a unit attacking empty air.
+  if((u.ud.r>40&&dx*(u.isP?1:-1)<-5)||d>range+4){
+    u.tgt=null;u.state="march";doMarch(u,dt);return;
+  }
   u.acd-=dt;
   if(u.acd<=0){
     u.acd=unitAttackCooldown(u);u.atkPhase=1;
@@ -5090,6 +5098,7 @@ function render(){
   }else{
     drawCastle(G.p,sc);drawCastle(G.e,sc);
   }
+  drawCastleHUD(G.p);drawCastleHUD(G.e);
   drawCastleExpansion(G.p);drawCastleExpansion(G.e);
   drawLevelAbsurdity();
   // Smoke
@@ -6057,6 +6066,60 @@ function drawCampaignCastleEvolution(c,geom){
   CT.restore();
 }
 
+function drawCastleHUD(c){
+  var x=c.x,w=c.w,isP=c.isP;
+  CT.save();
+  /* HP i ekonomia nie należą do pantomimy intro. */
+  if(!G.introMode){
+  /* HP bar BELOW castle */
+  /* Pasek i liczba korzystają z jednego odczytu stanu. Zapobiega to sytuacji,
+     w której szerokość była liczona z bieżącego HP, a napis pozostawał przy
+     wartości początkowej albo z innego momentu klatki. */
+  var healthView=castleHealthView(c),bp=healthView.pct;
+  var barW=w+4,barH=13;
+  var bx2=x-2,by2=G.GY+7;
+  CT.fillStyle="rgba(0,0,0,.75)";CT.fillRect(bx2,by2,barW,barH);
+  var barCol=bp>0.5?"#22cc44":(bp>0.25?"#eebb00":"#ff2200");
+  CT.fillStyle=barCol;CT.fillRect(bx2+1.5,by2+1.5,(barW-3)*bp,barH-3);
+  CT.fillStyle="rgba(255,255,255,.22)";CT.fillRect(bx2+1.5,by2+1.5,(barW-3)*bp,Math.max(2,(barH-3)*0.4));
+  CT.strokeStyle=isP?"#5588ff":"#ff5533";CT.lineWidth=1.5;CT.strokeRect(bx2,by2,barW,barH);
+  CT.fillStyle="#fff";CT.font="bold 10px Arial";CT.textAlign="center";CT.textBaseline="middle";
+  CT.strokeStyle="rgba(0,0,0,.95)";CT.lineWidth=2.5;
+  var hpText=healthView.text;
+  CT.strokeText(hpText,bx2+barW/2,by2+barH/2);
+  CT.fillText(hpText,bx2+barW/2,by2+barH/2);
+
+  /* Player gold pill / enemy count */
+  if(isP){
+    var goldText="🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true);
+    CT.font="bold 12px Arial";
+    var gtw=CT.measureText(goldText).width+16;
+    var goldX=bx2,goldY=by2+barH+6;
+    CT.fillStyle="rgba(0,0,0,.7)";
+    CT.fillRect(goldX,goldY,gtw,18);
+    CT.strokeStyle="rgba(170,221,51,.65)";CT.lineWidth=1.5;
+    CT.strokeRect(goldX,goldY,gtw,18);
+    CT.fillStyle="#aadd33";CT.textAlign="left";CT.textBaseline="middle";
+    CT.fillText(goldText,goldX+8,goldY+9);
+  } else {
+    var eCount=activeCombatCount(false);
+    if(eCount>0){
+      var enText="⚔ "+eCount;
+      CT.font="bold 12px Arial";
+      var etw=CT.measureText(enText).width+16;
+      var enX=bx2+barW,enY=by2+barH+6;
+      CT.fillStyle="rgba(0,0,0,.7)";
+      CT.fillRect(enX-etw,enY,etw,18);
+      CT.strokeStyle="rgba(255,100,80,.65)";CT.lineWidth=1.5;
+      CT.strokeRect(enX-etw,enY,etw,18);
+      CT.fillStyle="#ff8866";CT.textAlign="left";CT.textBaseline="middle";
+      CT.fillText(enText,enX-etw+8,enY+9);
+    }
+  }
+  }
+
+  CT.restore();
+}
 function castleHealthView(c){
   var max=Math.max(1,Math.round(Number(c&&c.max)||1));
   var current=Math.max(0,Math.min(max,Math.floor(Number(c&&c.hp)||0)));
@@ -7522,55 +7585,6 @@ function drawCastle(c,sc){
     CT.restore();
   }
   CT.restore();
-
-  /* HP i ekonomia nie należą do pantomimy intro. */
-  if(!G.introMode){
-  /* HP bar BELOW castle */
-  /* Pasek i liczba korzystają z jednego odczytu stanu. Zapobiega to sytuacji,
-     w której szerokość była liczona z bieżącego HP, a napis pozostawał przy
-     wartości początkowej albo z innego momentu klatki. */
-  var healthView=castleHealthView(c),bp=healthView.pct;
-  var barW=w+4,barH=13;
-  var bx2=x-2,by2=G.GY+7;
-  CT.fillStyle="rgba(0,0,0,.75)";CT.fillRect(bx2,by2,barW,barH);
-  var barCol=bp>0.5?"#22cc44":(bp>0.25?"#eebb00":"#ff2200");
-  CT.fillStyle=barCol;CT.fillRect(bx2+1.5,by2+1.5,(barW-3)*bp,barH-3);
-  CT.fillStyle="rgba(255,255,255,.22)";CT.fillRect(bx2+1.5,by2+1.5,(barW-3)*bp,Math.max(2,(barH-3)*0.4));
-  CT.strokeStyle=isP?"#5588ff":"#ff5533";CT.lineWidth=1.5;CT.strokeRect(bx2,by2,barW,barH);
-  CT.fillStyle="#fff";CT.font="bold 10px Arial";CT.textAlign="center";CT.textBaseline="middle";
-  CT.strokeStyle="rgba(0,0,0,.95)";CT.lineWidth=2.5;
-  var hpText=healthView.text;
-  CT.strokeText(hpText,bx2+barW/2,by2+barH/2);
-  CT.fillText(hpText,bx2+barW/2,by2+barH/2);
-
-  /* Player gold pill / enemy count */
-  if(isP){
-    var goldText="🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true);
-    CT.font="bold 12px Arial";
-    var gtw=CT.measureText(goldText).width+16;
-    var goldX=bx2,goldY=by2+barH+6;
-    CT.fillStyle="rgba(0,0,0,.7)";
-    CT.fillRect(goldX,goldY,gtw,18);
-    CT.strokeStyle="rgba(170,221,51,.65)";CT.lineWidth=1.5;
-    CT.strokeRect(goldX,goldY,gtw,18);
-    CT.fillStyle="#aadd33";CT.textAlign="left";CT.textBaseline="middle";
-    CT.fillText(goldText,goldX+8,goldY+9);
-  } else {
-    var eCount=activeCombatCount(false);
-    if(eCount>0){
-      var enText="⚔ "+eCount;
-      CT.font="bold 12px Arial";
-      var etw=CT.measureText(enText).width+16;
-      var enX=bx2+barW,enY=by2+barH+6;
-      CT.fillStyle="rgba(0,0,0,.7)";
-      CT.fillRect(enX-etw,enY,etw,18);
-      CT.strokeStyle="rgba(255,100,80,.65)";CT.lineWidth=1.5;
-      CT.strokeRect(enX-etw,enY,etw,18);
-      CT.fillStyle="#ff8866";CT.textAlign="left";CT.textBaseline="middle";
-      CT.fillText(enText,enX-etw+8,enY+9);
-    }
-  }
-  }
 
   /* === RESTORE TILT ROTATION === */
   if(castleTilted){
@@ -10215,7 +10229,7 @@ function startLevelFlow(levelIndex,options){
   initUpgrades();
   var launch=function(){
     var begin=function(){load(levelIndex);startLoop();};
-    if(UPTS>0)showUpgradeScreen(begin,levelIndex);else begin();
+    if(UPTS>0&&!TEST_SESSION)showUpgradeScreen(begin,levelIndex);else begin();
   };
   if(!options.skipBriefing&&LV[levelIndex].briefing)showLevelBriefing(levelIndex,launch);
   else launch();
@@ -10319,11 +10333,55 @@ function showEnd(won){
   document.getElementById("end").style.display="flex";
 }
 
+
+/* Isolated QA session: all campaign and combat-report state is restored on exit. */
+var TEST_SESSION=null;
+function endTestSession(){
+  if(!TEST_SESSION)return;
+  var saved=TEST_SESSION;TEST_SESSION=null;
+  CAMPAIGN_STATE=JSON.parse(saved.campaign);BATTLE_INTEL=JSON.parse(saved.intel);
+  ERA_UNLOCKED=JSON.parse(saved.unlocked);ACTIVE_ERA_ID=saved.era;
+  ACTIVE_ERA_PACK=ERA_REGISTRY.packs[ACTIVE_ERA_ID];LV=ERA_LEVELS[ACTIVE_ERA_ID];
+  bindCampaignEra(ACTIVE_ERA_ID);MAX_UNLOCKED=ERA_UNLOCKED[ACTIVE_ERA_ID];LI=saved.li;
+  initUpgrades();localizeLevelPacks();testShortcut.style.borderColor="";
+}
+function launchTestLevel(eraId,index){
+  if(!ERA_LEVELS[eraId]||!ERA_LEVELS[eraId][index])return;
+  if(!TEST_SESSION)TEST_SESSION={campaign:JSON.stringify(CAMPAIGN_STATE),intel:JSON.stringify(BATTLE_INTEL),unlocked:JSON.stringify(ERA_UNLOCKED),era:ACTIVE_ERA_ID,li:LI};
+  stopTutorial(false);if(RAF){cancelAnimationFrame(RAF);RAF=null;}G=null;PAUSED=false;
+  ["testPicker","pause","end","upg","briefing"].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display="none";});
+  ACTIVE_ERA_ID=eraId;ACTIVE_ERA_PACK=ERA_REGISTRY.packs[eraId];LV=ERA_LEVELS[eraId];
+  bindCampaignEra(eraId);localizeLevelPacks();
+  startLevelFlow(index,{skipBriefing:true});stopTutorial(false);
+  testShortcut.style.borderColor="#ffcc44";
+}
+function openTestPicker(){
+  var panel=document.getElementById("testPicker");
+  if(!panel){panel=document.createElement("div");panel.id="testPicker";
+    panel.style.cssText="position:absolute;inset:0;z-index:90;background:rgba(8,12,28,.98);overflow:auto;padding:max(16px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right));color:#fff;text-align:center;box-sizing:border-box";
+    document.getElementById("title").parentNode.appendChild(panel);
+  }
+  var wasPaused=PAUSED;if(G)PAUSED=true;panel.innerHTML="";
+  var heading=document.createElement("h2");heading.textContent=LANG==="pl"?"TESTY — postęp nie jest zapisywany":"TEST — campaign progress is not saved";panel.appendChild(heading);
+  ERA_ORDER.forEach(function(id){
+    var title=document.createElement("h3");title.textContent=tr(ERA_REGISTRY.packs[id].campaign.titleKey);panel.appendChild(title);
+    ERA_LEVELS[id].forEach(function(lv,i){var button=document.createElement("button");button.className="btn";button.textContent=lv.id+" · "+lv.n;button.onclick=function(){launchTestLevel(id,i);};panel.appendChild(button);});
+  });
+  var close=document.createElement("button");close.className="btn";close.textContent=LANG==="pl"?"ZAMKNIJ":"CLOSE";
+  close.onclick=function(){panel.style.display="none";if(G)PAUSED=wasPaused;};panel.appendChild(document.createElement("br"));panel.appendChild(close);panel.style.display="block";
+}
+var testShortcut=document.createElement("button");testShortcut.style.cssText="padding:0;margin:0;font-size:10px;letter-spacing:0";testShortcut.textContent="TEST";testShortcut.title="Testy / Test levels";testShortcut.onclick=openTestPicker;
+document.getElementById("cornerBtns").appendChild(testShortcut);
+
 /* ── Level select ── */
 function buildLevelSelect(){
+  endTestSession();
   var container=document.getElementById("levelSelect");
   if(!container)return;
   container.innerHTML="";
+  var testButton=document.createElement("button");testButton.className="btn";
+  testButton.textContent=LANG==="pl"?"TESTY · dowolny poziom":"TEST · any level";
+  testButton.onclick=openTestPicker;container.appendChild(testButton);
   var tabs=document.createElement("div");tabs.className="eraTabs";
   var eraOrder=ERA_ORDER;
   for(var ei=0;ei<eraOrder.length;ei++){

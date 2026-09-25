@@ -15,6 +15,15 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  regression71: function(){
+    load(11);G.units=[];G.projs=[];
+    var u=this.addUnit("warrior",true,W*.4),v=this.addUnit("warrior",false,W*.4+uRange(u)*2);
+    u.tgt=v;u.state="fight";u.acd=0;var hp=v.hp;doFight(u,.02);var noRemoteDamage=v.hp===hp;
+    var before=JSON.stringify(CAMPAIGN_STATE),era=ACTIVE_ERA_ID;
+    launchTestLevel("electric",3);var opened=G.eraId==="electric"&&LI===3;
+    var reward=recordCampaignWin(3,1);saveProgress(99);endTestSession();
+    return {noRemoteDamage:noRemoteDamage,opened:opened,isolated:reward===0&&JSON.stringify(CAMPAIGN_STATE)===before&&ACTIVE_ERA_ID===era};
+  },
   viewport: function(w,h,dpr,safe,offsetLeft,offsetTop){
     window.innerWidth=w; window.innerHeight=h; window.devicePixelRatio=dpr||1;
     window.__CASTLE_SAFE_AREA__=safe||{top:0,right:0,bottom:0,left:0};
@@ -112,7 +121,7 @@ window.__QA = {
     G.units=[];G.projs=[];
     var shooter=this.addUnit(key,!!isP,isP?W*.38:W*.62);
     var target=this.addUnit("warrior",!isP,isP?W*.57:W*.43);
-    shooter.state="fight";shooter.tgt=target;shooter.acd=0;doFight(shooter,0);
+    target.x=shooter.x+(isP?1:-1)*uRange(shooter)*.8;shooter.state="fight";shooter.tgt=target;shooter.acd=0;doFight(shooter,0);
     var p=G.projs[0],ft=p.flightTime;
     return {type:p.type,vx:p.vx,vy:p.vy,grav:p.grav,ft:ft,endX:p.x+p.vx*ft,endY:p.y+p.vy*ft+.5*p.grav*ft*ft,targetX:target.x,targetY:target.y-22};
   },
@@ -120,7 +129,7 @@ window.__QA = {
     G.units=[];G.projs=[];
     var shooter=this.addUnit("spearman",!!isP,isP?W*.36:W*.64);
     var target=this.addUnit("warrior",!isP,isP?W*.58:W*.42);
-    shooter.state="fight";shooter.tgt=target;shooter.acd=0;doFight(shooter,0);
+    target.x=shooter.x+(isP?1:-1)*uRange(shooter)*.8;shooter.state="fight";shooter.tgt=target;shooter.acd=0;doFight(shooter,0);
     var p=G.projs[0],dt=.16;p.x+=p.vx*dt;p.y+=p.vy*dt+.5*p.grav*dt*dt;p.vy+=p.grav*dt;p.trail=[{x:p.x-p.vx*.09,y:p.y-p.vy*.09},{x:p.x-p.vx*.04,y:p.y-p.vy*.04}];
     shooter.atkPhase=.82;render();
     return {type:p.type,x:p.x,y:p.y,trail:p.trail.length,released:shooter.atkPhase>.35};
@@ -908,3 +917,5 @@ check(performanceAudit.noiseReused,"odgłosy szumu współdzielą jeden AudioBuf
 
 console.log("QA V7.0 COMPLETE", JSON.stringify({ desktop: cannonDesktop, phone: cannonPhone, iphoneCases, levelOne, fishermanDesktop, fishermanDuck, fishermanPhone, fishermanGone, faceCutout, fullscreenAudit, abilityVisibility, cardAvailability, balanceAudit, healthAudit, arrowShot, spearShot, spearScene, fixedStep, sweptHit, policeDesktop, policePhone, humorDesktop, humorPhone, premiumDesktop, premiumPhone, castleDamage, projectileFx, masonry, masonryImmediate, masonryWalk, counters, aiAudit, bossAudit, deckAudit, formationAudit, battleIntelAudit, supportBlockAudit, armyFreedomAudit, unitRulesAudit, castleSiegeAudit, airdropAudit, briefingAudit, castleLaundry, castleKettle, castleGuard, eraTwo, eraTwoUnits, eraTwoGags, eraTwoDesktop, eraTwoPhone, introAudit, audioAudit, campaignAudit, performanceAudit }));
 
+
+const regression71=qa.regression71();check(regression71.noRemoteDamage&&regression71.opened&&regression71.isolated,"v7.1: zasięg ataku, dowolny poziom testowy i zachowanie kampanii");
