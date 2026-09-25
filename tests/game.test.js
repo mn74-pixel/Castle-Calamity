@@ -98,7 +98,13 @@ window.__QA = {
     var limited={blocked:card.classList.contains("unitUnavailable"),aria:card.getAttribute("aria-disabled"),badge:badge.textContent,reason:card.dataset.blockReason};
     G.units[0].state="dead";updHUD();
     var released={blocked:card.classList.contains("unitUnavailable"),aria:card.getAttribute("aria-disabled"),badge:badge.textContent};
-    return {initial:initial,limited:limited,released:released};
+    var warrior=document.getElementById("cd_warrior"),cost=effStat("warrior","c");
+    G.p.gold=cost-.01;updHUD();
+    var poor=warrior.classList.contains("unitUnavailable")&&warrior.dataset.blockReason==="funds";
+    G.p.gold=cost;updHUD();var affordable=!warrior.classList.contains("unitUnavailable");
+    spawnUnit("warrior",true);updHUD();var spent=warrior.classList.contains("unitUnavailable");
+    G.p.gold=0;spawnUnit("drwal",true);var funds=unitCardAvailability("drwal",true).reason==="funds";
+    return {initial:initial,limited:limited,released:released,poor:poor,affordable:affordable,spent:spent,funds:funds};
   },
   game: function(){return G;},
   clearUnits: function(){G.units=[];G.projs=[];G.gags=[];},
@@ -919,3 +925,5 @@ console.log("QA V7.0 COMPLETE", JSON.stringify({ desktop: cannonDesktop, phone: 
 
 
 const regression71=qa.regression71();check(regression71.noRemoteDamage&&regression71.opened&&regression71.isolated,"v7.1: zasięg ataku, dowolny poziom testowy i zachowanie kampanii");
+
+check(cardAvailability.poor&&cardAvailability.affordable&&cardAvailability.spent&&cardAvailability.funds,"karty blokują brak środków, odblokowują dokładny koszt i wracają do blokady po zakupie");

@@ -1526,6 +1526,10 @@ function unitCardAvailability(key,isP){
     if(!G.rocks||!G.rocks.length){reason="noQuarry";message=tr("card.noQuarry");}
     else if(active>=limit){reason="masonLimit";message=tr("card.masonLimit",{active:active,limit:limit});}
   }
+  var castle=isP?G.p:G.e,cost=isP?effStat(key,"c"):ud.c;
+  if(!reason&&castle.gold<cost){
+    reason="funds";message=LANG==="pl"?"Za mało punktów":"Not enough points";
+  }
   return {available:!reason,reason:reason,active:active,limit:limit,message:message};
 }
 function updateUnitCardState(key,el){
@@ -1539,7 +1543,7 @@ function updateUnitCardState(key,el){
   el.setAttribute("aria-label",tr("unit."+key)+(state.message?" — "+state.message:""));
   var badge=document.getElementById("cdstate_"+key);
   if(badge){
-    badge.textContent=state.reason==="noQuarry"?"—":(!state.available?"🔒 "+state.active+"/"+state.limit:"");
+    badge.textContent=state.reason==="funds"?"🔒":(state.reason==="noQuarry"?"—":(!state.available?"🔒 "+state.active+"/"+state.limit:""));
     badge.title=state.message;
   }
 }
@@ -1624,7 +1628,7 @@ function updHUD(){
     var el=document.getElementById("cd_"+k);if(!el)continue;
     var cost=effStat(k,"c");
     /* Geometria kafelków jest stała. Stan zmienia wyłącznie spokojną nakładkę,
-       gdy jednostka wsparcia osiągnie swój limit — bez filtrów i animacji,
+       gdy brakuje środków lub wsparcie osiągnie limit — bez filtrów i animacji,
        które powodowały drżenie kart w Safari. */
     var cc=document.getElementById("cdc_"+k),costText=String(cost);
     if(cc&&cc.textContent!==costText)cc.textContent=costText;
