@@ -366,7 +366,7 @@ window.__QA = {
   earlyModernScene: function(levelIndex){
     G=null;if(ACTIVE_ERA_ID!=="early-modern")switchEra("early-modern",false);load(levelIndex||0);G.T=9.4;G.units=[];G.projs=[];G.gags=[];G.p.gold=9999;
     var keys=["pikeguard","musketeer","sapper","mortar"];for(var i=0;i<keys.length;i++){var u=this.addUnit(keys[i],true,W*(.35+i*.105));if(keys[i]==="musketeer")u.musketFlash=.18;if(keys[i]==="pikeguard"||keys[i]==="sapper")u.atkPhase=.62;}
-    render();return {era:G.eraId,level:G.lv.id,units:G.units.map(function(u){return u.key;}),rocks:G.rocks.length,scene:(SC[G.lv.sc]||{}).earlyModern===true,castleStyle:G.eraPack.castleStyle,standalone:render.toString().indexOf('if(G.eraId==="early-modern")')>=0};
+    render();return {era:G.eraId,level:G.lv.id,units:G.units.map(function(u){return u.key;}),rocks:G.rocks.length,scene:(SC[G.lv.sc]||{}).earlyModern===true,castleStyle:G.eraPack.castleStyle,standalone:typeof ERA_ART.drawBase==="function"};
   },
   earlyModernGagAudit: function(){
     G=null;if(ACTIVE_ERA_ID!=="early-modern")switchEra("early-modern",false);var old=Math.random;Math.random=function(){return 0;};var types=[];
@@ -644,7 +644,8 @@ vm.runInContext(inline[0], sandbox, { filename: "audio-vars.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "gags.js"), "utf8"), sandbox, { filename: "gags.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "i18n.js"), "utf8"), sandbox, { filename: "i18n.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "eras.js"), "utf8"), sandbox, { filename: "eras.js" });
-vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras-v72.js"), "utf8"), sandbox, { filename: "future-eras-v72.js" });
+vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras-v73.js"), "utf8"), sandbox, { filename: "future-eras-v73.js" });
+vm.runInContext(fs.readFileSync(path.join(root, "content", "era-art-v73.js"), "utf8"), sandbox, { filename: "era-art-v73.js" });
 vm.runInContext(gameSource, sandbox, { filename: "game.js" });
 
 const qa = sandbox.window.__QA;

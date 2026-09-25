@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v7.2.2 — cztery epoki i jednorazowy szturm.
+/* Castle Calamity PWA v7.3.0 — cztery epoki i jednorazowy szturm.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v7.2.2";
+const CACHE = "castle-calamity-v7.3.0";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -9,7 +9,8 @@ const APP_SHELL = [
   "./content/gags.js",
   "./content/i18n.js",
   "./content/eras.js",
-  "./content/future-eras-v72.js",
+  "./content/future-eras-v73.js",
+  "./content/era-art-v73.js",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable-192.png",

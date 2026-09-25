@@ -386,7 +386,8 @@ var SWORD_SFX_2="T2dnUwACAAAAAAAAAACSNI+fAAAAAHdTiP4BHgF2b3JiaXMAAAAAASJWAAAAAAA
 <script src="content/gags.js"></script>
 <script src="content/i18n.js"></script>
 <script src="content/eras.js"></script>
-<script src="content/future-eras-v72.js"></script>
+<script src="content/future-eras-v73.js"></script>
+<script src="content/era-art-v73.js"></script>
 <script>
 (function(){
 "use strict";
@@ -697,10 +698,10 @@ var SC = [
   /* Poz 10 — Krwawy Księżyc: WIELKI ognisty księżyc */
   {s1:"#1a0010",s2:"#2a0418",g1:"#3a1818",g2:"#200a08",night:true,dusk:false,sun:"#ff2244",sr:32,bloodmoon:true},
   /* Epoka II — cieplejsze niebo, cegła, dym prochowy i pierwsze manufaktury. */
-  {s1:"#657f98",s2:"#c6a879",g1:"#66703b",g2:"#3e4727",night:false,dusk:false,sun:"#f5d58a",sr:16,earlyModern:true,smoky:true},
+  {s1:"#397ca5",s2:"#e0d5ac",g1:"#66703b",g2:"#3e4727",night:false,dusk:false,sun:"#f5d58a",sr:16,earlyModern:true,smoky:true},
   {s1:"#434b61",s2:"#ad7551",g1:"#56603b",g2:"#303823",night:false,dusk:true,sun:"#ef8a4f",sr:19,earlyModern:true,river:true},
-  {s1:"#747f87",s2:"#b9aa8e",g1:"#6d6542",g2:"#403a29",night:false,dusk:false,sun:"#efe0b0",sr:13,earlyModern:true,bastion:true,smoky:true},
-  {s1:"#445e70",s2:"#a4b5b4",g1:"#536454",g2:"#303d36",night:false,dusk:false,sun:"#e2dfbc",sr:12,earlyModern:true,river:true,smoky:true},
+  {s1:"#537e9d",s2:"#ddcfad",g1:"#6d6542",g2:"#403a29",night:false,dusk:false,sun:"#efe0b0",sr:13,earlyModern:true,bastion:true,smoky:true},
+  {s1:"#426b92",s2:"#a7c8c5",g1:"#536454",g2:"#303d36",night:false,dusk:false,sun:"#e2dfbc",sr:12,earlyModern:true,river:true,smoky:true},
   {s1:"#242d46",s2:"#8b655b",g1:"#605443",g2:"#342e2a",night:true,dusk:false,sun:"#d7d8c3",sr:15,earlyModern:true,bastion:true,smoky:true}
 ];
 
@@ -740,6 +741,7 @@ var UD = {
    dobrana talia poziomu — maksymalnie osiem kart łącznie z zapleczem. */
 var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","crossbow","monk","knight","wizard","templar","golem","cannon","pikeguard","musketeer","sapper","mortar"];
 var FUTURE=window.CASTLE_FUTURE;
+var ERA_ART=window.CASTLE_ERA_ART;
 if(FUTURE){for(var futureKey in FUTURE.units){UD[futureKey]=FUTURE.units[futureKey];UK.push(futureKey);}}
 if(FUTURE)SC=SC.concat(FUTURE.scenes);
 var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
@@ -4260,130 +4262,7 @@ function drawCastleExpansion(c){
 }
 
 function drawEarlyModernBackdrop(sc){
-  if(FUTURE&&G&&FUTURE.levels[G.eraId]){FUTURE.backdrop(CT,W,GY,G.eraId);return;}
-  if(!sc||!sc.earlyModern)return;
-  var id=G.lv.id||1,drift=Math.sin(G.T*.03)*2;
-  CT.save();CT.globalAlpha=PERF.low?.16:.24;CT.fillStyle=sc.dusk?"#27252a":"#465057";
-  // Niskie manufaktury i smukłe kominy są daleko za polem walki.
-  var bx=[W*.18+drift,W*.47-drift*.4,W*.76+drift*.7];
-  for(var i=0;i<bx.length;i++){
-    var bh=20+(i%2)*8,by=GY-32-(i%2)*5;CT.fillRect(bx[i]-24,by-bh,48,bh);
-    CT.beginPath();CT.moveTo(bx[i]-27,by-bh);CT.lineTo(bx[i]-10,by-bh-12);CT.lineTo(bx[i]+4,by-bh);CT.lineTo(bx[i]+20,by-bh-9);CT.lineTo(bx[i]+27,by-bh);CT.closePath();CT.fill();
-    if(sc.smoky||i===1){CT.fillRect(bx[i]+12,by-bh-34,7,35);for(var p=0;p<3;p++){var rise=(G.T*7+p*15+i*4)%40;CT.globalAlpha=(PERF.low?.10:.18)*(1-rise/46);CT.fillStyle="#d8d0c2";CT.beginPath();CT.arc(bx[i]+16+Math.sin(rise*.12+i)*6,by-bh-38-rise,5+rise*.12,0,Math.PI*2);CT.fill();}CT.globalAlpha=PERF.low?.16:.24;CT.fillStyle=sc.dusk?"#27252a":"#465057";}
-  }
-  if(sc.river){
-    CT.strokeStyle="rgba(56,45,34,.72)";CT.lineWidth=5;CT.beginPath();CT.arc(W*.52,GY-14,W*.16,Math.PI,Math.PI*2);CT.stroke();
-    CT.strokeStyle="rgba(204,178,128,.35)";CT.lineWidth=1.2;for(var br=0;br<7;br++){var q=br/6,x=W*.36+W*.32*q;CT.beginPath();CT.moveTo(x,GY-14-Math.sin(q*Math.PI)*W*.16);CT.lineTo(x,GY-2);CT.stroke();}
-  }
-  CT.restore();
-}
-
-function drawEarlyModernCastleDetails(c){
-  if(!G||G.eraId!=="early-modern"||!c)return;
-  var id=G.lv.id||1,x=c.x,w=c.w,h=c.h,top=G.GY-h,isP=c.isP;
-  var brick=isP?"#9a6548":"#7d493b",brickLight=isP?"#bd8060":"#9c604d",brickDark=isP?"#563a2e":"#442b27";
-  var earth=isP?"#625b43":"#59483d",mortar="rgba(235,211,170,.34)",iron="#292d2f",copper=id>=3?"#5f887d":"#667c76";
-  var fortTop=top+h*.38,base=G.GY-1,center=x+w*.5,collapse=Math.max(0,c.collapseT||0);
-  if(collapse>=.98)return;
-  CT.save();CT.lineJoin="round";CT.lineCap="round";
-  var shX=c.shake>0?(Math.random()-.5)*c.shake*6:0,shY=c.shake>0?(Math.random()-.5)*c.shake*4:0;
-  CT.translate(shX,shY);
-  if(collapse>.01){
-    CT.translate(center,G.GY);CT.rotate(collapse*(isP?-.20:.20));CT.translate(-center,-G.GY);
-    CT.globalAlpha=Math.max(.12,1-collapse*.78);
-  }
-
-  /* Szeroki cień od razu odróżnia niski fort od pionowej warowni Epoki I. */
-  CT.fillStyle="rgba(0,0,0,.27)";CT.beginPath();CT.ellipse(center,G.GY+4,w*.68,8,0,0,Math.PI*2);CT.fill();
-
-  /* Epoka II ma własną bryłę: niski fort artyleryjski z wysuniętymi barkami.
-     To pełna, nieprzezroczysta forma, a nie faktura na średniowiecznym zamku. */
-  CT.fillStyle=brick;CT.strokeStyle=brickDark;CT.lineWidth=1.4;
-  /* Trzy zwarte pawilony zakrywają dawny donżon i blanki. */
-  CT.fillRect(x-7,top+h*.27,w*.31,h*.73+1);CT.strokeRect(x-7,top+h*.27,w*.31,h*.73+1);
-  CT.fillRect(x+w*.70,top+h*.27,w*.31+7,h*.73+1);CT.strokeRect(x+w*.70,top+h*.27,w*.31+7,h*.73+1);
-  CT.fillStyle=brickLight;CT.fillRect(x+w*.21,top+h*.18,w*.58,h*.82+1);CT.strokeRect(x+w*.21,top+h*.18,w*.58,h*.82+1);
-  /* Dachy są na tyle szerokie, by stara średniowieczna linia nie przebijała. */
-  CT.fillStyle=copper;CT.strokeStyle="#263d3a";CT.lineWidth=1.2;
-  CT.beginPath();CT.moveTo(x-13,top+h*.28);CT.lineTo(x+w*.145,top+h*.03);CT.lineTo(x+w*.34,top+h*.28);CT.closePath();CT.fill();CT.stroke();
-  CT.beginPath();CT.moveTo(x+w*.15,top+h*.19);CT.lineTo(center,top-12-id*2);CT.lineTo(x+w*.85,top+h*.19);CT.closePath();CT.fill();CT.stroke();
-  CT.beginPath();CT.moveTo(x+w*.66,top+h*.28);CT.lineTo(x+w*.855,top+h*.03);CT.lineTo(x+w+13,top+h*.28);CT.closePath();CT.fill();CT.stroke();
-  CT.strokeStyle="rgba(218,236,225,.28)";CT.lineWidth=.8;CT.beginPath();CT.moveTo(x+w*.17,top+h*.16);CT.lineTo(center,top-7-id*2);CT.lineTo(x+w*.83,top+h*.16);CT.stroke();
-
-  // Facade recesses and roof facets break up the broad upper walls.
-  CT.fillStyle="rgba(37,45,42,.23)";CT.beginPath();CT.moveTo(center,top-12-id*2);CT.lineTo(x+w*.85,top+h*.19);CT.lineTo(center,top+h*.19);CT.closePath();CT.fill();
-  for(var facade=0;facade<3;facade++){
-    var fx=x+w*(.08+facade*.35),fy=top+h*(facade===1?.24:.31),fw=w*.13;
-    CT.fillStyle=brickDark;CT.fillRect(fx-2,fy-2,fw+4,h*.085+4);
-    CT.fillStyle="#404747";CT.fillRect(fx,fy,fw,h*.085);
-    CT.fillStyle="#c5b587";CT.fillRect(fx+2,fy+2,fw*.38,h*.07);
-    CT.strokeStyle="#d2b48c";CT.lineWidth=1;CT.beginPath();CT.moveTo(fx-3,fy+h*.09);CT.lineTo(fx+fw+3,fy+h*.09);CT.stroke();
-  }
-
-  /* Flaga regimentowa Epoki II: prostokątna, na krótszym maszcie niż proporzec
-     średniowieczny. */
-  var flagX=isP?x+w*.22:x+w*.78,flagDir=isP?1:-1;
-  CT.strokeStyle="#3b3025";CT.lineWidth=1.5;CT.beginPath();CT.moveTo(flagX,top+h*.18);CT.lineTo(flagX,top-17);CT.stroke();
-  CT.fillStyle=isP?"#3168b7":"#b52c31";CT.strokeStyle=isP?"#193968":"#69181b";
-  CT.beginPath();CT.moveTo(flagX,top-16);CT.lineTo(flagX+flagDir*27,top-13);CT.lineTo(flagX+flagDir*27,top+1);CT.lineTo(flagX,top-2);CT.closePath();CT.fill();CT.stroke();
-  CT.strokeStyle="rgba(244,220,143,.72)";CT.lineWidth=1;CT.beginPath();CT.moveTo(flagX+flagDir*6,top-12);CT.lineTo(flagX+flagDir*21,top-9);CT.moveTo(flagX+flagDir*6,top-5);CT.lineTo(flagX+flagDir*21,top-2);CT.stroke();
-
-  CT.fillStyle=earth;CT.strokeStyle="#302920";CT.lineWidth=1.3;
-  CT.beginPath();CT.moveTo(x-18,base);CT.lineTo(x+10,fortTop+20);CT.lineTo(x+w*.25,fortTop+8);CT.lineTo(center,fortTop+20);CT.lineTo(x+w*.75,fortTop+8);CT.lineTo(x+w-10,fortTop+20);CT.lineTo(x+w+18,base);CT.closePath();CT.fill();CT.stroke();
-
-  CT.fillStyle=brick;CT.strokeStyle=brickDark;CT.lineWidth=1.4;
-  CT.beginPath();CT.moveTo(x-10,base);CT.lineTo(x+3,fortTop+14);CT.lineTo(x+w*.22,fortTop+3);CT.lineTo(x+w*.31,fortTop+15);CT.lineTo(x+w*.69,fortTop+15);CT.lineTo(x+w*.78,fortTop+3);CT.lineTo(x+w-3,fortTop+14);CT.lineTo(x+w+10,base);CT.closePath();CT.fill();CT.stroke();
-
-  // Sunlit coping, recessed brick courses and shaded bastion shoulders.
-  CT.save();CT.beginPath();CT.moveTo(x+4,base);CT.lineTo(x+5,fortTop+17);CT.lineTo(x+w*.22,fortTop+5);CT.lineTo(x+w*.31,fortTop+17);CT.lineTo(x+w*.69,fortTop+17);CT.lineTo(x+w*.78,fortTop+5);CT.lineTo(x+w-5,fortTop+17);CT.lineTo(x+w-4,base);CT.closePath();CT.clip();
-  var masonryLight=CT.createLinearGradient(x,fortTop,x+w,base);masonryLight.addColorStop(0,"rgba(248,211,158,.15)");masonryLight.addColorStop(.55,"rgba(51,31,26,.03)");masonryLight.addColorStop(1,"rgba(35,28,27,.26)");CT.fillStyle=masonryLight;CT.fillRect(x,fortTop,w,base-fortTop);
-  CT.strokeStyle="rgba(45,31,26,.26)";CT.lineWidth=.7;
-  for(var course=0;course<10;course++){var cy=fortTop+15+course*(base-fortTop)/10;CT.beginPath();CT.moveTo(x,cy);CT.lineTo(x+w,cy);CT.stroke();for(var joint=0;joint<7;joint++){var jx=x+(joint+(course%2)*.5)*w/7;CT.beginPath();CT.moveTo(jx,cy);CT.lineTo(jx,cy+(base-fortTop)/10);CT.stroke();}}
-  CT.restore();CT.strokeStyle="#c9a379";CT.lineWidth=2;CT.beginPath();CT.moveTo(x+5,fortTop+14);CT.lineTo(x+w*.22,fortTop+4);CT.lineTo(x+w*.31,fortTop+15);CT.lineTo(x+w*.69,fortTop+15);CT.lineTo(x+w*.78,fortTop+4);CT.lineTo(x+w-5,fortTop+14);CT.stroke();
-
-  /* Centralna brama z charakterystycznym schodkowym szczytem. */
-  var gh=Math.max(48,h*.34),gw=w*.39,gx=center-gw*.5,gy=base-gh;
-  CT.fillStyle=brickLight;CT.beginPath();CT.moveTo(gx,base);CT.lineTo(gx,gy+12);CT.lineTo(gx+gw*.18,gy+12);CT.lineTo(gx+gw*.18,gy+5);CT.lineTo(gx+gw*.35,gy+5);CT.lineTo(center,gy-9);CT.lineTo(gx+gw*.65,gy+5);CT.lineTo(gx+gw*.82,gy+5);CT.lineTo(gx+gw*.82,gy+12);CT.lineTo(gx+gw,gy+12);CT.lineTo(gx+gw,base);CT.closePath();CT.fill();CT.stroke();
-  CT.fillStyle="#2c2522";CT.beginPath();CT.arc(center,base-20,gw*.18,Math.PI,0);CT.lineTo(center+gw*.18,base);CT.lineTo(center-gw*.18,base);CT.closePath();CT.fill();
-  CT.strokeStyle="#b99b65";CT.lineWidth=1.4;for(var gb=-1;gb<=1;gb+=2){CT.beginPath();CT.moveTo(center+gb*gw*.11,base-20);CT.lineTo(center+gb*gw*.11,base-2);CT.stroke();}
-
-  /* Małe daszki platform spinają górną i dolną część fortu. */
-  CT.fillStyle=copper;CT.strokeStyle="#263d3a";CT.lineWidth=1.1;
-  for(var roof=-1;roof<=1;roof+=2){var rc=center+roof*w*.31,rw=w*.16;CT.beginPath();CT.moveTo(rc-rw,fortTop+7);CT.lineTo(rc,fortTop-18-id*2);CT.lineTo(rc+rw,fortTop+7);CT.closePath();CT.fill();CT.stroke();}
-
-  /* Cegły i poziome strzelnice są ograniczone do nowej bryły. */
-  CT.strokeStyle=mortar;CT.lineWidth=.75;for(var row=0;row<4;row++){var yy=fortTop+18+row*(base-fortTop-22)/4;CT.beginPath();CT.moveTo(x+5,yy);CT.lineTo(x+w-5,yy);CT.stroke();}
-  CT.fillStyle=iron;for(var em=0;em<4;em++){var ex=x+w*(.18+em*.215);CT.beginPath();CT.ellipse(ex,fortTop+24+(em%2)*7,5,2.2,0,0,Math.PI*2);CT.fill();}
-
-  if(id>=2){
-    /* Ravelin ma kształt grotu i wizualnie wysuwa fort w pole bitwy. */
-    var front=isP?1:-1,fx=isP?x+w-3:x+3;
-    CT.fillStyle=brickDark;CT.strokeStyle="#241d19";CT.beginPath();CT.moveTo(fx,base);CT.lineTo(fx+front*30,base-14);CT.lineTo(fx+front*10,base-30);CT.lineTo(fx-front*8,base-18);CT.closePath();CT.fill();CT.stroke();
-    CT.strokeStyle="#cfb27a";CT.lineWidth=1;CT.beginPath();CT.moveTo(fx+front*7,base-21);CT.lineTo(fx+front*24,base-14);CT.stroke();
-  }
-  if(id>=3){
-    /* Dwie platformy działowe zamiast pojedynczej armaty na blankach. */
-    for(var gun=-1;gun<=1;gun+=2){var px=center+gun*w*.27,dir=isP?1:-1;CT.fillStyle="#47433a";CT.strokeStyle="#24211d";CT.fillRect(px-15,fortTop-1,30,8);CT.strokeRect(px-15,fortTop-1,30,8);CT.save();CT.translate(px,fortTop-6);CT.scale(dir,1);CT.rotate(-.17);CT.fillStyle="#3d4243";CT.fillRect(-4,-4,21,7);CT.fillStyle="#1f2223";CT.fillRect(15,-5,5,9);CT.restore();}
-  }
-  if(id>=4){
-    /* Warsztat poziomu 4: smukła wieża zegarowa i komin zmieniają linię dachu. */
-    var wt=w*.24,wx=center-wt*.5,wy=gy-38;
-    CT.fillStyle=brickLight;CT.strokeStyle=brickDark;CT.fillRect(wx,wy,wt,32);CT.strokeRect(wx,wy,wt,32);
-    CT.fillStyle=copper;CT.beginPath();CT.moveTo(wx-4,wy);CT.lineTo(center,wy-22);CT.lineTo(wx+wt+4,wy);CT.closePath();CT.fill();CT.stroke();
-    CT.fillStyle="#e5d4a5";CT.beginPath();CT.arc(center,wy+14,6,0,Math.PI*2);CT.fill();CT.strokeStyle="#54452f";CT.beginPath();CT.moveTo(center,wy+14);CT.lineTo(center+1,wy+9);CT.moveTo(center,wy+14);CT.lineTo(center+4,wy+16);CT.stroke();
-    var chimney=isP?wx-8:wx+wt+8;CT.fillStyle=brickDark;CT.fillRect(chimney-4,wy-7,8,25);CT.fillStyle="#292625";CT.fillRect(chimney-6,wy-9,12,4);
-  }
-  if((c.damageStage||0)>0){
-    CT.strokeStyle="rgba(47,27,23,.82)";CT.lineWidth=1.5;var crackX=center+(isP?1:-1)*w*.18;CT.beginPath();CT.moveTo(crackX,fortTop+20);CT.lineTo(crackX-5,fortTop+35);CT.lineTo(crackX+3,fortTop+48);if(c.damageStage>1)CT.lineTo(crackX-7,fortTop+63);CT.stroke();
-  }
-  if(c.holes&&c.holes.length){
-    for(var hi=0;hi<c.holes.length;hi++){
-      var ho=c.holes[hi],hx=Math.max(x+5,Math.min(x+w-5,ho.x)),hy=Math.max(fortTop+18,Math.min(base-18,ho.y));
-      CT.fillStyle="rgba(20,13,11,.9)";CT.strokeStyle="rgba(219,169,116,.5)";CT.lineWidth=1;
-      CT.beginPath();CT.arc(hx,hy,Math.max(2.5,Math.min(7,ho.r||4)),0,Math.PI*2);CT.fill();CT.stroke();
-    }
-  }
-  CT.restore();
+  if(G&&G.eraId!=="medieval")ERA_ART.backdrop(CT,W,GY,G.eraId,G.lv.id);
 }
 
 function render(){
@@ -4714,6 +4593,7 @@ function render(){
              : sc.night ? "rgba(15,15,45,.5)"
              : sc.dusk ? "rgba(255,140,60,.38)"
              : "rgba(255,255,255,.80)";
+  if(G.eraId!=="medieval"){ERA_ART.clouds(CT,G.clouds,GY,G.T,sc);}else{
   for(var i=0;i<G.clouds.length;i++){
     var cl=G.clouds[i];
     CT.save();
@@ -4757,6 +4637,7 @@ function render(){
     }
     CT.restore();
   }
+  }
   // Birds
   if(G.birds&&G.birds.length){
     CT.save();
@@ -4799,6 +4680,7 @@ function render(){
     }
     CT.restore();
   }
+  if(G.eraId!=="medieval"){ERA_ART.landscape(CT,W,GY,G.eraId,G.lv.id,sc);}else{
   /* === GŁĘBIA ATMOSFERYCZNA V4.6 ===
      Mgła i odległe strażnice poruszają się tylko o kilka pikseli. Plansza
      przestaje być płaską dekoracją, ale tło nie odciąga uwagi od walki. */
@@ -4912,6 +4794,7 @@ function render(){
   // Close hills
   CT.save();CT.globalAlpha=0.5;CT.fillStyle=sc.night?"#0a1a08":(sc.dusk?"#3a1808":(sc.desert?"#886633":(sc.volcanic?"#1a0404":"#1a3818")));
   var closeDrift=parallaxBreath*8;CT.beginPath();CT.moveTo(0,GY);for(var hx2=-60;hx2<=W+60;hx2+=60)CT.lineTo(hx2+closeDrift,GY-20-Math.abs(Math.sin(hx2*0.013))*38);CT.lineTo(W,GY);CT.closePath();CT.fill();CT.restore();
+  }
   drawEarlyModernBackdrop(sc);
   // Ground - z gradientem
   var gg=CT.createLinearGradient(0,GY,0,H);gg.addColorStop(0,sc.g1);gg.addColorStop(1,sc.g2);
@@ -5110,13 +4993,10 @@ function render(){
     CT.restore();
   }
   // Castles
-  if(FUTURE&&FUTURE.levels[G.eraId]){
-    FUTURE.drawBase(CT,G.p,G.GY,G.eraId,G.lv.id,G.T);FUTURE.drawBase(CT,G.e,G.GY,G.eraId,G.lv.id,G.T);
-  }else if(G.eraId==="early-modern"){
-    drawEarlyModernCastleDetails(G.p);drawEarlyModernCastleDetails(G.e);
-  }else{
-    drawCastle(G.p,sc);drawCastle(G.e,sc);
-  }
+  if(G.eraId!=="medieval"){
+    ERA_ART.drawBase(CT,G.p,G.GY,G.eraId,G.lv.id,G.T);
+    ERA_ART.drawBase(CT,G.e,G.GY,G.eraId,G.lv.id,G.T);
+  }else{drawCastle(G.p,sc);drawCastle(G.e,sc);}
   if(G.eraId!=="medieval"){drawEraCrest(G.p);drawEraCrest(G.e);}
   drawCastleHUD(G.p);drawCastleHUD(G.e);
   drawCastleExpansion(G.p);drawCastleExpansion(G.e);
@@ -6090,12 +5970,12 @@ function drawCampaignCastleEvolution(c,geom){
 function drawEraCrest(c){
   var img=c.isP?PLAYER_CREST:ENEMY_CREST;
   if(!img||c.collapseT||G.introMode)return;
-  var w=c.w*.42,h=c.h*.28,x=c.x+(c.w-w)*.5;
-  var y=G.GY-c.h*(G.eraId==="early-modern"?.70:.65);
+  // The photo belongs inside the architectural heraldic banner.
+  var sx=c.w/200,sy=c.h/260,x=c.x+70*sx,y=G.GY-149*sy,w=60*sx,h=54*sy;
   CT.save();
-  CT.fillStyle=c.isP?"#253f59":"#58342f";CT.fillRect(x-3,y-3,w+6,h+6);
-  CT.strokeStyle=G.eraId==="electric"?"#9cbfc5":"#c4a775";CT.lineWidth=1.5;
-  CT.strokeRect(x-3,y-3,w+6,h+6);
+  CT.beginPath();CT.moveTo(c.x+68*sx,G.GY-151*sy);CT.lineTo(c.x+132*sx,G.GY-151*sy);
+  CT.lineTo(c.x+132*sx,G.GY-98*sy);CT.lineTo(c.x+100*sx,G.GY-88*sy);CT.lineTo(c.x+68*sx,G.GY-98*sy);CT.closePath();
+  CT.fillStyle=c.isP?"#326db5":"#b3433d";CT.fill();
   drawCrestImageContained(CT,img,x,y,w,h,2);
   CT.restore();
 }

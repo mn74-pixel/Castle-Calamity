@@ -9,7 +9,16 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Co zawiera wersja v7.0
+## Oprawa epok v7.3.0
+- wszystkie 14 bitew epok II–IV: nowe forty, twierdze parowe i cytadele elektryczne,
+- odrębne sylwetki budowli, wspólna ze średniowieczem skala i rysunek,
+- oryginalne zdjęcie w heraldycznej wnęce każdej bazy,
+- nowe warstwy krajobrazu, chmury bez nakładających się obręczy,
+- wzmocnione sylwetki, materiały i wyposażenie późniejszych wojsk,
+- buforowane budowle z ograniczoną pamięcią; zdjęcia i uszkodzenia na żywo,
+- szczegóły: `docs/OPRAWA-EPOK-V7.3.md`.
+
+## Mechanika wprowadzona w v7.0
 - jednorazowy mocny cios przy bramie i śmierć zwykłego bojownika; brak kolejki,
 - Czarownik dochodzi do bramy przed ostatnim ciosem, zamiast znikać na 3/4 drogi,
 - 26 bitew w 4 epokach: Średniowiecze, Proch i Mechanika, Para i Żelazo, Wiek Iskry,
