@@ -9,7 +9,7 @@ const APP_SHELL = [
   "./content/gags.js",
   "./content/i18n.js",
   "./content/eras.js",
-  "./content/future-eras.js",
+  "./content/future-eras-v72.js",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable-192.png",

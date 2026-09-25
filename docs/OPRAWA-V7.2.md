@@ -10,3 +10,5 @@ Kierunek: czytelna ilustracja strategiczna, ciemny kontur, światło z góry, st
 - Mechanika i statystyki pozostają te same; zmiany dotyczą renderowania.
 
 Weryfikacja: pełne npm test, w tym 26 bitew, jednostki, bossowie, brak kolejek przy bramie, tryb testowy i PWA. Oględziny arkusza postaci oraz kadrów desktop/telefon. tests/art-review.js generuje arkusz postaci. Testy syntetyczne nie zastępują oceny animacji i płynności na fizycznym iPhonie.
+
+Kontrola wdrożenia wykryła mieszanie nowego HTML ze starym skryptem z cache. Moduł grafiki ma teraz wersjonowaną nazwę pliku, którą rozróżniają również poprzednie service workery.

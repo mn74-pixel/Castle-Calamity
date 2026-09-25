@@ -2,7 +2,7 @@
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const {createCanvas}=require('@napi-rs/canvas');
 const root=path.resolve(__dirname,'..'),window={CASTLE_ERAS:{packs:{}},CASTLE_I18N:{pl:{},en:{}}};
-vm.runInNewContext(fs.readFileSync(path.join(root,'content/future-eras.js'),'utf8'),{window});
+vm.runInNewContext(fs.readFileSync(path.join(root,'content/future-eras-v72.js'),'utf8'),{window});
 const art=window.CASTLE_FUTURE,canvas=createCanvas(1440,780),c=canvas.getContext('2d');
 c.fillStyle='#182731';c.fillRect(0,0,1440,780);
 const rows=[['warrior','pikeman','crossbow','berserk','templar','drwal'],['pikeguard','musketeer','sapper'],['riveter','rifleman','steamguard'],['voltguard','pulser','fieldmedic']];

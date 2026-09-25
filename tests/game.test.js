@@ -627,7 +627,7 @@ vm.runInContext(inline[0], sandbox, { filename: "audio-vars.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "gags.js"), "utf8"), sandbox, { filename: "gags.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "i18n.js"), "utf8"), sandbox, { filename: "i18n.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "eras.js"), "utf8"), sandbox, { filename: "eras.js" });
-vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras.js"), "utf8"), sandbox, { filename: "future-eras.js" });
+vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras-v72.js"), "utf8"), sandbox, { filename: "future-eras-v72.js" });
 vm.runInContext(gameSource, sandbox, { filename: "game.js" });
 
 const qa = sandbox.window.__QA;
