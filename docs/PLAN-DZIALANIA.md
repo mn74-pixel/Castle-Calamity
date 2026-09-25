@@ -428,3 +428,6 @@ Potrzebne są trzy decyzje:
 2. Czy mapa kampanii jest czytelna bez instrukcji i nie wymaga przewijania na używanym telefonie?
 3. Czy trwałe ulepszenia nie ułatwiają zbyt mocno późniejszych poziomów?
 4. Czy po przejściu poziomu 12 przejście do Epoki II powinno nastąpić automatycznie, czy przez osobny przycisk na mapie?
+
+## v7.2 — oprawa armii i epok
+Nowe 15 sylwetek piechoty, artyleria III–IV, dopasowane ikony oraz materiałowe detale fortów i warstwowe tła. Kolejna ocena: wygląd w rzeczywistej bitwie na telefonie, szczególnie przy dużej liczbie wojsk.

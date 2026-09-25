@@ -1,6 +1,6 @@
 {
   "name": "castle-calamity",
-  "version": "7.1.0",
+  "version": "7.2.0",
   "private": true,
   "scripts": {"test": "node tests/game.test.js && node tests/pwa.test.js"},
   "devDependencies": {"@napi-rs/canvas": "0.1.100"}

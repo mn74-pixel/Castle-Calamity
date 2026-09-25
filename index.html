@@ -4306,6 +4306,16 @@ function drawEarlyModernCastleDetails(c){
   CT.beginPath();CT.moveTo(x+w*.66,top+h*.28);CT.lineTo(x+w*.855,top+h*.03);CT.lineTo(x+w+13,top+h*.28);CT.closePath();CT.fill();CT.stroke();
   CT.strokeStyle="rgba(218,236,225,.28)";CT.lineWidth=.8;CT.beginPath();CT.moveTo(x+w*.17,top+h*.16);CT.lineTo(center,top-7-id*2);CT.lineTo(x+w*.83,top+h*.16);CT.stroke();
 
+  // Facade recesses and roof facets break up the broad upper walls.
+  CT.fillStyle="rgba(37,45,42,.23)";CT.beginPath();CT.moveTo(center,top-12-id*2);CT.lineTo(x+w*.85,top+h*.19);CT.lineTo(center,top+h*.19);CT.closePath();CT.fill();
+  for(var facade=0;facade<3;facade++){
+    var fx=x+w*(.08+facade*.35),fy=top+h*(facade===1?.24:.31),fw=w*.13;
+    CT.fillStyle=brickDark;CT.fillRect(fx-2,fy-2,fw+4,h*.085+4);
+    CT.fillStyle="#404747";CT.fillRect(fx,fy,fw,h*.085);
+    CT.fillStyle="#c5b587";CT.fillRect(fx+2,fy+2,fw*.38,h*.07);
+    CT.strokeStyle="#d2b48c";CT.lineWidth=1;CT.beginPath();CT.moveTo(fx-3,fy+h*.09);CT.lineTo(fx+fw+3,fy+h*.09);CT.stroke();
+  }
+
   /* Flaga regimentowa Epoki II: prostokątna, na krótszym maszcie niż proporzec
      średniowieczny. */
   var flagX=isP?x+w*.22:x+w*.78,flagDir=isP?1:-1;
@@ -4319,6 +4329,13 @@ function drawEarlyModernCastleDetails(c){
 
   CT.fillStyle=brick;CT.strokeStyle=brickDark;CT.lineWidth=1.4;
   CT.beginPath();CT.moveTo(x-10,base);CT.lineTo(x+3,fortTop+14);CT.lineTo(x+w*.22,fortTop+3);CT.lineTo(x+w*.31,fortTop+15);CT.lineTo(x+w*.69,fortTop+15);CT.lineTo(x+w*.78,fortTop+3);CT.lineTo(x+w-3,fortTop+14);CT.lineTo(x+w+10,base);CT.closePath();CT.fill();CT.stroke();
+
+  // Sunlit coping, recessed brick courses and shaded bastion shoulders.
+  CT.save();CT.beginPath();CT.moveTo(x+4,base);CT.lineTo(x+5,fortTop+17);CT.lineTo(x+w*.22,fortTop+5);CT.lineTo(x+w*.31,fortTop+17);CT.lineTo(x+w*.69,fortTop+17);CT.lineTo(x+w*.78,fortTop+5);CT.lineTo(x+w-5,fortTop+17);CT.lineTo(x+w-4,base);CT.closePath();CT.clip();
+  var masonryLight=CT.createLinearGradient(x,fortTop,x+w,base);masonryLight.addColorStop(0,"rgba(248,211,158,.15)");masonryLight.addColorStop(.55,"rgba(51,31,26,.03)");masonryLight.addColorStop(1,"rgba(35,28,27,.26)");CT.fillStyle=masonryLight;CT.fillRect(x,fortTop,w,base-fortTop);
+  CT.strokeStyle="rgba(45,31,26,.26)";CT.lineWidth=.7;
+  for(var course=0;course<10;course++){var cy=fortTop+15+course*(base-fortTop)/10;CT.beginPath();CT.moveTo(x,cy);CT.lineTo(x+w,cy);CT.stroke();for(var joint=0;joint<7;joint++){var jx=x+(joint+(course%2)*.5)*w/7;CT.beginPath();CT.moveTo(jx,cy);CT.lineTo(jx,cy+(base-fortTop)/10);CT.stroke();}}
+  CT.restore();CT.strokeStyle="#c9a379";CT.lineWidth=2;CT.beginPath();CT.moveTo(x+5,fortTop+14);CT.lineTo(x+w*.22,fortTop+4);CT.lineTo(x+w*.31,fortTop+15);CT.lineTo(x+w*.69,fortTop+15);CT.lineTo(x+w*.78,fortTop+4);CT.lineTo(x+w-5,fortTop+14);CT.stroke();
 
   /* Centralna brama z charakterystycznym schodkowym szczytem. */
   var gh=Math.max(48,h*.34),gw=w*.39,gx=center-gw*.5,gy=base-gh;
@@ -4786,7 +4803,7 @@ function render(){
   CT.globalAlpha=sc.night ? .10 : (sc.dusk ? .12 : .085);
   CT.fillStyle=sc.night?"#080b13":(sc.desert?"#765c3d":(sc.volcanic?"#210706":"#314658"));
   var relicXs=[W*.21+farDrift,W*.52-farDrift*.5,W*.80+farDrift*.7];
-  for(var rel=0;rel<relicXs.length;rel++){
+  for(var rel=0;rel<(G.eraId==="medieval"?relicXs.length:0);rel++){
     var rx=relicXs[rel],rh=25+(rel%2)*14,ry=GY-116-(rel%2)*17;
     CT.fillRect(rx-7,ry-rh,14,rh);CT.fillRect(rx-10,ry-rh,4,6);CT.fillRect(rx-2,ry-rh,4,6);CT.fillRect(rx+6,ry-rh,4,6);
     CT.beginPath();CT.moveTo(rx-13,ry);CT.lineTo(rx-8,ry-18);CT.lineTo(rx+8,ry-15);CT.lineTo(rx+13,ry);CT.closePath();CT.fill();
@@ -5269,9 +5286,10 @@ function drawTree(t){
     if(ti.hw <= 0) continue;
     /* Gradient korony - jaśniejsza góra, ciemniejszy dół */
     var crownGr = CT.createLinearGradient(bx, ti.yT, bx, ti.yB);
-    crownGr.addColorStop(0, "rgb(60,"+(140+Math.round(pct*55))+",40)");
-    crownGr.addColorStop(0.6, "rgb(30,"+(100+Math.round(pct*45))+",26)");
-    crownGr.addColorStop(1, "rgb(15,"+(60+Math.round(pct*30))+",15)");
+    var modernForest=G.eraId!=="medieval";
+    crownGr.addColorStop(0, modernForest?"#71896b":"rgb(60,"+(140+Math.round(pct*55))+",40)");
+    crownGr.addColorStop(0.6, modernForest?"#49694e":"rgb(30,"+(100+Math.round(pct*45))+",26)");
+    crownGr.addColorStop(1, modernForest?"#2c493d":"rgb(15,"+(60+Math.round(pct*30))+",15)");
     CT.fillStyle = crownGr;
     /* Trójkąt */
     CT.beginPath();
@@ -8654,53 +8672,7 @@ function drawMasonPremium(ctx,px,py,dir,sz,step,atk,moving,isP){
 }
 
 function drawEarlyModernFighter(ctx,key,px,py,dir,sz,step,atk,moving,isP,muzzleFlash){
-  var f=sz/22,bob=moving?Math.abs(Math.cos(step))*.8*f:0,stride=moving?Math.sin(step)*3.8*f:0;
-  var team=isP?"#3d69af":"#a53f37",teamDark=isP?"#1d386d":"#65221f";
-  var coat=key==="musketeer"?"#6d4a32":(key==="sapper"?"#716348":"#596342"),coatLight=key==="sapper"?"#a69262":"#8b805e";
-  ctx.save();ctx.globalAlpha=PERF.low?.13:.21;ctx.fillStyle="#080706";ctx.beginPath();ctx.ellipse(px,py+1,11*f,2.7*f,0,0,Math.PI*2);ctx.fill();ctx.restore();
-  ctx.save();ctx.translate(px,py-bob);ctx.scale(dir,1);ctx.lineCap="round";ctx.lineJoin="round";
-  // Buty i spodnie: dwa odrębne kroki, bez ślizgania po podłożu.
-  ctx.strokeStyle="#21170f";ctx.lineWidth=4.5*f;ctx.beginPath();ctx.moveTo(-3*f,-11*f);ctx.lineTo(-4*f-stride,0);ctx.moveTo(3*f,-11*f);ctx.lineTo(4*f+stride,0);ctx.stroke();
-  ctx.strokeStyle="#c1a47b";ctx.lineWidth=2.2*f;ctx.beginPath();ctx.moveTo(-3*f,-11*f);ctx.lineTo(-4*f-stride,-4*f);ctx.moveTo(3*f,-11*f);ctx.lineTo(4*f+stride,-4*f);ctx.stroke();
-  // Długi kaftan z rozcięciem i drużynowymi mankietami.
-  ctx.fillStyle=coat;ctx.strokeStyle="#211811";ctx.lineWidth=1.1*f;ctx.beginPath();ctx.moveTo(-7*f,-27*f);ctx.lineTo(7*f,-27*f);ctx.lineTo(9*f,-9*f);ctx.lineTo(2*f,-11*f);ctx.lineTo(0,-7*f);ctx.lineTo(-2*f,-11*f);ctx.lineTo(-9*f,-9*f);ctx.closePath();ctx.fill();ctx.stroke();
-  ctx.fillStyle=coatLight;ctx.fillRect(-5*f,-25*f,10*f,12*f);
-  ctx.strokeStyle="#e0c998";ctx.lineWidth=1.2*f;ctx.beginPath();ctx.moveTo(-5*f,-25*f);ctx.lineTo(5*f,-11*f);ctx.moveTo(5*f,-25*f);ctx.lineTo(-4*f,-12*f);ctx.stroke();
-  ctx.fillStyle=team;ctx.fillRect(-7*f,-16*f,14*f,2.4*f);ctx.fillStyle="#d5ae4a";ctx.fillRect(-1.2*f,-16*f,2.4*f,2.4*f);
-  // Głowa i wyraźny profil.
-  ctx.fillStyle="#d5a374";ctx.strokeStyle="#38251a";ctx.lineWidth=.9*f;ctx.beginPath();ctx.ellipse(1*f,-33*f,5.2*f,5.8*f,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-  ctx.fillStyle="#1b100b";ctx.beginPath();ctx.arc(3.2*f,-34*f,.8*f,0,Math.PI*2);ctx.fill();
-  if(key==="pikeguard"){
-    // Morion z grzebieniem i bardzo długi pik trzymany przed szykiem.
-    ctx.fillStyle="#737b79";ctx.strokeStyle="#303536";ctx.beginPath();ctx.arc(1*f,-35*f,6.7*f,Math.PI,Math.PI*2);ctx.lineTo(8*f,-34*f);ctx.lineTo(-6*f,-34*f);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.fillStyle="#9ba2a0";ctx.beginPath();ctx.moveTo(-2*f,-41*f);ctx.quadraticCurveTo(2*f,-47*f,5*f,-41*f);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.beginPath();ctx.ellipse(1*f,-34*f,9*f,1.4*f,0,0,Math.PI*2);ctx.fill();ctx.stroke();
-    var thrust=Math.sin(Math.max(0,Math.min(1,atk))*Math.PI)*6*f;
-    ctx.strokeStyle="#68421f";ctx.lineWidth=2.2*f;ctx.beginPath();ctx.moveTo(-9*f,-7*f);ctx.lineTo(34*f+thrust,-31*f);ctx.stroke();
-    ctx.strokeStyle="rgba(255,225,170,.5)";ctx.lineWidth=.7*f;ctx.beginPath();ctx.moveTo(-7*f,-8*f);ctx.lineTo(32*f+thrust,-31.5*f);ctx.stroke();
-    ctx.fillStyle="#d8dddc";ctx.strokeStyle="#50585a";ctx.beginPath();ctx.moveTo(33*f+thrust,-31*f);ctx.lineTo(42*f+thrust,-34*f);ctx.lineTo(38*f+thrust,-28*f);ctx.closePath();ctx.fill();ctx.stroke();
-  }else if(key==="musketeer"){
-    // Kapelusz z podwiniętym rondem, pióro i muszkiet o pełnej długości.
-    ctx.fillStyle="#30251f";ctx.strokeStyle="#120e0c";ctx.beginPath();ctx.ellipse(1*f,-37*f,9*f,2.1*f,-.08,0,Math.PI*2);ctx.fill();ctx.stroke();
-    ctx.beginPath();ctx.moveTo(-5*f,-38*f);ctx.quadraticCurveTo(1*f,-46*f,7*f,-38*f);ctx.lineTo(5*f,-34*f);ctx.lineTo(-4*f,-34*f);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.strokeStyle=team;ctx.lineWidth=1.5*f;ctx.beginPath();ctx.moveTo(-3*f,-39*f);ctx.lineTo(5*f,-37*f);ctx.stroke();
-    ctx.strokeStyle="#e9d7a8";ctx.lineWidth=1.2*f;ctx.beginPath();ctx.moveTo(-3*f,-41*f);ctx.quadraticCurveTo(-10*f,-48*f,-7*f,-53*f);ctx.stroke();
-    var recoil=(atk>.65?3:0)*f;
-    ctx.strokeStyle=teamDark;ctx.lineWidth=3.2*f;ctx.beginPath();ctx.moveTo(-4*f,-23*f);ctx.lineTo(9*f-recoil,-19*f);ctx.stroke();
-    ctx.fillStyle="#75451f";ctx.strokeStyle="#2c1a0c";ctx.lineWidth=1*f;ctx.beginPath();ctx.moveTo(-6*f,-20*f);ctx.lineTo(22*f-recoil,-24*f);ctx.lineTo(23*f-recoil,-20*f);ctx.lineTo(-4*f,-16*f);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.strokeStyle="#3d4140";ctx.lineWidth=2.1*f;ctx.beginPath();ctx.moveTo(12*f-recoil,-23*f);ctx.lineTo(33*f-recoil,-24*f);ctx.stroke();
-    ctx.strokeStyle="#c5c8c6";ctx.lineWidth=.7*f;ctx.beginPath();ctx.moveTo(15*f-recoil,-24*f);ctx.lineTo(34*f-recoil,-25*f);ctx.stroke();
-    ctx.fillStyle="#c9c9c4";ctx.beginPath();ctx.moveTo(33*f-recoil,-25*f);ctx.lineTo(39*f-recoil,-27*f);ctx.lineTo(34*f-recoil,-23*f);ctx.closePath();ctx.fill();
-    if(muzzleFlash>0){ctx.globalAlpha=Math.min(1,muzzleFlash*5);ctx.fillStyle="#fff0a0";ctx.beginPath();ctx.moveTo(35*f,-24*f);ctx.lineTo(46*f,-30*f);ctx.lineTo(42*f,-24*f);ctx.lineTo(47*f,-18*f);ctx.closePath();ctx.fill();ctx.globalAlpha=1;}
-  }else{
-    // Saper: skórzana czapka, torba prochowa i łopata pracująca jak broń.
-    ctx.fillStyle="#4c3424";ctx.strokeStyle="#24170e";ctx.beginPath();ctx.arc(1*f,-36*f,6.5*f,Math.PI,Math.PI*2);ctx.lineTo(8*f,-35*f);ctx.lineTo(-6*f,-35*f);ctx.closePath();ctx.fill();ctx.stroke();
-    ctx.fillStyle=team;ctx.fillRect(-6*f,-35*f,14*f,1.5*f);
-    ctx.fillStyle="#5e3b24";ctx.strokeStyle="#28180f";ctx.fillRect(-9*f,-19*f,6*f,9*f);ctx.strokeRect(-9*f,-19*f,6*f,9*f);ctx.fillStyle="#222";ctx.beginPath();ctx.arc(-6*f,-14*f,1.4*f,0,Math.PI*2);ctx.fill();
-    var shovelSwing=-.45+Math.sin(Math.max(0,Math.min(1,atk))*Math.PI)*1.05;
-    ctx.save();ctx.translate(7*f,-19*f);ctx.rotate(shovelSwing);ctx.strokeStyle="#6c4324";ctx.lineWidth=2.4*f;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(22*f,-4*f);ctx.stroke();ctx.fillStyle="#858887";ctx.strokeStyle="#383b3b";ctx.beginPath();ctx.moveTo(20*f,-8*f);ctx.lineTo(29*f,-9*f);ctx.lineTo(31*f,-2*f);ctx.lineTo(22*f,2*f);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
-  }
-  ctx.restore();
+  FUTURE.drawInfantry(ctx,key,px,py,dir,sz,step,atk,moving,isP);
 }
 
 function drawFigGame(u, px, py, dir, sz){
@@ -8785,6 +8757,7 @@ function drawArcherProfile(ctx,px,py,dir,sz,step,atk,moving,isP){
    To gwarantuje, że ikona = jednostka w grze.
    ══════════════════════════════════════════════ */
 function drawFigCommon(ctx, key, px, py, dir, sz, step, atk, moving, withTime, hideSword, isP){
+  if(!hideSword&&/^(drwal|warrior|pikeman|crossbow|berserk|templar)$/.test(key)){FUTURE.drawInfantry(ctx,key,px,py,dir,sz,step,atk,moving,isP!==false);return;}
   var ud=UD[key];if(!ud)return;
   if(key==="archer"){drawArcherProfile(ctx,px,py,dir,sz,step,atk,moving,isP);return;}
   var f=sz/22;
@@ -9899,6 +9872,9 @@ function paintIconOn(ctx, key, cw, ch){
   var px=Math.round(cw/2);
   var py=Math.round(ch*0.92);
   var sz=Math.round(cw*0.50);
+  if(/^(drwal|warrior|pikeman|crossbow|berserk|templar|pikeguard|musketeer|sapper)$/.test(key)){
+    FUTURE.drawInfantry(ctx,key,cw*.40,ch*.94,1,cw*(/pikeman|pikeguard/.test(key)?.30:.39),0,0,false,true);return;
+  }
   /* For knight, render a simplified mounted icon */
   if(key==="knight"){
     drawKnightIcon(ctx, px, py, cw, ch);
