@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm'),pat
 const {createCanvas}=require('@napi-rs/canvas');
 let allocations=0;
 const window={},document={createElement(){allocations++;return createCanvas(1,1);}};
-for(const file of ['gags.js','eras.js','i18n.js','future-eras-v73.js','era-art-v73.js','next-eras-v74.js'])vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../content',file),'utf8'),{window,document});
+for(const file of ['gags.js','eras.js','i18n.js','future-eras-v73.js','era-art-v73.js','next-eras-v74.js','osiedle-v75.js'])vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../content',file),'utf8'),{window,document});
 const art=window.CASTLE_ERA_ART,canvas=createCanvas(640,480),ctx=canvas.getContext('2d');
 const castle={x:20,w:200,h:260,isP:true,hp:100,max:100};
 function frame(era,level){ctx.clearRect(0,0,640,480);art.drawBase(ctx,castle,400,era,level,0);return canvas.toBuffer('image/png');}

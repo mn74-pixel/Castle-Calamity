@@ -15,6 +15,25 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  estateAudit: function(){
+    launchTestLevel("modern",3);var special=ESTATE.active(G)&&G.trees.length===0&&G.rocks.length===0;G.estate.ai=1e6;G.p.gold=200;
+    var bought=buyEstateItem("wine"),cost=G.p.gold===175,blocked=!buyEstateItem("beer");
+    ESTATE.tick(G,.8,castleDmg);var waits=G.estate.bottles.length===0;
+    ESTATE.tick(G,.26,castleDmg);var released=G.estate.bottles.length===1;
+    var hp=G.e.hp;ESTATE.tick(G,1.5,castleDmg);var damage=G.e.hp===hp-150;
+    G.p.gold=100;ESTATE.buy(G,"runner",true);ESTATE.buy(G,"runner",true);var limit=!ESTATE.buy(G,"runner",true);var gold=G.p.gold;
+    ESTATE.tick(G,13.01,castleDmg);var delivered=G.p.gold===gold+68&&G.estate.delivered===2&&G.estate.runners.length===0;
+    PAUSED=true;var paused=!buyEstateItem("beer");PAUSED=false;G.p.gold=0;var poor=!buyEstateItem("beer");
+    G.p.gold=100;var pc=0,ec=0,oldP=PLAYER_CREST,oldE=ENEMY_CREST,oldDraw=drawCrestImageContained;
+    PLAYER_CREST={side:"p"};ENEMY_CREST={side:"e"};drawCrestImageContained=function(ctx,img){if(img.side==="p")pc++;else ec++;};render();PLAYER_CREST=oldP;ENEMY_CREST=oldE;drawCrestImageContained=oldDraw;
+    var noSpells=Object.keys(abilityCooldowns).length===0;castAbility("freeze");noSpells=noSpells&&!G.freezeField;
+    G.estate.ai=0;G.e.gold=100;ESTATE.tick(G,.02,castleDmg);var ai=!!G.estate.e.action;
+    var noArmy=G.units.length===0;
+    var platform=true;["modern","orbital"].forEach(function(era){launchTestLevel(era,2);G.p.gold=999;var u=spawnUnit(era==="modern"?"fieldgun":"railgun",true);var x=u.x,y=u.y;doCannon(u,.02);platform=platform&&u.x===x&&u.y===y;});
+    return {special:special,bought:bought,cost:cost,blocked:blocked,waits:waits,released:released,damage:damage,limit:limit,delivered:delivered,paused:paused,poor:poor,faces:pc===1&&ec===1,noSpells:noSpells,ai:ai,noArmy:noArmy,platform:platform};
+  },
+  estateScene: function(){launchTestLevel("modern",3);G.p.gold=200;G.estate.ai=1e6;buyEstateItem("runner");ESTATE.buy(G,"runner",false);ESTATE.tick(G,7.8,castleDmg);buyEstateItem("wine");ESTATE.buy(G,"vodka",false);ESTATE.tick(G,.6,castleDmg);G.e.hp=790;render();},
+  estateBattle: function(){launchTestLevel("modern",3);var t=0;for(;t<240&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok)buyEstateItem("runner");var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp)};},
   nextRulesAudit: function(){
     var coherent=true,total=0;ERA_ORDER.forEach(function(id){total+=ERA_LEVELS[id].length;});
     NEXT.ids.forEach(function(era){ERA_LEVELS[era].forEach(function(l){[l.ul,l.ai].forEach(function(deck){if(deck.length>8)coherent=false;deck.forEach(function(k){if(k!=="drwal"&&k!=="mason"&&UD[k].nextEra!==era)coherent=false;});});});});
@@ -667,6 +686,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "content", "eras.js"), "utf8"), 
 vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras-v73.js"), "utf8"), sandbox, { filename: "future-eras-v73.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "era-art-v73.js"), "utf8"), sandbox, { filename: "era-art-v73.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "next-eras-v74.js"), "utf8"), sandbox, { filename: "next-eras-v74.js" });
+vm.runInContext(fs.readFileSync(path.join(root, "content", "osiedle-v75.js"), "utf8"), sandbox, { filename: "osiedle-v75.js" });
 vm.runInContext(gameSource, sandbox, { filename: "game.js" });
 
 const qa = sandbox.window.__QA;
@@ -923,12 +943,17 @@ for(const era of ["industrial","electric","modern","orbital"]){
   const f=qa.futureEra(era,0);check(f.switched&&f.levels===4&&f.abilities,"nowa epoka "+era+" ma cztery bitwy i zachowuje zdolności");
   check(qa.deckAudit().largest<=8,"nowa epoka "+era+" zachowuje limit ośmiu kart");
   for(let i=0;i<4;i++){const r=qa.stressLevel(i,90);check(r.finite&&r.peakTotal<=40,era+" bitwa "+(i+1)+": 90 s stabilnej symulacji");}
-  qa.viewport(1280,720,1);qa.futureScene(era,3);save(era+"-desktop.png");
-  qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});qa.futureScene(era,3);save(era+"-iphone.png");
+  qa.viewport(1280,720,1);qa.futureScene(era,era==="modern"?2:3);save(era+"-desktop.png");
+  qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});qa.futureScene(era,era==="modern"?2:3);save(era+"-iphone.png");
   qa.setLang("en");check(!qa.futureEra(era,0).name.includes(".level."),era+" ma angielską nazwę poziomu");qa.setLang("pl");
 }
 check(qa.eraTransition("electric").era==="modern","finał IV otwiera epokę Silniki i Radio");
 check(qa.eraTransition("modern").era==="orbital","finał V otwiera Wyprawę Orbitalną");
+const estate=qa.estateAudit();
+for(const [key,ok] of Object.entries(estate))check(ok,"Osiedle: "+key);
+const estateBattle=qa.estateBattle();check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.seconds<240,"Osiedle: dostawy i wybór butelek pozwalają wygrać w mniej niż 4 minuty");
+qa.viewport(1280,720,1);qa.estateScene();save("estate-desktop.png");
+qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});qa.estateScene();save("estate-iphone.png");
 const nr=qa.nextRulesAudit();
 check(nr.total===34&&nr.eras===6&&nr.coherent,"34 bitwy w sześciu epokach; nowe talie obu stron zawierają wyłącznie wojska swojej epoki");
 check(nr.healing&&nr.ammo&&nr.helpers&&nr.names&&nr.counters,"nowi medycy leczą, działa zużywają amunicję, pomocnicy mają kostiumy i poprawne nazwy, kontry działają");

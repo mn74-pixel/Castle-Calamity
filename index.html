@@ -36,6 +36,8 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 #cds::-webkit-scrollbar{display:none;}
 .cd{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;flex-shrink:0;transform:none;transition:none;contain:layout paint;}
 .cd:active{transform:none;}
+.estateName{font-size:11px;line-height:14px;color:#eeddbc;margin-top:2px;text-shadow:0 1px 2px #17202c;}
+button.cd{padding:0;border:0;background:transparent;font:inherit;color:inherit;}
 .cd .iconWrap{width:58px;height:58px;position:relative;border-radius:7px;background:linear-gradient(180deg,#e8d4a8,#c4a878);border:2px solid #5a3a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);}
 @media (hover: hover) and (pointer: fine) {
   .cd:hover .iconWrap{border-color:#ffcc44;box-shadow:0 3px 9px rgba(255,200,80,.42);}
@@ -389,6 +391,7 @@ var SWORD_SFX_2="T2dnUwACAAAAAAAAAACSNI+fAAAAAHdTiP4BHgF2b3JiaXMAAAAAASJWAAAAAAA
 <script src="content/future-eras-v73.js"></script>
 <script src="content/era-art-v73.js"></script>
 <script src="content/next-eras-v74.js"></script>
+<script src="content/osiedle-v75.js"></script>
 <script>
 (function(){
 "use strict";
@@ -744,6 +747,7 @@ var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","cro
 var FUTURE=window.CASTLE_FUTURE;
 var ERA_ART=window.CASTLE_ERA_ART;
 var NEXT=window.CASTLE_NEXT;
+var ESTATE=window.CASTLE_ESTATE;
 if(FUTURE){for(var futureKey in FUTURE.units){UD[futureKey]=FUTURE.units[futureKey];UK.push(futureKey);}}
 if(FUTURE)SC=SC.concat(FUTURE.scenes);
 var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
@@ -1150,6 +1154,8 @@ function noiseHit(dur,vol,cutoff,delay,motif){
   }catch(e){}
 }
 var SFX={
+  sip: function(){if(sfxOk("sip",220)){toneAt(290,.085,"sine",.025,170,0,false,0);toneAt(240,.08,"sine",.022,140,.13,false,0);}},
+  glass: function(){if(sfxOk("glass",110)){noiseHit(.07,.05,6300,0,false);toneAt(1800+Math.random()*240,.13,"triangle",.024,820,0,false,0);toneAt(2700,.08,"sine",.015,1700,.035,false,0);toneAt(95,.11,"sine",.03,55,0,false,0);}},
   spawn:    function(){ if(sfxOk("spawn",140)) tone(196,0.10,"sine",0.045,262); },
   sword:    function(){ if(sfxOk("sword",95)){ var v=Math.random()<0.5?"sword":"sword2"; if(!playSample(v,0.20,0.16)){noiseHit(.045,.06,3100);tone(780+Math.random()*240,.065,"triangle",.023,390);} } },
   bow:      function(){if(sfxOk("bow",85)){toneAt(245,.13,"triangle",.048,150,0,false,-.18);noiseHit(.045,.025,3200,.018,false);}},
@@ -1433,6 +1439,7 @@ function load(idx){
     killStreak:{count:0,lastKillT:-999},
     boss:initBossEncounter(lv),bossBlinkFx:null,performanceMode:PERF.low?(PERF.adaptive?"adaptive":"device"):"full"
   };
+  ESTATE.init(G);
   PAUSED=false;
   abilityCooldowns={};
   document.getElementById("pause").style.display="none";
@@ -1553,7 +1560,9 @@ function updateUnitCardState(key,el){
     badge.title=state.message;
   }
 }
+function buyEstateItem(id){if(!G||G.over||PAUSED)return false;var bought=ESTATE.buy(G,id,true);if(bought){if(id==="runner")SFX.spawn();else SFX.sip();}ESTATE.updateCards(document,G,LANG,PAUSED);return bought;}
 function buildCards(){
+  if(ESTATE.active(G)){ESTATE.buildCards(document,G,LANG,buyEstateItem);return;}
   refreshUnitNames();
   var row=document.getElementById("cds");row.innerHTML="";
   var ul=G.lv.ul;
@@ -1630,6 +1639,7 @@ function buildCards(){
 
 function updHUD(){
   if(!G)return;
+  if(ESTATE.active(G)){ESTATE.updateCards(document,G,LANG,PAUSED);return;}
   for(var ki=0;ki<UK.length;ki++){
     var k=UK[ki];
     var el=document.getElementById("cd_"+k);if(!el)continue;
@@ -1647,6 +1657,7 @@ function updHUD(){
 /* ── Spawn ── */
 function spawnUnit(key,isP,options){
   if(!G||G.over||PAUSED)return;
+  if(ESTATE.active(G))return key==="drwal"?ESTATE.buy(G,"runner",isP):undefined;
   options=options||{};
   if(TUTORIAL.active&&isP){
     if(TUTORIAL.step===0)return;
@@ -1737,7 +1748,7 @@ function nearRock(fx,isP){
 
 /* === UMIEJĘTNOŚCI: CAST === */
 function castAbility(name){
-  if(!G||G.over||PAUSED)return;
+  if(!G||G.over||PAUSED||ESTATE.active(G))return;
   var ab=ABILITIES[name];
   if(!ab)return;
   if(!isAbilityUnlocked(ab))return; // zdolność nie została jeszcze poznana
@@ -1852,6 +1863,7 @@ document.addEventListener("keydown",function(e){
     return;
   }
   if(!G||G.over||PAUSED)return;
+  if(ESTATE.active(G)){var choice=ESTATE.choices[Number(e.key)-1];if(choice){e.preventDefault();buyEstateItem(choice.id);}return;}
   // Umiejętności Q/W/E
   var kl=e.key.toUpperCase();
   if(kl==="Q"){castAbility("arrowRain");return;}
@@ -1879,6 +1891,8 @@ function buildAbilityBar(){
   if(!bar)return;
   bar.innerHTML="";
   bar.style.display="none";
+  if(ESTATE.active(G)){bar.textContent=LANG==="en"?"Runners → supplies → drink & throw · Faces: upload in menu":"Dostawcy → zaopatrzenie → pij i rzuć · Twarze: wgraj w menu";bar.style.display="flex";bar.style.pointerEvents="none";bar.style.fontSize="12px";bar.style.color="#f5dfb3";return;}
+  bar.style.pointerEvents="";
   var anyVisible=false;
   for(var abN in ABILITIES){
     var ab=ABILITIES[abN];
@@ -2170,7 +2184,7 @@ function castleDmg(tc,dd,sx,sy,source){
   tc.lastHitY=isFinite(sy)?sy:G.GY-tc.h*.45;
   addFlt(tc.x+tc.w/2,G.GY-tc.h+22,"-"+Math.round(dd),"#ff4400");
   tc.shake=Math.max(tc.shake||0,0.35);
-  if(dd >= 25) SFX.explosion(); else SFX.castle();
+  if(source&&source.estate)SFX.glass();else if(dd >= 25) SFX.explosion(); else SFX.castle();
   for(var di=0;di<6;di++)G.dust.push({x:sx,y:G.GY-10,vx:(Math.random()-0.5)*80,vy:-30-Math.random()*60,life:0.8,sz:2+Math.random()*2});
   /* Przekroczenie progu uszkodzeń ma własny krótki wstrząs konstrukcji.
      Nie zmienia obrażeń — jedynie pokazuje, że mur przeszedł w kolejny stan. */
@@ -2673,7 +2687,8 @@ function tick(dt){
   if(!G.over){
     G.p.gold=Math.min(G.p.gold+passiveGoldRate(true)*dt,9999);
     G.e.gold=Math.min(G.e.gold+passiveGoldRate(false)*dt,9999);
-    G.treeT+=dt;
+    if(ESTATE.active(G))ESTATE.tick(G,dt,castleDmg,function(p,n){var c=p?G.p:G.e;addFlt(c.x+c.w*.5,G.GY-25,"+"+n,"#a6d776");});
+    if(!ESTATE.active(G))G.treeT+=dt;
     if(G.treeT>=treeRespawnSeconds()){
       G.treeT=0;
       var alive=[];for(var i=0;i<G.trees.length;i++)if(G.trees[i].w>0)alive.push(G.trees[i]);
@@ -2688,8 +2703,8 @@ function tick(dt){
       }
     }
     /* Podczas aktywnego samouczka przeciwnik grzecznie czeka na szkolenie BHP. */
-    if(!G.tutorialMode)G.aiT+=dt*1000;
-    if(!G.tutorialMode&&G.aiT>=(G.aiNextMs||G.lv.ad)){
+    if(!G.tutorialMode&&!ESTATE.active(G))G.aiT+=dt*1000;
+    if(!G.tutorialMode&&!ESTATE.active(G)&&G.aiT>=(G.aiNextMs||G.lv.ad)){
       G.aiT=0;
       var aiK=selectAiUnit();
       if(aiK){var aiSpawned=spawnUnit(aiK,false);if(aiSpawned)G.aiLastKey=aiK;}
@@ -3180,6 +3195,7 @@ function doCannon(u,dt){
   var isMortar=!!u.ud.mortar;
   var home=u.isP?G.p:G.e;
   u.x=u.isP?home.x+home.w*0.62:home.x+home.w*0.38;u.y=G.GY-home.h-8;
+  if(NEXT.ids.indexOf(G.eraId)>=0){u.x=home.x+home.w*(u.isP?.88:.12);u.y=G.GY-home.h*166/260-4;}
   u.acd-=dt;if(u.acd>0)return;
   if(u.shotsLeft===null||u.shotsLeft===undefined)u.shotsLeft=u.ud.shots||5;
   if(u.shotsLeft<=0){
@@ -5009,9 +5025,10 @@ function render(){
     ERA_ART.drawBase(CT,G.p,G.GY,G.eraId,G.lv.id,G.T);
     ERA_ART.drawBase(CT,G.e,G.GY,G.eraId,G.lv.id,G.T);
   }else{drawCastle(G.p,sc);drawCastle(G.e,sc);}
-  if(G.eraId!=="medieval"){drawEraCrest(G.p);drawEraCrest(G.e);}
+  if(ESTATE.active(G))ESTATE.draw(CT,G,PLAYER_CREST,ENEMY_CREST,drawCrestImageContained,getUnitDrawSize()/22,LANG);
+  else if(G.eraId!=="medieval"){drawEraCrest(G.p);drawEraCrest(G.e);}
   drawCastleHUD(G.p);drawCastleHUD(G.e);
-  drawCastleExpansion(G.p);drawCastleExpansion(G.e);
+  if(!ESTATE.active(G)){drawCastleExpansion(G.p);drawCastleExpansion(G.e);}
   drawLevelAbsurdity();
   // Smoke
   for(var i=0;i<G.smoke.length;i++){
@@ -6016,7 +6033,7 @@ function drawCastleHUD(c){
 
   /* Player gold pill / enemy count */
   if(isP){
-    var goldText="🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true);
+    var goldText=ESTATE.active(G)?(LANG==="en"?"Funds: ":"Środki: ")+Math.floor(G.p.gold)+" · "+G.estate.runners.filter(function(r){return r.isP;}).length+"/2":"🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true);
     CT.font="bold 12px Arial";
     var gtw=CT.measureText(goldText).width+16;
     var goldX=bx2,goldY=by2+barH+6;
@@ -10156,6 +10173,7 @@ function showEnd(won){
   }else{
     bodyText=isBoss?tr("end.bossLost"):tr("end.lost");
   }
+  if(ESTATE.active(G)){bodyText=won?(LANG==="en"?"The estate feud is over. Time for a quieter place: space.":"Osiedlowa awantura zakończona. Czas na spokojniejsze miejsce: kosmos."):(LANG==="en"?"Your block needs a renovation. Send runners for supplies and try again.":"Twój blok wymaga remontu. Wyślij dostawców po zaopatrzenie i spróbuj ponownie.");}
   document.getElementById("et").textContent=titleText;
   document.getElementById("em").textContent=bodyText;
   var mm=Math.floor(elapsed/60),ss=elapsed%60;

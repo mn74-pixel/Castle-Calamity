@@ -9,6 +9,13 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
+## Osiedle Wielkiej Awantury v7.5.0
+- specjalna bitwa V.4 tuż przed kosmosem: dwa bloki, wklejone twarze i butelki,
+- dostawcy biegną do sklepów, wracają z zaopatrzeniem i zasilają budżet,
+- picie, zamach, lot, tłuczone szkło i stopniowe uszkodzenia elewacji,
+- dostęp od razu przez **TESTY → Silniki i Radio → Osiedle Wielkiej Awantury**,
+- opis zasad: `docs/OSIEDLE-V7.5.md`.
+
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,
 - osiem nowych jednostek bojowych, rodzime armie, własne bazy i kostiumy pomocników,

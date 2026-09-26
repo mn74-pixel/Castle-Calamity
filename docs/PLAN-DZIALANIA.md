@@ -434,3 +434,11 @@ Nowe 15 sylwetek piechoty, artyleria III–IV, dopasowane ikony oraz materiałow
 
 ## v7.4 — dwie kolejne epoki
 Silniki i Radio oraz Wyprawa Orbitalna: osiem bitew, osiem jednostek, rodzime składy armii i stroje pomocników. Testy obejmują przejścia IV→V→VI, medyków, amunicję i zachowanie zapisów. Następny priorytet: ocena tempa nowych bitew przez gracza, zanim zwiększymy skalę kampanii.
+
+
+## v7.5 — specjalna bitwa osiedlowa
+
+Wdrożono przerywnik V.4 przed kosmosem: dwie fotograficzne twarze w blokach,
+butelki jako pociski, dostawcy zaopatrzenia i krótkie animacje picia.
+Zachowano 34 bitwy i zgodność zapisów. Szczegóły: `OSIEDLE-V7.5.md`.
+Kolejna ocena gracza: tempo dostaw i czytelność animacji na fizycznym iPhonie.
