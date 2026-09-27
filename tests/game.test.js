@@ -35,6 +35,7 @@ window.__QA = {
   },
   estateScene: function(){launchTestLevel("modern",3);G.p.gold=200;G.estate.ai=1e6;buyEstateItem("runner");ESTATE.buy(G,"runner",false);ESTATE.tick(G,7.8,castleDmg);buyEstateItem("wine");ESTATE.buy(G,"vodka",false);ESTATE.tick(G,.6,castleDmg);G.e.hp=790;render();},
   estateSegmentScene: function(i){launchTestLevel("modern",3);ESTATE.setSegment(G,i,true);G.estate.ai=1e6;G.e.hp=G.e.max*.72;if(i>=3){G.estate.p.stamina=48;G.estate.p.food=1;}if(i>=6)G.estate.p.combo=3;render();var seg=ESTATE.segments[i];return {index:i,id:seg.id,prop:seg.prop,food:!!seg.food,brawlers:seg.brawlers,stamina:G.estate.p.stamina,bottles:G.estate.p.bottles};},
+  estateSegmentLock: function(i){launchTestLevel("modern",3);ESTATE.setSegment(G,i,true);G.estate.ai=1e6;var before=G.estate.segment;ESTATE.tick(G,45,castleDmg);return {before:before,after:G.estate.segment,visual:ESTATE.currentVisual()};},
   estateBattle: function(){launchTestLevel("modern",3);var t=0;for(;t<240&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment};},
   nextRulesAudit: function(){
     var coherent=true,total=0;ERA_ORDER.forEach(function(id){total+=ERA_LEVELS[id].length;});
@@ -956,6 +957,8 @@ for(const [key,ok] of Object.entries(estate))check(ok,"Osiedle: "+key);
 check(sandbox.window.CASTLE_ESTATE.segments.length===12&&new Set(sandbox.window.CASTLE_ESTATE.segments.map(s=>s.id)).size===12&&sandbox.window.CASTLE_ESTATE.segments.filter(s=>s.brawlers>0).length>=9,"Osiedle: dwanaście unikalnych segmentów i narastające bójki w tle");
 check(sandbox.window.CASTLE_ESTATE.segmentSeconds===7&&sandbox.window.CASTLE_FUTURE.levels.modern[3].pH===2200&&sandbox.window.CASTLE_FUTURE.levels.modern[3].eH===2200,"Osiedle: rytm 12 segmentów i symetryczne HP są ustawione");
 check(new Set(sandbox.window.CASTLE_ESTATE.segments.map(s=>s.prop)).size===12,"Osiedle: każdy z 12 segmentów ma własną scenografię");
+check(estateSource.includes("facadePalette")&&estateSource.includes("Segment-specific facade details")&&estateSource.includes("currentVisual"),"Osiedle: fasada bloków i tło są zależne od segmentu, nie tylko od wspólnego poziomu V.4");
+check(html.includes("PENDING_ESTATE_TEST_SEGMENT")&&html.includes("applyEstateTestSegment"),"TESTY utrzymują wybrany segment także podczas inicjalizacji poziomu");
 check(sandbox.window.CASTLE_ESTATE.foods.map(f=>f.buff).join(",")==="quick,reset,regen,efficient","Osiedle: cztery rodzaje jedzenia mają cztery różne efekty mechaniczne");
 check(typeof sandbox.window.CASTLE_ESTATE.chooseDrink==="function"&&typeof sandbox.window.CASTLE_ESTATE.staminaCost==="function","Osiedle: AI i koszt kondycji korzystają z jawnych reguł zamiast samego tempa");
 check(html.includes("OSIEDLE — TEST SEGMENTÓW")&&html.includes("launchEstateSegment")&&html.includes("ESTATE.segments.forEach"),"TESTY pokazują osobne wejścia do wszystkich segmentów Osiedla");
@@ -967,6 +970,7 @@ qa.viewport(1280,720,1);qa.estateScene();save("estate-desktop.png");
 qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});qa.estateScene();save("estate-iphone.png");
 qa.viewport(960,540,1);
 for(let esi=0;esi<12;esi++){const es=qa.estateSegmentScene(esi);check(es.index===esi&&es.id===sandbox.window.CASTLE_ESTATE.segments[esi].id,"Osiedle segment "+(esi+1)+": render i konfiguracja");save("estate-segment-"+String(esi+1).padStart(2,"0")+".png");}
+for(const esi of [0,3,7,10,11]){const lock=qa.estateSegmentLock(esi);check(lock.before===esi&&lock.after===esi&&lock.visual===esi,"Osiedle TEST "+(esi+1)+": segment nie przeskakuje automatycznie");}
 const nr=qa.nextRulesAudit();
 check(nr.total===34&&nr.eras===6&&nr.coherent,"34 bitwy w sześciu epokach; nowe talie obu stron zawierają wyłącznie wojska swojej epoki");
 check(nr.healing&&nr.ammo&&nr.helpers&&nr.names&&nr.counters,"nowi medycy leczą, działa zużywają amunicję, pomocnicy mają kostiumy i poprawne nazwy, kontry działają");

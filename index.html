@@ -1440,6 +1440,7 @@ function load(idx){
     boss:initBossEncounter(lv),bossBlinkFx:null,performanceMode:PERF.low?(PERF.adaptive?"adaptive":"device"):"full"
   };
   ESTATE.init(G);
+  if(PENDING_ESTATE_TEST_SEGMENT!==null&&ACTIVE_ERA_ID==="modern"&&LI===3)applyEstateTestSegment();
   PAUSED=false;
   abilityCooldowns={};
   document.getElementById("pause").style.display="none";
@@ -10258,9 +10259,16 @@ function launchTestLevel(eraId,index){
   startLevelFlow(index,{skipBriefing:true});stopTutorial(false);
   testShortcut.style.borderColor="#ffcc44";
 }
+var PENDING_ESTATE_TEST_SEGMENT=null;
+function applyEstateTestSegment(){
+  if(PENDING_ESTATE_TEST_SEGMENT===null||!G||!ESTATE.active(G))return false;
+  var idx=PENDING_ESTATE_TEST_SEGMENT;PENDING_ESTATE_TEST_SEGMENT=null;
+  ESTATE.setSegment(G,idx,true);buildCards();buildAbilityBar();render();return true;
+}
 function launchEstateSegment(index){
+  PENDING_ESTATE_TEST_SEGMENT=index;
   launchTestLevel("modern",3);
-  if(G&&ESTATE.active(G)){ESTATE.setSegment(G,index,true);buildCards();buildAbilityBar();render();}
+  applyEstateTestSegment();
 }
 function openTestPicker(){
   var panel=document.getElementById("testPicker");
