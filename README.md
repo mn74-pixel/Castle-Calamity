@@ -1,4 +1,11 @@
-# Castle Calamity — paczka PWA
+# Castle Calamity
+
+### v8.0.1 — korekta kompozycji Osiedla
+- postacie i dostawcy wracają do skali świata zbliżonej do pierwszej epoki,
+- miejskie tło ma wyższy horyzont, mocniejsze warstwy głębi i mniej pustego nieba,
+- usunięto gigantyczną fasadę zasłaniającą scenę w 2/12,
+- tytuł segmentu jest tylko krótkim wejściowym komunikatem, a HUD kondycji przeniesiono do strefy walki.
+ — paczka PWA
 
 Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,

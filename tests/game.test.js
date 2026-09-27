@@ -969,7 +969,9 @@ check(estateSource.includes("pełne bryły zamiast patyczków")&&estateSource.in
 check(estateSource.includes("poster(ctx")&&estateSource.includes("drawTreeUrban")&&estateSource.includes("contactShadow"),"Osiedle v8: sceny mają głębię, małą architekturę i cienie kontaktowe");
 check(estateSource.includes("ZJEDZ")&&estateSource.includes("action:'eat'"),"Osiedle: karta jedzenia przełącza się z zamówienia na bezpośrednie zjedzenie");
 check(estateSource.includes("outbound=q<.57")&&estateSource.includes("dir=outbound"),"Osiedle: dostawca obraca się po zawróceniu zamiast wracać wspak");
-check(estateSource.includes("unitScale*1.28")&&estateSource.includes("unitScale*1.40"),"Osiedle: chodzący dorośli są większi, a główny bohater pozostaje jeszcze większy");
+check(estateSource.includes("unitScale*1.05")&&estateSource.includes("unitScale*1.03"),"Osiedle v8.0.1: bohaterowie i dostawcy wracają do skali świata zamiast dominować nad budynkami");
+check(!estateSource.includes("w*.70,gy*.20")&&estateSource.includes("Midground large-panel blocks"),"Osiedle v8.0.1: tło ma warstwy miejskie bez gigantycznej fasady zajmującej większość ekranu");
+check(estateSource.includes("if(g.estate.segmentFlash<=0)return")&&estateSource.includes("g.p.x+g.p.w+14"),"Osiedle v8.0.1: tytuł segmentu znika po wejściu, a HUD kondycji jest przy strefie walki");
 check(estateSource.includes("weak=Math.max")&&estateSource.includes("wobble=Math.sin")&&estateSource.includes("knee=weak"),"Osiedle: spadek HP powoduje narastające chwianie i uginanie nóg bohatera");
 check(estateSource.includes("drawArenaScene")&&estateSource.includes("arenaBase")&&estateSource.includes("drawArenaBackdrop")&&estateSource.includes("CASTLE_MENELE"),"Osiedle v7.9: osobne renderery aren, baz i teł zastępują wspólny blok");
 check(html.includes("PENDING_ESTATE_TEST_SEGMENT")&&html.includes("applyEstateTestSegment"),"TESTY utrzymują wybrany segment także podczas inicjalizacji poziomu");
