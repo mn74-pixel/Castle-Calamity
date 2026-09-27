@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v7.8.1 — wyraźnie odrębne 12 scen Osiedla.
+/* Castle Calamity PWA v7.9.0 — 12 osobnych aren i Menele Studio.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v7.8.1";
+const CACHE = "castle-calamity-v7.9.0";
 const APP_SHELL = [
   "./",
   "./index.html",

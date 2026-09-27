@@ -212,6 +212,20 @@ button.cd{padding:0;border:0;background:transparent;font:inherit;color:inherit;}
 .crestBtn:hover,.crestBtn:active{background:linear-gradient(180deg,#4a5a9a,#2a3a6a);border-color:#88aacc;}
 .crestBtn.crestRm{background:linear-gradient(180deg,#4a2a2a,#2a1a1a);border-color:#7a4a4a;color:#dba;}
 .crestBtn.crestRm:hover,.crestBtn.crestRm:active{background:linear-gradient(180deg,#6a3a3a,#4a2a2a);border-color:#cc8888;}
+
+/* === MENELE STUDIO — lokalnie tworzone postacie Osiedla === */
+#menelSection{margin-top:9px;padding:10px 12px;background:rgba(28,24,30,.58);border:1px solid rgba(194,153,92,.42);border-radius:10px;max-width:430px;width:95%;}
+.menelTitle{color:#d8be84;font-size:.69rem;letter-spacing:2.4px;text-align:center;margin-bottom:7px;}
+.menelSub{color:#8f96ac;font-size:.58rem;text-align:center;margin:-2px 0 8px;}
+.menelRow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.menelSlot{display:grid;grid-template-columns:58px 1fr;gap:5px 7px;align-items:center;width:188px;padding:7px;background:rgba(8,10,19,.46);border:1px solid rgba(110,116,142,.38);border-radius:8px;}
+.menelSlot canvas{grid-row:1/4;width:56px;height:56px;background:#17181d;border:2px solid #716148;border-radius:50%;display:block;}
+.menelName,.menelStyle{width:100%;min-width:0;height:25px;border:1px solid #4e5265;border-radius:5px;background:#151927;color:#e5dec8;font:700 10px/1.2 "Avenir Next",Arial,sans-serif;padding:3px 6px;}
+.menelBtns{display:flex;gap:4px;}
+.menelBtn{flex:1;min-height:25px;border:1px solid #665b49;border-radius:4px;background:#3b342c;color:#ead9b6;font-size:9px;font-weight:800;cursor:pointer;padding:3px 5px;}
+.menelBtn.rm{background:#392526;border-color:#674244;color:#d8b0aa;}
+@media (orientation:landscape) and (max-height:520px){#menelSection{padding:6px 9px;margin-top:5px}.menelSub{display:none}.menelSlot{width:174px;padding:5px}.menelSlot canvas{width:48px;height:48px}.menelRow{gap:6px}}
+
 /* === RESPONSIVE - MOBILE === */
 /* === Tablet (iPad portrait / landscape) === */
 @media (min-width: 601px) and (max-width: 1024px) {
@@ -332,6 +346,31 @@ button.cd{padding:0;border:0;background:transparent;font:inherit;color:inherit;}
       </div>
     </div>
   </div>
+  <div id="menelSection">
+    <div class="menelTitle">MENELE STUDIO</div>
+    <div class="menelSub">Własne twarze i archetypy postaci z Osiedla — wszystko zostaje na tym urządzeniu.</div>
+    <div class="menelRow">
+      <div class="menelSlot">
+        <canvas id="menelPreview0" width="60" height="60"></canvas>
+        <input id="menelName0" class="menelName" maxlength="14" value="Mirek" aria-label="Imię menela 1">
+        <select id="menelStyle0" class="menelStyle" aria-label="Archetyp menela 1">
+          <option value="0">Ławkowy ekspert</option><option value="1">Król reklamówki</option><option value="2">Strażnik trzepaka</option><option value="3">Nocny filozof</option>
+        </select>
+        <div class="menelBtns"><button id="menelLoad0" class="menelBtn">TWARZ</button><button id="menelReset0" class="menelBtn rm">USUŃ</button></div>
+        <input type="file" id="menelFile0" accept="image/*" style="display:none">
+      </div>
+      <div class="menelSlot">
+        <canvas id="menelPreview1" width="60" height="60"></canvas>
+        <input id="menelName1" class="menelName" maxlength="14" value="Zenek" aria-label="Imię menela 2">
+        <select id="menelStyle1" class="menelStyle" aria-label="Archetyp menela 2">
+          <option value="1">Król reklamówki</option><option value="0">Ławkowy ekspert</option><option value="2">Strażnik trzepaka</option><option value="3">Nocny filozof</option>
+        </select>
+        <div class="menelBtns"><button id="menelLoad1" class="menelBtn">TWARZ</button><button id="menelReset1" class="menelBtn rm">USUŃ</button></div>
+        <input type="file" id="menelFile1" accept="image/*" style="display:none">
+      </div>
+    </div>
+  </div>
+
 </div>
 <div id="tutorialLayer" aria-live="polite">
   <div id="tutorialFocus"></div><div id="tutorialPointer">▼</div>
@@ -10669,14 +10708,60 @@ function resetCrest(isP){
   if(resetE) resetE.onclick = function(){ resetCrest(false); };
   renderCrestPreview("crestPreviewP", null, true);
   renderCrestPreview("crestPreviewE", null, false);
+
   loadCrestFromStorage();
 })();
+
+/* Menele Studio — dwa lokalne sloty używane przez renderery Osiedla. */
+var MENELE_FACES=[null,null];
+var MENELE_STYLES=[0,1];
+var MENELE_NAMES=["Mirek","Zenek"];
+function menelStorageKey(slot){return "castleCalamityMenelFace"+slot;}
+function renderMenelPreview(slot){
+  var canvas=document.getElementById("menelPreview"+slot);if(!canvas)return;var ctx=canvas.getContext("2d");if(!ctx)return;
+  ctx.clearRect(0,0,canvas.width,canvas.height);var st=Number(MENELE_STYLES[slot])||0,cols=["#76554c","#476779","#6e674b","#544f68"];
+  ctx.fillStyle="#15181d";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle=cols[st%4];ctx.beginPath();ctx.moveTo(15,59);ctx.lineTo(20,33);ctx.lineTo(40,33);ctx.lineTo(45,59);ctx.closePath();ctx.fill();
+  var img=MENELE_FACES[slot];if(img)drawCrestImageContained(ctx,img,18,5,24,29,0);else{ctx.fillStyle="#d2a27d";ctx.beginPath();ctx.ellipse(30,19,10,12,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#50443d";ctx.beginPath();ctx.ellipse(30,10,10,4,0,Math.PI,Math.PI*2);ctx.fill();}
+  ctx.strokeStyle="#b99a61";ctx.lineWidth=2;ctx.strokeRect(1,1,canvas.width-2,canvas.height-2);
+}
+function saveMeneleStudio(){
+  try{
+    for(var i=0;i<2;i++){var img=MENELE_FACES[i];if(img&&img.src)localStorage.setItem(menelStorageKey(i),img.src);else localStorage.removeItem(menelStorageKey(i));localStorage.setItem("castleCalamityMenelStyle"+i,String(MENELE_STYLES[i]||0));localStorage.setItem("castleCalamityMenelName"+i,String(MENELE_NAMES[i]||"").slice(0,14));}
+  }catch(e){console.warn("Menele Studio save failed",e);}
+}
+function loadMeneleStudio(){
+  for(let i=0;i<2;i++){try{MENELE_STYLES[i]=Math.max(0,Math.min(3,Number(localStorage.getItem("castleCalamityMenelStyle"+i))||i));MENELE_NAMES[i]=(localStorage.getItem("castleCalamityMenelName"+i)||(i?"Zenek":"Mirek")).slice(0,14);
+    var sel=document.getElementById("menelStyle"+i),inp=document.getElementById("menelName"+i);if(sel)sel.value=String(MENELE_STYLES[i]);if(inp)inp.value=MENELE_NAMES[i];
+    var data=localStorage.getItem(menelStorageKey(i))||"";if(data.startsWith("data:image")){var img=new Image();img.onload=function(){MENELE_FACES[i]=img;renderMenelPreview(i);};img.src=data;}else renderMenelPreview(i);
+  }catch(e){renderMenelPreview(i);}}
+}
+function processMenelImage(file,slot){
+  if(!file||file.size>8*1024*1024){alert("Nie udało się wczytać zdjęcia");return;}var reader=new FileReader(),btn=document.getElementById("menelLoad"+slot);if(btn){btn.disabled=true;btn.textContent="...";}
+  reader.onload=function(ev){var img=new Image();img.onload=function(){extractFaceImage(img).then(function(result){var finalImg=new Image();finalImg.onload=function(){MENELE_FACES[slot]=finalImg;renderMenelPreview(slot);saveMeneleStudio();if(btn){btn.disabled=false;btn.textContent="TWARZ";}};finalImg.onerror=function(){if(btn){btn.disabled=false;btn.textContent="TWARZ";}};finalImg.src=result.canvas.toDataURL("image/png");}).catch(function(){if(btn){btn.disabled=false;btn.textContent="TWARZ";}alert("Nie udało się przygotować twarzy");});};img.onerror=function(){if(btn){btn.disabled=false;btn.textContent="TWARZ";}};img.src=ev.target.result;};reader.readAsDataURL(file);
+}
+function resetMenel(slot){MENELE_FACES[slot]=null;renderMenelPreview(slot);saveMeneleStudio();}
+window.CASTLE_MENELE={
+  face:function(slot){return MENELE_FACES[Math.max(0,Math.min(1,Number(slot)||0))];},
+  style:function(slot){return MENELE_STYLES[Math.max(0,Math.min(1,Number(slot)||0))]||0;},
+  name:function(slot){return MENELE_NAMES[Math.max(0,Math.min(1,Number(slot)||0))]||"";}
+};
+(function initMeneleStudio(){
+  for(let i=0;i<2;i++){let load=document.getElementById("menelLoad"+i),file=document.getElementById("menelFile"+i),reset=document.getElementById("menelReset"+i),style=document.getElementById("menelStyle"+i),name=document.getElementById("menelName"+i);
+    if(load&&file){load.onclick=function(){file.click();};file.onchange=function(e){if(e.target.files&&e.target.files[0])processMenelImage(e.target.files[0],i);e.target.value="";};}
+    if(reset)reset.onclick=function(){resetMenel(i);};
+    if(style)style.onchange=function(){MENELE_STYLES[i]=Number(style.value)||0;renderMenelPreview(i);saveMeneleStudio();};
+    if(name)name.oninput=function(){MENELE_NAMES[i]=String(name.value||"").slice(0,14);saveMeneleStudio();};
+  }
+  loadMeneleStudio();
+})();
+
 
 /* Korekta: saveProgress (level) musi też zachować twarze */
 var _origSaveProgress = saveProgress;
 saveProgress = function(level){
   _origSaveProgress(level);
   saveCrestToStorage();
+  saveMeneleStudio();
 };
 
 applyLanguage(LANG,false);

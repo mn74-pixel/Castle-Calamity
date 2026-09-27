@@ -467,3 +467,15 @@ Status: **wdrożone do testu gracza**
 - HUD pozostaje ograniczony do kondycji, butelek i jedzenia; komunikaty oraz combo są tylko feedbackiem, nie nową ekonomią,
 - późne segmenty otrzymały własne światło, ruch i logistykę: patrol, roletę, Nocny Express i finałowe efekty,
 - regresja obejmuje 12 renderów referencyjnych Osiedla, bezpośrednie wejścia testowe i PWA offline.
+
+
+## v7.9 — 12 osobnych aren i Menele Studio
+
+Status: **wdrożone do testu gracza**
+
+- wspólny blok został zastąpiony architekturą `arena` z 12 unikalnymi rendererami,
+- każda arena ma odrębne tło, centralny landmark i struktury reprezentujące HP obu stron,
+- tylko sceny, które tego potrzebują, korzystają z wysokich bloków; pozostałe są otwartymi placami, pawilonami, garażami, wiatami i parkingami,
+- trajektorie rzutu oraz pozycja bohaterów dostosowują się do balkonu albo ulicy,
+- Menele Studio pozwala stworzyć dwóch powracających bohaterów tła z własnym imieniem, twarzą i archetypem,
+- zachowano kompatybilność kampanii: Osiedle nadal jest pojedynczą bitwą V.4 i nie zmienia 34-węzłowej progresji.

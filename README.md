@@ -9,13 +9,13 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Osiedle Wielkiej Awantury v7.8.0
-- wszystkie 12 segmentów ma własną scenografię, akcent kolorystyczny, tempo, wskazówkę i mikrozdarzenia — od balkonu i kolejki po zamknięty Monopolowy i Nocny Express,
-- zapiekanka, ogórek, pizza i kebab mają różne efekty: szybkie podbicie, skrócenie przestoju, regenerację w czasie i mniejszy koszt kondycji,
-- AI zarządza butelkami, jedzeniem i kondycją oraz dobiera trunek do sytuacji zamiast zawsze kupować najdroższą opcję,
-- HUD nadal pokazuje tylko trzy zasoby, ale dodaje krótkie komunikaty kontekstowe, serię celnych rzutów oraz mocniejszy feedback trafienia,
-- grafika ma osobne budki jedzenia, trzepak, śmietniki, nocne okna, patrol, zamkniętą roletę i finałowy Nocny Express,
-- w **OSIEDLE — TEST SEGMENTÓW** można uruchomić bezpośrednio każdy z 12 etapów; regresja renderuje też 12 osobnych scen referencyjnych.
+## Osiedle Wielkiej Awantury v7.9.0
+- przebudowano rozdział na **12 osobnych aren**, a nie warianty jednego bloku: kanion balkonów, pawilon monopolowego, plac z ławką, budka zapiekanek, podwórko z trzepakiem, alejka śmietnikowa, pawilon pizzy, nocna brama, narożny kebab, parking z patrolem, zamknięte pasaże i Nocny Express,
+- tylko pierwsza oraz nocna brama opierają kompozycję na blokach; pozostałe sceny korzystają z pawilonów, garaży, wiat, parkingu i otwartej przestrzeni,
+- zachowano kondycję, jedzenie, puste butelki i AI z v7.8, ale wszystkie zasoby są teraz osadzone w fizycznie obecnych punktach świata,
+- dodano **Menele Studio**: dwa własne sloty postaci z imieniem, lokalnie wgraną twarzą i jednym z czterech archetypów; postacie pojawiają się w osiedlowych bójkach,
+- zdjęcia meneli korzystają z tego samego lokalnego wycinania twarzy co zamki i są zapisywane wyłącznie na urządzeniu,
+- TESTY nadal pozwalają uruchomić dowolną arenę 1/12–12/12 bez automatycznego przeskakiwania.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

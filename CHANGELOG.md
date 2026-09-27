@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.9.0 — 12 osobnych aren + Menele Studio
+
+- usunięto założenie, że każda scena Osiedla musi być tym samym blokiem z innymi dekoracjami,
+- powstało 12 odrębnych typów aren: balkony, sklep, plac z ławką, budka zapiekanek, trzepak/garáže, śmietnik, pizza, nocna brama, kebab, parking, zamknięty pasaż i Nocny Express,
+- każda arena ma osobny renderer tła, centrum sceny oraz struktur gracza i przeciwnika, przy zachowaniu wspólnego modelu HP i rzutu,
+- bohater gracza i przeciwnika wychodzą z balkonów na ulicę w scenach bez bloku, więc trajektorie butelek odpowiadają faktycznej pozycji postaci,
+- dodano Menele Studio z dwoma slotami: imię, twarz i cztery archetypy sylwetki,
+- personalizowane twarze są wycinane i zapisywane lokalnie; nie są wysyłane z urządzenia,
+- tryb TEST zachowuje blokadę wybranej areny i nadal umożliwia bezpośrednie sprawdzenie 1/12–12/12.
+
+
 ## 7.8.0 — pełny polish Osiedla
 
 - nadano wszystkim 12 segmentom własne rekwizyty, paletę, tempo, krótką wskazówkę i rozpoznawalny hook,
