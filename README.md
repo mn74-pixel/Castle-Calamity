@@ -9,12 +9,12 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Osiedle Wielkiej Awantury v7.6.0
-- specjalna bitwa V.4 ma osiem kolejnych segmentów: balkon, kolejkę, ławkę, trzepak, śmietnik, nocną zmianę, patrol i finał,
-- dostawcy wracają z zaopatrzeniem, a tempo ekonomii i kontrataku rośnie stopniowo bez zmiany mapy kampanii,
-- od segmentu 3 pojawiają się różne pary osiedlowych awanturników; ich bójki są humorystycznym tłem i nie wpływają na HP,
-- zachowane są wgrane twarze, butelki, tłuczone szkło, zniszczenia elewacji, pełny ekran i zgodność zapisów,
-- dostęp przez **TESTY → Silniki i Radio → Osiedle Wielkiej Awantury**; opis: `docs/OSIEDLE-V7.6.md`.
+## Osiedle Wielkiej Awantury v7.7.0
+- bitwa V.4 ma teraz 12 segmentów, a każdy segment można uruchomić bezpośrednio z osobnej sekcji **OSIEDLE — TEST SEGMENTÓW**,
+- dostawcy przywożą zapas butelek i środki; od segmentu 4 można zamawiać jedzenie, które odnawia kondycję potrzebną do dalszego picia i rzucania,
+- kolejne etapy wprowadzają zapiekankę, ogórek, pizzę, kebab, nocną zmianę, patrol, zamknięty Monopolowy i finał z Nocnym Expressem,
+- HUD pokazuje tylko trzy najważniejsze informacje: kondycję, zapas butelek i zapas jedzenia,
+- zachowane są wgrane twarze, osiedlowe bójki w tle, tłuczone szkło, pełny ekran i zgodność zapisów kampanii.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

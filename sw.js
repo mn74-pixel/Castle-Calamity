@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v7.6.0 — sześć epok i osiem segmentów osiedla.
+/* Castle Calamity PWA v7.7.0 — dwanaście segmentów osiedla, jedzenie i kondycja.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v7.6.0";
+const CACHE = "castle-calamity-v7.7.0";
 const APP_SHELL = [
   "./",
   "./index.html",

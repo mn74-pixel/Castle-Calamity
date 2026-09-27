@@ -1560,7 +1560,7 @@ function updateUnitCardState(key,el){
     badge.title=state.message;
   }
 }
-function buyEstateItem(id){if(!G||G.over||PAUSED)return false;var bought=ESTATE.buy(G,id,true);if(bought){if(id==="runner")SFX.spawn();else SFX.sip();}ESTATE.updateCards(document,G,LANG,PAUSED);return bought;}
+function buyEstateItem(id){if(!G||G.over||PAUSED)return false;var bought=ESTATE.buy(G,id,true);if(bought){if(id==="runner"||id==="food")SFX.spawn();else SFX.sip();}ESTATE.updateCards(document,G,LANG,PAUSED);return bought;}
 function buildCards(){
   if(ESTATE.active(G)){ESTATE.buildCards(document,G,LANG,buyEstateItem);return;}
   refreshUnitNames();
@@ -1891,7 +1891,7 @@ function buildAbilityBar(){
   if(!bar)return;
   bar.innerHTML="";
   bar.style.display="none";
-  if(ESTATE.active(G)){bar.textContent=LANG==="en"?"Runners → supplies → drink & throw · Faces: upload in menu":"Dostawcy → zaopatrzenie → pij i rzuć · Twarze: wgraj w menu";bar.style.display="flex";bar.style.pointerEvents="none";bar.style.fontSize="12px";bar.style.color="#f5dfb3";return;}
+  if(ESTATE.active(G)){bar.textContent=LANG==="en"?"Supplies → bottles · Food → stamina · Drink & throw":"Dostawy → butelki · Jedzenie → kondycja · Pij i rzucaj";bar.style.display="flex";bar.style.pointerEvents="none";bar.style.fontSize="12px";bar.style.color="#f5dfb3";return;}
   bar.style.pointerEvents="";
   var anyVisible=false;
   for(var abN in ABILITIES){
@@ -10258,6 +10258,10 @@ function launchTestLevel(eraId,index){
   startLevelFlow(index,{skipBriefing:true});stopTutorial(false);
   testShortcut.style.borderColor="#ffcc44";
 }
+function launchEstateSegment(index){
+  launchTestLevel("modern",3);
+  if(G&&ESTATE.active(G)){ESTATE.setSegment(G,index,true);buildCards();buildAbilityBar();render();}
+}
 function openTestPicker(){
   var panel=document.getElementById("testPicker");
   if(!panel){panel=document.createElement("div");panel.id="testPicker";
@@ -10270,6 +10274,11 @@ function openTestPicker(){
     var title=document.createElement("h3");title.textContent=tr(ERA_REGISTRY.packs[id].campaign.titleKey);panel.appendChild(title);
     ERA_LEVELS[id].forEach(function(lv,i){var button=document.createElement("button");button.className="btn";button.textContent=lv.id+" · "+lv.n;button.onclick=function(){launchTestLevel(id,i);};panel.appendChild(button);});
   });
+  if(ESTATE&&ESTATE.segments){
+    var estateTitle=document.createElement("h3");estateTitle.textContent=LANG==="pl"?"OSIEDLE — TEST SEGMENTÓW":"ESTATE — SEGMENT TEST";estateTitle.style.marginTop="22px";panel.appendChild(estateTitle);
+    var estateHint=document.createElement("div");estateHint.textContent=LANG==="pl"?"Uruchom dowolny etap od razu — z zasobami do testu.":"Launch any stage immediately with test resources.";estateHint.style.cssText="color:#aeb8d9;font-size:12px;margin:0 auto 8px";panel.appendChild(estateHint);
+    ESTATE.segments.forEach(function(seg,si){var button=document.createElement("button");button.className="btn";button.textContent=LANG==="en"?seg.en:seg.pl;button.onclick=function(){launchEstateSegment(si);};panel.appendChild(button);});
+  }
   var close=document.createElement("button");close.className="btn";close.textContent=LANG==="pl"?"ZAMKNIJ":"CLOSE";
   close.onclick=function(){panel.style.display="none";if(G)PAUSED=wasPaused;};panel.appendChild(document.createElement("br"));panel.appendChild(close);panel.style.display="block";
 }
