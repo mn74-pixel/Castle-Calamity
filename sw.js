@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v8.1.0 — ART REBOOT Osiedla na zasadach pierwszej epoki.
+/* Castle Calamity PWA v8.2.0 — Estate Style Match: ten sam sky pipeline i sylwetka co Epoka I.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v8.1.0";
+const CACHE = "castle-calamity-v8.2.0";
 const APP_SHELL = [
   "./",
   "./index.html",

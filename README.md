@@ -1,5 +1,13 @@
 # Castle Calamity
 
+### v8.2.0 — ESTATE STYLE MATCH
+- Osiedle nie rysuje już własnego pełnoekranowego nieba; korzysta z tego samego sky/cloud pipeline co pierwsza epoka,
+- bazy mają proporcje i gramatykę sylwetki zamków 200×260, ale są przerysowane jako osiedlowe bloki z balkonem, wejściem, anteną i instalacjami,
+- bohater jest częścią centralnego balkonu bazy zamiast osobną figurą na ulicy,
+- pole walki jest węższe i pozbawione technicznej siatki perspektywy, a każdy z 12 segmentów zachowuje jeden mocny motyw centralny,
+- segmenty 1–12 przełączają główną paletę sceny gry: dzień → zmierzch → noc → późna noc.
+
+
 ### v8.1.0 — ART REBOOT Osiedla
 - wycofano tapetę z losowych bloków i zastąpiono ją trzema ciągłymi warstwami miejskiego krajobrazu,
 - obie strony mają spójne osiedlowe „fortece” z balkonem, na którym stoi bohater,
