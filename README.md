@@ -9,12 +9,13 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Osiedle Wielkiej Awantury v7.7.0
-- bitwa V.4 ma teraz 12 segmentów, a każdy segment można uruchomić bezpośrednio z osobnej sekcji **OSIEDLE — TEST SEGMENTÓW**,
-- dostawcy przywożą zapas butelek i środki; od segmentu 4 można zamawiać jedzenie, które odnawia kondycję potrzebną do dalszego picia i rzucania,
-- kolejne etapy wprowadzają zapiekankę, ogórek, pizzę, kebab, nocną zmianę, patrol, zamknięty Monopolowy i finał z Nocnym Expressem,
-- HUD pokazuje tylko trzy najważniejsze informacje: kondycję, zapas butelek i zapas jedzenia,
-- zachowane są wgrane twarze, osiedlowe bójki w tle, tłuczone szkło, pełny ekran i zgodność zapisów kampanii.
+## Osiedle Wielkiej Awantury v7.8.0
+- wszystkie 12 segmentów ma własną scenografię, akcent kolorystyczny, tempo, wskazówkę i mikrozdarzenia — od balkonu i kolejki po zamknięty Monopolowy i Nocny Express,
+- zapiekanka, ogórek, pizza i kebab mają różne efekty: szybkie podbicie, skrócenie przestoju, regenerację w czasie i mniejszy koszt kondycji,
+- AI zarządza butelkami, jedzeniem i kondycją oraz dobiera trunek do sytuacji zamiast zawsze kupować najdroższą opcję,
+- HUD nadal pokazuje tylko trzy zasoby, ale dodaje krótkie komunikaty kontekstowe, serię celnych rzutów oraz mocniejszy feedback trafienia,
+- grafika ma osobne budki jedzenia, trzepak, śmietniki, nocne okna, patrol, zamkniętą roletę i finałowy Nocny Express,
+- w **OSIEDLE — TEST SEGMENTÓW** można uruchomić bezpośrednio każdy z 12 etapów; regresja renderuje też 12 osobnych scen referencyjnych.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

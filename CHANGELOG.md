@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.8.0 — pełny polish Osiedla
+
+- nadano wszystkim 12 segmentom własne rekwizyty, paletę, tempo, krótką wskazówkę i rozpoznawalny hook,
+- rozdzielono cztery rodzaje jedzenia mechanicznie: zapiekanka, ogórek, pizza i kebab nie są już wariantami tej samej regeneracji,
+- AI planuje dostawy, posiłki i wybór trunku na podstawie zapasu, kondycji i środków,
+- po segmentach żywnościowych naturalna regeneracja jest wolniejsza, więc jedzenie rzeczywiście podtrzymuje ofensywę,
+- dodano komunikaty kontekstowe, serię trafień, pierścienie uderzenia oraz czytelniejsze stany zablokowanych kart,
+- rozbudowano scenografię o budki jedzenia, trzepak, śmietniki, nocne okna, patrol, zamkniętą roletę i finałowy samochód Nocnego Expressu,
+- testy tworzą render referencyjny każdego z 12 segmentów i kontrolują unikalność scenografii oraz efektów jedzenia.
+
+
 ## 7.6.0 — Osiem segmentów Osiedla Wielkiej Awantury
 
 - rozbudowano specjalną bitwę V.4 z jednej sceny do ośmiu kolejnych mini-poziomów bez zmiany numeracji kampanii,

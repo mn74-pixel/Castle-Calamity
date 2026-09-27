@@ -455,3 +455,15 @@ Status: **wdrożone do testu gry**
 - HP bloków podniesiono symetrycznie, żeby gracz miał szansę zobaczyć finał przy normalnym tempie,
 - zapis kampanii, przejście V→VI i liczba 34 bitew pozostają bez zmian,
 - szczegóły: `OSIEDLE-V7.6.md`.
+
+
+## v7.8 — pełny polish 12 segmentów Osiedla
+
+Status: **wdrożone do testu gracza**
+
+- każdy segment otrzymał osobny hook wizualny i krótką podpowiedź zamiast samego wzrostu trudności,
+- zapiekanka podnosi kondycję i lekko wspiera regenerację, ogórek resetuje przestój, pizza daje regenerację w czasie, a kebab zmniejsza koszt kolejnych trunków,
+- AI zarządza trzema zasobami tymi samymi regułami co gracz i wybiera trunek sytuacyjnie,
+- HUD pozostaje ograniczony do kondycji, butelek i jedzenia; komunikaty oraz combo są tylko feedbackiem, nie nową ekonomią,
+- późne segmenty otrzymały własne światło, ruch i logistykę: patrol, roletę, Nocny Express i finałowe efekty,
+- regresja obejmuje 12 renderów referencyjnych Osiedla, bezpośrednie wejścia testowe i PWA offline.

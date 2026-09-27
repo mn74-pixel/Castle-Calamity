@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v7.7.0 — dwanaście segmentów osiedla, jedzenie i kondycja.
+/* Castle Calamity PWA v7.8.0 — pełny polish 12 segmentów osiedla.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v7.7.0";
+const CACHE = "castle-calamity-v7.8.0";
 const APP_SHELL = [
   "./",
   "./index.html",
