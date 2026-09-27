@@ -962,9 +962,12 @@ check(sandbox.window.CASTLE_ESTATE.arenaKinds.join(",")==="balcony_canyon,shopfr
 const estateSource=fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"utf8");
 check(html.includes("MENELE STUDIO")&&html.includes("menelPreview0")&&html.includes("menelPreview1")&&html.includes("window.CASTLE_MENELE"),"Menele Studio ma dwa lokalne sloty postaci połączone z rendererem");
 check(!html.includes("Dostawy → butelki · Jedzenie → kondycja · Pij i rzucaj"),"Osiedle: usunięto dolny pasek instrukcji");
+check(html.includes("Osiedle nie używa dymu jako wskaźnika przegrywania")&&html.includes("if(!ESTATE.active(G))for(var i=0;i<G.smoke.length"),"Osiedle: dym jest wyłączony podczas przegrywania");
+check(estateSource.includes("neonGlow")&&estateSource.includes("puddle")&&estateSource.includes("graffiti")&&estateSource.includes("bollard"),"Osiedle: dodatkowy pass detali obejmuje neony, kałuże, graffiti i elementy parkingu");
 check(estateSource.includes("ZJEDZ")&&estateSource.includes("action:'eat'"),"Osiedle: karta jedzenia przełącza się z zamówienia na bezpośrednie zjedzenie");
 check(estateSource.includes("outbound=q<.57")&&estateSource.includes("dir=outbound"),"Osiedle: dostawca obraca się po zawróceniu zamiast wracać wspak");
-check(estateSource.includes("scale=Math.min(2.55")&&estateSource.includes("unitScale*1.34"),"Osiedle: główny bohater jest większy od standardowej postaci, aby twarz była czytelna");
+check(estateSource.includes("unitScale*1.28")&&estateSource.includes("unitScale*1.40"),"Osiedle: chodzący dorośli są większi, a główny bohater pozostaje jeszcze większy");
+check(estateSource.includes("weak=Math.max")&&estateSource.includes("wobble=Math.sin")&&estateSource.includes("knee=weak"),"Osiedle: spadek HP powoduje narastające chwianie i uginanie nóg bohatera");
 check(estateSource.includes("drawArenaScene")&&estateSource.includes("arenaBase")&&estateSource.includes("drawArenaBackdrop")&&estateSource.includes("CASTLE_MENELE"),"Osiedle v7.9: osobne renderery aren, baz i teł zastępują wspólny blok");
 check(html.includes("PENDING_ESTATE_TEST_SEGMENT")&&html.includes("applyEstateTestSegment"),"TESTY utrzymują wybrany segment także podczas inicjalizacji poziomu");
 check(sandbox.window.CASTLE_ESTATE.foods.map(f=>f.buff).join(",")==="quick,reset,regen,efficient","Osiedle: cztery rodzaje jedzenia mają cztery różne efekty mechaniczne");

@@ -491,3 +491,15 @@ Status: **wdrożone do testu gracza**
 - karta jedzenia zamawia produkt tylko przy pustym magazynku; po dostawie staje się akcją ZJEDZ,
 - usunięto dolny tekst instruktażowy, aby nie zasłaniał scen,
 - podłoża i obiekty aren otrzymały dodatkową głębię, perspektywę i cienie.
+
+
+## v7.9.2 — skala postaci i czytelny stan przegranej
+
+Status: **wdrożone do testu gracza**
+
+- chodzące postacie dorosłych zostały powiększone i pozostają wizualnie spójne z wcześniejszymi epokami,
+- główny bohater pozostaje największą postacią sceny, aby wgrana twarz była czytelna,
+- dym, pył i żar nie reprezentują już przegrywania w Osiedlu,
+- wraz ze spadkiem HP bohater coraz mocniej się kiwa, pochyla i ugina nogi,
+- trafienia zachowują szkło oraz lokalny feedback,
+- areny dostały dodatkową warstwę detalu nawierzchni, neonów i małej architektury.

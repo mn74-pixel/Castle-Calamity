@@ -9,13 +9,13 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Osiedle Wielkiej Awantury v7.9.1
-- zachowano 12 osobnych aren oraz Menele Studio, ale przebudowano czytelność i mechanikę postaci,
-- dostawcy korzystają z tej samej bazowej skali co jednostki wcześniejszych epok i po zawróceniu rzeczywiście obracają się w stronę domu,
-- główny bohater jest większy od postaci tła, ma znacznie większą twarz oraz pełniejsze przygotowanie i odrzut przy rzucie,
-- karta **Jedzenie** działa kontekstowo: przy pustym zapasie zamawia dostawę, a gdy jedzenie już dotarło zmienia się na **ZJEDZ** i natychmiast podnosi kondycję,
-- dostawa jedzenia nie jest już automatycznie zjadana przez gracza; decyzja należy do użytkownika, podczas gdy AI nadal potrafi zjeść przy niskiej kondycji,
-- usunięto dolny pasek instrukcji z bitwy Osiedla i poprawiono nawierzchnię, perspektywę, cienie oraz kontrast centralnych obiektów aren.
+## Osiedle Wielkiej Awantury v7.9.2
+- powiększono wszystkich chodzących dorosłych o 28% względem poprzedniego wydania, zachowując spójną bazę skali z jednostkami wcześniejszych epok,
+- główny bohater jest jeszcze większy i czytelniejszy, a jego twarz ma większy obszar renderowania,
+- spadek HP nie jest już sygnalizowany dymem: bohater stopniowo traci równowagę, kiwa się, ugina nogi i coraz wyraźniej „walczy o pion”,
+- genericzne chmury dymu, pyłu i żaru są wyłączone podczas bitwy Osiedla; trafienia nadal mają szkło i lokalny impact,
+- dodatkowo poprawiono chód dorosłych, cienie kontaktowe i proporcje sylwetek,
+- grafika aren dostała kolejny pass detali: neony, poświaty budek, kałuże, graffiti, pachołki, spękania asfaltu, śmieci i głębsze cienie obiektów.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

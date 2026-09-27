@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v7.9.1 — poprawa postaci, jedzenia i czytelności aren.
+/* Castle Calamity PWA v7.9.2 — skala dorosłych, chwianie i detal aren.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v7.9.1";
+const CACHE = "castle-calamity-v7.9.2";
 const APP_SHELL = [
   "./",
   "./index.html",

@@ -1,5 +1,16 @@
 # Changelog
 
+## 7.9.2 — skala dorosłych, chwianie zamiast dymu i detal aren
+
+- powiększono chodzących dostawców oraz dorosłych NPC o 28%, aby nie wyglądali jak dzieci przy większym bohaterze,
+- główny bohater dostał jeszcze większą skalę i twarz, przy zachowaniu limitu na dużych ekranach,
+- poziom osłabienia jest liczony z HP i steruje chwianiem całego ciała, ugięciem kolan oraz bobem,
+- w Osiedlu wyłączono render dymu, pyłu i żaru jako wskaźników przegranej,
+- uderzenia butelek nadal mają szkło i pierścień trafienia, więc feedback nie znika,
+- dodano dodatkowe detale środowiska: kałuże, graffiti, pachołki, śmieci, pęknięcia asfaltu i poświaty neonów,
+- poprawiono skalę i chód postaci kolejki przy Monopolowym.
+
+
 ## 7.9.1 — postacie, jedzenie i czytelność aren
 
 - usunięto dolny pasek tekstowy z instrukcją Osiedla,

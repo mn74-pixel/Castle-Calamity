@@ -2225,13 +2225,13 @@ function castleDmg(tc,dd,sx,sy,source){
   addFlt(tc.x+tc.w/2,G.GY-tc.h+22,"-"+Math.round(dd),"#ff4400");
   tc.shake=Math.max(tc.shake||0,0.35);
   if(source&&source.estate)SFX.glass();else if(dd >= 25) SFX.explosion(); else SFX.castle();
-  for(var di=0;di<6;di++)G.dust.push({x:sx,y:G.GY-10,vx:(Math.random()-0.5)*80,vy:-30-Math.random()*60,life:0.8,sz:2+Math.random()*2});
+  if(!(source&&source.estate))for(var di=0;di<6;di++)G.dust.push({x:sx,y:G.GY-10,vx:(Math.random()-0.5)*80,vy:-30-Math.random()*60,life:0.8,sz:2+Math.random()*2});
   /* Przekroczenie progu uszkodzeń ma własny krótki wstrząs konstrukcji.
      Nie zmienia obrażeń — jedynie pokazuje, że mur przeszedł w kolejny stan. */
   var prevStage=prevHpPct<.25?3:(prevHpPct<.5?2:(prevHpPct<.75?1:0));
   if(tc.damageStage>prevStage){
     tc.shake=Math.max(tc.shake||0,.58);
-    for(var th=0;th<8+tc.damageStage*3;th++){
+    if(!(source&&source.estate))for(var th=0;th<8+tc.damageStage*3;th++){
       G.dust.push({x:tc.x+Math.random()*tc.w,y:G.GY-tc.h*(.18+Math.random()*.62),vx:(Math.random()-.5)*46,vy:-18-Math.random()*46,life:.7+Math.random()*.55,sz:1.8+Math.random()*2.8});
     }
   }
@@ -2265,8 +2265,8 @@ function castleDmg(tc,dd,sx,sy,source){
         col: Math.random() < 0.4 ? "#ffaa44" : "#888888"
       });
     }
-    /* Mały kłąb dymu */
-    if(G.smoke){
+    /* Mały kłąb dymu — wyłączony w Osiedlu. */
+    if(!(source&&source.estate)&&G.smoke){
       for(var smk = 0; smk < 3; smk++){
         G.smoke.push({
           x: hx + (Math.random()-0.5)*5,
@@ -5070,17 +5070,17 @@ function render(){
   drawCastleHUD(G.p);drawCastleHUD(G.e);
   if(!ESTATE.active(G)){drawCastleExpansion(G.p);drawCastleExpansion(G.e);}
   drawLevelAbsurdity();
-  // Smoke
-  for(var i=0;i<G.smoke.length;i++){
+  // Smoke — Osiedle nie używa dymu jako wskaźnika przegrywania.
+  if(!ESTATE.active(G))for(var i=0;i<G.smoke.length;i++){
     var s=G.smoke[i];var sa=Math.min(0.45,s.life*0.3);if(sa<0.01)continue;
     CT.globalAlpha=sa;CT.fillStyle=s.col+"0.6)";CT.beginPath();CT.arc(s.x,s.y,s.r,0,Math.PI*2);CT.fill();
   }
   CT.globalAlpha=1;
   // Embers
-  for(var i=0;i<G.embers.length;i++){var em=G.embers[i];var ea=Math.min(1,em.life*1.5);if(ea<0.01)continue;CT.globalAlpha=ea;CT.fillStyle="#ffaa20";CT.beginPath();CT.arc(em.x,em.y,1.3,0,Math.PI*2);CT.fill();}
+  if(!ESTATE.active(G))for(var i=0;i<G.embers.length;i++){var em=G.embers[i];var ea=Math.min(1,em.life*1.5);if(ea<0.01)continue;CT.globalAlpha=ea;CT.fillStyle="#ffaa20";CT.beginPath();CT.arc(em.x,em.y,1.3,0,Math.PI*2);CT.fill();}
   CT.globalAlpha=1;
-  // Dust
-  for(var i=0;i<G.dust.length;i++){var d=G.dust[i];var da=Math.min(0.7,d.life*1.2);if(da<0.01)continue;CT.globalAlpha=da;CT.fillStyle=sc.night?"#556":"#998877";CT.beginPath();CT.arc(d.x,d.y,d.sz,0,Math.PI*2);CT.fill();}
+  // Dust — w Osiedlu stan przegranej pokazuje postawa bohatera, nie chmury.
+  if(!ESTATE.active(G))for(var i=0;i<G.dust.length;i++){var d=G.dust[i];var da=Math.min(0.7,d.life*1.2);if(da<0.01)continue;CT.globalAlpha=da;CT.fillStyle=sc.night?"#556":"#998877";CT.beginPath();CT.arc(d.x,d.y,d.sz,0,Math.PI*2);CT.fill();}
   CT.globalAlpha=1;
   // Sparks
   for(var i=0;i<G.sparks.length;i++){var sp=G.sparks[i];var sa=sp.life/0.65;if(sa<0.01)continue;CT.globalAlpha=sa;CT.fillStyle=sp.col;CT.beginPath();CT.arc(sp.x,sp.y,2,0,Math.PI*2);CT.fill();}
