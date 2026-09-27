@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v8.2.1 — korekta skali kompozycji Osiedla.
+/* Castle Calamity PWA v8.2.2 — mass, contrast and depth pass Osiedla.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v8.2.1";
+const CACHE = "castle-calamity-v8.2.2";
 const APP_SHELL = [
   "./",
   "./index.html",

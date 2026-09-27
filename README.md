@@ -1,5 +1,13 @@
 # Castle Calamity
 
+### v8.2.2 — MASS, CONTRAST & DEPTH
+- boczne bazy są wyraźnie większe i mocniej przypominają wagą zamki z pierwszej epoki,
+- centralny motyw segmentu jest renderowany 64% większy od bazowej scenografii,
+- miejska sylwetka zaczyna się znacznie wyżej i ma mocniejszy kontrast, anteny oraz detale dachów,
+- pole walki jest ciemniejsze i głębsze, z krawężnikiem oraz drobnym pierwszym planem,
+- bazy mają mocniejszy kontur, jaśniejszy beton, ciemniejszy metal, zbiornik dachowy i drobne balkonowe detale.
+
+
 ### v8.2.1 — korekta skali Osiedla
 - bazy po bokach są renderowane 34% większe bez zmiany mechaniki i kolizji,
 - centralny motyw segmentu jest większy o 34%,
