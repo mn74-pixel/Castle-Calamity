@@ -1,5 +1,12 @@
 # Castle Calamity
 
+### v8.2.1 — korekta skali Osiedla
+- bazy po bokach są renderowane 34% większe bez zmiany mechaniki i kolizji,
+- centralny motyw segmentu jest większy o 34%,
+- trzy miejskie warstwy tła są znacznie wyższe, więc scena nie tonie w pustym niebie,
+- pozycja bohatera i punkt trafienia zostały dopasowane do nowych proporcji baz.
+
+
 ### v8.2.0 — ESTATE STYLE MATCH
 - Osiedle nie rysuje już własnego pełnoekranowego nieba; korzysta z tego samego sky/cloud pipeline co pierwsza epoka,
 - bazy mają proporcje i gramatykę sylwetki zamków 200×260, ale są przerysowane jako osiedlowe bloki z balkonem, wejściem, anteną i instalacjami,
