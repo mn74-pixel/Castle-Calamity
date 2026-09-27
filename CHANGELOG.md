@@ -1,5 +1,17 @@
 # Changelog
 
+## 7.9.1 — postacie, jedzenie i czytelność aren
+
+- usunięto dolny pasek tekstowy z instrukcją Osiedla,
+- karta Jedzenie ma teraz dwa stany: zamówienie przy pustym zapasie oraz ZJEDZ po dostawie,
+- ręczne zjedzenie nie pobiera ponownie środków i natychmiast uruchamia efekt aktualnego posiłku,
+- dostawcy obracają sylwetkę przy powrocie, więc nie chodzą już wspak,
+- chód dostał krok, unoszenie stóp, cień kontaktowy i profilową głowę zwróconą w kierunku ruchu,
+- postacie tła korzystają bezpośrednio z tej samej skali bazowej co wcześniejsze epoki,
+- główny bohater jest większy, ma czytelniejszą twarz, przygotowanie do rzutu i odrzut po wypuszczeniu butelki,
+- areny otrzymały mocniejszą perspektywę podłoża, krawężnik, cienie i głębsze osadzenie pawilonów oraz obiektów.
+
+
 ## 7.9.0 — 12 osobnych aren + Menele Studio
 
 - usunięto założenie, że każda scena Osiedla musi być tym samym blokiem z innymi dekoracjami,

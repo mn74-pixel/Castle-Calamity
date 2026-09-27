@@ -9,13 +9,13 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Osiedle Wielkiej Awantury v7.9.0
-- przebudowano rozdział na **12 osobnych aren**, a nie warianty jednego bloku: kanion balkonów, pawilon monopolowego, plac z ławką, budka zapiekanek, podwórko z trzepakiem, alejka śmietnikowa, pawilon pizzy, nocna brama, narożny kebab, parking z patrolem, zamknięte pasaże i Nocny Express,
-- tylko pierwsza oraz nocna brama opierają kompozycję na blokach; pozostałe sceny korzystają z pawilonów, garaży, wiat, parkingu i otwartej przestrzeni,
-- zachowano kondycję, jedzenie, puste butelki i AI z v7.8, ale wszystkie zasoby są teraz osadzone w fizycznie obecnych punktach świata,
-- dodano **Menele Studio**: dwa własne sloty postaci z imieniem, lokalnie wgraną twarzą i jednym z czterech archetypów; postacie pojawiają się w osiedlowych bójkach,
-- zdjęcia meneli korzystają z tego samego lokalnego wycinania twarzy co zamki i są zapisywane wyłącznie na urządzeniu,
-- TESTY nadal pozwalają uruchomić dowolną arenę 1/12–12/12 bez automatycznego przeskakiwania.
+## Osiedle Wielkiej Awantury v7.9.1
+- zachowano 12 osobnych aren oraz Menele Studio, ale przebudowano czytelność i mechanikę postaci,
+- dostawcy korzystają z tej samej bazowej skali co jednostki wcześniejszych epok i po zawróceniu rzeczywiście obracają się w stronę domu,
+- główny bohater jest większy od postaci tła, ma znacznie większą twarz oraz pełniejsze przygotowanie i odrzut przy rzucie,
+- karta **Jedzenie** działa kontekstowo: przy pustym zapasie zamawia dostawę, a gdy jedzenie już dotarło zmienia się na **ZJEDZ** i natychmiast podnosi kondycję,
+- dostawa jedzenia nie jest już automatycznie zjadana przez gracza; decyzja należy do użytkownika, podczas gdy AI nadal potrafi zjeść przy niskiej kondycji,
+- usunięto dolny pasek instrukcji z bitwy Osiedla i poprawiono nawierzchnię, perspektywę, cienie oraz kontrast centralnych obiektów aren.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

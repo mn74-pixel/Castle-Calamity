@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v7.9.0 — 12 osobnych aren i Menele Studio.
+/* Castle Calamity PWA v7.9.1 — poprawa postaci, jedzenia i czytelności aren.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v7.9.0";
+const CACHE = "castle-calamity-v7.9.1";
 const APP_SHELL = [
   "./",
   "./index.html",

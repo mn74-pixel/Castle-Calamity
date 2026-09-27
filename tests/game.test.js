@@ -26,7 +26,7 @@ window.__QA = {
     PAUSED=true;var paused=!buyEstateItem("beer");PAUSED=false;G.p.gold=0;var poor=!buyEstateItem("beer");
     G.p.gold=100;var pc=0,ec=0,oldP=PLAYER_CREST,oldE=ENEMY_CREST,oldDraw=drawCrestImageContained;
     PLAYER_CREST={side:"p"};ENEMY_CREST={side:"e"};drawCrestImageContained=function(ctx,img){if(img.side==="p")pc++;else ec++;};render();PLAYER_CREST=oldP;ENEMY_CREST=oldE;drawCrestImageContained=oldDraw;
-    ESTATE.setSegment(G,3,true);G.estate.p.food=0;G.estate.p.stamina=10;var foodOrdered=ESTATE.buy(G,"food",true);ESTATE.tick(G,9,castleDmg);var food=foodOrdered&&G.estate.p.stamina>10;
+    ESTATE.setSegment(G,3,true);G.estate.p.food=0;G.estate.p.stamina=10;var foodOrdered=ESTATE.buy(G,"food",true);ESTATE.tick(G,9,castleDmg);var stocked=G.estate.p.food>0,foodEaten=stocked&&ESTATE.buy(G,"food",true),food=foodOrdered&&stocked&&foodEaten&&G.estate.p.stamina>10;
     var noSpells=Object.keys(abilityCooldowns).length===0;castAbility("freeze");noSpells=noSpells&&!G.freezeField;
     G.estate.ai=0;G.e.gold=100;ESTATE.tick(G,.02,castleDmg);var ai=!!G.estate.e.action;
     var noArmy=G.units.length===0;
@@ -959,13 +959,17 @@ check(sandbox.window.CASTLE_ESTATE.segmentSeconds===7&&sandbox.window.CASTLE_FUT
 check(new Set(sandbox.window.CASTLE_ESTATE.segments.map(s=>s.prop)).size===12,"Osiedle: każdy z 12 segmentów ma własną scenografię");
 check(sandbox.window.CASTLE_ESTATE.arenaKinds.length===12&&new Set(sandbox.window.CASTLE_ESTATE.arenaKinds).size===12,"Osiedle v7.9: 12 różnych typów aren zamiast wspólnego bloku");
 check(sandbox.window.CASTLE_ESTATE.arenaKinds.join(",")==="balcony_canyon,shopfront,bench_square,snack_kiosk,rack_yard,bin_alley,pizza_pavilion,night_gate,kebab_corner,parking_patrol,closed_arcade,night_express","Osiedle v7.9: wszystkie areny mają oczekiwaną tożsamość");
+const estateSource=fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"utf8");
 check(html.includes("MENELE STUDIO")&&html.includes("menelPreview0")&&html.includes("menelPreview1")&&html.includes("window.CASTLE_MENELE"),"Menele Studio ma dwa lokalne sloty postaci połączone z rendererem");
+check(!html.includes("Dostawy → butelki · Jedzenie → kondycja · Pij i rzucaj"),"Osiedle: usunięto dolny pasek instrukcji");
+check(estateSource.includes("ZJEDZ")&&estateSource.includes("action:'eat'"),"Osiedle: karta jedzenia przełącza się z zamówienia na bezpośrednie zjedzenie");
+check(estateSource.includes("outbound=q<.57")&&estateSource.includes("dir=outbound"),"Osiedle: dostawca obraca się po zawróceniu zamiast wracać wspak");
+check(estateSource.includes("scale=Math.min(2.55")&&estateSource.includes("unitScale*1.34"),"Osiedle: główny bohater jest większy od standardowej postaci, aby twarz była czytelna");
 check(estateSource.includes("drawArenaScene")&&estateSource.includes("arenaBase")&&estateSource.includes("drawArenaBackdrop")&&estateSource.includes("CASTLE_MENELE"),"Osiedle v7.9: osobne renderery aren, baz i teł zastępują wspólny blok");
 check(html.includes("PENDING_ESTATE_TEST_SEGMENT")&&html.includes("applyEstateTestSegment"),"TESTY utrzymują wybrany segment także podczas inicjalizacji poziomu");
 check(sandbox.window.CASTLE_ESTATE.foods.map(f=>f.buff).join(",")==="quick,reset,regen,efficient","Osiedle: cztery rodzaje jedzenia mają cztery różne efekty mechaniczne");
 check(typeof sandbox.window.CASTLE_ESTATE.chooseDrink==="function"&&typeof sandbox.window.CASTLE_ESTATE.staminaCost==="function","Osiedle: AI i koszt kondycji korzystają z jawnych reguł zamiast samego tempa");
 check(html.includes("OSIEDLE — TEST SEGMENTÓW")&&html.includes("launchEstateSegment")&&html.includes("ESTATE.segments.forEach"),"TESTY pokazują osobne wejścia do wszystkich segmentów Osiedla");
-const estateSource=fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"utf8");
 check(estateSource.includes("estateAtmosphere")&&estateSource.includes("ZAPIEKANKI")&&estateSource.includes("PIZZA 24")&&estateSource.includes("KEBAB")&&estateSource.includes("NIGHT EXPRESS"),"Osiedle: wizualny polish obejmuje dzień, jedzenie, noc i finał");
 check(estateSource.includes("noticeText")&&estateSource.includes("combo")&&estateSource.includes("impacts"),"Osiedle: HUD i trafienia mają dodatkowy feedback bez dokładania nowego zasobu");
 const estateBattle=qa.estateBattle();check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.seconds<240&&estateBattle.segment>=3,"Osiedle: dostawy, jedzenie i butelki pozwalają wygrać w mniej niż 4 minuty");

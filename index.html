@@ -1600,7 +1600,7 @@ function updateUnitCardState(key,el){
     badge.title=state.message;
   }
 }
-function buyEstateItem(id){if(!G||G.over||PAUSED)return false;var bought=ESTATE.buy(G,id,true);if(bought){if(id==="runner"||id==="food")SFX.spawn();else SFX.sip();}ESTATE.updateCards(document,G,LANG,PAUSED);return bought;}
+function buyEstateItem(id){if(!G||G.over||PAUSED)return false;var foodBefore=id==="food"&&G.estate&&G.estate.p?G.estate.p.food:0,bought=ESTATE.buy(G,id,true);if(bought){if(id==="food"&&foodBefore>0)SFX.sip();else if(id==="runner"||id==="food")SFX.spawn();else SFX.sip();}ESTATE.updateCards(document,G,LANG,PAUSED);return bought;}
 function buildCards(){
   if(ESTATE.active(G)){ESTATE.buildCards(document,G,LANG,buyEstateItem);return;}
   refreshUnitNames();
@@ -1931,7 +1931,7 @@ function buildAbilityBar(){
   if(!bar)return;
   bar.innerHTML="";
   bar.style.display="none";
-  if(ESTATE.active(G)){bar.textContent=LANG==="en"?"Supplies → bottles · Food → stamina · Drink & throw":"Dostawy → butelki · Jedzenie → kondycja · Pij i rzucaj";bar.style.display="flex";bar.style.pointerEvents="none";bar.style.fontSize="12px";bar.style.color="#f5dfb3";return;}
+  if(ESTATE.active(G)){bar.textContent="";bar.style.display="none";bar.style.pointerEvents="";return;}
   bar.style.pointerEvents="";
   var anyVisible=false;
   for(var abN in ABILITIES){

@@ -479,3 +479,15 @@ Status: **wdrożone do testu gracza**
 - trajektorie rzutu oraz pozycja bohaterów dostosowują się do balkonu albo ulicy,
 - Menele Studio pozwala stworzyć dwóch powracających bohaterów tła z własnym imieniem, twarzą i archetypem,
 - zachowano kompatybilność kampanii: Osiedle nadal jest pojedynczą bitwą V.4 i nie zmienia 34-węzłowej progresji.
+
+
+## v7.9.1 — poprawa postaci i interakcji z jedzeniem
+
+Status: **wdrożone do testu gracza**
+
+- skala dostawców i meneli jest wiązana z `getUnitDrawSize()`, tak jak jednostki poprzednich epok,
+- główny bohater jest celowo większy od tła, aby zachować czytelność wgranej twarzy,
+- dostawcy obracają się na powrocie i mają pełniejszy cykl chodu,
+- karta jedzenia zamawia produkt tylko przy pustym magazynku; po dostawie staje się akcją ZJEDZ,
+- usunięto dolny tekst instruktażowy, aby nie zasłaniał scen,
+- podłoża i obiekty aren otrzymały dodatkową głębię, perspektywę i cienie.
