@@ -1,5 +1,12 @@
 # Castle Calamity
 
+### v8.1.0 — ART REBOOT Osiedla
+- wycofano tapetę z losowych bloków i zastąpiono ją trzema ciągłymi warstwami miejskiego krajobrazu,
+- obie strony mają spójne osiedlowe „fortece” z balkonem, na którym stoi bohater,
+- każdy z 12 segmentów ma jeden dominujący motyw centralny zamiast wielu konkurujących rekwizytów,
+- skala postaci i kompozycja nawiązują do czytelności pierwszej epoki: mocne boki, wolny środek, wyraźna sylwetka sceny.
+
+
 ### v8.0.1 — korekta kompozycji Osiedla
 - postacie i dostawcy wracają do skali świata zbliżonej do pierwszej epoki,
 - miejskie tło ma wyższy horyzont, mocniejsze warstwy głębi i mniej pustego nieba,

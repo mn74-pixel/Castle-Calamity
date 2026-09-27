@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v8.0.1 — poprawiona skala, kompozycja i czytelność Osiedla.
+/* Castle Calamity PWA v8.1.0 — ART REBOOT Osiedla na zasadach pierwszej epoki.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v8.0.1";
+const CACHE = "castle-calamity-v8.1.0";
 const APP_SHELL = [
   "./",
   "./index.html",

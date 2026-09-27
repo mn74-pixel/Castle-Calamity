@@ -969,9 +969,10 @@ check(estateSource.includes("pełne bryły zamiast patyczków")&&estateSource.in
 check(estateSource.includes("poster(ctx")&&estateSource.includes("drawTreeUrban")&&estateSource.includes("contactShadow"),"Osiedle v8: sceny mają głębię, małą architekturę i cienie kontaktowe");
 check(estateSource.includes("ZJEDZ")&&estateSource.includes("action:'eat'"),"Osiedle: karta jedzenia przełącza się z zamówienia na bezpośrednie zjedzenie");
 check(estateSource.includes("outbound=q<.57")&&estateSource.includes("dir=outbound"),"Osiedle: dostawca obraca się po zawróceniu zamiast wracać wspak");
-check(estateSource.includes("unitScale*1.05")&&estateSource.includes("unitScale*1.03"),"Osiedle v8.0.1: bohaterowie i dostawcy wracają do skali świata zamiast dominować nad budynkami");
-check(!estateSource.includes("w*.70,gy*.20")&&estateSource.includes("Midground large-panel blocks"),"Osiedle v8.0.1: tło ma warstwy miejskie bez gigantycznej fasady zajmującej większość ekranu");
-check(estateSource.includes("if(g.estate.segmentFlash<=0)return")&&estateSource.includes("g.p.x+g.p.w+14"),"Osiedle v8.0.1: tytuł segmentu znika po wejściu, a HUD kondycji jest przy strefie walki");
+check(estateSource.includes("function citySilhouette")&&estateSource.includes("Urban equivalent of medieval hills"),"Osiedle v8.1: miejskie tło korzysta z ciągłych warstw jak krajobraz pierwszej epoki, bez tapety z bloków");
+check(estateSource.includes("function estateTower")&&estateSource.includes("Two towers and central recessed balcony"),"Osiedle v8.1: obie strony mają spójne osiedlowe fortece z czytelną sylwetką");
+check(estateSource.includes("defender in the medieval castle")&&estateSource.includes("unitScale*.92"),"Osiedle v8.1: bohaterowie są osadzeni w balkonach, a dostawcy nie dominują skalą");
+check(estateSource.includes("One central landmark per stage")&&estateSource.includes("MONOPOLOWY")&&estateSource.includes("ZAMKNIĘTE"),"Osiedle v8.1: każdy segment opiera kompozycję na jednym dominującym motywie centralnym");
 check(estateSource.includes("weak=Math.max")&&estateSource.includes("wobble=Math.sin")&&estateSource.includes("knee=weak"),"Osiedle: spadek HP powoduje narastające chwianie i uginanie nóg bohatera");
 check(estateSource.includes("drawArenaScene")&&estateSource.includes("arenaBase")&&estateSource.includes("drawArenaBackdrop")&&estateSource.includes("CASTLE_MENELE"),"Osiedle v7.9: osobne renderery aren, baz i teł zastępują wspólny blok");
 check(html.includes("PENDING_ESTATE_TEST_SEGMENT")&&html.includes("applyEstateTestSegment"),"TESTY utrzymują wybrany segment także podczas inicjalizacji poziomu");
