@@ -9,13 +9,13 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Osiedle Wielkiej Awantury v7.9.2
-- powiększono wszystkich chodzących dorosłych o 28% względem poprzedniego wydania, zachowując spójną bazę skali z jednostkami wcześniejszych epok,
-- główny bohater jest jeszcze większy i czytelniejszy, a jego twarz ma większy obszar renderowania,
-- spadek HP nie jest już sygnalizowany dymem: bohater stopniowo traci równowagę, kiwa się, ugina nogi i coraz wyraźniej „walczy o pion”,
-- genericzne chmury dymu, pyłu i żaru są wyłączone podczas bitwy Osiedla; trafienia nadal mają szkło i lokalny impact,
-- dodatkowo poprawiono chód dorosłych, cienie kontaktowe i proporcje sylwetek,
-- grafika aren dostała kolejny pass detali: neony, poświaty budek, kałuże, graffiti, pachołki, spękania asfaltu, śmieci i głębsze cienie obiektów.
+## Osiedle Wielkiej Awantury v8.0.0 — ART RESET
+- przebudowano warstwę wizualną według tego samego standardu, który działa w poprzednich epokach: pełne, warstwowe assety, materiały, gradienty, szkło, metal i kontrolowane światło,
+- statyczne tła 12 aren są teraz renderowane do cache’owanych sprite’ów, dzięki czemu mogą być znacznie bogatsze bez kosztu składania całej scenografii co klatkę,
+- bloki, pawilony i pasaże korzystają z panelowych fasad, prawdziwszych witryn, rolet, markiz, plakatów, drzew i elementów miejskich zamiast prostych prostokątów,
+- dostawcy i menele mają pełniejsze dorosłe sylwetki z kurtką, spodniami, butami, profilem głowy i modelowanym światłem; główny bohater ma osobny premium shading,
+- zachowano v7.9.2: większą skalę dorosłych, większego bohatera, chwianie przy niskim HP, brak dymu przegranej, poprawione jedzenie oraz Menele Studio,
+- 12 aren nadal pozostaje osobnymi przestrzeniami, ale nowy renderer narzuca im jeden spójny poziom art direction.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

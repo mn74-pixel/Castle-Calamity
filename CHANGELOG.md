@@ -1,5 +1,17 @@
 # Changelog
 
+## 8.0.0 — ART RESET Osiedla
+
+- przebudowano renderer Osiedla według jakościowego wzorca wcześniejszych epok,
+- statyczne tła aren są renderowane do cache’owanych sprite’ów i ponownie używane między klatkami,
+- dodano system warstwowych materiałów: beton/panele, witryny szklane, rolety metalowe, markizy, gradientowe bryły i kontrolowane cienie,
+- tła mają trzy warstwy miejskiej głębi, haze, drzewa, lampy i rozbudowane sylwety budynków,
+- pawilony i budki otrzymały szkło, światło, markizy i realniejsze cienie,
+- samochody zostały przebudowane z prostych prostokątów na pełniejsze bryły z szybami, kołami i modelowanym lakierem,
+- dostawcy i menele mają pełne sylwetki dorosłych zamiast linii kończyn, a główny bohater otrzymał osobny shading premium,
+- zachowano wydajność przez ograniczony cache scen i brak losowych alokacji materiałów na każdą klatkę.
+
+
 ## 7.9.2 — skala dorosłych, chwianie zamiast dymu i detal aren
 
 - powiększono chodzących dostawców oraz dorosłych NPC o 28%, aby nie wyglądali jak dzieci przy większym bohaterze,

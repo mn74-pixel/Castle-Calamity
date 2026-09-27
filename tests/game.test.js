@@ -963,7 +963,10 @@ const estateSource=fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"u
 check(html.includes("MENELE STUDIO")&&html.includes("menelPreview0")&&html.includes("menelPreview1")&&html.includes("window.CASTLE_MENELE"),"Menele Studio ma dwa lokalne sloty postaci połączone z rendererem");
 check(!html.includes("Dostawy → butelki · Jedzenie → kondycja · Pij i rzucaj"),"Osiedle: usunięto dolny pasek instrukcji");
 check(html.includes("Osiedle nie używa dymu jako wskaźnika przegrywania")&&html.includes("if(!ESTATE.active(G))for(var i=0;i<G.smoke.length"),"Osiedle: dym jest wyłączony podczas przegrywania");
-check(estateSource.includes("neonGlow")&&estateSource.includes("puddle")&&estateSource.includes("graffiti")&&estateSource.includes("bollard"),"Osiedle: dodatkowy pass detali obejmuje neony, kałuże, graffiti i elementy parkingu");
+check(estateSource.includes("ART_CACHE")&&estateSource.includes("paintArenaBackdrop")&&estateSource.includes("if(ART_CACHE.size>18)"),"Osiedle v8: tła są cache’owane jak pełnoprawne assety zamiast składane od zera co klatkę");
+check(estateSource.includes("panelWall")&&estateSource.includes("materialRect")&&estateSource.includes("glassPanel")&&estateSource.includes("metalShutter")&&estateSource.includes("awning"),"Osiedle v8: budynki używają warstwowych materiałów, szkła, metalu i markiz");
+check(estateSource.includes("pełne bryły zamiast patyczków")&&estateSource.includes("heroG"),"Osiedle v8: dorośli i główny bohater mają pełniejsze sylwetki i modelowane światło");
+check(estateSource.includes("poster(ctx")&&estateSource.includes("drawTreeUrban")&&estateSource.includes("contactShadow"),"Osiedle v8: sceny mają głębię, małą architekturę i cienie kontaktowe");
 check(estateSource.includes("ZJEDZ")&&estateSource.includes("action:'eat'"),"Osiedle: karta jedzenia przełącza się z zamówienia na bezpośrednie zjedzenie");
 check(estateSource.includes("outbound=q<.57")&&estateSource.includes("dir=outbound"),"Osiedle: dostawca obraca się po zawróceniu zamiast wracać wspak");
 check(estateSource.includes("unitScale*1.28")&&estateSource.includes("unitScale*1.40"),"Osiedle: chodzący dorośli są większi, a główny bohater pozostaje jeszcze większy");

@@ -503,3 +503,15 @@ Status: **wdrożone do testu gracza**
 - wraz ze spadkiem HP bohater coraz mocniej się kiwa, pochyla i ugina nogi,
 - trafienia zachowują szkło oraz lokalny feedback,
 - areny dostały dodatkową warstwę detalu nawierzchni, neonów i małej architektury.
+
+
+## v8.0 — ART RESET Osiedla
+
+Status: **wdrożone do testu gracza**
+
+- jako wzorzec jakości przyjęto istniejące renderery wcześniejszych epok,
+- statyczne warstwy 12 aren są cache’owane jako sprite’y, co pozwala podnieść detal bez pogorszenia FPS,
+- wprowadzono wspólny system materiałów dla paneli, szkła, metalu, markiz i powierzchni lakierowanych,
+- sylwetki dorosłych zostały przebudowane z linii na bryły o czytelnych proporcjach,
+- główny bohater zachowuje większą skalę oraz czytelną twarz, ale korzysta z tego samego języka materiałów i oświetlenia,
+- wszystkie wcześniejsze mechaniki Osiedla pozostają zachowane.
