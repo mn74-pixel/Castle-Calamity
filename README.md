@@ -9,12 +9,12 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
 
-## Osiedle Wielkiej Awantury v7.5.0
-- specjalna bitwa V.4 tuż przed kosmosem: dwa bloki, wklejone twarze i butelki,
-- dostawcy biegną do sklepów, wracają z zaopatrzeniem i zasilają budżet,
-- picie, zamach, lot, tłuczone szkło i stopniowe uszkodzenia elewacji,
-- dostęp od razu przez **TESTY → Silniki i Radio → Osiedle Wielkiej Awantury**,
-- opis zasad: `docs/OSIEDLE-V7.5.md`.
+## Osiedle Wielkiej Awantury v7.6.0
+- specjalna bitwa V.4 ma osiem kolejnych segmentów: balkon, kolejkę, ławkę, trzepak, śmietnik, nocną zmianę, patrol i finał,
+- dostawcy wracają z zaopatrzeniem, a tempo ekonomii i kontrataku rośnie stopniowo bez zmiany mapy kampanii,
+- od segmentu 3 pojawiają się różne pary osiedlowych awanturników; ich bójki są humorystycznym tłem i nie wpływają na HP,
+- zachowane są wgrane twarze, butelki, tłuczone szkło, zniszczenia elewacji, pełny ekran i zgodność zapisów,
+- dostęp przez **TESTY → Silniki i Radio → Osiedle Wielkiej Awantury**; opis: `docs/OSIEDLE-V7.6.md`.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

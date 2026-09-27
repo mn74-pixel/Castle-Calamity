@@ -951,6 +951,8 @@ check(qa.eraTransition("electric").era==="modern","finał IV otwiera epokę Siln
 check(qa.eraTransition("modern").era==="orbital","finał V otwiera Wyprawę Orbitalną");
 const estate=qa.estateAudit();
 for(const [key,ok] of Object.entries(estate))check(ok,"Osiedle: "+key);
+check(sandbox.window.CASTLE_ESTATE.segments.length===8&&new Set(sandbox.window.CASTLE_ESTATE.segments.map(s=>s.id)).size===8&&sandbox.window.CASTLE_ESTATE.segments.filter(s=>s.brawlers>0).length===6,"Osiedle: osiem unikalnych segmentów, sześć z animowanymi awanturnikami");
+check(sandbox.window.CASTLE_ESTATE.segmentSeconds===6&&sandbox.window.CASTLE_FUTURE.levels.modern[3].pH===2200&&sandbox.window.CASTLE_FUTURE.levels.modern[3].eH===2200,"Osiedle: rytm segmentów i symetryczne HP finałowej bitwy są ustawione");
 const estateBattle=qa.estateBattle();check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.seconds<240,"Osiedle: dostawy i wybór butelek pozwalają wygrać w mniej niż 4 minuty");
 qa.viewport(1280,720,1);qa.estateScene();save("estate-desktop.png");
 qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});qa.estateScene();save("estate-iphone.png");

@@ -1,5 +1,15 @@
 # Changelog
 
+## 7.6.0 — Osiem segmentów Osiedla Wielkiej Awantury
+
+- rozbudowano specjalną bitwę V.4 z jednej sceny do ośmiu kolejnych mini-poziomów bez zmiany numeracji kampanii,
+- każdy segment ma własny detal osiedla, tempo dostaw i narastający rytm kontrataku,
+- od trzeciego segmentu pojawiają się zróżnicowane pary osiedlowych awanturników z krótką, komiczną animacją bójki,
+- awanturnicy pozostają warstwą humorystyczną: nie zadają obrażeń, nie blokują dostawców i nie zasłaniają sterowania,
+- zachowano obie wgrane twarze, mechanikę butelek, pełny ekran, offline i zgodność istniejących zapisów,
+- zwiększono wytrzymałość obu bloków, aby normalna rozgrywka miała czas pokazać końcowe segmenty.
+
+
 ## 0.7.0 — Mobile Fit + Safari Face Studio
 
 - dopasowano całą planszę, pasek misji i sterowanie do jednego poziomego ekranu telefonu,

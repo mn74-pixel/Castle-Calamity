@@ -442,3 +442,16 @@ Wdrożono przerywnik V.4 przed kosmosem: dwie fotograficzne twarze w blokach,
 butelki jako pociski, dostawcy zaopatrzenia i krótkie animacje picia.
 Zachowano 34 bitwy i zgodność zapisów. Szczegóły: `OSIEDLE-V7.5.md`.
 Kolejna ocena gracza: tempo dostaw i czytelność animacji na fizycznym iPhonie.
+
+
+## v7.6 — osiem segmentów blokowiska
+
+Status: **wdrożone do testu gry**
+
+- V.4 zachowuje jeden węzeł kampanii, ale wewnątrz przechodzi kolejno przez osiem scen osiedla,
+- kolejne sceny zmieniają rekwizyty, tempo dostaw, cooldown i presję AI zamiast tylko podnosić liczby,
+- od trzeciego segmentu w tle działają różne pary osiedlowych awanturników; bójki są niebojowe względem właściwej mechaniki,
+- ostatni segment ma najwyższe tempo i drobny zwrot ekonomiczny za celne rzuty,
+- HP bloków podniesiono symetrycznie, żeby gracz miał szansę zobaczyć finał przy normalnym tempie,
+- zapis kampanii, przejście V→VI i liczba 34 bitew pozostają bez zmian,
+- szczegóły: `OSIEDLE-V7.6.md`.
