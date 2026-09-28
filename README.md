@@ -1,5 +1,18 @@
 # Castle Calamity
 
+### v8.6.0 — gradacja oddziałów i działające wejścia do sklepów
+
+Osiedle ma sześć typów bojowników. Dres z kijem zastępuje podstawowego
+dresiarza, rolkarz rozwija rolę szybkiego natarcia, a dozorca regeneruje
+pobliską ekipę. Karty zależą od etapu: bez przyszłych jednostek i napisów
+„dostępne od”. Obowiązuje najwyżej osiem kart, także dla klawiatury i AI.
+
+Dostawy prowadzą do rzeczywistych drzwi bieżącej sceny. Drzwi się otwierają,
+dostawca wchodzi, odbiera towar i wraca. Przy ławce czy trzepaku działa mały
+sklep boczny, przy zamkniętym sklepie — Express. Zmiana sceny nie usuwa
+wejścia podczas przechodzenia przez próg. Patrol nadal uspokaja podwórko.
+Szczegóły: [Osiedle v8.6](docs/OSIEDLE-V8.6.md).
+
 ### v8.5.1 — bez korków i bez burzenia bloków
 
 Ekipa rozstawia się na trzech pasach podwórka. Jednostki omijają zatrzymanych

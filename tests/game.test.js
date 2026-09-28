@@ -15,6 +15,16 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  estateDeliveryScene: function(index,q){launchEstateSegment(index);G.estate.ai=1e6;ESTATE.buy(G,"runner",true);var r=G.estate.runners[0];ESTATE.tick(G,r.duration*q,castleDmg);render();return {phase:r.phase,open:ESTATE.doorOpen(G),x:r.x,y:r.y,target:ESTATE.runnerTarget(G,r),door:ESTATE.serviceDoor(G)};},
+  estateNewSquadScene: function(){launchEstateSegment(9);G.estate.ai=1e6;var ids=window.CASTLE_ESTATE_TACTICS.roster(9);ids.forEach(function(id,i){G.estate.tactics.p=0;ESTATE.buy(G,id,true);var u=G.estate.units[G.estate.units.length-1];u.x=.30+i*.13;u.walk=i;u.moving=true;});render();return G.estate.units.map(function(u){return u.kind;});},
+  estateDeckAudit: function(){launchEstateSegment(0);var results=[];for(var i=0;i<12;i++){ESTATE.setSegment(G,i,true);ESTATE.updateCards(document,G,LANG,false);var row=document.getElementById("cds"),cards=Array.from(row.children);results.push({stage:i,expected:ESTATE.availableChoices(G).map(function(c){return 'estate_'+c.id;}),actual:cards.map(function(c){return c.id;}),keys:cards.map(function(c){return c.dataset.hotkey;})});}return results;},
+  estateRouteAudit: function(){
+    var aligned=true,finished=true;
+    for(var stage=0;stage<12;stage++)for(var p of [true,false]){launchEstateSegment(stage);G.estate.ai=1e6;ESTATE.buy(G,"runner",p);var r=G.estate.runners[0],gold=(p?G.p:G.e).gold;ESTATE.tick(G,r.duration*.44,castleDmg);var d=ESTATE.serviceDoor(G);aligned=aligned&&r.phase==='enter'&&r.x*G.W>=d.x&&r.x*G.W<=d.x+d.w&&Math.abs(r.y*G.GY-d.y)<d.h&&ESTATE.doorOpen(G)>.9;ESTATE.tick(G,r.duration*.57,castleDmg);finished=finished&&G.estate.runners.length===0&&(p?G.p:G.e).gold>gold;}
+    launchEstateSegment(null);G.estate.ai=1e6;ESTATE.setSegment(G,1,false);G.estate.time=27.8;ESTATE.buy(G,"runner",true);var moving=G.estate.runners[0];ESTATE.tick(G,.1,castleDmg);var before=moving.x;ESTATE.tick(G,.2,castleDmg);var reroute=G.estate.segment===2&&moving.routeSegment===2&&Math.abs(moving.x-before)<.035;
+    launchEstateSegment(null);ESTATE.setSegment(G,1,false);G.estate.ai=1e6;ESTATE.buy(G,"runner",true);var crossing=G.estate.runners[0];ESTATE.tick(G,crossing.duration*.44,castleDmg);G.estate.time=27.99;ESTATE.tick(G,.05,castleDmg);var held=G.estate.segment===1&&G.estate.pendingSegment===2;for(var j=0;j<80;j++)ESTATE.tick(G,.05,castleDmg);var resumed=G.estate.segment===2&&crossing.phase==='return';
+    return {aligned:aligned,finished:finished,reroute:reroute,held:held,resumed:resumed};
+  },
   estateSurrender: function(p,seconds){
     launchEstateSegment(4);G.estate.ai=1e6;ESTATE.buy(G,"dres",true);ESTATE.buy(G,"dres",false);
     var loser=p?G.p:G.e;castleDmg(loser,loser.hp,0,0,{estate:true});
@@ -34,10 +44,10 @@ window.__QA = {
     var tactics=window.CASTLE_ESTATE_TACTICS;
     [true,false].forEach(function(p){["dres","bike","neighbor"].forEach(function(id,i){G.estate.tactics[p?"p":"e"]=0;ESTATE.buy(G,id,p);var u=G.estate.units[G.estate.units.length-1];u.x=p?.47-i*.064:.53+i*.064;u.walk=i+1;u.moving=true;});});
     ESTATE.tick(G,.35,castleDmg);render();
-    return {count:G.estate.units.length,cards:ESTATE.choices.length};
+    return {count:G.estate.units.length,cards:ESTATE.availableChoices(G).length};
   },
   estateTacticsIntegration: function(){
-    launchEstateSegment(6);G.estate.ai=1e6;buyEstateItem("dres");var u=G.estate.units[0];u.hp=50;ESTATE.eat(G,true);var pizza=u.hp===75;
+    launchEstateSegment(6);G.estate.ai=1e6;buyEstateItem("bat");var u=G.estate.units[0];u.hp=50;ESTATE.eat(G,true);var pizza=u.hp===75;
     var n=G.estate.units.length;PAUSED=true;var paused=!buyEstateItem("bike")&&G.estate.units.length===n;PAUSED=false;
     ESTATE.setSegment(G,10,true);var reset=G.estate.units.length===0&&G.estate.shots.length===0;
     ESTATE.buy(G,"runner",true);var gold=G.p.gold;ESTATE.tick(G,10,castleDmg);var express=G.p.gold===gold+40;
@@ -75,7 +85,7 @@ window.__QA = {
   estateExpressionScene: function(kind){launchEstateSegment(0);G.estate.ai=1e6;if(kind==="drink"){G.p.gold=200;buyEstateItem("wine");ESTATE.tick(G,.56,castleDmg);}else{G.estate.e.hitReactT=.36;G.estate.e.hitReactPower=1.35;G.estate.impacts=[{x:G.W-G.e.w*.48,y:G.GY-G.e.h*.50,t:.16,col:"#a9d5db",power:1.35}];}render();return {kind:kind,action:G.estate.p.action&&G.estate.p.action.t,hit:G.estate.e.hitReactT};},
   estateSegmentScene: function(i){launchEstateSegment(i);G.estate.ai=1e6;G.e.hp=G.e.max*.72;if(i>=3){G.estate.p.stamina=48;G.estate.p.food=1;}if(i>=6)G.estate.p.combo=3;render();var seg=ESTATE.segments[i];return {index:i,id:seg.id,prop:seg.prop,food:!!seg.food,brawlers:seg.brawlers,stamina:G.estate.p.stamina,bottles:G.estate.p.bottles};},
   estateSegmentLock: function(i){launchEstateSegment(i);G.estate.ai=1e6;var before=G.estate.segment;ESTATE.tick(G,45,castleDmg);return {before:before,after:G.estate.segment,visual:ESTATE.currentVisual()};},
-  estateBattle: function(strategy,limit){launchEstateSegment(null);var t=0;for(;t<(limit||240)&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);if(strategy==="mixed"){var own=G.estate.units.filter(function(u){return u.isP&&u.hp>0;}),foes=G.estate.units.filter(function(u){return !u.isP&&u.hp>0;}),unit=own.length===0?"dres":foes.some(function(u){return u.kind==="dres";})&&G.estate.segment>=4?"neighbor":G.estate.segment>=2?"bike":"dres";if(own.length<3&&ESTATE.status(G,unit,true).ok)buyEstateItem(unit);}var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment,recruited:G.stats.unitsSpawned,kills:G.stats.kills,hp:G.p.hp};},
+  estateBattle: function(strategy,limit){launchEstateSegment(null);var t=0;for(;t<(limit||240)&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);if(strategy==="mixed"){var own=G.estate.units.filter(function(u){return u.isP&&u.hp>0;}),foes=G.estate.units.filter(function(u){return !u.isP&&u.hp>0;}),deck=window.CASTLE_ESTATE_TACTICS.roster(G.estate.segment),unit=own.length===0?deck[0]:foes.some(function(u){return window.CASTLE_ESTATE_TACTICS.archetype(u.kind)==="front";})&&deck.includes("neighbor")?"neighbor":deck[1]||deck[0];if(own.length<3&&ESTATE.status(G,unit,true).ok)buyEstateItem(unit);}var id=["vodka","wine","beer"].find(function(k){return ESTATE.status(G,k,true).ok;});if(id)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment,recruited:G.stats.unitsSpawned,kills:G.stats.kills,hp:G.p.hp};},
   crestProductionAudit: function(){
     return {
       heicWithoutMime:isLikelyCrestFile({name:"IMG_2048.HEIC",type:""}),
@@ -637,7 +647,7 @@ function classList() {
 function makeElement(tag = "div") {
   const el = {
     tagName: tag.toUpperCase(), style: {}, classList: classList(), dataset: {}, children: [],
-    innerHTML: "", textContent: "", value: "", files: [], width: 60, height: 60,
+    get innerHTML(){return this._innerHTML||"";},set innerHTML(value){this._innerHTML=value;this.children=[];},textContent: "", value: "", files: [], width: 60, height: 60,
     appendChild(ch) { this.children.push(ch); if(ch&&ch.id&&typeof elements!=="undefined")elements.set(ch.id,ch); return ch; },
     removeChild(ch) { this.children = this.children.filter((x) => x !== ch); },
     addEventListener() {}, removeEventListener() {}, click() {}, focus() {}, remove() { if(this.id&&typeof elements!=="undefined")elements.delete(this.id); },
@@ -1004,6 +1014,12 @@ check(qa.eraTransition("modern").era==="orbital","finał V otwiera Wyprawę Orbi
 const modernLevelFour=sandbox.window.CASTLE_FUTURE.levels.modern[3];
 check(modernLevelFour.n==="Fort Nieodebranych Meldunków"&&!modernLevelFour.special&&modernLevelFour.eH===1820&&modernLevelFour.ai.includes("fieldgun")&&modernLevelFour.ul.includes("combatmedic"),"Silniki i Radio 4: przywrócono pełny poziom epoki zamiast Osiedla");
 const estateAudit=qa.estateAudit();
+for(const [key,ok] of Object.entries(qa.estateRouteAudit()))check(ok,"Osiedle dostawy: "+key);
+for(const deck of qa.estateDeckAudit()){
+  check(deck.actual.join(',')===deck.expected.join(',')&&deck.actual.length<=8,"Osiedle: wyłącznie aktualne karty etapu "+deck.stage);
+  check(deck.keys.join(',')===deck.keys.map((_,i)=>String(i+1)).join(','),"Osiedle: skróty zgodne z widoczną talią "+deck.stage);
+}
+check(html.includes('ESTATE.availableChoices(G)[Number(e.key)-1]'),"Osiedle: klawiatura korzysta z widocznej talii");
 for(const [key,ok] of Object.entries(estateAudit))check(ok,"Osiedle: "+key);
 for(const [key,ok] of Object.entries(qa.estateTacticsIntegration()))check(ok,"Osiedle taktyka: "+key);
 qa.viewport(1280,720,1);
@@ -1015,7 +1031,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.5.1"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.6.0"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
@@ -1028,6 +1044,8 @@ check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.sec
 for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   qa.viewport(viewport[0],viewport[1],1);
   const geometry=qa.estateGeometryAudit();
+  qa.estateNewSquadScene();save("estate-new-squad-"+viewport.join("x")+".png");
+  for(const pair of [[1,.44],[4,.51],[10,.58],[11,.44]]){qa.estateDeliveryScene(pair[0],pair[1]);save("estate-door-"+viewport.join("x")+"-"+pair[0]+".png");}
   const combat=qa.estateCombatScene();save("estate-combat-"+viewport.join("x")+".png");
   qa.estateSurrender(false,1.5);save("estate-peace-"+viewport.join("x")+".png");
   check(combat.count===6&&combat.cards===8,"Osiedle: trzy sylwetki obu stron i osiem kart przy "+viewport.join("×"));
