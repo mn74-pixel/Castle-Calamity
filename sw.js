@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v8.2.3 — modern estate architecture pass.
+/* Castle Calamity PWA v8.2.4 — horizontal slab and landmark polish.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v8.2.3";
+const CACHE = "castle-calamity-v8.2.4";
 const APP_SHELL = [
   "./",
   "./index.html",

@@ -1,5 +1,12 @@
 # Castle Calamity
 
+### v8.2.4 — HORIZONTAL SLAB POLISH
+- bazy mają teraz jedną szeroką, płaską bryłę; klatka schodowa jest pasem szkła wtopionym w fasadę i nie wystaje ponad dach,
+- boczne skrzydła są płytkimi powrotami elewacji z loggiami, a oznaczenia budynków przeniesiono z dachu na ścianę,
+- główna loggia dostała przesuwne drzwi, boczne okno, mocny front balkonu i spójne osadzenie bohatera,
+- landmarki otrzymały pełniejsze kontury, materiały i rozpoznawalne detale: ławka ma listwy i stelaż, trzepak stopy i wzór dywanu, śmietniki wiatę, brama pas okien, a Nocny Express osobną kabinę,
+- bloki tła korzystają z trzech różnych rytmów elewacji: okien, balkonów i przeszklonych pionów komunikacyjnych.
+
 ### v8.2.3 — MODERN ESTATE, ERA 1 DISCIPLINE
 - boczne bazy są teraz jednoznacznie współczesnymi blokami mieszkalnymi: szeroka bryła, płytkie skrzydła, przeszklona klatka schodowa, wejście ze stopniami i loggia bohatera,
 - płaskie dachy mają ciągłe balustrady, wentylację, anteny i urządzenia techniczne; usunięto wieżową kompozycję oraz detale kojarzące się z architekturą obronną,

@@ -181,15 +181,26 @@
   function sky(ctx,w,gy,top,bottom){var gr=ctx.createLinearGradient(0,0,0,gy);gr.addColorStop(0,top);gr.addColorStop(1,bottom);ctx.fillStyle=gr;ctx.fillRect(0,0,w,gy);}
   function lamp(ctx,x,y,on){ctx.strokeStyle='#4c5353';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-90);ctx.lineTo(x+18,y-90);ctx.stroke();ctx.fillStyle=on?'#f1d58b':'#9aa1a0';ctx.beginPath();ctx.ellipse(x+22,y-89,9,5,0,0,Math.PI*2);ctx.fill();}
   function car(ctx,x,y,s,col){ctx.save();ctx.translate(x,y);ctx.scale(s,s);contactShadow(ctx,0,1,31,.28);var body=ctx.createLinearGradient(-28,-26,28,-5);body.addColorStop(0,shade(col,1.16));body.addColorStop(.55,col);body.addColorStop(1,shade(col,.62));ctx.fillStyle=body;ctx.strokeStyle='#242b2e';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-29,-16);ctx.lineTo(-20,-17);ctx.lineTo(-9,-29);ctx.lineTo(15,-29);ctx.lineTo(26,-18);ctx.lineTo(30,-15);ctx.lineTo(27,-5);ctx.lineTo(-27,-5);ctx.closePath();ctx.fill();ctx.stroke();glassPanel(ctx,-7,-27,20,9,true);ctx.fillStyle='rgba(255,255,255,.22)';ctx.fillRect(-25,-14,44,2);wheel(ctx,-18,-5,7);wheel(ctx,19,-5,7);ctx.restore();}
-  function kiosk(ctx,x,y,w,h,sign,body,accent){contactShadow(ctx,x,y,w*.60,.44);ctx.save();ctx.fillStyle='rgba(0,0,0,.25)';rounded(ctx,x-w/2+8,y-h+9,w,h,4,'rgba(0,0,0,.25)');ctx.restore();materialRect(ctx,x-w/2,y-h,w,h,shade(body,1.18),body,shade(body,.55));awning(ctx,x-w/2-4,y-h-19,w+8,20,accent,shade(accent,1.35));ctx.fillStyle='#fff0c4';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(sign,x,y-h-5);glassPanel(ctx,x-w*.34,y-h*.68,w*.68,h*.42,false);ctx.fillStyle='#c99d61';ctx.fillRect(x-w*.36,y-h*.27,w*.72,5);ctx.fillStyle='rgba(255,255,255,.18)';ctx.fillRect(x-w*.31,y-h*.64,w*.18,h*.34);}
+  function kiosk(ctx,x,y,w,h,sign,body,accent){var left=x-w/2;contactShadow(ctx,x,y,w*.60,.44);ctx.save();ctx.fillStyle='rgba(0,0,0,.28)';rounded(ctx,left+9,y-h+10,w,h,4,'rgba(0,0,0,.28)');ctx.restore();
+    materialRect(ctx,left,y-h,w,h,shade(body,1.20),body,shade(body,.50));ctx.fillStyle=shade(body,.62);ctx.beginPath();ctx.moveTo(left+w*.83,y-h);ctx.lineTo(left+w,y-h+9);ctx.lineTo(left+w,y);ctx.lineTo(left+w*.83,y);ctx.closePath();ctx.fill();
+    ctx.fillStyle='#303b3d';ctx.fillRect(left-5,y-h-25,w+10,8);awning(ctx,left-4,y-h-18,w+8,19,accent,shade(accent,1.35));
+    rounded(ctx,x-w*.31,y-h-32,w*.62,20,3,shade(accent,.78),'#26343a');ctx.fillStyle='#fff0c4';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(sign,x,y-h-18);
+    glassPanel(ctx,left+w*.09,y-h*.69,w*.55,h*.43,false);ctx.fillStyle='#c99d61';ctx.fillRect(left+w*.07,y-h*.27,w*.61,6);ctx.fillStyle='rgba(255,255,255,.20)';ctx.fillRect(left+w*.14,y-h*.64,w*.15,h*.34);
+    rectPanel(ctx,left+w*.72,y-h*.68,w*.20,h*.68,shade(body,.72));glassPanel(ctx,left+w*.75,y-h*.60,w*.14,h*.24,false);ctx.fillStyle='#d7c6a2';ctx.fillRect(left+w*.77,y-h*.25,w*.10,2);ctx.fillStyle='#293336';ctx.fillRect(left-2,y-5,w+4,5);
+  }
+  function rectPanel(ctx,x,y,w,h,fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);ctx.strokeStyle='#27363b';ctx.lineWidth=1.2;ctx.strokeRect(x+.5,y+.5,w-1,h-1);}
   var ESTATE_SKYLINE_LAYOUTS=[
-    [{x:-.05,w:.24,h:.88,step:.22,utility:.72},{x:.23,w:.17,h:.62,step:0,utility:.25},{x:.47,w:.28,h:1,step:.18,utility:.62},{x:.82,w:.20,h:.71,step:0,utility:.40}],
-    [{x:-.09,w:.22,h:.65,step:0,utility:.34},{x:.17,w:.31,h:.94,step:.16,utility:.68},{x:.56,w:.19,h:.72,step:0,utility:.22},{x:.79,w:.29,h:.83,step:.20,utility:.52}],
-    [{x:-.04,w:.18,h:.72,step:.18,utility:.58},{x:.24,w:.25,h:.58,step:0,utility:.18},{x:.58,w:.29,h:.89,step:.14,utility:.76},{x:.91,w:.13,h:.63,step:0,utility:.31}]
+    [{x:-.05,w:.24,h:.88,step:.22,utility:.72,type:1},{x:.23,w:.17,h:.62,step:0,utility:.25,type:2},{x:.47,w:.28,h:1,step:.18,utility:.62,type:0},{x:.82,w:.20,h:.71,step:0,utility:.40,type:2}],
+    [{x:-.09,w:.22,h:.65,step:0,utility:.34,type:0},{x:.17,w:.31,h:.94,step:.16,utility:.68,type:2},{x:.56,w:.19,h:.72,step:0,utility:.22,type:1},{x:.79,w:.29,h:.83,step:.20,utility:.52,type:0}],
+    [{x:-.04,w:.18,h:.72,step:.18,utility:.58,type:2},{x:.24,w:.25,h:.58,step:0,utility:.18,type:1},{x:.58,w:.29,h:.89,step:.14,utility:.76,type:0},{x:.91,w:.13,h:.63,step:0,utility:.31,type:2}]
   ];
   function estateBackgroundBlock(ctx,w,baseY,maxH,b,c1,c2,night,detail){var x=b.x*w,bw=b.w*w,h=maxH*b.h,y=baseY-h,step=b.step*bw;
     var gr=ctx.createLinearGradient(x,y,x+bw,y+h);gr.addColorStop(0,c1);gr.addColorStop(1,c2);ctx.fillStyle=gr;ctx.fillRect(x,y,bw,h);if(step){ctx.fillStyle=shade(c1,.94);ctx.fillRect(x+bw-step,y-h*.10,step,h*.10);}
-    ctx.fillStyle=night?'#ddc77e':'#aebeba';var cols=Math.max(2,Math.floor(bw/34)),rows=Math.max(2,Math.floor(h/31));for(var rr=0;rr<rows;rr++)for(var cc=0;cc<cols;cc++){if((rr*3+cc+detail)%4===1)continue;ctx.fillRect(x+8+cc*(bw-16)/cols,y+11+rr*(h-22)/rows,Math.max(3,bw/cols*.18),Math.max(3,h/rows*.12));}
+    ctx.fillStyle='rgba(24,38,42,.13)';ctx.fillRect(x+bw*.82,y,bw*.18,h);ctx.strokeStyle='rgba(231,234,215,.10)';ctx.lineWidth=1;for(var seam=1;seam<5;seam++){ctx.beginPath();ctx.moveTo(x,y+h*seam/5);ctx.lineTo(x+bw,y+h*seam/5);ctx.stroke();}
+    var glow=night?'#ddc77e':'#aebeba',rows=Math.max(2,Math.floor(h/34));ctx.fillStyle=glow;
+    if(b.type===1){for(var br=0;br<rows;br++){var by=y+10+br*(h-18)/rows;ctx.fillStyle='rgba(35,47,49,.30)';ctx.fillRect(x+bw*.10,by,bw*.72,7);ctx.fillStyle=glow;for(var bc=0;bc<3;bc++)ctx.fillRect(x+bw*(.14+bc*.22),by+1,Math.max(3,bw*.07),4);}}
+    else if(b.type===2){ctx.fillStyle='rgba(29,49,56,.42)';ctx.fillRect(x+bw*.42,y+4,bw*.20,h-8);ctx.fillStyle=glow;for(var sr=0;sr<rows;sr++)ctx.fillRect(x+bw*.46,y+10+sr*(h-20)/rows,bw*.12,Math.max(3,h/rows*.10));for(var sw=0;sw<rows;sw++)ctx.fillRect(x+bw*.12,y+12+sw*(h-22)/rows,Math.max(3,bw*.07),Math.max(3,h/rows*.10));}
+    else{var cols=Math.max(2,Math.floor(bw/38));for(var rr=0;rr<rows;rr++)for(var cc=0;cc<cols;cc++){if((rr*3+cc+detail)%4===1)continue;ctx.fillRect(x+9+cc*(bw-18)/cols,y+11+rr*(h-22)/rows,Math.max(3,bw/cols*.18),Math.max(3,h/rows*.11));}}
     var ux=x+bw*b.utility,roof=y-(step&&b.utility>1-b.step?h*.10:0);ctx.fillStyle=shade(c2,.78);ctx.fillRect(ux-8,roof-8,16,8);ctx.strokeStyle=shade(c2,.62);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(ux,roof-8);ctx.lineTo(ux,roof-25);ctx.stroke();ctx.beginPath();ctx.arc(ux,roof-27,3,0,Math.PI*2);ctx.stroke();
   }
   function urbanEstateLayer(ctx,w,baseY,maxH,c1,c2,alpha,layout,night){ctx.save();ctx.globalAlpha=alpha;ESTATE_SKYLINE_LAYOUTS[layout].forEach(function(b,i){estateBackgroundBlock(ctx,w,baseY,maxH,b,c1,c2,night,i+layout);});ctx.restore();}
@@ -225,29 +236,29 @@
     // One large, iconic modern-estate landmark per stage.
     ctx.save();ctx.translate(mid,y);ctx.scale(1.72,1.72);ctx.translate(-mid,-y);contactShadow(ctx,mid,y-1,112,.34);landmarkOutline(ctx);
     if(seg.arena==='balcony_canyon'){
-      materialRect(ctx,mid-82,y-91,164,86,'#a9a18d','#746e64','#27363b');ctx.fillStyle='#293b42';ctx.fillRect(mid-55,y-82,110,54);ctx.fillStyle='#b2534d';ctx.fillRect(mid-50,y-76,100,42);ctx.fillStyle='#7d8a85';ctx.fillRect(mid-61,y-31,122,8);ctx.fillStyle='#e5d9b8';ctx.fillRect(mid-64,y-35,128,4);
+      materialRect(ctx,mid-86,y-92,172,87,'#aaa28f','#746e64','#27363b');ctx.fillStyle='#293b42';ctx.fillRect(mid-58,y-82,116,55);glassPanel(ctx,mid+13,y-77,38,42,false);ctx.fillStyle='#b2534d';ctx.fillRect(mid-53,y-76,58,42);ctx.fillStyle='#7d8a85';ctx.fillRect(mid-64,y-32,128,9);ctx.fillStyle='#e5d9b8';ctx.fillRect(mid-67,y-36,134,4);for(var lr=0;lr<7;lr++)ctx.fillRect(mid-57+lr*19,y-32,2,9);
     }else if(seg.arena==='shopfront'){
       kiosk(ctx,mid,y,190,92,'MONOPOLOWY','#65594a','#aa5140');for(var q=0;q<4;q++)person(ctx,mid-58+q*38,y,.64,'#69746e',q+t,false,q<2?1:-1);
     }else if(seg.arena==='bench_square'){
-      drawTreeUrban(ctx,mid-110,y,.67,false);drawTreeUrban(ctx,mid+110,y,.62,false);ctx.fillStyle='#674c3a';ctx.fillRect(mid-84,y-22,168,9);ctx.strokeRect(mid-84+.5,y-21.5,167,8);ctx.fillRect(mid-75,y-13,7,13);ctx.fillRect(mid+68,y-13,7,13);
+      drawTreeUrban(ctx,mid-115,y,.62,false);drawTreeUrban(ctx,mid+112,y,.58,false);ctx.fillStyle='#293235';ctx.fillRect(mid-91,y-49,8,43);ctx.fillRect(mid+83,y-49,8,43);for(var slat=0;slat<3;slat++){var sy=y-47+slat*10;materialRect(ctx,mid-87,sy,174,8,'#846148','#563c31','#27363b');}materialRect(ctx,mid-94,y-23,188,11,'#86634a','#584033','#27363b');ctx.fillStyle='#31393a';ctx.fillRect(mid-76,y-12,8,12);ctx.fillRect(mid+68,y-12,8,12);
     }else if(seg.arena==='snack_kiosk'){
       kiosk(ctx,mid,y,194,94,'ZAPIEKANKI','#6d4e39','#d38b44');
     }else if(seg.arena==='rack_yard'){
-      ctx.strokeStyle='#727d78';ctx.lineWidth=7;ctx.strokeRect(mid-78,y-99,156,94);ctx.fillStyle='#994d48';ctx.fillRect(mid-62,y-84,124,65);landmarkOutline(ctx);ctx.strokeRect(mid-62+.5,y-83.5,123,64);
+      ctx.strokeStyle='#27363b';ctx.lineWidth=11;ctx.strokeRect(mid-80,y-101,160,97);ctx.strokeStyle='#87928c';ctx.lineWidth=7;ctx.strokeRect(mid-80,y-101,160,97);ctx.fillStyle='#994d48';ctx.fillRect(mid-64,y-85,128,66);landmarkOutline(ctx);ctx.lineWidth=2;ctx.strokeRect(mid-63,y-84,126,64);ctx.strokeStyle='rgba(238,207,164,.55)';for(var stripe=0;stripe<4;stripe++){ctx.beginPath();ctx.moveTo(mid-58,y-76+stripe*15);ctx.lineTo(mid+58,y-76+stripe*15);ctx.stroke();}ctx.fillStyle='#353e3e';ctx.fillRect(mid-87,y-7,18,7);ctx.fillRect(mid+69,y-7,18,7);
     }else if(seg.arena==='bin_alley'){
-      for(var bi=-2;bi<=2;bi++){ctx.fillStyle=bi%2?'#566b5f':'#4b6266';ctx.fillRect(mid+bi*43-17,y-49,34,44);landmarkOutline(ctx);ctx.strokeRect(mid+bi*43-16.5,y-48.5,33,43);ctx.fillStyle='#334640';ctx.fillRect(mid+bi*43-20,y-54,40,7);}
+      materialRect(ctx,mid-118,y-83,236,78,'#77756b','#504f4b','#27363b');ctx.fillStyle='#343d3d';ctx.fillRect(mid-124,y-88,248,10);for(var bi=-2;bi<=2;bi++){var bx=mid+bi*43;ctx.fillStyle=bi%2?'#61796a':'#526d72';ctx.fillRect(bx-17,y-50,34,45);landmarkOutline(ctx);ctx.strokeRect(bx-16.5,y-49.5,33,44);ctx.fillStyle='#334640';ctx.fillRect(bx-20,y-57,40,8);ctx.fillStyle='#d7c36b';ctx.fillRect(bx-5,y-35,10,8);ctx.fillStyle='#202829';ctx.beginPath();ctx.arc(bx-11,y-3,3,0,Math.PI*2);ctx.arc(bx+11,y-3,3,0,Math.PI*2);ctx.fill();}
     }else if(seg.arena==='pizza_pavilion'){
       kiosk(ctx,mid,y,198,94,'PIZZA 24','#5e4944','#bb4e40');
     }else if(seg.arena==='night_gate'){
-      materialRect(ctx,mid-116,y-135,232,130,'#46515b','#303840','#20272d');ctx.fillStyle='#151b20';ctx.fillRect(mid-73,y-91,146,86);ctx.fillStyle='#6d7f89';ctx.fillRect(mid-116,y-110,232,9);ctx.fillStyle='#e8d596';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('NOCNA BRAMA',mid,y-116);lamp(ctx,mid-95,y-1,true);lamp(ctx,mid+87,y-1,true);
+      materialRect(ctx,mid-118,y-137,236,132,'#53606b','#303840','#20272d');ctx.fillStyle='#151b20';ctx.fillRect(mid-74,y-89,148,84);ctx.fillStyle='#70828c';ctx.fillRect(mid-118,y-111,236,10);for(var gw=-2;gw<=2;gw++)glassPanel(ctx,mid+gw*39-14,y-132,28,16,true);ctx.fillStyle='#e8d596';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('NOCNA BRAMA',mid,y-96);rectPanel(ctx,mid-112,y-102,25,18,'#516878');ctx.fillStyle='#eee1b9';ctx.font='bold 7px sans-serif';ctx.fillText('12',mid-99,y-90);lamp(ctx,mid-95,y-1,true);lamp(ctx,mid+87,y-1,true);bollard(ctx,mid-67,y);bollard(ctx,mid+67,y);
     }else if(seg.arena==='kebab_corner'){
       kiosk(ctx,mid,y,190,96,'KEBAB 24','#51443b','#c49a59');ctx.fillStyle='#caa35f';ctx.fillRect(mid-6,y-77,12,53);ctx.fillStyle='#874b37';for(var k=0;k<5;k++)ctx.fillRect(mid-4,y-72+k*9,8,6);
     }else if(seg.arena==='parking_patrol'){
-      car(ctx,mid-105,y-7,.50,'#6e655d');car(ctx,mid+105,y-7,.50,'#586b77');var px=mid+Math.sin(t*.82)*58;car(ctx,px,y-7,.82,'#456b8a');ctx.fillStyle='#7fc0df';ctx.fillRect(px-6,y-48,12,6);
+      ctx.fillStyle='rgba(226,220,194,.26)';ctx.fillRect(mid-132,y-42,48,3);ctx.fillRect(mid+84,y-42,48,3);car(ctx,mid-114,y-7,.48,'#6e655d');car(ctx,mid+114,y-7,.48,'#586b77');var px=mid+Math.sin(t*.82)*28;car(ctx,px,y-7,1.16,'#456b8a');ctx.save();ctx.globalAlpha=.16;ctx.fillStyle='#75bce5';ctx.beginPath();ctx.arc(px-7,y-47,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#df6d68';ctx.beginPath();ctx.arc(px+7,y-47,8,0,Math.PI*2);ctx.fill();ctx.restore();ctx.fillStyle='#7fc0df';ctx.fillRect(px-14,y-49,14,5);ctx.fillStyle='#d56762';ctx.fillRect(px,y-49,14,5);ctx.fillStyle='#e8ddd0';ctx.fillRect(px-29,y-28,58,6);ctx.fillStyle='#35556e';ctx.font='bold 7px sans-serif';ctx.textAlign='center';ctx.fillText('PATROL',px,y-23);
     }else if(seg.arena==='closed_arcade'){
-      materialRect(ctx,mid-112,y-96,224,91,'#605956','#443f40','#302e30');metalShutter(ctx,mid-94,y-80,188,70);rounded(ctx,mid-52,y-83,104,20,2,'#3d4142','#252b2d');ctx.fillStyle='#eadab5';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('ZAMKNIĘTE',mid,y-68);
+      materialRect(ctx,mid-114,y-101,228,96,'#69615d','#443f40','#302e30');ctx.fillStyle='#303638';ctx.fillRect(mid-118,y-106,236,10);metalShutter(ctx,mid-96,y-82,192,72);rounded(ctx,mid-54,y-88,108,22,2,'#3d4142','#252b2d');ctx.fillStyle='#eadab5';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('ZAMKNIĘTE',mid,y-72);poster(ctx,mid-108,y-78,18,30,'#82534e','#573938','24H');
     }else{
-      var van=mid+Math.sin(t*.56)*54;materialRect(ctx,van-61,y-58,122,49,'#85618c','#543b5b','#26343a');glassPanel(ctx,van+20,y-51,32,20,true);ctx.fillStyle='#d8c28d';ctx.fillRect(van-49,y-73,98,17);ctx.fillStyle='#f4e0ad';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText('NOCNY EXPRESS',van,y-61);wheel(ctx,van-37,y-7,10);wheel(ctx,van+38,y-7,10);
+      var van=mid+Math.sin(t*.56)*25;contactShadow(ctx,van,y-2,94,.42);materialRect(ctx,van-82,y-75,120,67,'#85618c','#543b5b','#26343a');ctx.fillStyle='#6c4b73';ctx.strokeStyle='#26343a';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(van+38,y-59);ctx.lineTo(van+61,y-55);ctx.lineTo(van+78,y-35);ctx.lineTo(van+76,y-8);ctx.lineTo(van+38,y-8);ctx.closePath();ctx.fill();ctx.stroke();glassPanel(ctx,van+46,y-51,20,18,true);ctx.fillStyle='#e8d7b0';ctx.fillRect(van-68,y-62,73,25);ctx.strokeStyle='#3a3240';for(var hatch=0;hatch<3;hatch++){ctx.beginPath();ctx.moveTo(van-64,y-57+hatch*7);ctx.lineTo(van+1,y-57+hatch*7);ctx.stroke();}ctx.fillStyle='#d8c28d';ctx.fillRect(van-68,y-96,130,22);ctx.strokeStyle='#26343a';ctx.strokeRect(van-67.5,y-95.5,129,21);ctx.fillStyle='#f4e0ad';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText('NOCNY EXPRESS',van-3,y-81);rounded(ctx,van+11,y-68,23,16,2,'#3b3341','#26343a');ctx.fillStyle='#f0d899';ctx.font='bold 8px sans-serif';ctx.fillText('24H',van+22,y-57);ctx.fillStyle='#f3dfaa';ctx.fillRect(van+68,y-27,8,7);ctx.fillStyle='#30383b';ctx.fillRect(van-87,y-14,10,6);ctx.fillRect(van+74,y-14,9,6);wheel(ctx,van-52,y-7,11);wheel(ctx,van+52,y-7,11);
     }
     ctx.restore(); // landmark scale
     ctx.restore();
@@ -261,37 +272,39 @@
   var ESTATE_BASE_GRAMMAR=['apartment-mass','side-wings','stair-core','entrance-steps','hero-loggia','window-bays','flat-roof-services'];
   function paintApartmentBlock(ctx,player){
     var team=player?'#3977a8':'#ad5149',light=player?'#a8d3ee':'#efb69b',concrete='#d2c9af',concreteDark='#716a5d',metal='#455d63';
-    ctx.lineJoin='round';ctx.lineCap='round';ctx.lineWidth=1.35;
-    function rect(x,y,w,h,fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);ctx.strokeStyle=ESTATE_INK;ctx.lineWidth=1.25;ctx.strokeRect(x+.5,y+.5,w-1,h-1);}
+    ctx.lineJoin='round';ctx.lineCap='round';ctx.lineWidth=1.4;
+    function rect(x,y,w,h,fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);ctx.strokeStyle=ESTATE_INK;ctx.lineWidth=1.35;ctx.strokeRect(x+.5,y+.5,w-1,h-1);}
     function line(x1,y1,x2,y2,col,w){ctx.strokeStyle=col;ctx.lineWidth=w||1;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();}
     function grad(x,w,a,b){var g=ctx.createLinearGradient(x,0,x+w,0);g.addColorStop(0,a);g.addColorStop(.42,a);g.addColorStop(1,b);return g;}
     function concreteBlock(x,y,w,h){rect(x,y,w,h,grad(x,w,concrete,concreteDark));ctx.save();ctx.beginPath();ctx.rect(x+1,y+1,w-2,h-2);ctx.clip();for(var row=1;row<h/18;row++)line(x,y+row*18,x+w,y+row*18,'rgba(42,47,44,.18)',.7);for(var col=1;col<w/34;col++)line(x+col*34,y,x+col*34,y+h,'rgba(42,47,44,.13)',.7);ctx.restore();}
     function window(x,y,w,h){rect(x-2,y-2,w+4,h+4,metal);var wg=ctx.createLinearGradient(x,y,x+w,y+h);wg.addColorStop(0,'#b7d0d0');wg.addColorStop(.55,'#627f82');wg.addColorStop(1,'#38585d');rect(x,y,w,h,wg);ctx.fillStyle='rgba(255,255,255,.20)';ctx.beginPath();ctx.moveTo(x+2,y+2);ctx.lineTo(x+w*.40,y+2);ctx.lineTo(x+w*.15,y+h-2);ctx.lineTo(x+2,y+h-2);ctx.closePath();ctx.fill();}
     function ledge(x,y,w){rect(x,y,w,5,concreteDark);rect(x-2,y-3,w+4,4,concrete);line(x-1,y-2,x+w+1,y-2,'#e8dfc6',.8);}
-    function roofRail(x,y,w){line(x,y,x+w,y,metal,2);for(var k=0;k<=w;k+=16)line(x+k,y,x+k,y+9,metal,1.3);}
+    function roofRail(x,y,w){line(x,y,x+w,y,metal,1.7);for(var k=0;k<=w;k+=18)line(x+k,y,x+k,y+7,metal,1.1);}
     function windowBay(x,y,cols,rows,gapX,gapY){for(var rr=0;rr<rows;rr++)for(var cc=0;cc<cols;cc++)window(x+cc*gapX,y+rr*gapY,12,18);}
-    // A broad slab is the primary mass; shallow wings make the sides heavy without becoming vertical icons.
-    concreteBlock(14,-188,172,188);concreteBlock(0,-143,52,143);concreteBlock(148,-150,52,150);ledge(14,-188,172);ledge(0,-143,52);ledge(148,-150,52);
-    ctx.fillStyle='rgba(67,72,68,.20)';ctx.fillRect(44,-184,8,178);ctx.fillRect(148,-184,8,178);
-    windowBay(19,-125,2,3,18,34);windowBay(157,-132,2,3,18,34);windowBay(54,-174,2,2,18,34);windowBay(135,-174,1,2,18,34);
-    // The glazed stair core rises only slightly above the shared flat roof.
-    concreteBlock(72,-204,56,204);rect(78,-194,44,31,'#314a52');for(var pane=0;pane<3;pane++){glassPanel(ctx,80+pane*14,-191,12,25,false);}rect(78,-88,44,34,'#314a52');for(var lowPane=0;lowPane<3;lowPane++)glassPanel(ctx,80+lowPane*14,-85,12,28,false);
-    rect(75,-215,50,11,team);ctx.fillStyle='#f4e6bd';ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.fillText(player?'BLOK A':'BLOK B',100,-207);
-    // Rectangular loggia: a real facade bay shared by the architecture and the hero layer.
-    rect(62,-166,76,76,concreteDark);rect(67,-161,66,66,'#283b40');rect(67,-102,66,9,team);line(70,-106,130,-106,'#e5d8b5',2);
-    ctx.fillStyle='#57734f';for(var pot=0;pot<3;pot++){ctx.fillRect(74+pot*22,-112,9,5);ctx.beginPath();ctx.arc(78+pot*22,-115,5,Math.PI,Math.PI*2);ctx.fill();}
+    function loggiaBay(x,y,w,h){rect(x,y,w,h,'#39484b');glassPanel(ctx,x+4,y+4,w-8,h-12,false);ctx.fillStyle='#8d9792';ctx.fillRect(x-2,y+h-12,w+4,9);ctx.fillStyle='#e6dcc2';ctx.fillRect(x-3,y+h-15,w+6,3);for(var rail=0;rail<3;rail++)ctx.fillRect(x+5+rail*(w-10)/2,y+h-12,1.5,9);}
+    // One wide slab owns the silhouette. The side wings are shallow facade returns, not vertical accents.
+    concreteBlock(0,-178,200,178);ledge(0,-178,200);
+    ctx.strokeStyle=ESTATE_INK;ctx.lineWidth=2.2;ctx.strokeRect(1,-177,198,176);
+    // Shallow facade returns make the slab substantial without producing separate vertical silhouettes.
+    rect(0,-147,49,147,grad(0,49,shade(concrete,.92),shade(concreteDark,.90)));rect(153,-140,47,140,grad(153,47,shade(concrete,1.02),shade(concreteDark,.72)));
+    ctx.fillStyle='rgba(67,72,68,.24)';ctx.fillRect(48,-174,6,168);ctx.fillRect(149,-174,6,168);ctx.fillStyle='rgba(238,229,205,.22)';ctx.fillRect(55,-171,92,4);
+    windowBay(9,-133,2,3,18,35);windowBay(163,-128,2,3,18,35);loggiaBay(157,-169,38,30);
+    // The stair core is a vertical glass stripe inside the slab and never breaks the flat roofline.
+    rect(12,-171,38,171,'#4d5552');glassPanel(ctx,17,-166,28,31,false);glassPanel(ctx,17,-124,28,31,false);glassPanel(ctx,17,-82,28,27,false);ctx.fillStyle='rgba(232,219,187,.26)';ctx.fillRect(18,-132,26,3);ctx.fillRect(18,-90,26,3);
+    // Deep rectangular loggia with a sliding door, side window and solid balcony front.
+    rect(57,-159,94,67,concreteDark);rect(63,-153,82,56,'#283b40');glassPanel(ctx,108,-149,32,47,false);window(68,-145,21,30);rect(63,-104,82,11,team);line(66,-108,142,-108,'#e5d8b5',2);
+    ctx.fillStyle='#57734f';for(var pot=0;pot<2;pot++){ctx.fillRect(71+pot*62,-113,9,5);ctx.beginPath();ctx.arc(75+pot*62,-116,5,Math.PI,Math.PI*2);ctx.fill();}
     // Glazed entrance and broad steps establish a residential front door at ground level.
-    rect(76,-52,48,52,concreteDark);rect(81,-47,38,44,'#25373d');glassPanel(ctx,84,-43,14,36,false);glassPanel(ctx,102,-43,14,36,false);line(100,-43,100,-7,ESTATE_INK,1);rect(69,-8,62,6,'#8f8878');rect(63,-3,74,5,'#aaa18c');
-    for(var lamp=0;lamp<2;lamp++){var lx=lamp?137:63;rect(lx-3,-50,6,10,'#293b44');rect(lx-2,-48,4,6,'#ffe2a0');}
+    rect(8,-53,46,53,concreteDark);rect(14,-47,34,44,'#25373d');glassPanel(ctx,17,-43,12,36,false);glassPanel(ctx,33,-43,12,36,false);line(31,-43,31,-7,ESTATE_INK,1);rect(4,-9,54,6,'#8f8878');rect(0,-4,63,6,'#aaa18c');
+    for(var lamp=0;lamp<2;lamp++){var lx=lamp?59:5;rect(lx-3,-47,6,10,'#293b44');rect(lx-2,-45,4,6,'#ffe2a0');}
     ledge(0,-6,200);
-    // Continuous railings, vents, antenna and utilities keep the roof unmistakably contemporary.
-    roofRail(18,-196,52);roofRail(130,-196,52);roofRail(2,-151,46);roofRail(152,-158,46);
-    rect(25,-211,28,12,'#778488');for(var vent=0;vent<3;vent++)line(30,-208+vent*3,48,-208+vent*3,'#39484b',1);
-    rect(146,-215,31,15,'#6f7f80');rect(151,-221,21,7,'#879493');line(160,-221,160,-247,'#4a5554',1.5);line(151,-239,169,-239,'#4a5554',1.2);
-    ctx.strokeStyle=metal;ctx.lineWidth=2;ctx.beginPath();ctx.arc(44,-219,11,.2,Math.PI*1.35);ctx.stroke();line(44,-219,52,-227,metal,2);
-    for(var ac=0;ac<2;ac++){var ax=ac?166:14;rect(ax,-83,20,15,'#778488');ctx.strokeStyle='#39484b';ctx.beginPath();ctx.arc(ax+10,-75,5,0,Math.PI*2);ctx.stroke();}
-    // A small address plate stays subordinate to the loggia and window rhythm.
-    rect(22,-99,21,14,team);ctx.fillStyle=light;ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.fillText(player?'A 12':'B 12',32,-89);
+    // Low vents, one short safety rail and a slim aerial keep the flat roof contemporary and horizontal.
+    roofRail(7,-184,66);rect(22,-195,34,11,'#778488');for(var vent=0;vent<3;vent++)line(27,-192+vent*3,51,-192+vent*3,'#39484b',1);
+    rect(142,-194,34,13,'#6f7f80');rect(148,-199,22,6,'#879493');line(160,-199,160,-226,'#4a5554',1.5);line(151,-218,169,-218,'#4a5554',1.1);line(155,-211,165,-225,'#4a5554',1);
+    ctx.strokeStyle=metal;ctx.lineWidth=1.8;ctx.beginPath();ctx.arc(111,-190,9,.2,Math.PI*1.35);ctx.stroke();line(111,-190,118,-197,metal,1.8);
+    for(var ac=0;ac<2;ac++){var ax=ac?166:64;rect(ax,-83,20,15,'#778488');ctx.strokeStyle='#39484b';ctx.beginPath();ctx.arc(ax+10,-75,5,0,Math.PI*2);ctx.stroke();}
+    // Address and team color are facade signage, not a roof crown.
+    rect(104,-82,31,14,team);ctx.fillStyle=light;ctx.font='bold 8px sans-serif';ctx.textAlign='center';ctx.fillText(player?'BLOK A':'BLOK B',119,-72);
   }
   function estateApartmentBase(ctx,c,ground){
     var key='estate:'+c.isP,sprite=ESTATE_BASE_CACHE.get(key);if(!sprite){sprite=document.createElement('canvas');sprite.width=624;sprite.height=900;var sc=sprite.getContext('2d');sc.scale(3,3);sc.translate(4,296);paintApartmentBlock(sc,c.isP);ESTATE_BASE_CACHE.set(key,sprite);}
@@ -303,16 +316,16 @@
   function resident(ctx,g,p,img,drawFace,unitScale){
     var c=p?g.p:g.e;if(c.collapseT)return;var st=side(g,p),a=st.action,t=a?a.t:0,dir=p?1:-1,drawW=c.w*1.56,drawH=c.h*1.56,sx=drawW/200,sy=drawH/260,drawX=p?c.x-18:c.x+c.w-drawW+18,sway=Math.sin(g.estate.time*2.0+(p?0:1))*.8;
     // The resident is clipped by the same rectangular loggia opening painted into the facade.
-    ctx.save();ctx.translate(drawX,g.GY);ctx.scale(sx,sy);ctx.beginPath();ctx.rect(67,-161,66,66);ctx.clip();
+    ctx.save();ctx.translate(drawX,g.GY);ctx.scale(sx,sy);ctx.beginPath();ctx.rect(63,-153,82,56);ctx.clip();
     ctx.translate(sway,0);
     var body=p?'#4f7c9d':'#9e5b55';ctx.fillStyle=body;ctx.strokeStyle=ESTATE_INK;ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(82,-93);ctx.lineTo(84,-126);ctx.quadraticCurveTo(100,-139,116,-126);ctx.lineTo(118,-93);ctx.closePath();ctx.fill();ctx.stroke();
-    var hx=100+dir*19,hy=-113;if(a){if(t<.70){var lift=Math.min(1,t/.70);hx=100+dir*(19-8*lift);hy=-113-27*lift;}else if(t<1.05){hx=100-dir*24;hy=-144;}else{hx=100+dir*32;hy=-133+(t-1.05)*24;}}
-    line(ctx,100+dir*12,-122,hx,hy,'#d3aa85',6);
-    ctx.save();ctx.translate(100,-145);if(img)drawFace(ctx,img,-16,-18,32,36,0);else{ctx.fillStyle='#d5aa85';ctx.beginPath();ctx.ellipse(0,0,10,12,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#49403a';ctx.beginPath();ctx.ellipse(0,-8,10,4,0,Math.PI,Math.PI*2);ctx.fill();}ctx.restore();
+    ctx.beginPath();ctx.moveTo(82,-94);ctx.lineTo(84,-121);ctx.quadraticCurveTo(100,-134,116,-121);ctx.lineTo(118,-94);ctx.closePath();ctx.fill();ctx.stroke();
+    var hx=100+dir*19,hy=-109;if(a){if(t<.70){var lift=Math.min(1,t/.70);hx=100+dir*(19-8*lift);hy=-109-25*lift;}else if(t<1.05){hx=100-dir*24;hy=-138;}else{hx=100+dir*32;hy=-127+(t-1.05)*24;}}
+    line(ctx,100+dir*12,-117,hx,hy,'#d3aa85',6);
+    ctx.save();ctx.translate(100,-139);if(img)drawFace(ctx,img,-16,-18,32,36,0);else{ctx.fillStyle='#d5aa85';ctx.beginPath();ctx.ellipse(0,0,10,12,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#49403a';ctx.beginPath();ctx.ellipse(0,-8,10,4,0,Math.PI,Math.PI*2);ctx.fill();}ctx.restore();
     if(a&&!a.released)bottle(ctx,a.item,hx,hy-4,.74,t<.75?-dir*1.45:dir*.45);ctx.restore();
     // Loggia rail sits in front of the character and belongs to the facade.
-    ctx.save();ctx.translate(drawX,g.GY);ctx.scale(sx,sy);ctx.fillStyle='#7d8a85';ctx.fillRect(67,-102,66,9);ctx.fillStyle='#e5d9b8';ctx.fillRect(64,-106,72,4);for(var rail=0;rail<5;rail++)ctx.fillRect(72+rail*13,-102,2,9);ctx.restore();
+    ctx.save();ctx.translate(drawX,g.GY);ctx.scale(sx,sy);ctx.fillStyle='#7d8a85';ctx.fillRect(63,-104,82,11);ctx.fillStyle='#e5d9b8';ctx.fillRect(60,-108,88,4);for(var rail=0;rail<6;rail++)ctx.fillRect(68+rail*14,-104,2,11);ctx.restore();
   }
   function draw(ctx,g,pFace,eFace,drawFace,unitScale,lang){if(!active(g))return;var e=g.estate,seg=segmentOf(g);
     drawArenaScene(ctx,g,seg);resident(ctx,g,true,pFace,drawFace,unitScale);resident(ctx,g,false,eFace,drawFace,unitScale);
@@ -342,5 +355,5 @@
   root.CASTLE_ERA_ART.drawBase=function(ctx,c,ground,era,l,t){if(era==='modern'&&l===4){arenaBase(ctx,c,ground);return;}return oldBase(ctx,c,ground,era,l,t);};
   var oldBackdrop=root.CASTLE_ERA_ART.backdrop;
   root.CASTLE_ERA_ART.backdrop=function(ctx,w,gy,era,l){if(era!=='modern'||l!==4)return oldBackdrop(ctx,w,gy,era,l);drawArenaBackdrop(ctx,w,gy,segments[visualSegment]||segments[0]);};
-  root.CASTLE_ESTATE={active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.2.3',baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
+  root.CASTLE_ESTATE={active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.2.4',baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
 })(window);

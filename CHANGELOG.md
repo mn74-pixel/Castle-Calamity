@@ -1,5 +1,13 @@
 # Changelog
 
+## 8.2.4 — pozioma bryła i polish landmarków
+
+- spłaszczono sylwetkę bocznych baz do jednej szerokiej bryły współczesnego bloku,
+- wtopiono klatkę schodową w fasadę i przeniesiono szyldy budynków z dachu na elewację,
+- rozbudowano loggię bohatera, skrzydła mieszkalne oraz niskie instalacje dachowe,
+- dodano trzy odrębne rytmy fasad w tle zamiast jednolitej siatki okien,
+- wzmocniono modelowanie, kontur i detale najważniejszych landmarków.
+
 ## 8.2.3 — współczesna architektura Osiedla
 
 - zastąpiono wieżowy układ baz szerokimi blokami mieszkalnymi ze skrzydłami, klatką schodową, wejściem i loggią,
