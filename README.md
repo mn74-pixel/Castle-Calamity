@@ -1,5 +1,17 @@
 # Castle Calamity
 
+### v8.5.1 — bez korków i bez burzenia bloków
+
+Ekipa rozstawia się na trzech pasach podwórka. Jednostki omijają zatrzymanych
+sojuszników, zamiast tworzyć jeden szereg za sąsiadką. Nie dodano limitu armii.
+Przegrani odchodzą z białą chusteczką; nie padają na ziemię.
+
+Pasek bloku oznacza teraz morale gospodarza. Przy zerze gospodarz osuwa się
+za parapet i wystawia białą chusteczkę, a budynek pozostaje nienaruszony.
+Wyłączono dla Osiedla pęknięcia, wyburzenie, ruiny i dym; zmieniono też
+komunikaty końca bitwy. Historyczne epoki pozostają bez zmian.
+Audyt: [Osiedle v8.5.1](docs/OSIEDLE-V8.5.1.md).
+
 ### v8.5.0 — Osiedle: ekipy wychodzą na podwórko
 
 Trzy grywalne jednostki: dresiarz trzyma front, rowerzysta szybko naciera na

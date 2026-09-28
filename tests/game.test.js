@@ -15,6 +15,14 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  estateSurrender: function(p,seconds){
+    launchEstateSegment(4);G.estate.ai=1e6;ESTATE.buy(G,"dres",true);ESTATE.buy(G,"dres",false);
+    var loser=p?G.p:G.e;castleDmg(loser,loser.hp,0,0,{estate:true});
+    for(var t=0;t<seconds;t+=.05)tick(.05);
+    render();var pose=ESTATE.surrenderPose(G,p),other=ESTATE.surrenderPose(G,!p);
+    var result={over:G.over,drop:pose.drop,flag:pose.flag,winnerStanding:other.drop===0&&!other.flag,collapse:loser.collapseT,holes:loser.holes.length,rubble:loser.rubble.length,fires:loser.fires.length,effects:G.smoke.length+G.sparks.length+G.dust.length,shots:G.estate.bottles.length+G.estate.shots.length};
+    showEnd(!p);result.message=document.getElementById("em").textContent;result.stats=document.getElementById("stats").innerHTML;return result;
+  },
   estateGeometryAudit: function(){
     launchEstateSegment(1);
     var p=ESTATE.baseLayout(G.p,G.GY),e=ESTATE.baseLayout(G.e,G.GY);
@@ -67,7 +75,7 @@ window.__QA = {
   estateExpressionScene: function(kind){launchEstateSegment(0);G.estate.ai=1e6;if(kind==="drink"){G.p.gold=200;buyEstateItem("wine");ESTATE.tick(G,.56,castleDmg);}else{G.estate.e.hitReactT=.36;G.estate.e.hitReactPower=1.35;G.estate.impacts=[{x:G.W-G.e.w*.48,y:G.GY-G.e.h*.50,t:.16,col:"#a9d5db",power:1.35}];}render();return {kind:kind,action:G.estate.p.action&&G.estate.p.action.t,hit:G.estate.e.hitReactT};},
   estateSegmentScene: function(i){launchEstateSegment(i);G.estate.ai=1e6;G.e.hp=G.e.max*.72;if(i>=3){G.estate.p.stamina=48;G.estate.p.food=1;}if(i>=6)G.estate.p.combo=3;render();var seg=ESTATE.segments[i];return {index:i,id:seg.id,prop:seg.prop,food:!!seg.food,brawlers:seg.brawlers,stamina:G.estate.p.stamina,bottles:G.estate.p.bottles};},
   estateSegmentLock: function(i){launchEstateSegment(i);G.estate.ai=1e6;var before=G.estate.segment;ESTATE.tick(G,45,castleDmg);return {before:before,after:G.estate.segment,visual:ESTATE.currentVisual()};},
-  estateBattle: function(strategy){launchEstateSegment(null);var t=0;for(;t<240&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);if(strategy==="mixed"){var own=G.estate.units.filter(function(u){return u.isP&&u.hp>0;}),foes=G.estate.units.filter(function(u){return !u.isP&&u.hp>0;}),unit=own.length===0?"dres":foes.some(function(u){return u.kind==="dres";})&&G.estate.segment>=4?"neighbor":G.estate.segment>=2?"bike":"dres";if(own.length<3&&ESTATE.status(G,unit,true).ok)buyEstateItem(unit);}var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment,recruited:G.stats.unitsSpawned,kills:G.stats.kills,hp:G.p.hp};},
+  estateBattle: function(strategy,limit){launchEstateSegment(null);var t=0;for(;t<(limit||240)&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);if(strategy==="mixed"){var own=G.estate.units.filter(function(u){return u.isP&&u.hp>0;}),foes=G.estate.units.filter(function(u){return !u.isP&&u.hp>0;}),unit=own.length===0?"dres":foes.some(function(u){return u.kind==="dres";})&&G.estate.segment>=4?"neighbor":G.estate.segment>=2?"bike":"dres";if(own.length<3&&ESTATE.status(G,unit,true).ok)buyEstateItem(unit);}var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment,recruited:G.stats.unitsSpawned,kills:G.stats.kills,hp:G.p.hp};},
   crestProductionAudit: function(){
     return {
       heicWithoutMime:isLikelyCrestFile({name:"IMG_2048.HEIC",type:""}),
@@ -998,18 +1006,30 @@ check(modernLevelFour.n==="Fort Nieodebranych Meldunków"&&!modernLevelFour.spec
 const estateAudit=qa.estateAudit();
 for(const [key,ok] of Object.entries(estateAudit))check(ok,"Osiedle: "+key);
 for(const [key,ok] of Object.entries(qa.estateTacticsIntegration()))check(ok,"Osiedle taktyka: "+key);
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.5.0"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
+qa.viewport(1280,720,1);
+for(const p of [true,false]){
+  const early=qa.estateSurrender(p,.3);save("estate-surrender-early-"+p+".png");
+  const late=qa.estateSurrender(p,1.8);save("estate-surrender-late-"+p+".png");
+  console.log("ESTATE SURRENDER",{collapse:late.collapse,effects:late.effects,rubble:late.rubble,flag:late.flag});
+  check(early.drop>0&&early.drop<late.drop&&late.flag&&late.winnerStanding,"Osiedle: tylko przegrany gospodarz osuwa się za parapet i poddaje");
+  check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
+  check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
+}
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.5.1"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
 const estateBottles=qa.estateBattle("bottles");
 console.log("ESTATE BOTTLES BATTLE",JSON.stringify(estateBottles));
-check(estateBattle.hp>estateBottles.hp,"Osiedle: mieszana ekipa chroni blok skuteczniej niż same butelki");
+const mixedMinute=qa.estateBattle("mixed",60),bottlesMinute=qa.estateBattle("bottles",60);
+console.log("ESTATE SAME-TIME DEFENCE",JSON.stringify({mixed:mixedMinute.hp,bottles:bottlesMinute.hp}));
+check(mixedMinute.hp>bottlesMinute.hp,"Osiedle: ekipa osłania gospodarza w pierwszej minucie");
 check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.seconds<240,"Osiedle: pełna bitwa kończy się zwycięstwem i zachowuje działające dostawy");
 for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   qa.viewport(viewport[0],viewport[1],1);
   const geometry=qa.estateGeometryAudit();
   const combat=qa.estateCombatScene();save("estate-combat-"+viewport.join("x")+".png");
+  qa.estateSurrender(false,1.5);save("estate-peace-"+viewport.join("x")+".png");
   check(combat.count===6&&combat.cards===8,"Osiedle: trzy sylwetki obu stron i osiem kart przy "+viewport.join("×"));
   check(geometry.gap>geometry.width*.34&&geometry.aimMatchesFace,"Osiedle: wolny środek i trafienie w widoczną twarz przy "+viewport.join("×"));
   for(const segment of [0,1,4,7,11]){
@@ -1031,6 +1051,11 @@ function estateWallPixel(sky){
   return Array.from(occlusionCtx.getImageData(690,300,1,1).data).join(",");
 }
 check(estateWallPixel("#ff0000")===estateWallPixel("#0000ff"),"Osiedle: nieprzezroczysty blok zasłania światło nieba");
+const intactCanvas=createCanvas(1280,590),intactCtx=intactCanvas.getContext("2d");
+const intactBase={x:0,w:180,h:260,isP:true,max:2200,hp:2200,collapseT:0};
+function estateBasePixels(){intactCtx.clearRect(0,0,1280,590);sandbox.window.CASTLE_ERA_ART.drawBase(intactCtx,intactBase,590,"modern","estate",0);return intactCanvas.toBuffer("image/png");}
+const healthyBase=estateBasePixels();intactBase.hp=0;intactBase.collapseT=1;
+check(healthyBase.equals(estateBasePixels()),"Osiedle: grafika bloku jest identyczna przy pełnym i zerowym morale, także po starej fladze collapse");
 check(sandbox.window.CASTLE_ESTATE.artCache()<=4&&sandbox.window.CASTLE_ESTATE.baseCache()<=4,"Osiedle: przejście przez sceny i rozmiary ekranu nie powiększa cache bez końca");
 check(html.includes("CREST_MAX_FILE_SIZE=30*1024*1024")&&html.includes("createImageBitmap(file,{imageOrientation:\"from-image\"})")&&html.includes("URL.createObjectURL")&&html.includes("isLikelyCrestFile"),"produkcyjny uploader obsługuje duże zdjęcia, orientację aparatu, HEIC i Safari fallback");
 check(html.includes('for="crestFileP"')&&html.includes('for="crestFileE"')&&html.includes('id="crestStatus"'),"natywne etykiety otwierają selektor pliku i pokazują wynik operacji");
