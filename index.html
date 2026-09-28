@@ -36,7 +36,6 @@ canvas#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;to
 #cds::-webkit-scrollbar{display:none;}
 .cd{display:flex;flex-direction:column;align-items:center;position:relative;cursor:pointer;flex-shrink:0;transform:none;transition:none;contain:layout paint;}
 .cd:active{transform:none;}
-.estateName{font-size:11px;line-height:14px;color:#eeddbc;margin-top:2px;text-shadow:0 1px 2px #17202c;}
 button.cd{padding:0;border:0;background:transparent;font:inherit;color:inherit;}
 .cd .iconWrap{width:58px;height:58px;position:relative;border-radius:7px;background:linear-gradient(180deg,#e8d4a8,#c4a878);border:2px solid #5a3a1a;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 5px rgba(0,0,0,.5),inset 0 1px 2px rgba(255,255,255,.3);}
 @media (hover: hover) and (pointer: fine) {
@@ -213,18 +212,8 @@ button.cd{padding:0;border:0;background:transparent;font:inherit;color:inherit;}
 .crestBtn.crestRm{background:linear-gradient(180deg,#4a2a2a,#2a1a1a);border-color:#7a4a4a;color:#dba;}
 .crestBtn.crestRm:hover,.crestBtn.crestRm:active{background:linear-gradient(180deg,#6a3a3a,#4a2a2a);border-color:#cc8888;}
 
-/* === MENELE STUDIO — lokalnie tworzone postacie Osiedla === */
-#menelSection{margin-top:9px;padding:10px 12px;background:rgba(28,24,30,.58);border:1px solid rgba(194,153,92,.42);border-radius:10px;max-width:430px;width:95%;}
-.menelTitle{color:#d8be84;font-size:.69rem;letter-spacing:2.4px;text-align:center;margin-bottom:7px;}
-.menelSub{color:#8f96ac;font-size:.58rem;text-align:center;margin:-2px 0 8px;}
-.menelRow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.menelSlot{display:grid;grid-template-columns:58px 1fr;gap:5px 7px;align-items:center;width:188px;padding:7px;background:rgba(8,10,19,.46);border:1px solid rgba(110,116,142,.38);border-radius:8px;}
-.menelSlot canvas{grid-row:1/4;width:56px;height:56px;background:#17181d;border:2px solid #716148;border-radius:50%;display:block;}
-.menelName,.menelStyle{width:100%;min-width:0;height:25px;border:1px solid #4e5265;border-radius:5px;background:#151927;color:#e5dec8;font:700 10px/1.2 "Avenir Next",Arial,sans-serif;padding:3px 6px;}
-.menelBtns{display:flex;gap:4px;}
-.menelBtn{flex:1;min-height:25px;border:1px solid #665b49;border-radius:4px;background:#3b342c;color:#ead9b6;font-size:9px;font-weight:800;cursor:pointer;padding:3px 5px;}
-.menelBtn.rm{background:#392526;border-color:#674244;color:#d8b0aa;}
-@media (orientation:landscape) and (max-height:520px){#menelSection{padding:6px 9px;margin-top:5px}.menelSub{display:none}.menelSlot{width:174px;padding:5px}.menelSlot canvas{width:48px;height:48px}.menelRow{gap:6px}}
+.crestFileInput{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.crestStatus{min-height:16px;margin-top:8px;color:#9fb4df;font-size:.64rem;line-height:1.35;text-align:center;}
 
 /* === RESPONSIVE - MOBILE === */
 /* === Tablet (iPad portrait / landscape) === */
@@ -330,45 +319,22 @@ button.cd{padding:0;border:0;background:transparent;font:inherit;color:inherit;}
         <div class="crestLbl" id="crestPlayerLabel">Twoja twarz</div>
         <canvas id="crestPreviewP" width="60" height="60"></canvas>
         <div class="crestBtns">
-          <button class="crestBtn" id="crestLoadP">Dodaj zdjęcie</button>
+          <label class="crestBtn" id="crestLoadP" for="crestFileP" role="button">Dodaj zdjęcie</label>
           <button class="crestBtn crestRm" id="crestResetP">Usuń</button>
         </div>
-        <input type="file" id="crestFileP" accept="image/*" style="display:none">
+        <input type="file" id="crestFileP" class="crestFileInput" accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif">
       </div>
       <div class="crestSlot">
         <div class="crestLbl" id="crestEnemyLabel">Twarz wroga</div>
         <canvas id="crestPreviewE" width="60" height="60"></canvas>
         <div class="crestBtns">
-          <button class="crestBtn" id="crestLoadE">Dodaj zdjęcie</button>
+          <label class="crestBtn" id="crestLoadE" for="crestFileE" role="button">Dodaj zdjęcie</label>
           <button class="crestBtn crestRm" id="crestResetE">Usuń</button>
         </div>
-        <input type="file" id="crestFileE" accept="image/*" style="display:none">
+        <input type="file" id="crestFileE" class="crestFileInput" accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.avif,.heic,.heif">
       </div>
     </div>
-  </div>
-  <div id="menelSection">
-    <div class="menelTitle">MENELE STUDIO</div>
-    <div class="menelSub">Własne twarze i archetypy postaci z Osiedla — wszystko zostaje na tym urządzeniu.</div>
-    <div class="menelRow">
-      <div class="menelSlot">
-        <canvas id="menelPreview0" width="60" height="60"></canvas>
-        <input id="menelName0" class="menelName" maxlength="14" value="Mirek" aria-label="Imię menela 1">
-        <select id="menelStyle0" class="menelStyle" aria-label="Archetyp menela 1">
-          <option value="0">Ławkowy ekspert</option><option value="1">Król reklamówki</option><option value="2">Strażnik trzepaka</option><option value="3">Nocny filozof</option>
-        </select>
-        <div class="menelBtns"><button id="menelLoad0" class="menelBtn">TWARZ</button><button id="menelReset0" class="menelBtn rm">USUŃ</button></div>
-        <input type="file" id="menelFile0" accept="image/*" style="display:none">
-      </div>
-      <div class="menelSlot">
-        <canvas id="menelPreview1" width="60" height="60"></canvas>
-        <input id="menelName1" class="menelName" maxlength="14" value="Zenek" aria-label="Imię menela 2">
-        <select id="menelStyle1" class="menelStyle" aria-label="Archetyp menela 2">
-          <option value="1">Król reklamówki</option><option value="0">Ławkowy ekspert</option><option value="2">Strażnik trzepaka</option><option value="3">Nocny filozof</option>
-        </select>
-        <div class="menelBtns"><button id="menelLoad1" class="menelBtn">TWARZ</button><button id="menelReset1" class="menelBtn rm">USUŃ</button></div>
-        <input type="file" id="menelFile1" accept="image/*" style="display:none">
-      </div>
-    </div>
+    <div id="crestStatus" class="crestStatus" role="status" aria-live="polite"></div>
   </div>
 
 </div>
@@ -424,13 +390,12 @@ button.cd{padding:0;border:0;background:transparent;font:inherit;color:inherit;}
 var SWORD_SFX_1="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";
 var SWORD_SFX_2="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";
 </script>
-<script src="content/gags.js?v=8.3.0"></script>
-<script src="content/i18n.js?v=8.3.0"></script>
-<script src="content/eras.js?v=8.3.0"></script>
-<script src="content/future-eras-v73.js?v=8.3.0"></script>
-<script src="content/era-art-v73.js?v=8.3.0"></script>
-<script src="content/next-eras-v74.js?v=8.3.0"></script>
-<script src="content/osiedle-v75.js?v=8.3.0"></script>
+<script src="content/gags.js?v=8.3.1"></script>
+<script src="content/i18n.js?v=8.3.1"></script>
+<script src="content/eras.js?v=8.3.1"></script>
+<script src="content/future-eras-v73.js?v=8.3.1"></script>
+<script src="content/era-art-v73.js?v=8.3.1"></script>
+<script src="content/next-eras-v74.js?v=8.3.1"></script>
 <script>
 (function(){
 "use strict";
@@ -786,7 +751,6 @@ var UK = ["drwal","pikeman","archer","warrior","spearman","berserk","mason","cro
 var FUTURE=window.CASTLE_FUTURE;
 var ERA_ART=window.CASTLE_ERA_ART;
 var NEXT=window.CASTLE_NEXT;
-var ESTATE=window.CASTLE_ESTATE;
 if(FUTURE){for(var futureKey in FUTURE.units){UD[futureKey]=FUTURE.units[futureKey];UK.push(futureKey);}}
 if(FUTURE)SC=SC.concat(FUTURE.scenes);
 var UNIT_HOTKEYS = ["1","2","3","4","5","6","7","8"];
@@ -1478,8 +1442,6 @@ function load(idx){
     killStreak:{count:0,lastKillT:-999},
     boss:initBossEncounter(lv),bossBlinkFx:null,performanceMode:PERF.low?(PERF.adaptive?"adaptive":"device"):"full"
   };
-  ESTATE.init(G);
-  if(PENDING_ESTATE_TEST_SEGMENT!==null&&ESTATE.active(G))applyEstateTestSegment();
   PAUSED=false;
   abilityCooldowns={};
   document.getElementById("pause").style.display="none";
@@ -1600,9 +1562,7 @@ function updateUnitCardState(key,el){
     badge.title=state.message;
   }
 }
-function buyEstateItem(id){if(!G||G.over||PAUSED)return false;var foodBefore=id==="food"&&G.estate&&G.estate.p?G.estate.p.food:0,bought=ESTATE.buy(G,id,true);if(bought){if(id==="food"&&foodBefore>0)SFX.sip();else if(id==="runner"||id==="food")SFX.spawn();else SFX.sip();}ESTATE.updateCards(document,G,LANG,PAUSED);return bought;}
 function buildCards(){
-  if(ESTATE.active(G)){ESTATE.buildCards(document,G,LANG,buyEstateItem);return;}
   refreshUnitNames();
   var row=document.getElementById("cds");row.innerHTML="";
   var ul=G.lv.ul;
@@ -1679,7 +1639,6 @@ function buildCards(){
 
 function updHUD(){
   if(!G)return;
-  if(ESTATE.active(G)){ESTATE.updateCards(document,G,LANG,PAUSED);return;}
   for(var ki=0;ki<UK.length;ki++){
     var k=UK[ki];
     var el=document.getElementById("cd_"+k);if(!el)continue;
@@ -1697,7 +1656,6 @@ function updHUD(){
 /* ── Spawn ── */
 function spawnUnit(key,isP,options){
   if(!G||G.over||PAUSED)return;
-  if(ESTATE.active(G))return key==="drwal"?ESTATE.buy(G,"runner",isP):undefined;
   options=options||{};
   if(TUTORIAL.active&&isP){
     if(TUTORIAL.step===0)return;
@@ -1788,7 +1746,7 @@ function nearRock(fx,isP){
 
 /* === UMIEJĘTNOŚCI: CAST === */
 function castAbility(name){
-  if(!G||G.over||PAUSED||ESTATE.active(G))return;
+  if(!G||G.over||PAUSED)return;
   var ab=ABILITIES[name];
   if(!ab)return;
   if(!isAbilityUnlocked(ab))return; // zdolność nie została jeszcze poznana
@@ -1903,7 +1861,6 @@ document.addEventListener("keydown",function(e){
     return;
   }
   if(!G||G.over||PAUSED)return;
-  if(ESTATE.active(G)){var choice=ESTATE.choices[Number(e.key)-1];if(choice){e.preventDefault();buyEstateItem(choice.id);}return;}
   // Umiejętności Q/W/E
   var kl=e.key.toUpperCase();
   if(kl==="Q"){castAbility("arrowRain");return;}
@@ -1931,7 +1888,6 @@ function buildAbilityBar(){
   if(!bar)return;
   bar.innerHTML="";
   bar.style.display="none";
-  if(ESTATE.active(G)){bar.textContent="";bar.style.display="none";bar.style.pointerEvents="";return;}
   bar.style.pointerEvents="";
   var anyVisible=false;
   for(var abN in ABILITIES){
@@ -2224,14 +2180,14 @@ function castleDmg(tc,dd,sx,sy,source){
   tc.lastHitY=isFinite(sy)?sy:G.GY-tc.h*.45;
   addFlt(tc.x+tc.w/2,G.GY-tc.h+22,"-"+Math.round(dd),"#ff4400");
   tc.shake=Math.max(tc.shake||0,0.35);
-  if(source&&source.estate)SFX.glass();else if(dd >= 25) SFX.explosion(); else SFX.castle();
-  if(!(source&&source.estate))for(var di=0;di<6;di++)G.dust.push({x:sx,y:G.GY-10,vx:(Math.random()-0.5)*80,vy:-30-Math.random()*60,life:0.8,sz:2+Math.random()*2});
+  if(dd >= 25) SFX.explosion(); else SFX.castle();
+  for(var di=0;di<6;di++)G.dust.push({x:sx,y:G.GY-10,vx:(Math.random()-0.5)*80,vy:-30-Math.random()*60,life:0.8,sz:2+Math.random()*2});
   /* Przekroczenie progu uszkodzeń ma własny krótki wstrząs konstrukcji.
      Nie zmienia obrażeń — jedynie pokazuje, że mur przeszedł w kolejny stan. */
   var prevStage=prevHpPct<.25?3:(prevHpPct<.5?2:(prevHpPct<.75?1:0));
   if(tc.damageStage>prevStage){
     tc.shake=Math.max(tc.shake||0,.58);
-    if(!(source&&source.estate))for(var th=0;th<8+tc.damageStage*3;th++){
+    for(var th=0;th<8+tc.damageStage*3;th++){
       G.dust.push({x:tc.x+Math.random()*tc.w,y:G.GY-tc.h*(.18+Math.random()*.62),vx:(Math.random()-.5)*46,vy:-18-Math.random()*46,life:.7+Math.random()*.55,sz:1.8+Math.random()*2.8});
     }
   }
@@ -2265,8 +2221,8 @@ function castleDmg(tc,dd,sx,sy,source){
         col: Math.random() < 0.4 ? "#ffaa44" : "#888888"
       });
     }
-    /* Mały kłąb dymu — wyłączony w Osiedlu. */
-    if(!(source&&source.estate)&&G.smoke){
+    /* Mały kłąb dymu po trafieniu budowli. */
+    if(G.smoke){
       for(var smk = 0; smk < 3; smk++){
         G.smoke.push({
           x: hx + (Math.random()-0.5)*5,
@@ -2727,8 +2683,7 @@ function tick(dt){
   if(!G.over){
     G.p.gold=Math.min(G.p.gold+passiveGoldRate(true)*dt,9999);
     G.e.gold=Math.min(G.e.gold+passiveGoldRate(false)*dt,9999);
-    if(ESTATE.active(G))ESTATE.tick(G,dt,castleDmg,function(p,n){var c=p?G.p:G.e;addFlt(c.x+c.w*.5,G.GY-25,"+"+n,"#a6d776");});
-    if(!ESTATE.active(G))G.treeT+=dt;
+    G.treeT+=dt;
     if(G.treeT>=treeRespawnSeconds()){
       G.treeT=0;
       var alive=[];for(var i=0;i<G.trees.length;i++)if(G.trees[i].w>0)alive.push(G.trees[i]);
@@ -2743,8 +2698,8 @@ function tick(dt){
       }
     }
     /* Podczas aktywnego samouczka przeciwnik grzecznie czeka na szkolenie BHP. */
-    if(!G.tutorialMode&&!ESTATE.active(G))G.aiT+=dt*1000;
-    if(!G.tutorialMode&&!ESTATE.active(G)&&G.aiT>=(G.aiNextMs||G.lv.ad)){
+    if(!G.tutorialMode)G.aiT+=dt*1000;
+    if(!G.tutorialMode&&G.aiT>=(G.aiNextMs||G.lv.ad)){
       G.aiT=0;
       var aiK=selectAiUnit();
       if(aiK){var aiSpawned=spawnUnit(aiK,false);if(aiSpawned)G.aiLastKey=aiK;}
@@ -5065,22 +5020,21 @@ function render(){
     ERA_ART.drawBase(CT,G.p,G.GY,G.eraId,G.lv.id,G.T);
     ERA_ART.drawBase(CT,G.e,G.GY,G.eraId,G.lv.id,G.T);
   }else{drawCastle(G.p,sc);drawCastle(G.e,sc);}
-  if(ESTATE.active(G))ESTATE.draw(CT,G,PLAYER_CREST,ENEMY_CREST,drawCrestImageContained,getUnitDrawSize()/22,LANG);
-  else if(G.eraId!=="medieval"){drawEraCrest(G.p);drawEraCrest(G.e);}
+  if(G.eraId!=="medieval"){drawEraCrest(G.p);drawEraCrest(G.e);}
   drawCastleHUD(G.p);drawCastleHUD(G.e);
-  if(!ESTATE.active(G)){drawCastleExpansion(G.p);drawCastleExpansion(G.e);}
+  drawCastleExpansion(G.p);drawCastleExpansion(G.e);
   drawLevelAbsurdity();
-  // Smoke — Osiedle nie używa dymu jako wskaźnika przegrywania.
-  if(!ESTATE.active(G))for(var i=0;i<G.smoke.length;i++){
+  // Smoke
+  for(var i=0;i<G.smoke.length;i++){
     var s=G.smoke[i];var sa=Math.min(0.45,s.life*0.3);if(sa<0.01)continue;
     CT.globalAlpha=sa;CT.fillStyle=s.col+"0.6)";CT.beginPath();CT.arc(s.x,s.y,s.r,0,Math.PI*2);CT.fill();
   }
   CT.globalAlpha=1;
   // Embers
-  if(!ESTATE.active(G))for(var i=0;i<G.embers.length;i++){var em=G.embers[i];var ea=Math.min(1,em.life*1.5);if(ea<0.01)continue;CT.globalAlpha=ea;CT.fillStyle="#ffaa20";CT.beginPath();CT.arc(em.x,em.y,1.3,0,Math.PI*2);CT.fill();}
+  for(var i=0;i<G.embers.length;i++){var em=G.embers[i];var ea=Math.min(1,em.life*1.5);if(ea<0.01)continue;CT.globalAlpha=ea;CT.fillStyle="#ffaa20";CT.beginPath();CT.arc(em.x,em.y,1.3,0,Math.PI*2);CT.fill();}
   CT.globalAlpha=1;
-  // Dust — w Osiedlu stan przegranej pokazuje postawa bohatera, nie chmury.
-  if(!ESTATE.active(G))for(var i=0;i<G.dust.length;i++){var d=G.dust[i];var da=Math.min(0.7,d.life*1.2);if(da<0.01)continue;CT.globalAlpha=da;CT.fillStyle=sc.night?"#556":"#998877";CT.beginPath();CT.arc(d.x,d.y,d.sz,0,Math.PI*2);CT.fill();}
+  // Dust
+  for(var i=0;i<G.dust.length;i++){var d=G.dust[i];var da=Math.min(0.7,d.life*1.2);if(da<0.01)continue;CT.globalAlpha=da;CT.fillStyle=sc.night?"#556":"#998877";CT.beginPath();CT.arc(d.x,d.y,d.sz,0,Math.PI*2);CT.fill();}
   CT.globalAlpha=1;
   // Sparks
   for(var i=0;i<G.sparks.length;i++){var sp=G.sparks[i];var sa=sp.life/0.65;if(sa<0.01)continue;CT.globalAlpha=sa;CT.fillStyle=sp.col;CT.beginPath();CT.arc(sp.x,sp.y,2,0,Math.PI*2);CT.fill();}
@@ -6073,7 +6027,7 @@ function drawCastleHUD(c){
 
   /* Player gold pill / enemy count */
   if(isP){
-    var goldText=ESTATE.active(G)?(LANG==="en"?"Funds: ":"Środki: ")+Math.floor(G.p.gold)+" · "+G.estate.runners.filter(function(r){return r.isP;}).length+"/2":"🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true);
+    var goldText="🌳 "+Math.floor(G.p.gold)+"  ⚔ "+activeCombatCount(true);
     CT.font="bold 12px Arial";
     var gtw=CT.measureText(goldText).width+16;
     var goldX=bx2,goldY=by2+barH+6;
@@ -10191,13 +10145,12 @@ document.getElementById("briefingBack").onclick=function(){
 function showEnd(won){
   stopTutorial(TUTORIAL.active);
   var currentLI=LI;
-  var isEstateBattle=ESTATE.active(G);
-  var hasNext=!isEstateBattle&&(currentLI+1)<LV.length;
+  var hasNext=(currentLI+1)<LV.length;
   var hasNextEra=false;
   var nx=hasNext?LV[currentLI+1]:null;
   var isBoss=LV[currentLI]&&LV[currentLI].boss;
   var elapsed=Math.round((Date.now()-G.stats.startTime)/1000),campaignReward=0;
-  if(won&&!isEstateBattle){
+  if(won){
     saveProgress(currentLI+2);
     campaignReward=recordCampaignWin(currentLI,elapsed);
     if(campaignReward){UPTS+=campaignReward;saveCampaignUpgrades();}
@@ -10214,7 +10167,6 @@ function showEnd(won){
   }else{
     bodyText=isBoss?tr("end.bossLost"):tr("end.lost");
   }
-  if(isEstateBattle){bodyText=won?(LANG==="en"?"The estate feud is over. The campaign remains untouched.":"Osiedlowa awantura zakończona. Kampania pozostaje bez zmian."):(LANG==="en"?"Your block needs a renovation. Send runners for supplies and try again.":"Twój blok wymaga remontu. Wyślij dostawców po zaopatrzenie i spróbuj ponownie.");}
   document.getElementById("et").textContent=titleText;
   document.getElementById("em").textContent=bodyText;
   var mm=Math.floor(elapsed/60),ss=elapsed%60;
@@ -10302,24 +10254,6 @@ function launchTestLevel(eraId,index){
   startLevelFlow(index,{skipBriefing:true});stopTutorial(false);
   testShortcut.style.borderColor="#ffcc44";
 }
-var PENDING_ESTATE_TEST_SEGMENT=null;
-function applyEstateTestSegment(){
-  if(PENDING_ESTATE_TEST_SEGMENT===null||!G||!ESTATE.active(G))return false;
-  var idx=PENDING_ESTATE_TEST_SEGMENT;PENDING_ESTATE_TEST_SEGMENT=null;
-  ESTATE.setSegment(G,idx,true);buildCards();buildAbilityBar();render();return true;
-}
-function launchEstateSegment(index){
-  if(!ESTATE||!ESTATE.level)return;
-  beginIsolatedSession();
-  PENDING_ESTATE_TEST_SEGMENT=index===null?null:index;
-  stopTutorial(false);if(RAF){cancelAnimationFrame(RAF);RAF=null;}G=null;PAUSED=false;
-  ["testPicker","pause","end","upg","briefing"].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display="none";});
-  ACTIVE_ERA_ID="modern";ACTIVE_ERA_PACK=ERA_REGISTRY.packs.modern;bindCampaignEra("modern");
-  LV=[ESTATE.level];
-  startLevelFlow(0,{skipBriefing:true});stopTutorial(false);
-  applyEstateTestSegment();
-  testShortcut.style.borderColor="#ffcc44";
-}
 function openTestPicker(){
   var panel=document.getElementById("testPicker");
   if(!panel){panel=document.createElement("div");panel.id="testPicker";
@@ -10332,11 +10266,6 @@ function openTestPicker(){
     var title=document.createElement("h3");title.textContent=tr(ERA_REGISTRY.packs[id].campaign.titleKey);panel.appendChild(title);
     ERA_LEVELS[id].forEach(function(lv,i){var button=document.createElement("button");button.className="btn";button.textContent=lv.id+" · "+lv.n;button.onclick=function(){launchTestLevel(id,i);};panel.appendChild(button);});
   });
-  if(ESTATE&&ESTATE.segments){
-    var estateTitle=document.createElement("h3");estateTitle.textContent=LANG==="pl"?"OSIEDLE — TEST SEGMENTÓW":"ESTATE — SEGMENT TEST";estateTitle.style.marginTop="22px";panel.appendChild(estateTitle);
-    var estateHint=document.createElement("div");estateHint.textContent=LANG==="pl"?"Uruchom dowolny etap od razu — z zasobami do testu.":"Launch any stage immediately with test resources.";estateHint.style.cssText="color:#aeb8d9;font-size:12px;margin:0 auto 8px";panel.appendChild(estateHint);
-    ESTATE.segments.forEach(function(seg,si){var button=document.createElement("button");button.className="btn";button.textContent=LANG==="en"?seg.en:seg.pl;button.onclick=function(){launchEstateSegment(si);};panel.appendChild(button);});
-  }
   var close=document.createElement("button");close.className="btn";close.textContent=LANG==="pl"?"ZAMKNIJ":"CLOSE";
   close.onclick=function(){panel.style.display="none";if(G)PAUSED=wasPaused;};panel.appendChild(document.createElement("br"));panel.appendChild(close);panel.style.display="block";
 }
@@ -10352,7 +10281,6 @@ function buildLevelSelect(){
   var testButton=document.createElement("button");testButton.className="btn";
   testButton.textContent=LANG==="pl"?"TESTY · dowolny poziom":"TEST · any level";
   testButton.onclick=openTestPicker;container.appendChild(testButton);
-  if(ESTATE&&ESTATE.level){var estateButton=document.createElement("button");estateButton.className="btn";estateButton.textContent=LANG==="pl"?"BONUS · OSIEDLE WIELKIEJ AWANTURY":"BONUS · THE GREAT ESTATE FEUD";estateButton.title=LANG==="pl"?"Osobny tryb — nie zastępuje poziomu epoki":"Standalone mode — does not replace an era level";estateButton.onclick=function(){launchEstateSegment(null);};container.appendChild(estateButton);}
   var tabs=document.createElement("div");tabs.className="eraTabs";
   var eraOrder=ERA_ORDER;
   for(var ei=0;ei<eraOrder.length;ei++){
@@ -10568,10 +10496,33 @@ function extractFaceImage(source){
   });
 }
 
+var CREST_MAX_FILE_SIZE=30*1024*1024;
+function isLikelyCrestFile(file){
+  if(!file)return false;
+  if(file.type&&file.type.indexOf("image/")===0)return true;
+  return /\.(avif|gif|heic|heif|jpe?g|png|webp)$/i.test(String(file.name||""));
+}
+function setCrestStatus(message,isError){
+  var status=document.getElementById("crestStatus");if(!status)return;
+  status.textContent=message||"";status.style.color=isError?"#ef9a92":"#9fb4df";
+}
+function crestFileToDataUrl(file){
+  return new Promise(function(resolve,reject){var reader=new FileReader();reader.onload=function(){resolve(reader.result);};reader.onerror=function(){reject(new Error("read"));};reader.readAsDataURL(file);});
+}
+function crestImageFromUrl(url,revoke){
+  return new Promise(function(resolve,reject){var image=new Image();image.onload=function(){if(revoke)revoke();resolve(image);};image.onerror=function(){if(revoke)revoke();reject(new Error("decode"));};image.src=url;});
+}
+function decodeCrestFile(file){
+  var bitmapPromise=typeof createImageBitmap==="function"?Promise.resolve().then(function(){return createImageBitmap(file,{imageOrientation:"from-image"});}).catch(function(){return createImageBitmap(file);}):Promise.reject(new Error("bitmap unavailable"));
+  return bitmapPromise.catch(function(){
+    if(typeof URL!=="undefined"&&URL.createObjectURL){var objectUrl=URL.createObjectURL(file);return crestImageFromUrl(objectUrl,function(){URL.revokeObjectURL(objectUrl);});}
+    return Promise.reject(new Error("object URL unavailable"));
+  }).catch(function(){return crestFileToDataUrl(file).then(function(url){return crestImageFromUrl(url);});});
+}
 function setCrestBusy(isP,busy){
   var btn=document.getElementById(isP?"crestLoadP":"crestLoadE");
   if(!btn)return;
-  btn.disabled=!!busy;btn.textContent=busy?tr("menu.faceProcessing"):tr("menu.upload");
+  btn.setAttribute("aria-disabled",busy?"true":"false");btn.style.pointerEvents=busy?"none":"";btn.textContent=busy?tr("menu.faceProcessing"):tr("menu.upload");
 }
 
 function loadCrestFromStorage(){
@@ -10612,40 +10563,33 @@ function saveCrestToStorage(){
 }
 
 function processCrestImage(file, isP){
-  if(!file || !file.type || !file.type.startsWith("image/")){
-    alert("To nie jest plik obrazu");
+  if(!isLikelyCrestFile(file)){
+    setCrestStatus(LANG==="en"?"Choose a JPG, PNG, WebP, AVIF or HEIC photo.":"Wybierz zdjęcie JPG, PNG, WebP, AVIF albo HEIC.",true);
     return;
   }
-  if(file.size > 8 * 1024 * 1024){
-    alert("Plik za duży (max 8MB)");
+  if(file.size > CREST_MAX_FILE_SIZE){
+    setCrestStatus(LANG==="en"?"The photo is larger than 30 MB.":"Zdjęcie jest większe niż 30 MB.",true);
     return;
   }
-  setCrestBusy(isP,true);
-  var reader = new FileReader();
-  reader.onload = function(ev){
-    var img = new Image();
-    img.onload = function(){
-      extractFaceImage(img).then(function(result){
+  setCrestBusy(isP,true);setCrestStatus(LANG==="en"?"Opening and framing the photo…":"Otwieram i kadruję zdjęcie…",false);
+  decodeCrestFile(file).then(function(source){
+      return extractFaceImage(source).then(function(result){
         var dataUrl=result.canvas.toDataURL("image/png");
         var finalImg=new Image();
         finalImg.onload=function(){
+          if(source&&typeof source.close==="function")source.close();
           finalImg.faceMethod=result.method;
           if(isP){
             PLAYER_CREST=finalImg;renderCrestPreview("crestPreviewP",PLAYER_CREST,true);
           }else{
             ENEMY_CREST=finalImg;renderCrestPreview("crestPreviewE",ENEMY_CREST,false);
           }
-          saveCrestToStorage();setCrestBusy(isP,false);
+          saveCrestToStorage();setCrestBusy(isP,false);setCrestStatus(LANG==="en"?"Face ready — it will appear on this side's stronghold.":"Twarz gotowa — pojawi się na budowli tej strony.",false);
         };
-        finalImg.onerror=function(){setCrestBusy(isP,false);alert("Nie udało się przygotować twarzy");};
+        finalImg.onerror=function(){if(source&&typeof source.close==="function")source.close();setCrestBusy(isP,false);setCrestStatus(LANG==="en"?"The processed photo could not be displayed.":"Nie udało się wyświetlić przygotowanego zdjęcia.",true);};
         finalImg.src=dataUrl;
-      }).catch(function(){setCrestBusy(isP,false);alert("Nie udało się znaleźć twarzy na zdjęciu");});
-    };
-    img.onerror = function(){ setCrestBusy(isP,false);alert("Nie udało się wczytać obrazu"); };
-    img.src = ev.target.result;
-  };
-  reader.onerror = function(){ setCrestBusy(isP,false);alert("Błąd odczytu pliku"); };
-  reader.readAsDataURL(file);
+      });
+  }).catch(function(){setCrestBusy(isP,false);setCrestStatus(LANG==="en"?"This photo format could not be decoded. Export it as JPG or PNG.":"Nie udało się odczytać tego formatu. Wyeksportuj zdjęcie jako JPG lub PNG.",true);});
 }
 
 function renderCrestPreview(canvasId, img, isP){
@@ -10703,14 +10647,12 @@ function resetCrest(isP){
   var resetP = document.getElementById("crestResetP");
   var resetE = document.getElementById("crestResetE");
   if(loadP && fileP){
-    loadP.onclick = function(){ fileP.click(); };
     fileP.onchange = function(e){
       if(e.target.files && e.target.files[0]) processCrestImage(e.target.files[0], true);
       e.target.value = "";
     };
   }
   if(loadE && fileE){
-    loadE.onclick = function(){ fileE.click(); };
     fileE.onchange = function(e){
       if(e.target.files && e.target.files[0]) processCrestImage(e.target.files[0], false);
       e.target.value = "";
@@ -10724,56 +10666,11 @@ function resetCrest(isP){
   loadCrestFromStorage();
 })();
 
-/* Menele Studio — dwa lokalne sloty używane przez renderery Osiedla. */
-var MENELE_FACES=[null,null];
-var MENELE_STYLES=[0,1];
-var MENELE_NAMES=["Mirek","Zenek"];
-function menelStorageKey(slot){return "castleCalamityMenelFace"+slot;}
-function renderMenelPreview(slot){
-  var canvas=document.getElementById("menelPreview"+slot);if(!canvas)return;var ctx=canvas.getContext("2d");if(!ctx)return;
-  ctx.clearRect(0,0,canvas.width,canvas.height);var st=Number(MENELE_STYLES[slot])||0,cols=["#76554c","#476779","#6e674b","#544f68"];
-  ctx.fillStyle="#15181d";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle=cols[st%4];ctx.beginPath();ctx.moveTo(15,59);ctx.lineTo(20,33);ctx.lineTo(40,33);ctx.lineTo(45,59);ctx.closePath();ctx.fill();
-  var img=MENELE_FACES[slot];if(img)drawCrestImageContained(ctx,img,18,5,24,29,0);else{ctx.fillStyle="#d2a27d";ctx.beginPath();ctx.ellipse(30,19,10,12,0,0,Math.PI*2);ctx.fill();ctx.fillStyle="#50443d";ctx.beginPath();ctx.ellipse(30,10,10,4,0,Math.PI,Math.PI*2);ctx.fill();}
-  ctx.strokeStyle="#b99a61";ctx.lineWidth=2;ctx.strokeRect(1,1,canvas.width-2,canvas.height-2);
-}
-function saveMeneleStudio(){
-  try{
-    for(var i=0;i<2;i++){var img=MENELE_FACES[i];if(img&&img.src)localStorage.setItem(menelStorageKey(i),img.src);else localStorage.removeItem(menelStorageKey(i));localStorage.setItem("castleCalamityMenelStyle"+i,String(MENELE_STYLES[i]||0));localStorage.setItem("castleCalamityMenelName"+i,String(MENELE_NAMES[i]||"").slice(0,14));}
-  }catch(e){console.warn("Menele Studio save failed",e);}
-}
-function loadMeneleStudio(){
-  for(let i=0;i<2;i++){try{MENELE_STYLES[i]=Math.max(0,Math.min(3,Number(localStorage.getItem("castleCalamityMenelStyle"+i))||i));MENELE_NAMES[i]=(localStorage.getItem("castleCalamityMenelName"+i)||(i?"Zenek":"Mirek")).slice(0,14);
-    var sel=document.getElementById("menelStyle"+i),inp=document.getElementById("menelName"+i);if(sel)sel.value=String(MENELE_STYLES[i]);if(inp)inp.value=MENELE_NAMES[i];
-    var data=localStorage.getItem(menelStorageKey(i))||"";if(data.startsWith("data:image")){var img=new Image();img.onload=function(){MENELE_FACES[i]=img;renderMenelPreview(i);};img.src=data;}else renderMenelPreview(i);
-  }catch(e){renderMenelPreview(i);}}
-}
-function processMenelImage(file,slot){
-  if(!file||file.size>8*1024*1024){alert("Nie udało się wczytać zdjęcia");return;}var reader=new FileReader(),btn=document.getElementById("menelLoad"+slot);if(btn){btn.disabled=true;btn.textContent="...";}
-  reader.onload=function(ev){var img=new Image();img.onload=function(){extractFaceImage(img).then(function(result){var finalImg=new Image();finalImg.onload=function(){MENELE_FACES[slot]=finalImg;renderMenelPreview(slot);saveMeneleStudio();if(btn){btn.disabled=false;btn.textContent="TWARZ";}};finalImg.onerror=function(){if(btn){btn.disabled=false;btn.textContent="TWARZ";}};finalImg.src=result.canvas.toDataURL("image/png");}).catch(function(){if(btn){btn.disabled=false;btn.textContent="TWARZ";}alert("Nie udało się przygotować twarzy");});};img.onerror=function(){if(btn){btn.disabled=false;btn.textContent="TWARZ";}};img.src=ev.target.result;};reader.readAsDataURL(file);
-}
-function resetMenel(slot){MENELE_FACES[slot]=null;renderMenelPreview(slot);saveMeneleStudio();}
-window.CASTLE_MENELE={
-  face:function(slot){return MENELE_FACES[Math.max(0,Math.min(1,Number(slot)||0))];},
-  style:function(slot){return MENELE_STYLES[Math.max(0,Math.min(1,Number(slot)||0))]||0;},
-  name:function(slot){return MENELE_NAMES[Math.max(0,Math.min(1,Number(slot)||0))]||"";}
-};
-(function initMeneleStudio(){
-  for(let i=0;i<2;i++){let load=document.getElementById("menelLoad"+i),file=document.getElementById("menelFile"+i),reset=document.getElementById("menelReset"+i),style=document.getElementById("menelStyle"+i),name=document.getElementById("menelName"+i);
-    if(load&&file){load.onclick=function(){file.click();};file.onchange=function(e){if(e.target.files&&e.target.files[0])processMenelImage(e.target.files[0],i);e.target.value="";};}
-    if(reset)reset.onclick=function(){resetMenel(i);};
-    if(style)style.onchange=function(){MENELE_STYLES[i]=Number(style.value)||0;renderMenelPreview(i);saveMeneleStudio();};
-    if(name)name.oninput=function(){MENELE_NAMES[i]=String(name.value||"").slice(0,14);saveMeneleStudio();};
-  }
-  loadMeneleStudio();
-})();
-
-
-/* Korekta: saveProgress (level) musi też zachować twarze */
+/* Zapis postępu utrwala także obie twarze budowli. */
 var _origSaveProgress = saveProgress;
 saveProgress = function(level){
   _origSaveProgress(level);
   saveCrestToStorage();
-  saveMeneleStudio();
 };
 
 applyLanguage(LANG,false);
@@ -12354,7 +12251,7 @@ syncAudioUI();
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function(){
-    navigator.serviceWorker.register("./sw.js?v=8.3.0").then(function(reg){
+    navigator.serviceWorker.register("./sw.js?v=8.3.1").then(function(reg){
       if(reg.waiting)reg.waiting.postMessage({type:"SKIP_WAITING"});
       reg.update().catch(function(){});
     }).catch(function(){});

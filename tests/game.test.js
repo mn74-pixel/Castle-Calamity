@@ -15,29 +15,14 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
-  estateAudit: function(){
-    launchEstateSegment(0);var special=ESTATE.active(G)&&G.trees.length===0&&G.rocks.length===0;G.estate.ai=1e6;G.p.gold=200;
-    var bought=buyEstateItem("wine"),cost=G.p.gold===175,blocked=!buyEstateItem("beer");
-    ESTATE.tick(G,.8,castleDmg);var waits=G.estate.bottles.length===0;
-    ESTATE.tick(G,.39,castleDmg);var released=G.estate.bottles.length===1;
-    var hp=G.e.hp;ESTATE.tick(G,1.5,castleDmg);var damage=G.e.hp===hp-150;
-    G.p.gold=100;ESTATE.buy(G,"runner",true);ESTATE.buy(G,"runner",true);var limit=!ESTATE.buy(G,"runner",true);var gold=G.p.gold;
-    ESTATE.tick(G,13.01,castleDmg);var delivered=G.p.gold===gold+56&&G.estate.delivered===2&&G.estate.runners.length===0&&G.estate.p.bottles>=4;
-    PAUSED=true;var paused=!buyEstateItem("beer");PAUSED=false;G.p.gold=0;var poor=!buyEstateItem("beer");
-    G.p.gold=100;var pc=0,ec=0,oldP=PLAYER_CREST,oldE=ENEMY_CREST,oldDraw=drawCrestImageContained;
-    PLAYER_CREST={side:"p"};ENEMY_CREST={side:"e"};drawCrestImageContained=function(ctx,img){if(img.side==="p")pc++;else ec++;};render();PLAYER_CREST=oldP;ENEMY_CREST=oldE;drawCrestImageContained=oldDraw;
-    ESTATE.setSegment(G,3,true);G.estate.p.food=0;G.estate.p.stamina=10;var foodOrdered=ESTATE.buy(G,"food",true);ESTATE.tick(G,9,castleDmg);var stocked=G.estate.p.food>0,foodEaten=stocked&&ESTATE.buy(G,"food",true),food=foodOrdered&&stocked&&foodEaten&&G.estate.p.stamina>10;
-    var noSpells=Object.keys(abilityCooldowns).length===0;castAbility("freeze");noSpells=noSpells&&!G.freezeField;
-    G.estate.ai=0;G.e.gold=100;ESTATE.tick(G,.02,castleDmg);var ai=!!G.estate.e.action;
-    var noArmy=G.units.length===0;
-    var platform=true;["modern","orbital"].forEach(function(era){launchTestLevel(era,2);G.p.gold=999;var u=spawnUnit(era==="modern"?"fieldgun":"railgun",true);var x=u.x,y=u.y;doCannon(u,.02);platform=platform&&u.x===x&&u.y===y;});
-    return {special:special,bought:bought,cost:cost,blocked:blocked,waits:waits,released:released,damage:damage,limit:limit,delivered:delivered,food:food,paused:paused,poor:poor,faces:pc===1&&ec===1,noSpells:noSpells,ai:ai,noArmy:noArmy,platform:platform};
+  crestProductionAudit: function(){
+    return {
+      heicWithoutMime:isLikelyCrestFile({name:"IMG_2048.HEIC",type:""}),
+      jpegWithMime:isLikelyCrestFile({name:"camera-upload",type:"image/jpeg"}),
+      rejectsText:!isLikelyCrestFile({name:"notes.txt",type:"text/plain"}),
+      maxBytes:CREST_MAX_FILE_SIZE
+    };
   },
-  estateScene: function(){launchEstateSegment(0);G.p.gold=200;G.estate.ai=1e6;buyEstateItem("runner");ESTATE.buy(G,"runner",false);ESTATE.tick(G,7.8,castleDmg);buyEstateItem("wine");ESTATE.buy(G,"vodka",false);ESTATE.tick(G,.6,castleDmg);G.e.hp=790;render();},
-  estateExpressionScene: function(kind){launchEstateSegment(0);G.estate.ai=1e6;if(kind==="drink"){G.p.gold=200;buyEstateItem("wine");ESTATE.tick(G,.56,castleDmg);}else{G.estate.e.hitReactT=.36;G.estate.e.hitReactPower=1.35;G.estate.impacts=[{x:G.W-G.e.w*.48,y:G.GY-G.e.h*.50,t:.16,col:"#a9d5db",power:1.35}];}render();return {kind:kind,action:G.estate.p.action&&G.estate.p.action.t,hit:G.estate.e.hitReactT};},
-  estateSegmentScene: function(i){launchEstateSegment(i);G.estate.ai=1e6;G.e.hp=G.e.max*.72;if(i>=3){G.estate.p.stamina=48;G.estate.p.food=1;}if(i>=6)G.estate.p.combo=3;render();var seg=ESTATE.segments[i];return {index:i,id:seg.id,prop:seg.prop,food:!!seg.food,brawlers:seg.brawlers,stamina:G.estate.p.stamina,bottles:G.estate.p.bottles};},
-  estateSegmentLock: function(i){launchEstateSegment(i);G.estate.ai=1e6;var before=G.estate.segment;ESTATE.tick(G,45,castleDmg);return {before:before,after:G.estate.segment,visual:ESTATE.currentVisual()};},
-  estateBattle: function(){launchEstateSegment(null);var t=0;for(;t<240&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment};},
   nextRulesAudit: function(){
     var coherent=true,total=0;ERA_ORDER.forEach(function(id){total+=ERA_LEVELS[id].length;});
     NEXT.ids.forEach(function(era){ERA_LEVELS[era].forEach(function(l){[l.ul,l.ai].forEach(function(deck){if(deck.length>8)coherent=false;deck.forEach(function(k){if(k!=="drwal"&&k!=="mason"&&UD[k].nextEra!==era)coherent=false;});});});});
@@ -642,8 +627,6 @@ const elements = new Map();
 elements.set("cv", canvas);
 elements.set("crestPreviewP", decorateCanvas(createCanvas(60, 60)));
 elements.set("crestPreviewE", decorateCanvas(createCanvas(60, 60)));
-elements.set("menelPreview0", decorateCanvas(createCanvas(56, 56)));
-elements.set("menelPreview1", decorateCanvas(createCanvas(56, 56)));
 
 const document = {
   readyState: "complete",
@@ -692,7 +675,6 @@ vm.runInContext(fs.readFileSync(path.join(root, "content", "eras.js"), "utf8"), 
 vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras-v73.js"), "utf8"), sandbox, { filename: "future-eras-v73.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "era-art-v73.js"), "utf8"), sandbox, { filename: "era-art-v73.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "next-eras-v74.js"), "utf8"), sandbox, { filename: "next-eras-v74.js" });
-vm.runInContext(fs.readFileSync(path.join(root, "content", "osiedle-v75.js"), "utf8"), sandbox, { filename: "osiedle-v75.js" });
 vm.runInContext(gameSource, sandbox, { filename: "game.js" });
 
 const qa = sandbox.window.__QA;
@@ -956,54 +938,13 @@ for(const era of ["industrial","electric","modern","orbital"]){
 qa.viewport(1280,720,1);qa.futureScene("modern",3);save("modern-level-4-restored.png");
 check(qa.eraTransition("electric").era==="modern","finał IV otwiera epokę Silniki i Radio");
 check(qa.eraTransition("modern").era==="orbital","finał V otwiera Wyprawę Orbitalną");
-const estate=qa.estateAudit();
-for(const [key,ok] of Object.entries(estate))check(ok,"Osiedle: "+key);
-check(sandbox.window.CASTLE_ESTATE.segments.length===12&&new Set(sandbox.window.CASTLE_ESTATE.segments.map(s=>s.id)).size===12&&sandbox.window.CASTLE_ESTATE.segments.filter(s=>s.brawlers>0).length>=9,"Osiedle: dwanaście unikalnych segmentów i narastające bójki w tle");
 const modernLevelFour=sandbox.window.CASTLE_FUTURE.levels.modern[3];
 check(modernLevelFour.n==="Fort Nieodebranych Meldunków"&&!modernLevelFour.special&&modernLevelFour.eH===1820&&modernLevelFour.ai.includes("fieldgun")&&modernLevelFour.ul.includes("combatmedic"),"Silniki i Radio 4: przywrócono pełny poziom epoki zamiast Osiedla");
-check(sandbox.window.CASTLE_ESTATE.segmentSeconds===7&&sandbox.window.CASTLE_ESTATE.level.id==="estate"&&sandbox.window.CASTLE_ESTATE.level.pH===2200&&sandbox.window.CASTLE_ESTATE.level.eH===2200,"Osiedle: osobny tryb bonusowy zachowuje rytm 12 segmentów i symetryczne HP");
-check(new Set(sandbox.window.CASTLE_ESTATE.segments.map(s=>s.prop)).size===12,"Osiedle: każdy z 12 segmentów ma własną scenografię");
-check(sandbox.window.CASTLE_ESTATE.arenaKinds.length===12&&new Set(sandbox.window.CASTLE_ESTATE.arenaKinds).size===12,"Osiedle v7.9: 12 różnych typów aren zamiast wspólnego bloku");
-check(sandbox.window.CASTLE_ESTATE.arenaKinds.join(",")==="balcony_canyon,shopfront,bench_square,snack_kiosk,rack_yard,bin_alley,pizza_pavilion,night_gate,kebab_corner,parking_patrol,closed_arcade,night_express","Osiedle v7.9: wszystkie areny mają oczekiwaną tożsamość");
-const estateSource=fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"utf8");
-check(html.includes("MENELE STUDIO")&&html.includes("menelPreview0")&&html.includes("menelPreview1")&&html.includes("window.CASTLE_MENELE"),"Menele Studio ma dwa lokalne sloty postaci połączone z rendererem");
-check(!html.includes("Dostawy → butelki · Jedzenie → kondycja · Pij i rzucaj"),"Osiedle: usunięto dolny pasek instrukcji");
-check(html.includes("Osiedle nie używa dymu jako wskaźnika przegrywania")&&html.includes("if(!ESTATE.active(G))for(var i=0;i<G.smoke.length"),"Osiedle: dym jest wyłączony podczas przegrywania");
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.3.0","Osiedle v8.3.0: renderer zgłasza bieżący kierunek artystyczny");
-check(estateSource.includes("Era 1 discipline: three readable depth bands")&&!estateSource.includes("ctx.fillStyle=sky;ctx.fillRect(0,0,w,gy)"),"Osiedle v8.3.0: zachowuje hierarchię głębi Epoki I bez malowania drugiego nieba");
-check(estateSource.includes("estateViewportScale")&&estateSource.includes("drawW=c.w*1.56*boost")&&estateSource.includes("landmarkScale=1.72*sceneScale")&&estateSource.includes("390*scale"),"Osiedle v8.3.0: bazy, landmark i miejska sylwetka skalują się także na wysokim ekranie");
-check(sandbox.window.CASTLE_ESTATE.baseGrammar.join(",")==="apartment-mass,side-wings,stair-core,entrance-steps,hero-loggia,window-bays,flat-roof-services","Osiedle v8.3.0: jawna gramatyka bazy opisuje współczesny blok mieszkalny");
-check(estateSource.includes("paintApartmentBlock")&&estateSource.includes("One wide slab owns the silhouette")&&estateSource.includes("shallow facade returns")&&estateSource.includes("vertical glass stripe inside the slab")&&estateSource.includes("Deep rectangular loggia")&&estateSource.includes("Glazed entrance")&&estateSource.includes("roofRail")&&estateSource.includes("windowBay"),"Osiedle v8.3.0: pozioma baza ma skrzydła, wtopioną klatkę schodową, loggię, wejście, okna i niskie instalacje dachowe");
-check(!/(paintEstateKeep|estateTower|\bfunction tower\b|\bparapet\b|\bbattlement\b|\bmain keep\b|\bside towers\b|\bcastle gate\b|\bheraldic\b|\bmedieval\b)/i.test(estateSource),"Osiedle v8.3.0: renderer nie zawiera dawnej terminologii ani założeń wieżowej bazy");
-check(estateSource.includes("ESTATE_BASE_CACHE")&&estateSource.includes("208*sx,300*sy"),"Osiedle v8.3.0: statyczne bloki są cache’owane przy zachowaniu mocnej skali bocznych baz");
-check(estateSource.includes("g.lv.sc=segments[e.segment].scene")&&sandbox.window.CASTLE_ESTATE.segments[7].scene===2&&sandbox.window.CASTLE_ESTATE.segments[10].scene===3,"Osiedle v8.3.0: dzień, zmierzch i noc korzystają z głównej palety scen gry");
-check(estateSource.includes("Narrow urban ground plane")&&!estateSource.includes("Perspective paving"),"Osiedle v8.3.0: zredukowano wielki szary parking i techniczną siatkę perspektywy");
-check(sandbox.window.CASTLE_ESTATE.landmarkKinds.slice(1).join(",")==="monopolowy,lawka,zapiekanki,trzepak,smietniki,pizza,nocna-brama,kebab,patrol,zamkniety-sklep,nocny-express"&&estateSource.includes("One large, iconic modern-estate landmark per stage"),"Osiedle v8.3.0: każdy etap ma jeden nazwany, dominujący landmark");
-check(estateSource.includes("same rectangular loggia opening painted into the facade")&&estateSource.includes("unitScale*.96"),"Osiedle v8.3.0: bohater jest osadzony w loggii współczesnej fasady, a postacie naziemne zachowują skalę świata");
-check(estateSource.includes("ESTATE_SKYLINE_LAYOUTS")&&estateSource.includes("Low service pavilions")&&estateSource.includes("drawTreeUrban(ctx,w*.52")&&estateSource.includes("curb*g.W/9")&&estateSource.includes("b.type===1")&&estateSource.includes("b.type===2"),"Osiedle v8.3.0: tło ma różne fasady bloków, pawilony, rzadkie drzewa, lampy i rytm parkingu bez tapetowego powtórzenia");
-check(estateSource.includes("bx=14")&&estateSource.includes("Math.min(154,g.H*.18)"),"Osiedle v8.3.0: panel kondycji jest przypięty do bezpiecznej strefy interfejsu zamiast zasłaniać landmark");
-check(estateSource.includes("function faceDetails")&&estateSource.includes("mood==='grimace'")&&estateSource.includes("t<.76?'grin':'focus'")&&estateSource.includes("hitReactT"),"Osiedle v8.3.0: łyk wywołuje uśmiech, zamach skupienie, a trafienie grymas i odrzut");
-check(estateSource.includes("function urbanEstateLayer")&&estateSource.includes("ctx.globalAlpha=1;ESTATE_SKYLINE_LAYOUTS")&&!estateSource.includes("ctx.globalAlpha=alpha;ESTATE_SKYLINE_LAYOUTS"),"Osiedle v8.3.0: pełne bryły bloków zasłaniają słońce i księżyc");
-check(estateSource.includes("Pools of light, wet asphalt")&&estateSource.includes("globalCompositeOperation='lighter'")&&estateSource.includes("paperX")&&estateSource.includes("buz<4"),"Osiedle v8.3.0: światło, mokry asfalt, ruchome śmieci i detale wejścia pogłębiają scenę");
-check(html.includes("osiedle-v75.js?v=8.3.0")&&html.includes("sw.js?v=8.3.0"),"Osiedle v8.3.0: przeglądarka dostaje jawnie wersjonowany renderer i service worker");
-check(html.includes("LV=[ESTATE.level]")&&html.includes("BONUS · OSIEDLE WIELKIEJ AWANTURY")&&!estateSource.includes("modern[3].special"),"Osiedle v8.3.0: działa jako osobny bonus i nie nadpisuje poziomu 4 epoki");
-check(estateSource.includes("ZJEDZ")&&estateSource.includes("action:'eat'"),"Osiedle: karta jedzenia przełącza się z zamówienia na bezpośrednie zjedzenie");
-check(estateSource.includes("outbound=q<.57")&&estateSource.includes("dir=outbound"),"Osiedle: dostawca obraca się po zawróceniu zamiast wracać wspak");
-check(html.includes("PENDING_ESTATE_TEST_SEGMENT")&&html.includes("applyEstateTestSegment"),"TESTY utrzymują wybrany segment także podczas inicjalizacji poziomu");
-check(sandbox.window.CASTLE_ESTATE.foods.map(f=>f.buff).join(",")==="quick,reset,regen,efficient","Osiedle: cztery rodzaje jedzenia mają cztery różne efekty mechaniczne");
-check(typeof sandbox.window.CASTLE_ESTATE.chooseDrink==="function"&&typeof sandbox.window.CASTLE_ESTATE.staminaCost==="function","Osiedle: AI i koszt kondycji korzystają z jawnych reguł zamiast samego tempa");
-check(html.includes("OSIEDLE — TEST SEGMENTÓW")&&html.includes("launchEstateSegment")&&html.includes("ESTATE.segments.forEach"),"TESTY pokazują osobne wejścia do wszystkich segmentów Osiedla");
-check(estateSource.includes("noticeText")&&estateSource.includes("combo")&&estateSource.includes("impacts"),"Osiedle: HUD i trafienia mają dodatkowy feedback bez dokładania nowego zasobu");
-const estateBattle=qa.estateBattle();check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.seconds<240&&estateBattle.segment>=3,"Osiedle: dostawy, jedzenie i butelki pozwalają wygrać w mniej niż 4 minuty");
-qa.viewport(1280,720,1);qa.estateScene();save("estate-desktop.png");
-const estateDrink=qa.estateExpressionScene("drink");save("estate-expression-drink.png");
-const estateHit=qa.estateExpressionScene("hit");save("estate-expression-hit.png");
-check(estateDrink.action>.42&&estateDrink.action<.76&&estateHit.hit>0,"Osiedle: testy renderują osobno uśmiech podczas łyku oraz grymas po trafieniu");
-qa.viewport(1950,1100,1);qa.estateSegmentScene(11);save("estate-large-desktop.png");
-qa.viewport(844,390,1,{top:0,right:47,bottom:21,left:47});qa.estateScene();save("estate-iphone.png");
-qa.viewport(960,540,1);
-for(let esi=0;esi<12;esi++){const es=qa.estateSegmentScene(esi);check(es.index===esi&&es.id===sandbox.window.CASTLE_ESTATE.segments[esi].id,"Osiedle segment "+(esi+1)+": render i konfiguracja");save("estate-segment-"+String(esi+1).padStart(2,"0")+".png");}
-for(const esi of [0,3,7,10,11]){const lock=qa.estateSegmentLock(esi);check(lock.before===esi&&lock.after===esi&&lock.visual===esi,"Osiedle TEST "+(esi+1)+": segment nie przeskakuje automatycznie");}
+check(!html.includes("osiedle-v75.js")&&!html.includes("CASTLE_ESTATE")&&!html.includes("MENELE STUDIO")&&!fs.existsSync(path.join(root,"content","osiedle-v75.js")),"bonus Osiedle i jego dodatkowy edytor zostały całkowicie usunięte");
+check(html.includes("CREST_MAX_FILE_SIZE=30*1024*1024")&&html.includes("createImageBitmap(file,{imageOrientation:\"from-image\"})")&&html.includes("URL.createObjectURL")&&html.includes("isLikelyCrestFile"),"produkcyjny uploader obsługuje duże zdjęcia, orientację aparatu, HEIC i Safari fallback");
+check(html.includes('for="crestFileP"')&&html.includes('for="crestFileE"')&&html.includes('id="crestStatus"'),"natywne etykiety otwierają selektor pliku i pokazują wynik operacji");
+const crestProduction=qa.crestProductionAudit();
+check(crestProduction.heicWithoutMime&&crestProduction.jpegWithMime&&crestProduction.rejectsText&&crestProduction.maxBytes===30*1024*1024,"test uruchamia reguły faktycznie używanego produkcyjnego importu twarzy");
 const nr=qa.nextRulesAudit();
 check(nr.total===34&&nr.eras===6&&nr.coherent,"34 bitwy w sześciu epokach; nowe talie obu stron zawierają wyłącznie wojska swojej epoki");
 check(nr.healing&&nr.ammo&&nr.helpers&&nr.names&&nr.counters,"nowi medycy leczą, działa zużywają amunicję, pomocnicy mają kostiumy i poprawne nazwy, kontry działają");

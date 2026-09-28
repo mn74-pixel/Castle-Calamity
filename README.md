@@ -1,74 +1,14 @@
 # Castle Calamity
 
-### v8.3.0 — STANDALONE ESTATE & REACTION ANIMATION
-- poziom 4 sekcji „Silniki i Radio” znów jest pełną bitwą epoki „Fort Nieodebranych Meldunków”; Osiedle działa jako osobny tryb bonusowy i nie zmienia postępu kampanii,
-- bohater najpierw unosi butelkę do ust i uśmiecha się, potem skupia przy zamachu, a po trafieniu krzywi twarz, pochyla głowę i reaguje całym ciałem,
-- trafienia dostały mocniejszy rozbłysk i odłamki, a nocne sceny — światło latarni, odbicia w kałużach i podświetlone okna,
-- fasady mają dokładniejsze podziały okien, parapety, domofony, przewody, cienie kontaktowe i detale ubioru bohaterów,
-- ulica otrzymała studzienkę, ruchomy papier i kontrolowane drobne detale, bez utraty czytelnej hierarchii Epoki I.
+### v8.3.1 — wycofanie Osiedla i naprawa importu twarzy
 
-### v8.2.6 — EXPRESSIVE FACES & SOLID URBAN DEPTH
-- bloki tła są teraz pełnymi, nieprzezroczystymi sylwetkami; słońce i księżyc są prawidłowo zasłaniane przez architekturę,
-- perspektywę atmosferyczną budują kolor, kontrast i delikatna warstwa zamglenia zamiast przezroczystego betonu,
-- wszystkie postacie bez wgranego portretu mają stylizowane oczy, refleksy, brwi, nos, usta, uszy i policzki,
-- mieszkańcy, dostawcy i uczestnicy bójki korzystają z odmiennych min neutralnych, uśmiechniętych i agresywnych.
+- bonus „Osiedle Wielkiej Awantury” oraz jego osobny edytor postaci zostały całkowicie usunięte z gry i paczki offline,
+- poziom 4 „Silniki i Radio” pozostaje właściwym poziomem epoki: „Fort Nieodebranych Meldunków”,
+- produkcyjny import twarzy obsługuje zdjęcia do 30 MB, pliki z aparatu bez typu MIME, EXIF/orientację, HEIC/HEIF tam, gdzie dekoduje je przeglądarka, oraz trzy ścieżki awaryjne odczytu,
+- selektor zdjęcia korzysta z natywnej etykiety pliku i pokazuje stan przetwarzania albo czytelny błąd,
+- przyczyny spadku jakości oraz kryteria następnej przebudowy opisuje `docs/ART-DIRECTION-AUDIT.md`.
 
-### v8.2.5 — RESPONSIVE ESTATE COMPOSITION
-- wymuszono wersjonowane adresy skryptów i service workera, aby Safari/GitHub Pages nie uruchamiały starego, wieżowego renderera z cache,
-- wysokie ekrany skalują teraz bloki, miejskie tło, pas ulicy i główny landmark względem wysokości pola gry,
-- panel kondycji jest przypięty do bezpiecznej strefy interfejsu w lewym górnym obszarze i nie zasłania centralnej sceny,
-- dodano render regresyjny 1950×1100 odpowiadający dużemu oknu desktopowemu.
-
-### v8.2.4 — HORIZONTAL SLAB POLISH
-- bazy mają teraz jedną szeroką, płaską bryłę; klatka schodowa jest pasem szkła wtopionym w fasadę i nie wystaje ponad dach,
-- boczne skrzydła są płytkimi powrotami elewacji z loggiami, a oznaczenia budynków przeniesiono z dachu na ścianę,
-- główna loggia dostała przesuwne drzwi, boczne okno, mocny front balkonu i spójne osadzenie bohatera,
-- landmarki otrzymały pełniejsze kontury, materiały i rozpoznawalne detale: ławka ma listwy i stelaż, trzepak stopy i wzór dywanu, śmietniki wiatę, brama pas okien, a Nocny Express osobną kabinę,
-- bloki tła korzystają z trzech różnych rytmów elewacji: okien, balkonów i przeszklonych pionów komunikacyjnych.
-
-### v8.2.3 — MODERN ESTATE, ERA 1 DISCIPLINE
-- boczne bazy są teraz jednoznacznie współczesnymi blokami mieszkalnymi: szeroka bryła, płytkie skrzydła, przeszklona klatka schodowa, wejście ze stopniami i loggia bohatera,
-- płaskie dachy mają ciągłe balustrady, wentylację, anteny i urządzenia techniczne; usunięto wieżową kompozycję oraz detale kojarzące się z architekturą obronną,
-- jedenaście osiedlowych landmarków od Monopolowego do Nocnego Expressu jest większych, kontrastowych i podporządkowanych zasadzie jednego dominującego motywu na etap,
-- tło korzysta z trzech czytelnych planów nieregularnych bloków, niskich pawilonów, rzadkich drzew, lamp, parkingu, krawężników i instalacji dachowych,
-- zachowano mocną skalę v8.2.2 oraz dyscyplinę Epoki I: prostą sylwetkę, kontrolowane materiały, wyraźny kontur i hierarchię planów.
-
-### v8.2.2 — MASS, CONTRAST & DEPTH
-- boczne bazy są wyraźnie większe i mocniej przypominają wagą zamki z pierwszej epoki,
-- centralny motyw segmentu jest renderowany 64% większy od bazowej scenografii,
-- miejska sylwetka zaczyna się znacznie wyżej i ma mocniejszy kontrast, anteny oraz detale dachów,
-- pole walki jest ciemniejsze i głębsze, z krawężnikiem oraz drobnym pierwszym planem,
-- bazy mają mocniejszy kontur, jaśniejszy beton, ciemniejszy metal, zbiornik dachowy i drobne balkonowe detale.
-
-
-### v8.2.1 — korekta skali Osiedla
-- bazy po bokach są renderowane 34% większe bez zmiany mechaniki i kolizji,
-- centralny motyw segmentu jest większy o 34%,
-- trzy miejskie warstwy tła są znacznie wyższe, więc scena nie tonie w pustym niebie,
-- pozycja bohatera i punkt trafienia zostały dopasowane do nowych proporcji baz.
-
-
-### v8.2.0 — ESTATE STYLE MATCH
-- Osiedle nie rysuje już własnego pełnoekranowego nieba; korzysta z tego samego sky/cloud pipeline co pierwsza epoka,
-- bazy mają proporcje i gramatykę sylwetki zamków 200×260, ale są przerysowane jako osiedlowe bloki z balkonem, wejściem, anteną i instalacjami,
-- bohater jest częścią centralnego balkonu bazy zamiast osobną figurą na ulicy,
-- pole walki jest węższe i pozbawione technicznej siatki perspektywy, a każdy z 12 segmentów zachowuje jeden mocny motyw centralny,
-- segmenty 1–12 przełączają główną paletę sceny gry: dzień → zmierzch → noc → późna noc.
-
-
-### v8.1.0 — ART REBOOT Osiedla
-- wycofano tapetę z losowych bloków i zastąpiono ją trzema ciągłymi warstwami miejskiego krajobrazu,
-- obie strony mają spójne osiedlowe „fortece” z balkonem, na którym stoi bohater,
-- każdy z 12 segmentów ma jeden dominujący motyw centralny zamiast wielu konkurujących rekwizytów,
-- skala postaci i kompozycja nawiązują do czytelności pierwszej epoki: mocne boki, wolny środek, wyraźna sylwetka sceny.
-
-
-### v8.0.1 — korekta kompozycji Osiedla
-- postacie i dostawcy wracają do skali świata zbliżonej do pierwszej epoki,
-- miejskie tło ma wyższy horyzont, mocniejsze warstwy głębi i mniej pustego nieba,
-- usunięto gigantyczną fasadę zasłaniającą scenę w 2/12,
-- tytuł segmentu jest tylko krótkim wejściowym komunikatem, a HUD kondycji przeniesiono do strefy walki.
- — paczka PWA
+### Paczka PWA
 
 Kompletna aplikacja webowa (PWA). Po wgraniu na hosting HTTPS gracze mogą
 dodać grę do ekranu głównego telefonu — działa jak natywna aplikacja,
@@ -78,14 +18,6 @@ Rozwój projektu podlega nadrzędnemu kompasowi
 `FUN > GAME FEEL > GAMEPLAY > CLARITY > PERFORMANCE > ART > FEATURES`.
 Operacyjne kryteria projektowania, audytu i wydania opisuje
 `docs/MASTER-ZASADY-PRODUKCJI.md`.
-
-## Osiedle Wielkiej Awantury v8.0.0 — ART RESET
-- przebudowano warstwę wizualną według tego samego standardu, który działa w poprzednich epokach: pełne, warstwowe assety, materiały, gradienty, szkło, metal i kontrolowane światło,
-- statyczne tła 12 aren są teraz renderowane do cache’owanych sprite’ów, dzięki czemu mogą być znacznie bogatsze bez kosztu składania całej scenografii co klatkę,
-- bloki, pawilony i pasaże korzystają z panelowych fasad, prawdziwszych witryn, rolet, markiz, plakatów, drzew i elementów miejskich zamiast prostych prostokątów,
-- dostawcy i menele mają pełniejsze dorosłe sylwetki z kurtką, spodniami, butami, profilem głowy i modelowanym światłem; główny bohater ma osobny premium shading,
-- zachowano v7.9.2: większą skalę dorosłych, większego bohatera, chwianie przy niskim HP, brak dymu przegranej, poprawione jedzenie oraz Menele Studio,
-- 12 aren nadal pozostaje osobnymi przestrzeniami, ale nowy renderer narzuca im jeden spójny poziom art direction.
 
 ## Nowe rozdziały v7.4.0
 - 34 bitwy w sześciu epokach; nowe: **Silniki i Radio** oraz **Wyprawa Orbitalna**,

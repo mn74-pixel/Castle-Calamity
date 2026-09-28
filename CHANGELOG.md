@@ -1,5 +1,14 @@
 # Changelog
 
+## 8.3.1 — wycofanie Osiedla i naprawa twarzy
+
+- usunięto cały bonus „Osiedle Wielkiej Awantury”, Menele Studio, renderer, wejścia testowe i zasób z cache PWA,
+- pozostawiono „Fort Nieodebranych Meldunków” jako pełny czwarty poziom epoki „Silniki i Radio”,
+- naprawiono produkcyjny import twarzy: limit 30 MB, akceptacja zdjęć bez MIME, poprawna orientacja, `createImageBitmap`, Object URL i FileReader fallback,
+- zastąpiono programowe otwieranie ukrytego pola natywnymi etykietami pliku oraz dodano widoczny status operacji,
+- testy sprawdzają teraz reguły kodu używanego w grze, a nie wyłącznie osobnego modułu demonstracyjnego,
+- dodano audyt art direction i bramkę jakości dla przyszłej przebudowy późniejszych epok.
+
 ## 8.3.0 — osobne Osiedle i animacje reakcji
 
 - przywrócono „Fort Nieodebranych Meldunków” jako czwarty poziom sekcji „Silniki i Radio”,
