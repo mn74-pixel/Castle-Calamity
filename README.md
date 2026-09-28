@@ -1,5 +1,11 @@
 # Castle Calamity
 
+### v8.2.6 — EXPRESSIVE FACES & SOLID URBAN DEPTH
+- bloki tła są teraz pełnymi, nieprzezroczystymi sylwetkami; słońce i księżyc są prawidłowo zasłaniane przez architekturę,
+- perspektywę atmosferyczną budują kolor, kontrast i delikatna warstwa zamglenia zamiast przezroczystego betonu,
+- wszystkie postacie bez wgranego portretu mają stylizowane oczy, refleksy, brwi, nos, usta, uszy i policzki,
+- mieszkańcy, dostawcy i uczestnicy bójki korzystają z odmiennych min neutralnych, uśmiechniętych i agresywnych.
+
 ### v8.2.5 — RESPONSIVE ESTATE COMPOSITION
 - wymuszono wersjonowane adresy skryptów i service workera, aby Safari/GitHub Pages nie uruchamiały starego, wieżowego renderera z cache,
 - wysokie ekrany skalują teraz bloki, miejskie tło, pas ulicy i główny landmark względem wysokości pola gry,

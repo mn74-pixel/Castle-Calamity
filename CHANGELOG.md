@@ -1,5 +1,12 @@
 # Changelog
 
+## 8.2.6 — twarze i poprawna okluzja miejskiej sceny
+
+- usunięto przenikanie słońca i księżyca przez bloki mieszkalne,
+- zastąpiono przezroczystość brył pełnym kolorem oraz kontrolowaną mgłą planów,
+- dodano wspólny renderer detali twarzy dla mieszkańców, dostawców i uczestników bójki,
+- dodano oczy, brwi, nosy, usta, uszy, policzki i warianty ekspresji czytelne w skali rozgrywki.
+
 ## 8.2.5 — poprawka publikacji i wysokich ekranów
 
 - dodano cache-busting dla skryptów i service workera oraz wyłączono dopasowanie cache ignorujące query string,
