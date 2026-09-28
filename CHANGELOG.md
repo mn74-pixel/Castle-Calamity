@@ -1,5 +1,14 @@
 # Changelog
 
+## 8.3.0 — osobne Osiedle i animacje reakcji
+
+- przywrócono „Fort Nieodebranych Meldunków” jako czwarty poziom sekcji „Silniki i Radio”,
+- przeniesiono Osiedle do izolowanego trybu bonusowego, który nie zapisuje postępu kampanii,
+- dodano fazy picia, uśmiechu, skupienia, zamachu, trafienia, grymasu i odrzutu całej sylwetki,
+- rozbudowano efekty uderzeń, nocne oświetlenie, odbicia i dynamiczne detale ulicy,
+- dopracowano okna, wejścia, domofony, przewody, cienie bloków i ubiór postaci,
+- dodano testy rozdzielenia poziomu epoki od bonusu oraz osobne rendery ekspresji.
+
 ## 8.2.6 — twarze i poprawna okluzja miejskiej sceny
 
 - usunięto przenikanie słońca i księżyca przez bloki mieszkalne,

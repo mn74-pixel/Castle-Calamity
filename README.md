@@ -1,5 +1,12 @@
 # Castle Calamity
 
+### v8.3.0 — STANDALONE ESTATE & REACTION ANIMATION
+- poziom 4 sekcji „Silniki i Radio” znów jest pełną bitwą epoki „Fort Nieodebranych Meldunków”; Osiedle działa jako osobny tryb bonusowy i nie zmienia postępu kampanii,
+- bohater najpierw unosi butelkę do ust i uśmiecha się, potem skupia przy zamachu, a po trafieniu krzywi twarz, pochyla głowę i reaguje całym ciałem,
+- trafienia dostały mocniejszy rozbłysk i odłamki, a nocne sceny — światło latarni, odbicia w kałużach i podświetlone okna,
+- fasady mają dokładniejsze podziały okien, parapety, domofony, przewody, cienie kontaktowe i detale ubioru bohaterów,
+- ulica otrzymała studzienkę, ruchomy papier i kontrolowane drobne detale, bez utraty czytelnej hierarchii Epoki I.
+
 ### v8.2.6 — EXPRESSIVE FACES & SOLID URBAN DEPTH
 - bloki tła są teraz pełnymi, nieprzezroczystymi sylwetkami; słońce i księżyc są prawidłowo zasłaniane przez architekturę,
 - perspektywę atmosferyczną budują kolor, kontrast i delikatna warstwa zamglenia zamiast przezroczystego betonu,
