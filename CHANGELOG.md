@@ -1,5 +1,12 @@
 # Changelog
 
+## 8.2.5 — poprawka publikacji i wysokich ekranów
+
+- dodano cache-busting dla skryptów i service workera oraz wyłączono dopasowanie cache ignorujące query string,
+- poprawiono skalowanie baz, landmarków, ulicy i bloków tła na wysokich ekranach desktopowych,
+- przeniesiono panel kondycji poza pole landmarku,
+- dodano test i render dużego widoku 1950×1100.
+
 ## 8.2.4 — pozioma bryła i polish landmarków
 
 - spłaszczono sylwetkę bocznych baz do jednej szerokiej bryły współczesnego bloku,

@@ -1,18 +1,18 @@
-/* Castle Calamity PWA v8.2.4 — horizontal slab and landmark polish.
+/* Castle Calamity PWA v8.2.5 — responsive Estate composition and deterministic cache refresh.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v8.2.4";
+const CACHE = "castle-calamity-v8.2.5";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./content/gags.js",
-  "./content/i18n.js",
-  "./content/eras.js",
-  "./content/future-eras-v73.js",
-  "./content/era-art-v73.js",
-  "./content/next-eras-v74.js",
-  "./content/osiedle-v75.js",
+  "./content/gags.js?v=8.2.5",
+  "./content/i18n.js?v=8.2.5",
+  "./content/eras.js?v=8.2.5",
+  "./content/future-eras-v73.js?v=8.2.5",
+  "./content/era-art-v73.js?v=8.2.5",
+  "./content/next-eras-v74.js?v=8.2.5",
+  "./content/osiedle-v75.js?v=8.2.5",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable-192.png",
@@ -76,7 +76,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   event.respondWith(
-    caches.match(request, { ignoreSearch: true }).then((cached) => {
+    caches.match(request).then((cached) => {
       if (cached) {
         event.waitUntil(fetch(request).then((response) => remember(request, response)).catch(() => {}));
         return cached;

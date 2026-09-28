@@ -1,5 +1,11 @@
 # Castle Calamity
 
+### v8.2.5 — RESPONSIVE ESTATE COMPOSITION
+- wymuszono wersjonowane adresy skryptów i service workera, aby Safari/GitHub Pages nie uruchamiały starego, wieżowego renderera z cache,
+- wysokie ekrany skalują teraz bloki, miejskie tło, pas ulicy i główny landmark względem wysokości pola gry,
+- panel kondycji jest przypięty do bezpiecznej strefy interfejsu w lewym górnym obszarze i nie zasłania centralnej sceny,
+- dodano render regresyjny 1950×1100 odpowiadający dużemu oknu desktopowemu.
+
 ### v8.2.4 — HORIZONTAL SLAB POLISH
 - bazy mają teraz jedną szeroką, płaską bryłę; klatka schodowa jest pasem szkła wtopionym w fasadę i nie wystaje ponad dach,
 - boczne skrzydła są płytkimi powrotami elewacji z loggiami, a oznaczenia budynków przeniesiono z dachu na ścianę,

@@ -85,7 +85,8 @@
     return true;
   }
   function eat(g,p){var st=side(g,p);if(st.food<1)return false;st.food--;applyFood(g,p);return true;}
-  function anchor(g,p,fromHand){var c=p?g.p:g.e,drawW=c.w*1.56,drawH=c.h*1.56,drawX=p?c.x-18:c.x+c.w-drawW+18,inner=drawX+drawW*.5;return {x:inner+(fromHand?(p?drawW*.12:-drawW*.12):0),y:g.GY-drawH*(fromHand?.53:.47)};}
+  function estateViewportScale(ground){return Math.max(.92,Math.min(1.5,ground/590));}
+  function anchor(g,p,fromHand){var c=p?g.p:g.e,boost=estateViewportScale(g.GY),drawW=c.w*1.56*boost,drawH=c.h*1.56*boost,drawX=p?c.x-18:c.x+c.w-drawW+18,inner=drawX+drawW*.5;return {x:inner+(fromHand?(p?drawW*.12:-drawW*.12):0),y:g.GY-drawH*(fromHand?.53:.47)};}
   function launch(g,a,p){g.estate.bottles.push({isP:p,item:a.item,t:0,duration:1.7,arc:Math.min(g.H*.18,100)});}
   function finishRunner(g,r,reward){var st=side(g,r.isP),c=r.isP?g.p:g.e,seg=segmentOf(g);if(r.kind==='food'){st.food=Math.min(2,st.food+1);notice(st,'food');if(!r.isP&&st.stamina<38)eat(g,false);return;}
     var gain=seg.id==='closed'?22:28,pack=seg.supply||2;c.gold=Math.min(9999,c.gold+gain);st.bottles=Math.min(6,st.bottles+pack);notice(st,'supply');if(r.isP){g.stats.goldEarned+=gain;g.estate.delivered++;}if(reward)reward(r.isP,gain);}
@@ -205,7 +206,7 @@
   }
   function urbanEstateLayer(ctx,w,baseY,maxH,c1,c2,alpha,layout,night){ctx.save();ctx.globalAlpha=alpha;ESTATE_SKYLINE_LAYOUTS[layout].forEach(function(b,i){estateBackgroundBlock(ctx,w,baseY,maxH,b,c1,c2,night,i+layout);});ctx.restore();}
   function paintArenaBackdrop(ctx,w,gy,seg){
-    var night=seg.scene>=2,scale=Math.min(1,gy/590);
+    var night=seg.scene>=2,scale=Math.max(.72,Math.min(1.45,gy/590));
     // Era 1 discipline: three readable depth bands, now made from specific housing-estate forms.
     urbanEstateLayer(ctx,w,gy-76*scale,390*scale,night?'#5c7080':'#839f9d',night?'#405667':'#68887b',.38,0,night);
     urbanEstateLayer(ctx,w,gy-34*scale,302*scale,night?'#435b6c':'#5e827c',night?'#2e4656':'#496e61',.54,1,night);
@@ -223,18 +224,18 @@
   function neonGlow(ctx,x,y,w,h,col){ctx.save();ctx.globalAlpha=.18;ctx.fillStyle=col;for(var n=4;n>0;n--)ctx.fillRect(x-n*2,y-n*2,w+n*4,h+n*4);ctx.restore();}
   function landmarkOutline(ctx){ctx.strokeStyle='#27363b';ctx.lineWidth=1.4;ctx.lineJoin='round';ctx.lineCap='round';}
   function drawArenaScene(ctx,g,seg){
-    var y=g.GY,mid=g.W*.5,t=g.estate.time,night=seg.scene>=2;ctx.save();
+    var y=g.GY,mid=g.W*.5,t=g.estate.time,night=seg.scene>=2,sceneScale=estateViewportScale(y),groundDepth=112*sceneScale;ctx.save();
     // Narrow urban ground plane; the scenery, not a grey parking lot, owns the frame.
-    var ground=ctx.createLinearGradient(0,y-112,0,y+4);ground.addColorStop(0,night?'#50595f':'#747368');ground.addColorStop(1,night?'#2e3538':'#4c554c');ctx.fillStyle=ground;ctx.fillRect(0,y-112,g.W,116);
+    var ground=ctx.createLinearGradient(0,y-groundDepth,0,y+4);ground.addColorStop(0,night?'#50595f':'#747368');ground.addColorStop(1,night?'#2e3538':'#4c554c');ctx.fillStyle=ground;ctx.fillRect(0,y-groundDepth,g.W,groundDepth+4);
     ctx.fillStyle=night?'#2b3a34':'#55734c';ctx.fillRect(0,y,g.W,17);ctx.fillStyle='rgba(239,228,195,.34)';ctx.fillRect(0,y-4,g.W,2);ctx.fillStyle='rgba(27,34,31,.22)';ctx.fillRect(0,y+2,g.W,4);
     ctx.fillStyle=night?'#3d5548':'#6f8b5c';for(var grass=0;grass<18;grass++){var gx=(grass*97+31)%g.W;ctx.fillRect(gx,y+4+(grass%3),2,5+(grass%4));}
     ctx.strokeStyle='rgba(35,42,41,.18)';ctx.lineWidth=1;for(var crack=0;crack<7;crack++){var cx=(crack*167+51)%g.W,cy=y-8-(crack%3)*13;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+8,cy+3);ctx.lineTo(cx+3,cy+8);ctx.stroke();}
-    ctx.fillStyle=night?'#85847b':'#aaa596';for(var curb=0;curb<9;curb++)ctx.fillRect(curb*g.W/9+4,y-111,Math.max(12,g.W/9-13),4);
-    ctx.strokeStyle='rgba(224,220,199,.22)';for(var bay=0;bay<6;bay++){ctx.beginPath();ctx.moveTo(bay*g.W/6+22,y-83);ctx.lineTo(bay*g.W/6+37,y-106);ctx.stroke();}
+    ctx.fillStyle=night?'#85847b':'#aaa596';for(var curb=0;curb<9;curb++)ctx.fillRect(curb*g.W/9+4,y-groundDepth+1,Math.max(12,g.W/9-13),4);
+    ctx.strokeStyle='rgba(224,220,199,.22)';for(var bay=0;bay<6;bay++){ctx.beginPath();ctx.moveTo(bay*g.W/6+22,y-83*sceneScale);ctx.lineTo(bay*g.W/6+37,y-106*sceneScale);ctx.stroke();}
     landmarkOutline(ctx);
 
     // One large, iconic modern-estate landmark per stage.
-    ctx.save();ctx.translate(mid,y);ctx.scale(1.72,1.72);ctx.translate(-mid,-y);contactShadow(ctx,mid,y-1,112,.34);landmarkOutline(ctx);
+    var landmarkScale=1.72*sceneScale;ctx.save();ctx.translate(mid,y);ctx.scale(landmarkScale,landmarkScale);ctx.translate(-mid,-y);contactShadow(ctx,mid,y-1,112,.34);landmarkOutline(ctx);
     if(seg.arena==='balcony_canyon'){
       materialRect(ctx,mid-86,y-92,172,87,'#aaa28f','#746e64','#27363b');ctx.fillStyle='#293b42';ctx.fillRect(mid-58,y-82,116,55);glassPanel(ctx,mid+13,y-77,38,42,false);ctx.fillStyle='#b2534d';ctx.fillRect(mid-53,y-76,58,42);ctx.fillStyle='#7d8a85';ctx.fillRect(mid-64,y-32,128,9);ctx.fillStyle='#e5d9b8';ctx.fillRect(mid-67,y-36,134,4);for(var lr=0;lr<7;lr++)ctx.fillRect(mid-57+lr*19,y-32,2,9);
     }else if(seg.arena==='shopfront'){
@@ -308,13 +309,13 @@
   }
   function estateApartmentBase(ctx,c,ground){
     var key='estate:'+c.isP,sprite=ESTATE_BASE_CACHE.get(key);if(!sprite){sprite=document.createElement('canvas');sprite.width=624;sprite.height=900;var sc=sprite.getContext('2d');sc.scale(3,3);sc.translate(4,296);paintApartmentBlock(sc,c.isP);ESTATE_BASE_CACHE.set(key,sprite);}
-    ctx.save();if(c.collapseT){ctx.globalAlpha=Math.max(0,1-c.collapseT);ctx.translate(0,c.collapseT*c.h*.25);}var drawW=c.w*1.56,drawH=c.h*1.56,sx=drawW/200,sy=drawH/260,drawX=c.isP?c.x-18:c.x+c.w-drawW+18;ctx.drawImage(sprite,drawX-4*sx,ground-296*sy,208*sx,300*sy);
+    ctx.save();if(c.collapseT){ctx.globalAlpha=Math.max(0,1-c.collapseT);ctx.translate(0,c.collapseT*c.h*.25);}var boost=estateViewportScale(ground),drawW=c.w*1.56*boost,drawH=c.h*1.56*boost,sx=drawW/200,sy=drawH/260,drawX=c.isP?c.x-18:c.x+c.w-drawW+18;ctx.drawImage(sprite,drawX-4*sx,ground-296*sy,208*sx,300*sy);
     // Dynamic damage remains pixel-stable and sparse.
     ctx.translate(drawX,ground);ctx.scale(sx,sy);var damage=Math.max(0,1-c.hp/c.max);ctx.strokeStyle='#384048';ctx.lineWidth=1.5;for(var d=0;d<Math.floor(damage*8);d++){var dx=31+(d*43)%136,dy=-74-(d*29)%118;ctx.beginPath();ctx.moveTo(dx,dy);ctx.lineTo(dx+6,dy+8);ctx.lineTo(dx+2,dy+15);ctx.stroke();}ctx.restore();
   }
   function arenaBase(ctx,c,ground){estateApartmentBase(ctx,c,ground);}
   function resident(ctx,g,p,img,drawFace,unitScale){
-    var c=p?g.p:g.e;if(c.collapseT)return;var st=side(g,p),a=st.action,t=a?a.t:0,dir=p?1:-1,drawW=c.w*1.56,drawH=c.h*1.56,sx=drawW/200,sy=drawH/260,drawX=p?c.x-18:c.x+c.w-drawW+18,sway=Math.sin(g.estate.time*2.0+(p?0:1))*.8;
+    var c=p?g.p:g.e;if(c.collapseT)return;var st=side(g,p),a=st.action,t=a?a.t:0,dir=p?1:-1,boost=estateViewportScale(g.GY),drawW=c.w*1.56*boost,drawH=c.h*1.56*boost,sx=drawW/200,sy=drawH/260,drawX=p?c.x-18:c.x+c.w-drawW+18,sway=Math.sin(g.estate.time*2.0+(p?0:1))*.8;
     // The resident is clipped by the same rectangular loggia opening painted into the facade.
     ctx.save();ctx.translate(drawX,g.GY);ctx.scale(sx,sy);ctx.beginPath();ctx.rect(63,-153,82,56);ctx.clip();
     ctx.translate(sway,0);
@@ -335,9 +336,9 @@
     e.glass.forEach(function(s){var a=anchor(g,s.p);ctx.save();ctx.globalAlpha=1-s.t/.65;ctx.fillStyle=s.col;ctx.fillRect(a.x+s.vx*s.t,a.y+s.vy*s.t+120*s.t*s.t,3,5);ctx.restore();});
     (e.impacts||[]).forEach(function(v){ctx.save();ctx.globalAlpha=1-v.t/.55;ctx.strokeStyle=v.col;ctx.lineWidth=2;ctx.beginPath();ctx.arc(v.x,v.y,6+v.t*34*v.power,0,Math.PI*2);ctx.stroke();ctx.restore();});
     drawBrawlers(ctx,g,unitScale,drawFace);stageBadge(ctx,g,lang);
-    var ps=side(g,true),barW=Math.min(145,g.W*.19),bx=g.W<720?10:Math.max(12,g.p.x+g.p.w+12),by=Math.max(52,g.GY-66),stam=ps.stamina;ctx.save();rounded(ctx,bx,by,barW,39,5,'rgba(24,32,35,.88)',seg.accent||'rgba(238,219,176,.45)');
+    var ps=side(g,true),barW=Math.min(170,Math.max(126,g.W*.12)),bx=14,by=Math.max(58,Math.min(154,g.H*.18)),stam=ps.stamina;ctx.save();rounded(ctx,bx,by,barW,42,6,'rgba(24,32,35,.91)',seg.accent||'rgba(238,219,176,.45)');ctx.fillStyle=seg.accent||'#d8c49c';ctx.fillRect(bx,by+6,3,30);
     ctx.fillStyle='#e7d9b5';ctx.font='bold 9px sans-serif';ctx.textAlign='left';ctx.fillText((lang==='en'?'STAMINA ':'KONDYCJA ')+Math.round(stam)+'%',bx+6,by+11);ctx.fillStyle='#46534e';ctx.fillRect(bx+6,by+15,barW-12,6);ctx.fillStyle=stam<22?'#bd665b':stam<48?'#c7aa5e':'#91b56b';ctx.fillRect(bx+6,by+15,(barW-12)*stam/100,6);
-    ctx.fillStyle='#ead7ad';ctx.fillText('🍾 '+ps.bottles+'    🍴 '+ps.food+(ps.combo>1?'    ×'+ps.combo:''),bx+6,by+34);if(ps.noticeT>0&&ps.notice){ctx.textAlign='left';ctx.fillStyle='#fff0b8';ctx.font='bold 9px sans-serif';ctx.fillText(noticeText(ps.notice,lang),bx,by-7);}ctx.restore();
+    ctx.fillStyle='#ead7ad';ctx.font='bold 8px sans-serif';ctx.fillText((lang==='en'?'BOTTLES ':'BUTELKI ')+ps.bottles+'  ·  '+(lang==='en'?'FOOD ':'POSIŁKI ')+ps.food+(ps.combo>1?'  ×'+ps.combo:''),bx+6,by+34);if(ps.noticeT>0&&ps.notice){ctx.textAlign='left';ctx.fillStyle='#fff0b8';ctx.font='bold 9px sans-serif';ctx.fillText(noticeText(ps.notice,lang),bx,by-7);}ctx.restore();
   }
   function buildCards(doc,g,lang,onBuy){var row=doc.getElementById('cds');row.innerHTML='';choices.forEach(function(item,i){var card=doc.createElement('button');card.type='button';card.className='cd';card.id='estate_'+item.id;card.dataset.hotkey=String(i+1);
     var title=lang==='en'?item.en:item.pl;card.setAttribute('aria-label',title);card.title=title+(item.damage?' · '+item.damage+' HP':item.id==='food'?' · stamina':' · supply');
@@ -355,5 +356,5 @@
   root.CASTLE_ERA_ART.drawBase=function(ctx,c,ground,era,l,t){if(era==='modern'&&l===4){arenaBase(ctx,c,ground);return;}return oldBase(ctx,c,ground,era,l,t);};
   var oldBackdrop=root.CASTLE_ERA_ART.backdrop;
   root.CASTLE_ERA_ART.backdrop=function(ctx,w,gy,era,l){if(era!=='modern'||l!==4)return oldBackdrop(ctx,w,gy,era,l);drawArenaBackdrop(ctx,w,gy,segments[visualSegment]||segments[0]);};
-  root.CASTLE_ESTATE={active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.2.4',baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
+  root.CASTLE_ESTATE={active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.2.5',baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
 })(window);
