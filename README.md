@@ -1,5 +1,19 @@
 # Castle Calamity
 
+### v8.4.0 — Osiedle: Polska lat 80. i 90.
+
+Rozdział osiedlowy wraca pod własnym przyciskiem w menu. Zachowuje 12 scen,
+dostawy, rzuty, kondycję i mimikę; nie zastępuje czwartej bitwy „Silniki i Radio”.
+Nowa oprawa: płaskie bloki z wielkiej płyty, loggie, lastryko, tabliczki
+„Słoneczna 7/9”, anteny, pelargonie i animowane pranie. Podwórko otrzymało
+kiosk Prasa/Ruch, saturator, malucha, budkę telefoniczną i witryny pawilonów.
+W późniejszych scenach pojawiają się video-kasety, gastronomia i nocne światło.
+
+Poprawiono kolejność rysowania ulicy i fasad, celowanie w widoczną twarz,
+skalę centralnego obiektu na telefonie oraz ograniczenie pamięci teł.
+Detale są stylizowaną interpretacją epoki, nie rekonstrukcją jednego adresu.
+Raport i podglądy: [Osiedle v8.4](docs/OSIEDLE-V8.4.md).
+
 ### v8.3.1 — wycofanie Osiedla i naprawa importu twarzy
 
 - bonus „Osiedle Wielkiej Awantury” oraz jego osobny edytor postaci zostały całkowicie usunięte z gry i paczki offline,

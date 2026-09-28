@@ -1,5 +1,9 @@
 # Audyt art direction — 28 września 2026
 
+Aktualizacja v8.4.0: na prośbę autora przywrócono rozdział osiedlowy.
+Poniższy audyt dokumentuje przyczyny problemów poprzedniej wersji.
+Nowy etap prac i granice weryfikacji opisuje [OSIEDLE-V8.4.md](OSIEDLE-V8.4.md).
+
 ## Wniosek
 
 Problemem nie był brak kolejnej warstwy detali. Epoka I wygląda spójniej, ponieważ jest ręcznie skomponowanym, sylwetkowym systemem gry. Późniejsze epoki i wycofane Osiedle rosły przez dokładanie elementów do generycznych generatorów. Powstało więcej kresek, lecz słabsza hierarchia, mniej rozpoznawalne bryły i gorsza czytelność w ruchu.

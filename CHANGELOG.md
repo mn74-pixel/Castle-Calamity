@@ -1,5 +1,14 @@
 # Changelog
 
+## 8.4.0 — powrót osiedlowego rozdziału
+
+- przywrócono 12 scen Osiedla jako rozdział dostępny bezpośrednio z menu; historyczna kampania i naprawiony importer zdjęć są zachowane,
+- przebudowano fasady: wielka płyta, loggie, klatki schodowe, emaliowane adresy, lastryko, piwnice, anteny i pelargonie,
+- dodano kiosk Prasa/Ruch, saturator, malucha, budkę telefoniczną, witryny i video-kasety oraz animowane pranie,
+- ulica jest teraz rysowana przed bazami; nie zakrywa ich wejść, a punkt trafienia odpowiada widocznej głowie,
+- ograniczono skalę centralnych obiektów na wąskich ekranach, liczbę postaci tła i cache scen,
+- sprawdzono pełną bitwę, zachowanie zapisu kampanii i rendery czterech wielkości ekranu.
+
 ## 8.3.1 — wycofanie Osiedla i naprawa twarzy
 
 - usunięto cały bonus „Osiedle Wielkiej Awantury”, Menele Studio, renderer, wejścia testowe i zasób z cache PWA,
