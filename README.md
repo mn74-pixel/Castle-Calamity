@@ -1,5 +1,18 @@
 # Castle Calamity
 
+### v8.5.0 — Osiedle: ekipy wychodzą na podwórko
+
+Trzy grywalne jednostki: dresiarz trzyma front, rowerzysta szybko naciera na
+blok, a sąsiadka rzuca kapciem i spowalnia przeciwnika. Mają własne sylwetki,
+animacje, HP i kontry; przeciwnik rekrutuje je za te same środki.
+Butelki pozostają wsparciem z balkonu, dostawcy obsługują zapasy.
+
+Etapy trwają po 14 sekund i wprowadzają nowe warunki: kontrolę środka,
+leczenie, osłony, nocny zasięg, szybszą rekrutację i przejazd patrolu.
+Osiem kart, bez nowej waluty i bez limitu liczby bojowników.
+Grafika bloków oraz niezależność rozdziału od kampanii pozostają zachowane.
+Szczegóły i ograniczenia odbioru: [Osiedle v8.5](docs/OSIEDLE-V8.5.md).
+
 ### v8.4.0 — Osiedle: Polska lat 80. i 90.
 
 Rozdział osiedlowy wraca pod własnym przyciskiem w menu. Zachowuje 12 scen,

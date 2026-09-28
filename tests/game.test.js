@@ -21,6 +21,21 @@ window.__QA = {
     var aim=ESTATE.anchor(G,false,false),faceY=G.GY-e.h*139/260;
     return {gap:e.x-(p.x+p.w),width:W,aimMatchesFace:Math.abs(aim.y-faceY)<.01&&Math.abs(aim.x-e.x-e.w/2)<.01};
   },
+  estateCombatScene: function(){
+    launchEstateSegment(4);G.estate.ai=1e6;
+    var tactics=window.CASTLE_ESTATE_TACTICS;
+    [true,false].forEach(function(p){["dres","bike","neighbor"].forEach(function(id,i){G.estate.tactics[p?"p":"e"]=0;ESTATE.buy(G,id,p);var u=G.estate.units[G.estate.units.length-1];u.x=p?.47-i*.064:.53+i*.064;u.walk=i+1;u.moving=true;});});
+    ESTATE.tick(G,.35,castleDmg);render();
+    return {count:G.estate.units.length,cards:ESTATE.choices.length};
+  },
+  estateTacticsIntegration: function(){
+    launchEstateSegment(6);G.estate.ai=1e6;buyEstateItem("dres");var u=G.estate.units[0];u.hp=50;ESTATE.eat(G,true);var pizza=u.hp===75;
+    var n=G.estate.units.length;PAUSED=true;var paused=!buyEstateItem("bike")&&G.estate.units.length===n;PAUSED=false;
+    ESTATE.setSegment(G,10,true);var reset=G.estate.units.length===0&&G.estate.shots.length===0;
+    ESTATE.buy(G,"runner",true);var gold=G.p.gold;ESTATE.tick(G,10,castleDmg);var express=G.p.gold===gold+40;
+    launchEstateSegment(null);var t=0;for(;t<240&&!G.over;t+=.1){G.T+=.1;tick(.1);}var idleLoses=G.over&&G.p.hp===0;
+    return {pizza:pizza,paused:paused,reset:reset,express:express,idleLoses:idleLoses};
+  },
   estateIsolationAudit: function(){
     endTestSession();var before=JSON.stringify(CAMPAIGN_STATE),era=ACTIVE_ERA_ID;
     launchEstateSegment(null);showEnd(true);G=null;endTestSession();
@@ -44,15 +59,15 @@ window.__QA = {
     ESTATE.setSegment(G,3,true);G.estate.p.food=0;G.estate.p.stamina=10;var foodOrdered=ESTATE.buy(G,"food",true);ESTATE.tick(G,9,castleDmg);var stocked=G.estate.p.food>0,foodEaten=stocked&&ESTATE.buy(G,"food",true),food=foodOrdered&&stocked&&foodEaten&&G.estate.p.stamina>10;
     var noSpells=Object.keys(abilityCooldowns).length===0;castAbility("freeze");noSpells=noSpells&&!G.freezeField;
     G.estate.ai=0;G.e.gold=100;ESTATE.tick(G,.02,castleDmg);var ai=!!G.estate.e.action;
-    var noArmy=G.units.length===0;
+    var isolatedArmy=G.units.length===0&&G.estate.units.some(function(u){return !u.isP;});
     var platform=true;["modern","orbital"].forEach(function(era){launchTestLevel(era,2);G.p.gold=999;var u=spawnUnit(era==="modern"?"fieldgun":"railgun",true);var x=u.x,y=u.y;doCannon(u,.02);platform=platform&&u.x===x&&u.y===y;});
-    return {special:special,bought:bought,cost:cost,blocked:blocked,waits:waits,released:released,damage:damage,limit:limit,delivered:delivered,food:food,paused:paused,poor:poor,faces:pc===1&&ec===1,noSpells:noSpells,ai:ai,noArmy:noArmy,platform:platform};
+    return {special:special,bought:bought,cost:cost,blocked:blocked,waits:waits,released:released,damage:damage,limit:limit,delivered:delivered,food:food,paused:paused,poor:poor,faces:pc===1&&ec===1,noSpells:noSpells,ai:ai,isolatedArmy:isolatedArmy,platform:platform};
   },
   estateScene: function(){launchEstateSegment(0);G.p.gold=200;G.estate.ai=1e6;buyEstateItem("runner");ESTATE.buy(G,"runner",false);ESTATE.tick(G,7.8,castleDmg);buyEstateItem("wine");ESTATE.buy(G,"vodka",false);ESTATE.tick(G,.6,castleDmg);G.e.hp=790;render();},
   estateExpressionScene: function(kind){launchEstateSegment(0);G.estate.ai=1e6;if(kind==="drink"){G.p.gold=200;buyEstateItem("wine");ESTATE.tick(G,.56,castleDmg);}else{G.estate.e.hitReactT=.36;G.estate.e.hitReactPower=1.35;G.estate.impacts=[{x:G.W-G.e.w*.48,y:G.GY-G.e.h*.50,t:.16,col:"#a9d5db",power:1.35}];}render();return {kind:kind,action:G.estate.p.action&&G.estate.p.action.t,hit:G.estate.e.hitReactT};},
   estateSegmentScene: function(i){launchEstateSegment(i);G.estate.ai=1e6;G.e.hp=G.e.max*.72;if(i>=3){G.estate.p.stamina=48;G.estate.p.food=1;}if(i>=6)G.estate.p.combo=3;render();var seg=ESTATE.segments[i];return {index:i,id:seg.id,prop:seg.prop,food:!!seg.food,brawlers:seg.brawlers,stamina:G.estate.p.stamina,bottles:G.estate.p.bottles};},
   estateSegmentLock: function(i){launchEstateSegment(i);G.estate.ai=1e6;var before=G.estate.segment;ESTATE.tick(G,45,castleDmg);return {before:before,after:G.estate.segment,visual:ESTATE.currentVisual()};},
-  estateBattle: function(){launchEstateSegment(null);var t=0;for(;t<240&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment};},
+  estateBattle: function(strategy){launchEstateSegment(null);var t=0;for(;t<240&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);if(strategy==="mixed"){var own=G.estate.units.filter(function(u){return u.isP&&u.hp>0;}),foes=G.estate.units.filter(function(u){return !u.isP&&u.hp>0;}),unit=own.length===0?"dres":foes.some(function(u){return u.kind==="dres";})&&G.estate.segment>=4?"neighbor":G.estate.segment>=2?"bike":"dres";if(own.length<3&&ESTATE.status(G,unit,true).ok)buyEstateItem(unit);}var id=G.p.gold>=40?"vodka":G.p.gold>=25?"wine":"beer";if(ESTATE.status(G,id,true).ok)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment,recruited:G.stats.unitsSpawned,kills:G.stats.kills,hp:G.p.hp};},
   crestProductionAudit: function(){
     return {
       heicWithoutMime:isLikelyCrestFile({name:"IMG_2048.HEIC",type:""}),
@@ -713,6 +728,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "content", "eras.js"), "utf8"), 
 vm.runInContext(fs.readFileSync(path.join(root, "content", "future-eras-v73.js"), "utf8"), sandbox, { filename: "future-eras-v73.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "era-art-v73.js"), "utf8"), sandbox, { filename: "era-art-v73.js" });
 vm.runInContext(fs.readFileSync(path.join(root, "content", "next-eras-v74.js"), "utf8"), sandbox, { filename: "next-eras-v74.js" });
+vm.runInContext(fs.readFileSync(path.join(root,"content","estate-tactics.js"),"utf8"),sandbox,{filename:"estate-tactics.js"});
 vm.runInContext(fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"utf8"),sandbox,{filename:"osiedle-v75.js"});
 vm.runInContext(gameSource, sandbox, { filename: "game.js" });
 
@@ -981,11 +997,20 @@ const modernLevelFour=sandbox.window.CASTLE_FUTURE.levels.modern[3];
 check(modernLevelFour.n==="Fort Nieodebranych Meldunków"&&!modernLevelFour.special&&modernLevelFour.eH===1820&&modernLevelFour.ai.includes("fieldgun")&&modernLevelFour.ul.includes("combatmedic"),"Silniki i Radio 4: przywrócono pełny poziom epoki zamiast Osiedla");
 const estateAudit=qa.estateAudit();
 for(const [key,ok] of Object.entries(estateAudit))check(ok,"Osiedle: "+key);
-const estateBattle=qa.estateBattle();
+for(const [key,ok] of Object.entries(qa.estateTacticsIntegration()))check(ok,"Osiedle taktyka: "+key);
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.5.0"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
+const estateBattle=qa.estateBattle("mixed");
+console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
+check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
+const estateBottles=qa.estateBattle("bottles");
+console.log("ESTATE BOTTLES BATTLE",JSON.stringify(estateBottles));
+check(estateBattle.hp>estateBottles.hp,"Osiedle: mieszana ekipa chroni blok skuteczniej niż same butelki");
 check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.seconds<240,"Osiedle: pełna bitwa kończy się zwycięstwem i zachowuje działające dostawy");
 for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   qa.viewport(viewport[0],viewport[1],1);
   const geometry=qa.estateGeometryAudit();
+  const combat=qa.estateCombatScene();save("estate-combat-"+viewport.join("x")+".png");
+  check(combat.count===6&&combat.cards===8,"Osiedle: trzy sylwetki obu stron i osiem kart przy "+viewport.join("×"));
   check(geometry.gap>geometry.width*.34&&geometry.aimMatchesFace,"Osiedle: wolny środek i trafienie w widoczną twarz przy "+viewport.join("×"));
   for(const segment of [0,1,4,7,11]){
     qa.estateSegmentScene(segment);

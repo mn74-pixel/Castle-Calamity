@@ -1,0 +1,24 @@
+const assert = require('assert/strict');
+const fs = require('fs');
+const vm = require('vm');
+const path = require('path');
+const scope = {window:{}};
+vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../content/estate-tactics.js'),'utf8'),scope);
+const T = scope.window.CASTLE_ESTATE_TACTICS;
+function game(segment=4){const g={W:1280,GY:590,p:{gold:1000,hp:2200,x:0,w:160},e:{gold:1000,hp:2200,x:1120,w:160},estate:{segment},stats:{kills:0,losses:0,unitsSpawned:0,goldEarned:0}};T.init(g);return g;}
+function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.min(dt,seconds-t),(base,n)=>{base.hp=Math.max(0,base.hp-n);if(!base.hp)g.over=true;});}
+function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
+let checks=0;
+function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('unlock stages, shared funds, separate recruitment cooldown',()=>{const g=game(0);assert.equal(T.status(g,'bike',true).reason,'locked');assert.equal(T.status(g,'neighbor',true).reason,'locked');spawn(g,'dres',true);assert.equal(g.p.gold,982);assert.equal(g.stats.unitsSpawned,1);assert.equal(T.status(g,'dres',true).reason,'recruit');tick(g,2.5);assert(T.status(g,'dres',true).ok);g.p.gold=0;assert.equal(T.status(g,'dres',true).reason,'gold');});
+check('every unit reaches the enemy base, hits once, then leaves',()=>{for(const c of T.cards)for(const p of [true,false]){const g=game();spawn(g,c.id,p);tick(g,40);assert.equal((p?g.e:g.p).hp,2200-c.siege);assert.equal(g.estate.units.length,0);assert.equal(g.stats.kills+g.stats.losses,0);}});
+check('dres stops bikes; bikes catch exposed neighbours; neighbours kite dres through slowing',()=>{for(const [a,b] of [['dres','bike'],['bike','neighbor'],['neighbor','dres']]){const g=game();spawn(g,a,true,.35);spawn(g,b,false,.65);tick(g,20);assert.equal(g.stats.kills,1,a+' should win');assert.equal(g.stats.losses,0,a+' should survive');}});
+check('ranged telegraph, projectile impact and slowdown are real',()=>{const g=game();spawn(g,'neighbor',true,.4);const v=spawn(g,'dres',false,.53);tick(g,.3);assert(g.estate.units[0].wind>0);assert.equal(v.hp,v.max);tick(g,.25);assert.equal(g.estate.shots.length,1);tick(g,.4);assert(v.hp<v.max);assert(v.slow>0);});
+check('bins halve ranged damage; night reduces range',()=>{function sample(seg){const g=game(seg);spawn(g,'neighbor',true,.38);const v=spawn(g,'dres',false,.52);v.wind=100;tick(g,.9);return v.max-v.hp;}assert(sample(4)>0);assert(Math.abs(sample(5)*2-sample(4))<1e-8);assert.equal(sample(7),0);});
+check('centre capture rewards control, contested centre resets progress',()=>{const g=game(1);const u=spawn(g,'dres',true,.45);u.wind=100;tick(g,5.1);assert.equal(g.p.gold,988);const v=spawn(g,'dres',false,.55);v.wind=100;tick(g,6);assert.equal(g.p.gold,988);assert.equal(g.estate.tactics.owner,null);});
+check('snack zone heals both sides; squad healing cannot resurrect',()=>{const g=game(3),u=spawn(g,'dres',true,.45),v=spawn(g,'dres',false,.55);u.wind=v.wind=100;u.hp=v.hp=50;tick(g,2);assert(Math.abs(u.hp-60)<.01&&Math.abs(v.hp-60)<.01);T.heal(g,true,25);assert(Math.abs(u.hp-85)<.01);u.hp=0;T.heal(g,true,25);assert.equal(u.hp,0);});
+check('kebab recruitment, patrol pause/resume and finale siege',()=>{const g=game(8);spawn(g,'dres',true);assert.equal(g.estate.tactics.p,1.2);g.estate.segment=9;g.estate.tactics.clock=11;const x=g.estate.units[0].x;tick(g,2);assert.equal(g.estate.units[0].x,x);tick(g,2);assert(g.estate.units[0].x>x);const f=game(11);spawn(f,'bike',true,.8);tick(f,1);assert.equal(f.e.hp,2200-Math.round(190*1.35));});
+check('AI counters visible troops, obeys locks and pays normally',()=>{const g=game();spawn(g,'bike',true);assert.equal(T.choose(g),'dres');g.estate.units=[];spawn(g,'dres',true);assert.equal(T.choose(g),'neighbor');g.estate.segment=0;assert.equal(T.choose(g),'dres');g.e.gold=0;assert.equal(T.choose(g),null);});
+check('frame-rate independent combat and bounded effects in a long battle',()=>{function battle(dt){const g=game();for(let i=0;i<8;i++){spawn(g,T.cards[i%3].id,true,.2-i*.025);spawn(g,T.cards[(i+1)%3].id,false,.8+i*.025);}tick(g,60,dt);assert(g.estate.shots.length<10);assert(g.estate.units.every(u=>Number.isFinite(u.x)&&Number.isFinite(u.hp)));return JSON.stringify([g.p.hp,g.e.hp,g.stats,g.estate.units.map(u=>[u.kind,Math.round(u.hp),Math.round(u.x*1000)])]);}assert.equal(battle(1/30),battle(1/120));});
+check('recruitment has no hard army cap and game-over blocks purchases',()=>{const g=game();g.p.gold=9999;for(let i=0;i<30;i++)spawn(g,'dres',true);assert.equal(g.estate.units.length,30);g.over=true;assert.equal(T.recruit(g,'dres',false),false);});
+console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');
