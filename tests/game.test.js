@@ -641,6 +641,8 @@ const elements = new Map();
 elements.set("cv", canvas);
 elements.set("crestPreviewP", decorateCanvas(createCanvas(60, 60)));
 elements.set("crestPreviewE", decorateCanvas(createCanvas(60, 60)));
+elements.set("menelPreview0", decorateCanvas(createCanvas(56, 56)));
+elements.set("menelPreview1", decorateCanvas(createCanvas(56, 56)));
 
 const document = {
   readyState: "complete",
@@ -963,16 +965,18 @@ const estateSource=fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"u
 check(html.includes("MENELE STUDIO")&&html.includes("menelPreview0")&&html.includes("menelPreview1")&&html.includes("window.CASTLE_MENELE"),"Menele Studio ma dwa lokalne sloty postaci połączone z rendererem");
 check(!html.includes("Dostawy → butelki · Jedzenie → kondycja · Pij i rzucaj"),"Osiedle: usunięto dolny pasek instrukcji");
 check(html.includes("Osiedle nie używa dymu jako wskaźnika przegrywania")&&html.includes("if(!ESTATE.active(G))for(var i=0;i<G.smoke.length"),"Osiedle: dym jest wyłączony podczas przegrywania");
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.2.2","Osiedle v8.2: renderer zgłasza bieżący style match");
-check(estateSource.includes("Same visual grammar as the first era landscape")&&!estateSource.includes("ctx.fillStyle=sky;ctx.fillRect(0,0,w,gy)"),"Osiedle v8.2: nie maluje drugiego nieba i używa niskich warstw jak pierwsza epoka");
-check(estateSource.includes("drawW=c.w*1.56")&&estateSource.includes("ctx.scale(1.64,1.64)")&&estateSource.includes("gy-315*scale"),"Osiedle v8.2.2: bazy, centralny motyw i miejska sylwetka mają docelową masę w kadrze");
-check(estateSource.includes("drawW=c.w*1.34")&&estateSource.includes("ctx.scale(1.34,1.34)")&&estateSource.includes("gy-245*scale"),"Osiedle v8.2.1: bazy, centralny motyw i miejska sylwetka mają skalę wypełniającą kadr zamiast miniatury na pustym niebie");
-check(estateSource.includes("paintEstateKeep")&&estateSource.includes("Rear stairwell block: same strong central silhouette as Era 1")&&estateSource.includes("Central recessed balcony occupies the heraldic-banner position from Era 1"),"Osiedle v8.2: bazy kopiują gramatykę sylwetki zamku pierwszej epoki");
-check(estateSource.includes("ESTATE_BASE_CACHE")&&estateSource.includes("208*sx,300*sy"),"Osiedle v8.2: statyczne bazy są cache’owane i renderowane w tych samych proporcjach 200x260 co późniejsze fortece");
-check(estateSource.includes("g.lv.sc=segments[e.segment].scene")&&sandbox.window.CASTLE_ESTATE.segments[7].scene===2&&sandbox.window.CASTLE_ESTATE.segments[10].scene===3,"Osiedle v8.2: dzień, zmierzch i noc korzystają z głównej palety scen gry");
-check(estateSource.includes("Narrow urban ground plane")&&!estateSource.includes("Perspective paving"),"Osiedle v8.2: zredukowano wielki szary parking i techniczną siatkę perspektywy");
-check(estateSource.includes("One iconic prop per segment")&&estateSource.includes("MONOPOLOWY")&&estateSource.includes("ZAPIEKANKI")&&estateSource.includes("PIZZA 24")&&estateSource.includes("KEBAB 24")&&estateSource.includes("ZAMKNIĘTE"),"Osiedle v8.2: segmenty zachowują jeden czytelny motyw centralny");
-check(estateSource.includes("Resident exactly occupies the central recessed balcony")&&estateSource.includes("unitScale*.96"),"Osiedle v8.2: bohater jest częścią bazy, a postacie naziemne pozostają w skali świata");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.2.3","Osiedle v8.2.3: renderer zgłasza bieżący kierunek artystyczny");
+check(estateSource.includes("Era 1 discipline: three readable depth bands")&&!estateSource.includes("ctx.fillStyle=sky;ctx.fillRect(0,0,w,gy)"),"Osiedle v8.2.3: zachowuje hierarchię głębi Epoki I bez malowania drugiego nieba");
+check(estateSource.includes("drawW=c.w*1.56")&&estateSource.includes("ctx.scale(1.72,1.72)")&&estateSource.includes("390*scale"),"Osiedle v8.2.3: duże bazy, dominujący landmark i wysoka miejska sylwetka wypełniają kadr");
+check(sandbox.window.CASTLE_ESTATE.baseGrammar.join(",")==="apartment-mass,side-wings,stair-core,entrance-steps,hero-loggia,window-bays,flat-roof-services","Osiedle v8.2.3: jawna gramatyka bazy opisuje współczesny blok mieszkalny");
+check(estateSource.includes("paintApartmentBlock")&&estateSource.includes("A broad slab is the primary mass")&&estateSource.includes("shallow wings")&&estateSource.includes("glazed stair core")&&estateSource.includes("Rectangular loggia")&&estateSource.includes("Glazed entrance")&&estateSource.includes("roofRail")&&estateSource.includes("windowBay"),"Osiedle v8.2.3: baza ma główną bryłę, skrzydła, klatkę schodową, loggię, wejście, okna i instalacje dachowe");
+check(!/(paintEstateKeep|estateTower|\bfunction tower\b|\bparapet\b|\bbattlement\b|\bmain keep\b|\bside towers\b|\bcastle gate\b|\bheraldic\b|\bmedieval\b)/i.test(estateSource),"Osiedle v8.2.3: renderer nie zawiera dawnej terminologii ani założeń wieżowej bazy");
+check(estateSource.includes("ESTATE_BASE_CACHE")&&estateSource.includes("208*sx,300*sy"),"Osiedle v8.2.3: statyczne bloki są cache’owane przy zachowaniu mocnej skali bocznych baz");
+check(estateSource.includes("g.lv.sc=segments[e.segment].scene")&&sandbox.window.CASTLE_ESTATE.segments[7].scene===2&&sandbox.window.CASTLE_ESTATE.segments[10].scene===3,"Osiedle v8.2.3: dzień, zmierzch i noc korzystają z głównej palety scen gry");
+check(estateSource.includes("Narrow urban ground plane")&&!estateSource.includes("Perspective paving"),"Osiedle v8.2.3: zredukowano wielki szary parking i techniczną siatkę perspektywy");
+check(sandbox.window.CASTLE_ESTATE.landmarkKinds.slice(1).join(",")==="monopolowy,lawka,zapiekanki,trzepak,smietniki,pizza,nocna-brama,kebab,patrol,zamkniety-sklep,nocny-express"&&estateSource.includes("One large, iconic modern-estate landmark per stage"),"Osiedle v8.2.3: każdy etap ma jeden nazwany, dominujący landmark");
+check(estateSource.includes("same rectangular loggia opening painted into the facade")&&estateSource.includes("unitScale*.96"),"Osiedle v8.2.3: bohater jest osadzony w loggii współczesnej fasady, a postacie naziemne zachowują skalę świata");
+check(estateSource.includes("ESTATE_SKYLINE_LAYOUTS")&&estateSource.includes("Low service pavilions")&&estateSource.includes("drawTreeUrban(ctx,w*.52")&&estateSource.includes("curb*g.W/9"),"Osiedle v8.2.3: tło ma nieregularne bloki, pawilony usługowe, rzadkie drzewa, lampy i rytm parkingu");
 check(estateSource.includes("ZJEDZ")&&estateSource.includes("action:'eat'"),"Osiedle: karta jedzenia przełącza się z zamówienia na bezpośrednie zjedzenie");
 check(estateSource.includes("outbound=q<.57")&&estateSource.includes("dir=outbound"),"Osiedle: dostawca obraca się po zawróceniu zamiast wracać wspak");
 check(html.includes("PENDING_ESTATE_TEST_SEGMENT")&&html.includes("applyEstateTestSegment"),"TESTY utrzymują wybrany segment także podczas inicjalizacji poziomu");

@@ -1,7 +1,7 @@
-/* Castle Calamity PWA v8.2.2 — mass, contrast and depth pass Osiedla.
+/* Castle Calamity PWA v8.2.3 — modern estate architecture pass.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v8.2.2";
+const CACHE = "castle-calamity-v8.2.3";
 const APP_SHELL = [
   "./",
   "./index.html",

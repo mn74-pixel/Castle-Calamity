@@ -1,5 +1,12 @@
 # Castle Calamity
 
+### v8.2.3 — MODERN ESTATE, ERA 1 DISCIPLINE
+- boczne bazy są teraz jednoznacznie współczesnymi blokami mieszkalnymi: szeroka bryła, płytkie skrzydła, przeszklona klatka schodowa, wejście ze stopniami i loggia bohatera,
+- płaskie dachy mają ciągłe balustrady, wentylację, anteny i urządzenia techniczne; usunięto wieżową kompozycję oraz detale kojarzące się z architekturą obronną,
+- jedenaście osiedlowych landmarków od Monopolowego do Nocnego Expressu jest większych, kontrastowych i podporządkowanych zasadzie jednego dominującego motywu na etap,
+- tło korzysta z trzech czytelnych planów nieregularnych bloków, niskich pawilonów, rzadkich drzew, lamp, parkingu, krawężników i instalacji dachowych,
+- zachowano mocną skalę v8.2.2 oraz dyscyplinę Epoki I: prostą sylwetkę, kontrolowane materiały, wyraźny kontur i hierarchię planów.
+
 ### v8.2.2 — MASS, CONTRAST & DEPTH
 - boczne bazy są wyraźnie większe i mocniej przypominają wagą zamki z pierwszej epoki,
 - centralny motyw segmentu jest renderowany 64% większy od bazowej scenografii,

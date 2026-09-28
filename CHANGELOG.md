@@ -1,5 +1,13 @@
 # Changelog
 
+## 8.2.3 — współczesna architektura Osiedla
+
+- zastąpiono wieżowy układ baz szerokimi blokami mieszkalnymi ze skrzydłami, klatką schodową, wejściem i loggią,
+- dodano współczesny rytm okien, płaskie dachy, balustrady, wentylację, anteny i urządzenia techniczne,
+- przebudowano trzy plany tła z nieregularnych bloków, pawilonów usługowych, drzew, lamp i parkingu,
+- powiększono i nazwano dominujące landmarki wszystkich etapów przy zachowaniu skali oraz czytelności Epoki I,
+- zaktualizowano kontrakty testowe gramatyki bazy, landmarków, stylu i cache PWA.
+
 ## 8.0.0 — ART RESET Osiedla
 
 - przebudowano renderer Osiedla według jakościowego wzorca wcześniejszych epok,
