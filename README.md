@@ -1,5 +1,20 @@
 # Castle Calamity
 
+### v8.8.0 — rajdy po kredyty i głębsze bryły bloków
+
+Oddział przy obcym bloku zabiera dostępne kredyty zamiast zadawać obrażenia
+gospodarzowi. Wraca z sakiewką i dopiero przy własnym budynku oddaje pieniądze.
+Udźwig wynosi 150% ceny jednostki, zaokrąglone do całego kredytu; w finale
+jest wyższy o 35%. Pusty budżet nie tworzy pieniędzy. Powracający nie walczą,
+nie blokują ulicy i kończą służbę po rozliczeniu. AI podlega tym samym regułom.
+Gdy bitwa kończy się wcześniej, nierozliczony łup wraca do budżetu źródłowego.
+Butelki nadal obniżają morale — warunek zwycięstwa nie został zmieniony.
+
+Bloki otrzymały perspektywiczne ściany boczne, światłocień elewacji, głębsze
+ościeża okienne, cienie parapetów i balkonów oraz przestrzenny profil dachu.
+To nadal stylizowany Canvas, nie pełny silnik 3D. Architektura mieszkalna,
+pozycja bohatera i brak burzenia budynków pozostają bez zmian.
+
 ### v8.7.2 — osobowość postaci i spójne detale ruchu
 
 Oddziały mają odrębne fryzury i nakrycia głowy: Heniek zakola i wąsy,

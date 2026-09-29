@@ -1,4 +1,13 @@
-# Osiedle — role oddziałów, v8.7.1
+# Osiedle — role oddziałów, v8.8.0
+
+## Rajdy ekonomiczne
+
+Dojście oddziału do przeciwnego bloku rozpoczyna powrót z kredytami zamiast
+obniżać morale. Udźwig: dres 27, rower 33, sąsiadka 48, kij 48, rolkarz 45,
+dozorca 63, Heniek 81. Finał zwiększa udźwig o 35% (zaokrąglenie do całości).
+Nie można zabrać więcej niż przeciwnik posiada. Środki są odejmowane przy
+zabraniu, a dodawane własnej stronie dopiero po powrocie. To jedna istniejąca
+waluta, nie nowy zasób. Powracający są poza walką i nie blokują innych.
 
 Wytrzymałość oznacza gotowość do dalszej awantury, nie śmiertelne obrażenia.
 Po jej wyczerpaniu postać wraca do domu. Koszty i moce obu stron są identyczne.

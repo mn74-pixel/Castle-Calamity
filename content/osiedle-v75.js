@@ -67,7 +67,7 @@
   function foodFor(g){var seg=segmentOf(g);return foods[Math.min(foods.length-1,seg.foodType||0)];}
   function staminaCost(g,item,p){var st=side(g,p);return Math.max(8,Math.round((item.stamina||0)*(st.mealT>0?st.costMul:1)));}
   function notice(st,code){st.notice=code;st.noticeT=1.25;}
-  function noticeText(code,lang){var pl={gold:'Brak środków',bottles:'Brak pustych butelek',hungry:'Zjedz coś',rest:'Chwila przerwy',limit:'Dwóch dostawców w drodze',recruit:'Ekipa zaraz będzie gotowa',locked:'Karta jeszcze niedostępna',full:'Jedzenie 2/2',supply:'Dostawa: +butelki',food:'Jedzenie dostarczone',eat:'Kondycja w górę',hit:'Celny rzut!'};var en={gold:'Not enough funds',bottles:'No empty bottles',hungry:'Eat something',rest:'Take a short break',limit:'Two runners already out',recruit:'Squad getting ready',locked:'Card not unlocked yet',full:'Food 2/2',supply:'Supply: +bottles',food:'Food delivered',eat:'Stamina restored',hit:'Direct hit!'};return (lang==='en'?en:pl)[code]||'';}
+  function noticeText(code,lang){var pl={gold:'Brak kredytów',bottles:'Brak pustych butelek',hungry:'Zjedz coś',rest:'Chwila przerwy',limit:'Dwóch dostawców w drodze',recruit:'Ekipa zaraz będzie gotowa',locked:'Karta jeszcze niedostępna',full:'Jedzenie 2/2',supply:'Dostawa: +butelki',food:'Jedzenie dostarczone',eat:'Kondycja w górę',hit:'Celny rzut!'};var en={gold:'Not enough credits',bottles:'No empty bottles',hungry:'Eat something',rest:'Take a short break',limit:'Two runners already out',recruit:'Squad getting ready',locked:'Card not unlocked yet',full:'Food 2/2',supply:'Supply: +bottles',food:'Food delivered',eat:'Stamina restored',hit:'Direct hit!'};return (lang==='en'?en:pl)[code]||'';}
   function applyFood(g,p){var st=side(g,p),food=foodFor(g);st.stamina=Math.min(100,st.stamina+food.restore);st.mealT=food.seconds||0;st.regenBonus=0;st.costMul=1;
     if(g.estate.segment===6)TACTICS.heal(g,p,25);
     if(food.buff==='quick')st.regenBonus=.35;
@@ -445,24 +445,30 @@
   }
   function damageScratches(ctx,c,x,y,w,h){var d=Math.max(0,1-c.hp/c.max),n=Math.floor(d*8);ctx.strokeStyle='rgba(43,51,51,.72)';ctx.lineWidth=1.4;for(var i=0;i<n;i++){var px=x+8+(i*31)%Math.max(12,w-20),py=y+10+(i*19)%Math.max(12,h-18);ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px+7,py+7);ctx.lineTo(px+3,py+14);ctx.stroke();}}
   var ESTATE_BASE_CACHE=new Map(),ESTATE_INK='#26343e';
-  var ESTATE_BASE_GRAMMAR=['apartment-mass','side-wings','stair-core','entrance-steps','hero-loggia','window-bays','flat-roof-services'];
+  var ESTATE_BASE_GRAMMAR=['apartment-mass','side-wings','stair-core','entrance-steps','hero-loggia','window-bays','flat-roof-services','recessed-window-reveals','side-wall-perspective','balcony-cast-shadows'];
   // Five-storey prefabricated housing: flat roof, recessed balconies and a glazed stairwell.
   function paintApartmentBlock(ctx,player){
     var night=(segments[visualSegment]||segments[0]).scene>=2,team=player?'#4f8586':'#b8624e',ink='#303e40',cream=night?'#a2aaa3':'#ded5b7',shadeWall=night?'#697f7f':'#a69f8b';
     ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
     function box(x,y,w,h,fill,stroke){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);if(stroke!==false){ctx.strokeStyle=ink;ctx.lineWidth=1.2;ctx.strokeRect(x,y,w,h);}}
     function stroke(x,y,xx,yy,col,width){line(ctx,x,y,xx,yy,col,width||1);}
+    function plane(points,fill){ctx.fillStyle=fill;ctx.beginPath();points.forEach(function(p,i){if(i)ctx.lineTo(p[0],p[1]);else ctx.moveTo(p[0],p[1]);});ctx.closePath();ctx.fill();}
     function pane(x,y,w,h,lit,curtain){
+      plane([[x-3,y+h+3],[x+w+3,y+h+3],[x+w+7,y+h+8],[x+1,y+h+8]],'rgba(27,42,45,.22)');
       box(x-2,y-2,w+4,h+5,'#eee4c8');box(x,y,w,h,lit?'#dab979':'#3e5b60');
       box(x+1,y+1,w*.32,h-2,lit?'#f6dea1':'#94b1ac',false);
       if(curtain){box(x+w-5,y+1,4,h-2,'#d2c9ad',false);stroke(x+w-4,y+1,x+w-4,y+h-1,'#b6aa91',.6);}
       stroke(x+w*.5,y,x+w*.5,y+h,'#e6dbbf',1.2);
+      stroke(x,y,x+w,y,night?'#303f42':'#64726d',1.8);stroke(x,y,x,y+h,'#43585a',1.4);
+      plane([[x+w*.52,y+2],[x+w-2,y+2],[x+w-2,y+h*.28],[x+w*.52,y+h*.63]],lit?'rgba(255,232,172,.16)':'rgba(211,233,225,.2)');
       box(x-3,y+h+2,w+6,2,'#868d7f',false);
     }
     // Deep side return, one continuous roof and a warm concrete front.
     box(2,-232,196,232,shadeWall);
     box(9,-230,171,226,cream);
-    box(180,-230,18,230,'#8c9384');
+    var facadeLight=ctx.createLinearGradient(9,-230,180,-4);facadeLight.addColorStop(0,night?'rgba(194,213,207,.08)':'rgba(255,244,211,.28)');facadeLight.addColorStop(1,'rgba(35,48,49,.19)');box(9,-230,171,226,facadeLight,false);
+    plane([[180,-230],[198,-222],[198,0],[180,-4]],night?'#435e62':'#737e75');stroke(180,-229,180,-4,'#eee0b9',1.3);
+    for(var sideFloor=0;sideFloor<5;sideFloor++)stroke(181,-191+sideFloor*43,197,-184+sideFloor*43,night?'#617679':'#919c8b',.7);
     box(9,-230,13,226,'#c3bda6',false);
     box(23,-230,30,226,team,false);
     box(53,-230,4,226,'#8b8d79',false);
@@ -484,13 +490,16 @@
     pane(65,-178,27,18,true,true);pane(113,-178,26,18,false,true);pane(157,-178,16,18,false,false);
     // Hero loggia: same coordinates as its live actor clipping rectangle.
     box(57,-158,94,67,'#807a69');box(63,-153,82,56,'#293e43');
+    plane([[57,-158],[151,-158],[145,-151],[63,-151]],'#a4a28b');plane([[57,-158],[63,-151],[63,-97],[57,-91]],'#d4c5a2');plane([[145,-151],[151,-158],[151,-91],[145,-97]],'#435656');
     box(64,-152,9,54,'#1e3238',false);pane(112,-148,27,43,false,true);
     box(77,-149,25,43,'#725845',false);box(79,-145,20,22,'#9c805e',false);
     box(62,-106,85,14,team);stroke(61,-108,148,-108,'#f0e4c6',3);
+    plane([[62,-92],[147,-92],[153,-83],[70,-83]],'rgba(30,42,44,.32)');stroke(63,-94,146,-94,'#345253',2);
     // Smaller stacked loggias on the right create depth at gameplay scale.
     [ -145,-102,-59 ].forEach(function(y,i){
       box(157,y,17,30,'#34494b');box(159,y+2,12,17,i===1?'#dab976':'#688d8d',false);
       box(154,y+21,23,10,team);stroke(153,y+20,179,y+20,'#ece0c0',2);
+      plane([[154,y+31],[177,y+31],[181,y+36],[158,y+36]],'rgba(29,44,47,.28)');stroke(176,y+22,176,y+30,'#304f52',1.5);
     });
     pane(67,-78,25,24,true,true);pane(111,-78,26,24,false,true);
     // Pebble-dash plinth and terrazzo entrance; no glossy modern air-conditioning.
@@ -507,7 +516,7 @@
     // Geraniums, television aerial, drainpipe and patched concrete: sparse local detail.
     box(159,-85,14,5,'#a45f42');for(var flower=0;flower<4;flower++){stroke(161+flower*3,-85,160+flower*3,-90,'#506c49',1);ctx.fillStyle='#d88067';ctx.beginPath();ctx.arc(160+flower*3,-91,1.8,0,Math.PI*2);ctx.fill();}
     stroke(185,-229,185,-4,'#414f4e',2);stroke(184,-227,184,-5,'#c3c4ad',.6);
-    box(0,-235,200,6,'#495958');stroke(0,-235,200,-235,'#e4d9b8',2);
+    box(0,-235,180,6,'#495958');plane([[180,-235],[200,-227],[200,-221],[180,-229]],'#344d51');stroke(0,-235,180,-235,'#e4d9b8',2);stroke(180,-235,200,-227,'#c4c6ab',1.4);
     box(64,-244,19,9,'#899085');box(62,-246,23,3,'#d0c4a4');
     box(151,-243,16,8,'#92917e');box(149,-246,20,3,'#c7baa0');
     stroke(108,-237,108,-263,'#344849',1.2);stroke(94,-256,123,-256,'#344849',1);
@@ -558,7 +567,7 @@
     var name=doc.createElement('div');name.className='estateName';name.id='estate_name_'+item.id;name.textContent=title;card.appendChild(name);var cost=doc.createElement('div');cost.className='cdc';cost.id='estate_cost_'+item.id;cost.textContent=item.cost;card.appendChild(cost);card.addEventListener('click',function(){onBuy(item.id);});row.appendChild(card);
   });updateCards(doc,g,lang,!!paused);}
   function updateCards(doc,g,lang,paused){var row=doc.getElementById('cds'),deck=availableChoices(g);if(row._estateBuy&&row._estateDeck!==deck.map(function(c){return c.id;}).join(',')){buildCards(doc,g,lang,row._estateBuy,paused);return;}deck.forEach(function(item){var el=doc.getElementById('estate_'+item.id);if(!el)return;var s=status(g,item.id,true),off=paused||!s.ok;el.disabled=off;el.setAttribute('aria-disabled',String(off));el.classList.toggle('unitUnavailable',off);
-    var label=s.reason==='recruit'?Math.ceil(g.estate.tactics.p)+' s':s.reason==='limit'?'2/2':s.reason==='wait'?Math.ceil(side(g,true).cd)+' s':s.reason==='gold'?(lang==='en'?'FUNDS':'ŚRODKI'):s.reason==='bottles'?'🍾 0':s.reason==='hungry'?'🍴':s.reason==='full'?'2/2':s.reason==='rest'?(lang==='en'?'REST':'PRZERWA'):'';
+    var label=s.reason==='recruit'?Math.ceil(g.estate.tactics.p)+' s':s.reason==='limit'?'2/2':s.reason==='wait'?Math.ceil(side(g,true).cd)+' s':s.reason==='gold'?(lang==='en'?'CREDITS':'KREDYTY'):s.reason==='bottles'?'🍾 0':s.reason==='hungry'?'🍴':s.reason==='full'?'2/2':s.reason==='rest'?(lang==='en'?'REST':'PRZERWA'):'';
     var badge=doc.getElementById('estate_state_'+item.id);if(badge){badge.textContent=label;badge.style.display=off?'flex':'none';}
     if(item.id==='food'){var cv=doc.getElementById('estate_icon_food'),cc=doc.getElementById('estate_cost_food'),nn=doc.getElementById('estate_name_food'),st=side(g,true),food=foodFor(g);if(cv){var cx=cv.getContext('2d');cx.clearRect(0,0,56,56);foodIcon(cx,28,29,1.5,segmentOf(g).foodType||0);}if(cc)cc.textContent=st.food>0?(lang==='en'?'EAT':'ZJEDZ'):item.cost;if(nn)nn.textContent=st.food>0?(lang==='en'?'Eat '+food.en:'Zjedz: '+food.pl):(lang==='en'?item.en:item.pl);}
   });}
@@ -566,5 +575,5 @@
   root.CASTLE_ERA_ART.drawBase=function(ctx,c,ground,era,l,t){if(era==='modern'&&l==='estate'){arenaBase(ctx,c,ground);return;}return oldBase(ctx,c,ground,era,l,t);};
   var oldBackdrop=root.CASTLE_ERA_ART.backdrop;
   root.CASTLE_ERA_ART.backdrop=function(ctx,w,gy,era,l){if(era!=='modern'||l!=='estate')return oldBackdrop(ctx,w,gy,era,l);drawArenaBackdrop(ctx,w,gy,segments[visualSegment]||segments[0]);};
-  root.CASTLE_ESTATE={availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.7.2',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
+  root.CASTLE_ESTATE={availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.8.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
 })(window);
