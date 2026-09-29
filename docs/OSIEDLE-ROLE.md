@@ -1,10 +1,10 @@
-# Osiedle — role oddziałów, v8.9.0
+# Osiedle — role oddziałów, v8.10.0
 
 ## Rajdy ekonomiczne
 
 Dojście oddziału do przeciwnego bloku rozpoczyna powrót z kredytami zamiast
 obniżać morale. Udźwig: dres 27, rower 33, sąsiadka 48, kij 48, rolkarz 45,
-dozorca 63, Heniek 81, akordeonista 45, wózkarz 66. Finał zwiększa udźwig o 35% (zaokrąglenie do całości).
+dozorca 63, Heniek 81, akordeonista 45, wózkarz 66, Marian 30. Finał zwiększa udźwig o 35% (zaokrąglenie do całości).
 Nie można zabrać więcej niż przeciwnik posiada. Środki są odejmowane przy
 zabraniu, a dodawane własnej stronie dopiero po powrocie. To jedna istniejąca
 waluta, nie nowy zasób. Powracający są poza walką i nie blokują innych.
@@ -15,6 +15,7 @@ Po jej wyczerpaniu postać wraca do domu. Koszty i moce obu stron są identyczne
 | Oddział | Koszt | Zastosowanie i moc | Słabość | Czytelny strój |
 | --- | ---: | --- | --- | --- |
 | Dresiarz | 18 | Tani front; premia 40% przeciw szybkim | Spowalniający dystans | Dres z kapturem i lampasami |
+| Marian | 20 | Cios 13, spowolnienie 1,4 s, premia frontu przeciw szybkim | Mały zasięg, słaby cios | Łatany płaszcz, szalik, czapka i zarost |
 | Rowerzysta | 22 | Szybki nacisk na okno; premia 40% przeciw dystansowi | Zablokowany front | Jasna kurtka, torba i rower |
 | Sąsiadka | 32 | Kapeć spowalnia na 1,3 s; premia 40% przeciw frontowi | Rower i rolkarz | Fioletowa sukienka, fartuch, chusta |
 | Dres z kijem | 32 | Front; dodatkowy cios 13 w jednego najbliższego rywala | Dystans | Ciemna kamizelka, jasny kołnierz, kij |
@@ -29,6 +30,7 @@ premii kontr. Leczenie dozorcy nie kumuluje się, nie leczy jego samego i nie
 przywraca wycofanych postaci. Po podleczaniu ekipy dozorca wznawia marsz;
 nie zmienia zasięgu ataku ani nie staje się drugą jednostką dystansową.
 
+Marian jest dodatkową opcją w etapach 3–4; później jego miejsce zajmuje sąsiadka.
 Gradacja kart: dres → kij → Heniek, rower → rolkarz, sąsiadka → wózkarz
 oraz akordeonista → dozorca. Muzyk pojawia się w etapach 7–9, wózkarz od 9,
 dozorca od 10. Karta piwa ustępuje muzykowi od etapu 7, żeby nie przekroczyć

@@ -17,6 +17,9 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 const qaHooks = String.raw`
 window.__QA = {
   estateDeliveryScene: function(index,q){launchEstateSegment(index);G.estate.ai=1e6;ESTATE.buy(G,"runner",true);var r=G.estate.runners[0];ESTATE.tick(G,r.duration*q,castleDmg);render();return {phase:r.phase,open:ESTATE.doorOpen(G),x:r.x,y:r.y,target:ESTATE.runnerTarget(G,r),door:ESTATE.serviceDoor(G)};},
+  estateWeatherAudit: function(){launchEstateSegment(3);var button=document.getElementById('btnEstateRain'),off=!G.estate.rain,visible=button.style.display!=='none';toggleEstateRain();var on=G.estate.rain&&button.getAttribute('aria-pressed')==='true';PAUSED=true;var paused=!toggleEstateRain()&&G.estate.rain;PAUSED=false;toggleEstateRain();var disabled=!G.estate.rain;G.over=true;var ended=!toggleEstateRain();G.over=false;launchTestLevel("modern",0);var hidden=button.style.display==='none'&&!toggleEstateRain();return {off:off,visible:visible,on:on,paused:paused,disabled:disabled,ended:ended,hidden:hidden};},
+  estateRainScene: function(){launchEstateSegment(3);toggleEstateRain();G.estate.ai=1e6;ESTATE.buy(G,'marian',true);var u=G.estate.units[0];u.x=.5;u.lane=1;u.moving=true;window.CASTLE_ESTATE_TACTICS.tick(G,.3,castleDmg);G.estate.time=3;var before=JSON.stringify(G.estate);render();return {pure:before===JSON.stringify(G.estate),slip:u.slip>0};},
+  estateSnackLabel: function(){launchEstateSegment(8);ESTATE.updateCards(document,G,'pl',false);return document.getElementById('estate_name_food').textContent;},
   estateLightingScene: function(time){launchEstateSegment(9);G.estate.time=time;var before=JSON.stringify(G.estate);render();render();return before===JSON.stringify(G.estate);},
   estateNewSquadScene: function(){launchEstateSegment(9);G.estate.ai=1e6;var ids=window.CASTLE_ESTATE_TACTICS.roster(9);ids.forEach(function(id,i){G.estate.tactics.p=0;ESTATE.buy(G,id,true);var u=G.estate.units[G.estate.units.length-1];u.x=.30+i*.13;u.walk=i;u.moving=true;});render();return G.estate.units.map(function(u){return u.kind;});},
   estateRaidScene: function(){launchEstateSegment(4);G.estate.ai=1e6;[true,false].forEach(function(p){ESTATE.buy(G,'bike',p);G.estate.units[G.estate.units.length-1].x=p?.809:.191;});window.CASTLE_ESTATE_TACTICS.tick(G,2.2,castleDmg);render();return G.estate.units.every(function(u){return u.returning&&u.loot===33&&!u.retreat;});},
@@ -88,7 +91,7 @@ window.__QA = {
   estateExpressionScene: function(kind){launchEstateSegment(0);G.estate.ai=1e6;if(kind==="drink"){G.p.gold=200;buyEstateItem("wine");ESTATE.tick(G,.56,castleDmg);}else{G.estate.e.hitReactT=.36;G.estate.e.hitReactPower=1.35;G.estate.impacts=[{x:G.W-G.e.w*.48,y:G.GY-G.e.h*.50,t:.16,col:"#a9d5db",power:1.35}];}render();return {kind:kind,action:G.estate.p.action&&G.estate.p.action.t,hit:G.estate.e.hitReactT};},
   estateSegmentScene: function(i){launchEstateSegment(i);G.estate.ai=1e6;G.e.hp=G.e.max*.72;if(i>=3){G.estate.p.stamina=48;G.estate.p.food=1;}if(i>=6)G.estate.p.combo=3;render();var seg=ESTATE.segments[i];return {index:i,id:seg.id,prop:seg.prop,food:!!seg.food,brawlers:seg.brawlers,stamina:G.estate.p.stamina,bottles:G.estate.p.bottles};},
   estateSegmentLock: function(i){launchEstateSegment(i);G.estate.ai=1e6;var before=G.estate.segment;ESTATE.tick(G,45,castleDmg);return {before:before,after:G.estate.segment,visual:ESTATE.currentVisual()};},
-  estateBattle: function(strategy,limit){launchEstateSegment(null);var t=0;for(;t<(limit||240)&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);if(strategy==="mixed"){var own=G.estate.units.filter(function(u){return u.isP&&window.CASTLE_ESTATE_TACTICS.active(u);}),foes=G.estate.units.filter(function(u){return !u.isP&&window.CASTLE_ESTATE_TACTICS.active(u);}),deck=window.CASTLE_ESTATE_TACTICS.roster(G.estate.segment),unit=own.length===0?deck[0]:foes.some(function(u){return window.CASTLE_ESTATE_TACTICS.archetype(u.kind)==="front";})&&deck.includes("neighbor")?"neighbor":deck[1]||deck[0];if(own.length<3&&ESTATE.status(G,unit,true).ok)buyEstateItem(unit);}var id=["vodka","wine","beer"].find(function(k){return ESTATE.status(G,k,true).ok;});if(id)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment,recruited:G.stats.unitsSpawned,kills:G.stats.kills,hp:G.p.hp};},
+  estateBattle: function(strategy,limit,rain){launchEstateSegment(null);G.estate.rain=!!rain;var t=0;for(;t<(limit||240)&&!G.over;t+=.05){if(ESTATE.status(G,"runner",true).ok&&G.estate.p.bottles<3)buyEstateItem("runner");if(G.estate.segment>=3&&G.estate.p.stamina<52&&ESTATE.status(G,"food",true).ok)buyEstateItem("food");if(G.estate.p.stamina<30&&G.estate.p.food>0)ESTATE.eat(G,true);if(strategy==="mixed"){var own=G.estate.units.filter(function(u){return u.isP&&window.CASTLE_ESTATE_TACTICS.active(u);}),foes=G.estate.units.filter(function(u){return !u.isP&&window.CASTLE_ESTATE_TACTICS.active(u);}),deck=window.CASTLE_ESTATE_TACTICS.roster(G.estate.segment),unit=own.length===0?deck[0]:foes.some(function(u){return window.CASTLE_ESTATE_TACTICS.archetype(u.kind)==="front";})&&deck.includes("neighbor")?"neighbor":deck[1]||deck[0];if(own.length<3&&ESTATE.status(G,unit,true).ok)buyEstateItem(unit);}var id=["vodka","wine","beer"].find(function(k){return ESTATE.status(G,k,true).ok;});if(id)buyEstateItem(id);G.T+=.05;tick(.05);}return {seconds:t,won:G.e.hp===0,over:G.over,finite:isFinite(G.p.hp)&&isFinite(G.e.hp),segment:G.estate.segment,recruited:G.stats.unitsSpawned,kills:G.stats.kills,hp:G.p.hp};},
   crestProductionAudit: function(){
     return {
       heicWithoutMime:isLikelyCrestFile({name:"IMG_2048.HEIC",type:""}),
@@ -1034,8 +1037,15 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.9.1"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.10.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
+check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
+for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Deszcz: przełącznik '+key);
+for(const viewport of [[1280,720],[667,375]]){qa.viewport(viewport[0],viewport[1],1);const rain=qa.estateRainScene();check(rain.pure&&rain.slip,'Deszcz: widoczny poślizg i brak mutacji podczas renderu '+viewport);save('estate-rain-'+viewport.join('x')+'.png');}qa.viewport(1280,720,1);
+const backgroundRoom=sandbox.window.CASTLE_ESTATE.backgroundRoom;
+let darkFloors=0,occupied=0,periodic=true;const hues=new Set();
+for(let b=0;b<8;b++)for(let floor=0;floor<12;floor++){let lit=0;for(let flat=0;flat<16;flat++){const r=backgroundRoom(b,floor,flat,true);if(r.level){lit++;occupied++;hues.add(r.tone);}if((r.level>0)!==(backgroundRoom(b,floor+1,flat+1,true).level>0))periodic=false;}if(!lit)darkFloors++;}
+check(darkFloors>5&&occupied>100&&occupied<700&&hues.size===5&&!periodic,'Tło: ciemne piętra, różne temperatury i brak ukośnego wzoru świateł');
 const roomSeeds=Array.from({length:96},(_,i)=>113+i*67);
 const rooms=roomSeeds.map(seed=>roomLight(seed,0,true));
 check(new Set(rooms.map(r=>r.tone)).size===5&&rooms.some(r=>r.level===0)&&rooms.some(r=>r.level>.5),"Okna: pięć temperatur światła i niezależne ciemne mieszkania");
@@ -1048,6 +1058,7 @@ for(const seed of roomSeeds.slice(0,24)){for(let t=0;t<240;t+=.1){const a=roomLi
 check(bounded&&smooth&&reproducible,"Okna: płynne, ograniczone przejścia niezależne od liczby renderowanych klatek");
 for(const time of [0,75,150]){check(qa.estateLightingScene(time),"Okna: render nie zmienia stanu bitwy przy t="+time);save("estate-lighting-"+time+".png");}
 const estateBattle=qa.estateBattle("mixed");
+const wetBattle=qa.estateBattle("mixed",240,true);console.log('ESTATE WET BATTLE',JSON.stringify(wetBattle));check(wetBattle.over&&wetBattle.finite&&wetBattle.recruited>3,'Deszcz: pełna bitwa kończy się i zachowuje działające oddziały');
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
 const estateBottles=qa.estateBattle("bottles");
@@ -1077,9 +1088,9 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   }
 }
 const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
-const poseSheet=createCanvas(800,840),poseContext=poseSheet.getContext('2d');
-poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,840);
-for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy','neighbor','caretaker','musician','cart'].entries()){
+const poseSheet=createCanvas(800,924),poseContext=poseSheet.getContext('2d');
+poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,924);
+for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy','neighbor','caretaker','musician','cart','marian'].entries()){
   const frames=[];
   for(let frame=0;frame<6;frame++){
     const u={kind,isP:true,moving:frame<3,walk:frame*Math.PI/2,animTime:frame*.25,wind:frame===3?.11:0,follow:frame===4?.2:0,hurt:frame===5?.2:0,cargo:kind==='courier'};
@@ -1092,7 +1103,7 @@ for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy','neighbo
 fs.writeFileSync(path.join(__dirname,'renders/estate-animation-poses.png'),poseSheet.toBuffer('image/png'));
 const portraits=[];
 for(const unit of estateActors.cards){const tile=createCanvas(64,64),cx=tile.getContext('2d');cx.translate(25,15);cx.scale(2.5,2.5);estateActors.portrait(cx,{kind:unit.id},0,'#528caa');portraits.push(tile.toBuffer('image/png').toString('base64'));}
-check(new Set(portraits).size===9,'Osiedle: dziewięć odrębnych twarzy i nakryć głowy, bez identycznych portretów');
+check(new Set(portraits).size===10,'Osiedle: dziesięć odrębnych twarzy i nakryć głowy, bez identycznych portretów');
 for(const isP of [true,false]){
   const tile=createCanvas(120,100),cx=tile.getContext('2d');estateActors.figure(cx,{kind:'heavy',isP},60,90,1);
   function silhouetteWidth(y){const pixels=cx.getImageData(0,y,120,1).data;let first=120,last=-1;for(let x=0;x<120;x++)if(pixels[x*4+3]>64){first=Math.min(first,x);last=x;}return last-first+1;}

@@ -1,5 +1,24 @@
 # Castle Calamity
 
+### v8.10.0 — Zagrycha, Marian i opcjonalny deszcz
+
+Karta jedzenia ma stały podpis „Zagrycha”. Tło używa niezależnych adresów
+mieszkań i zróżnicowanego obłożenia klatek oraz pięter — bez ukośnego wzoru.
+Nadal pięć odcieni, ciemne mieszkania i niższy kontrast niż na pierwszym planie.
+
+Marian dołącza w etapach 3–4: 20 kredytów, 120 wytrzymałości, cios 13,
+spowolnienie 1,4 s, udźwig rajdu 30. Krótki zasięg i słaby cios wymagają
+osłony. Ma kołyszący chód, czapkę, zarost, szalik drużyny i łatany płaszcz.
+AI korzysta z niego jako uzupełnienia frontu przeciw szybkim jednostkom.
+Karta później ustępuje sąsiadce; istniejące oddziały zostają.
+
+Przycisk DESZCZ przy dolnych kontrolkach włącza opady i trzy widoczne kałuże.
+Przejście przez kałużę zatrzymuje oddział na 0,8 s bez obrażeń, z ochroną
+przez 8 s przed kolejnym poślizgiem. Obie strony podlegają tym samym zasadom;
+powracający z kredytami, wycofani i dostawcy nie przewracają się. Deszcz
+domyślnie wyłączony, ustawienie dotyczy bieżącej bitwy. Bez nowych walut,
+bez dodatkowej karty i bez rosnącej listy cząstek. Ręczny test telefonu wymagany.
+
 ### v8.9.1 — zamieszkane okna i głębia elewacji
 
 Okna obu baz mają niezależne, deterministyczne rytmy (43–114 sekund),

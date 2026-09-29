@@ -26,7 +26,7 @@ check('three lanes distribute a crowd without overlapping spawns or limiting pur
 check('equal dres crowds resolve rather than forming a permanent queue',()=>{for(const stage of [0,3,8,9]){const g=game(stage);g.p.hp=g.e.hp=100000;for(let i=0;i<12;i++){spawn(g,T.roster(stage)[0],true);spawn(g,T.roster(stage)[0],false);}tick(g,110);assert(g.stats.kills+g.stats.losses>=12,'combat must resolve at stage '+stage);assert.equal(g.estate.units.filter(T.active).length,0,'no permanent crowd at stage '+stage);tick(g,90);assert.equal(g.estate.units.length,0);}});
 check('defeated residents walk home, cannot block, attack or be healed',()=>{const g=game(),u=spawn(g,'bike',true,.45),v=spawn(g,'dres',false,.49);u.hp=1;tick(g,1);assert(u.retreat&&u.hp===0);const x=u.x,hp=v.hp;tick(g,1);assert(u.x<x);assert.equal(v.hp,hp);T.heal(g,true,999);assert.equal(u.hp,0);tick(g,10);assert(!g.estate.units.includes(u));});
 check('end of feud clears projectiles and sends squads home without new losses',()=>{const g=game();spawn(g,'dres',true,.5);spawn(g,'neighbor',false,.6);g.estate.shots.push({});const stats=JSON.stringify(g.stats);for(let i=0;i<100;i++)T.finish(g,.1);assert.equal(g.estate.shots.length,0);assert.equal(g.estate.units.length,0);assert.equal(JSON.stringify(g.stats),stats);});
-check('nine roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,9);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
+check('ten roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,10);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
 check('bat swing affects a second nearby rival but not a distant one',()=>{const g=game(5);spawn(g,'bat',true,.45);const a=spawn(g,'bike',false,.48),b=spawn(g,'bike',false,.49),far=spawn(g,'bike',false,.7);a.wind=b.wind=far.wind=100;tick(g,.8);assert(a.hp<a.max&&b.hp<b.max);assert.equal(far.hp,far.max);});
 check('skater keeps most speed when slowed',()=>{const g=game(7),u=spawn(g,'skater',true,.2);u.slow=3;tick(g,1);assert(u.x>.27);});
 check('caretaker restores nearby allies, not enemies or withdrawn units, and auras do not stack',()=>{const g=game(9),a=spawn(g,'heavy',true,.4),b=spawn(g,'heavy',false,.45),c=spawn(g,'caretaker',true,.35),d=spawn(g,'caretaker',true,.36);[a,b,c,d].forEach(u=>u.wind=100);a.hp=b.hp=50;tick(g,2);assert(Math.abs(a.hp-58)<.001);assert.equal(b.hp,50);a.hp=0;tick(g,.5);assert.equal(a.hp,0);});
@@ -61,7 +61,7 @@ check('spread ranged support can stop the expensive heavy before he reaches the 
   for(const p of [true,false]){const g=game(10),h=spawn(g,'heavy',p,p?.35:.65);spawn(g,'cart',!p,p?.64:.36);spawn(g,'cart',!p,p?.69:.31);tick(g,25);assert(h.retreat);assert.equal((p?g.e:g.p).hp,2200);}
 });
 check('role sheets describe actual powers in both languages and have distinct clothing',()=>{
-  assert.equal(new Set(T.cards.map(c=>T.roles[c.id].kit)).size,9);
+  assert.equal(new Set(T.cards.map(c=>T.roles[c.id].kit)).size,10);
   for(const c of T.cards){assert.equal(T.archetype(c.id),T.roles[c.id].role);for(const lang of ['pl','en']){const text=T.description(c.id,lang);assert(text.includes(String(c.hp)));assert(text.includes(String(c.attack)));assert(text.includes(lang==='pl'?'Słabość:':'Weakness:'));}}
   assert(T.description('bat','pl').includes('13'));assert(T.description('heavy','en').includes('33'));assert(T.description('caretaker','pl').includes('+4'));assert(T.description('skater','en').includes('85%'));
 });
@@ -110,5 +110,18 @@ check('new support is chosen only with an escort and new ranged unit counters fr
 });
 check('wide carts spawn with room for their equipment and retain stable simulation at different FPS',()=>{
   function run(dt){const g=game(8);for(let i=0;i<9;i++)spawn(g,'cart',true);for(let lane=0;lane<3;lane++){const row=g.estate.units.filter(u=>u.lane===lane).sort((a,b)=>a.x-b.x);for(let j=1;j<row.length;j++)assert(row[j].x-row[j-1].x>=.061-1e-8);}spawn(g,'musician',true);for(let i=0;i<6;i++)spawn(g,'skater',false);tick(g,60,dt);return JSON.stringify([g.p.gold,g.e.gold,g.stats,g.estate.units.map(u=>[u.kind,u.hp,u.x])]);}assert.equal(run(1/30),run(1/120));
+});
+check('Marian is an early affordable control unit: short melee, slow, no friendly splash',()=>{
+  for(const p of [true,false]){const g=game(2),dir=p?1:-1,m=spawn(g,'marian',p,.5),v=spawn(g,'bike',!p,.5+dir*.03),friend=spawn(g,'dres',p,.5+dir*.02);m.lane=v.lane=1;friend.lane=0;v.wind=friend.wind=100;tick(g,.75);assert(v.hp<v.max);assert(v.slow>1);assert.equal(friend.hp,friend.max);assert.equal(T.raidCapacity('marian',2),30);}
+  const g=game(2);spawn(g,'dres',false);spawn(g,'bike',true);g.estate.tactics.e=0;assert.equal(T.choose(g),'marian');assert(!T.roster(4).includes('marian'));
+});
+check('rain causes brief, damage-free slips only on marked puddles, on either team',()=>{
+  for(const p of [true,false])for(const wet of [true,false]){const g=game(2),u=spawn(g,'marian',p,.5);u.lane=1;u.moving=true;g.estate.rain=wet;const hp=u.hp,x=u.x;tick(g,.1);assert.equal(u.slip>0,wet);assert.equal(u.hp,hp);if(wet){assert.equal(u.x,x);assert.equal(u.wind,0);tick(g,1.3);assert.equal(u.slip,0);assert.equal(u.slips,1);assert((u.x-x)*(p?1:-1)>0);}}
+  const g=game(2),u=spawn(g,'marian',true,.3);g.estate.rain=true;u.moving=true;tick(g,.2);assert(!u.slip);u.x=.5;u.lane=1;g.estate.segment=9;g.estate.tactics.clock=11;tick(g,.2);assert(!u.slip);assert.equal(u.x,.5);
+});
+check('wet battles are deterministic across FPS, raiders return and fallen actors can withdraw',()=>{
+  function run(dt){const g=game(2);g.estate.rain=true;for(const p of [true,false]){spawn(g,'marian',p);spawn(g,'bike',p);spawn(g,'dres',p);}tick(g,90,dt);return JSON.stringify([g.p.gold,g.e.gold,g.stats,g.estate.units]);}assert.equal(run(1/30),run(1/120));
+  const g=game(2),u=spawn(g,'marian',true,.5);g.estate.rain=true;u.lane=1;u.moving=true;tick(g,.1);assert(u.slip>0);T.finish(g,.1);assert.equal(u.slip,0);assert(u.retreat);assert.equal(T.slipPose(u),0);
+  for(const c of T.cards){const r=game(c.unlock);r.estate.rain=true;spawn(r,c.id,true);tick(r,100);assert.equal(r.estate.units.length,0);assert.equal(r.e.gold,1000-T.raidCapacity(c.id,c.unlock));}
 });
 console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');
