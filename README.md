@@ -1,5 +1,31 @@
 # Castle Calamity
 
+### v8.7.0 — Wielki Heniek rozbija tłok
+
+Nowy ciężki oddział: koszt 54, wytrzymałość 280, uderzenie 44 w główny cel
+i 33 w pobliskich przeciwników na sąsiednich pasach. Powolny marsz, zamach
+0,55 s i przerwa 2,3 s równoważą siłę obszarową. Szeroka sylwetka, ruch
+całego tułowia i krótki krąg pyłu pokazują ciężar uderzenia. Przegrani nadal
+odchodzą — bez zabijania i burzenia bloków.
+
+W etapach 10–12 zastępuje kartę dresa z kijem; wcześniej wystawione jednostki
+zostają w grze. AI płaci tę samą cenę. Pozostaje najwyżej osiem kart.
+Wydanie zawiera także wszystkie poniższe poprawki v8.6.1.
+
+### v8.6.1 — opłacalny rower, dorosła skala i animacje oddziałów
+
+Rowerzysta kosztuje 22 zamiast 28, ma 112 HP i atak 21. Rolkarz kosztuje
+30 zamiast 36, ma 125 HP i atak 22. Szybkie oddziały opłacają się do
+natarcia i przechwytywania dystansu; front nadal je kontruje, jak w starszych epokach.
+
+Sklep boczny i drzwi są dopasowane do dorosłych postaci. Dostawcy mają skalę
+oddziałów, robocze kurtki i czapki; przechodzą za framugę bez kurczenia.
+Postacie mają dłuższe nogi, mniejsze głowy, zginane kolana i łokcie,
+pedałowanie po okręgu oraz osobny zamach, dokończenie uderzenia i odchylenie
+po trafieniu. Testy obejmują kontry obu stron, skuteczność roweru względem
+ceny, wejścia w 12 scenach i klatki animacji. Podglądy canvas nie zastępują
+odbioru animacji w Safari na fizycznym telefonie.
+
 ### v8.6.0 — gradacja oddziałów i działające wejścia do sklepów
 
 Osiedle ma sześć typów bojowników. Dres z kijem zastępuje podstawowego

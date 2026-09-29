@@ -1,4 +1,5 @@
 const fs = require("fs");
+const assert = require("assert/strict");
 const path = require("path");
 const vm = require("vm");
 const { createCanvas, Image } = require("@napi-rs/canvas");
@@ -1031,7 +1032,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.6.0"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.7.0"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
@@ -1044,6 +1045,11 @@ check(estateBattle.won&&estateBattle.over&&estateBattle.finite&&estateBattle.sec
 for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   qa.viewport(viewport[0],viewport[1],1);
   const geometry=qa.estateGeometryAudit();
+  const adultScale=sandbox.window.CASTLE_ESTATE_TACTICS.actorScale(viewport[1]);
+  for(let stage=0;stage<12;stage++){
+    const d=sandbox.window.CASTLE_ESTATE.serviceDoor({W:viewport[0],H:viewport[1],GY:viewport[1]*.82,estate:{segment:stage}});
+    check(d.h>=64*adultScale&&d.w>=20*adultScale,"Osiedle: drzwi mieszczą dorosłego dostawcę, etap "+stage+", "+viewport.join("×"));
+  }
   qa.estateNewSquadScene();save("estate-new-squad-"+viewport.join("x")+".png");
   for(const pair of [[1,.44],[4,.51],[10,.58],[11,.44]]){qa.estateDeliveryScene(pair[0],pair[1]);save("estate-door-"+viewport.join("x")+"-"+pair[0]+".png");}
   const combat=qa.estateCombatScene();save("estate-combat-"+viewport.join("x")+".png");
@@ -1055,6 +1061,20 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
     save("estate-"+viewport.join("x")+"-"+segment+".png");
   }
 }
+const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
+const poseSheet=createCanvas(800,504),poseContext=poseSheet.getContext('2d');
+poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,504);
+for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy'].entries()){
+  const frames=[];
+  for(let frame=0;frame<6;frame++){
+    const u={kind,isP:true,moving:frame<3,walk:frame*Math.PI/2,wind:frame===3?.11:0,follow:frame===4?.2:0,hurt:frame===5?.2:0,cargo:kind==='courier'};
+    const before=JSON.stringify(u),tile=createCanvas(100,80),cx=tile.getContext('2d');
+    estateActors.figure(cx,u,45,76,1.1);assert.equal(JSON.stringify(u),before,'drawing cannot advance animation or combat');
+    frames.push(tile.toBuffer('image/png').toString('base64'));poseContext.drawImage(tile,frame*125+45,row*84);
+  }
+  check(new Set(frames).size===6,'Osiedle: odrębne klatki ruchu, zamachu, uderzenia i reakcji — '+kind);
+}
+fs.writeFileSync(path.join(__dirname,'renders/estate-animation-poses.png'),poseSheet.toBuffer('image/png'));
 qa.viewport(1280,720,1);
 for(const segment of [2,3,5,6,8,9,10]){qa.estateSegmentScene(segment);save("estate-1280x720-"+segment+".png");}
 qa.estateExpressionScene("drink");save("estate-expression-drink.png");
