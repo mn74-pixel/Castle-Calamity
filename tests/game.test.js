@@ -1078,7 +1078,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.16.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.17.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Pogoda: automatyczny cykl '+key);
@@ -1130,6 +1130,22 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   }
 }
 const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
+for(const surface of ['water','ice']){
+  const sheet=createCanvas(960,estateActors.cards.length*110),cx=sheet.getContext('2d');
+  cx.fillStyle='#ded5bc';cx.fillRect(0,0,sheet.width,sheet.height);
+  for(const [row,card] of estateActors.cards.entries()){
+    const frames=[];
+    for(const [col,q] of [0,.14,.3,.43,.58,.76,.9,1].entries()){
+      const duration=surface==='ice'?1.1:.8,u={kind:card.id,isP:row%2===0,hp:card.hp,max:card.hp,slip:duration*(1-q),slipDuration:duration,slipSurface:surface,walk:0,animTime:0};
+      const tile=createCanvas(120,110),tc=tile.getContext('2d'),before=JSON.stringify(u);
+      estateActors.figure(tc,u,55,98,1.25);assert.equal(JSON.stringify(u),before);
+      frames.push(tile.toBuffer('image/png').toString('base64'));cx.drawImage(tile,col*120,row*110);
+      cx.fillStyle='#233238';cx.font='10px sans-serif';cx.fillText(card.id+' '+q,col*120+3,row*110+12);
+    }
+    check(new Set(frames).size>=7,'Articulated '+surface+' fall: '+card.id);
+  }
+  fs.writeFileSync(path.join(__dirname,'renders/estate-slip-'+surface+'.png'),sheet.toBuffer('image/png'));
+}
 const settlingSheet=createCanvas(660,270),settlingCtx=settlingSheet.getContext('2d');settlingCtx.fillStyle='#ded5bc';settlingCtx.fillRect(0,0,660,270);
 for(const [row,kind] of ['dres','heavy','cart'].entries()){const frames=[],u={kind,isP:true,walk:.7,animTime:1,moving:false,locomotion:1};for(let frame=0;frame<6;frame++){if(frame)estateActors.updateLocomotion(u,1/30,false);const tile=createCanvas(110,90),cx=tile.getContext('2d'),before=JSON.stringify(u);estateActors.figure(cx,u,35,80,1.1);assert.equal(JSON.stringify(u),before);frames.push(tile.toBuffer('image/png').toString('base64'));settlingCtx.drawImage(tile,frame*110,row*90);}check(new Set(frames).size>=5,'Animacja: stopniowe osiadanie po zatrzymaniu — '+kind);}
 fs.writeFileSync(path.join(__dirname,'renders/estate-stopping-poses.png'),settlingSheet.toBuffer('image/png'));

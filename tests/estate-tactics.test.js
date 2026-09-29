@@ -10,6 +10,32 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('articulated slips are pure, bounded, surface-specific and recover to neutral',()=>{
+  for(const card of T.cards)for(const surface of ['water','ice']){
+    const duration=surface==='ice'?1.1:.8;
+    for(let frame=0;frame<=100;frame++){
+      const u={kind:card.id,slip:duration*(1-frame/100),slipDuration:duration,slipSurface:surface};
+      const before=JSON.stringify(u),p=T.slipMotion(u);
+      assert.equal(JSON.stringify(u),before);
+      for(const [key,value] of Object.entries(p))if(typeof value==='number')assert(Number.isFinite(value),key);
+      assert(p.drop>=0&&p.drop<=16);assert(Math.abs(p.lean)<=.48);
+      if(u.slip>0&&card.id!=='heavy'){
+        const hip=card.id==='bike'?-25:-24,head=card.id==='bike'?-49:card.id==='neighbor'?-55:-58;
+        const arms=T.armPose(u,head,T.pose(u));
+        for(const side of ['back','front'])assert(hip+p.drop+Math.sin(p.lean)*arms[side+'X']+Math.cos(p.lean)*(arms[side+'Y']-hip)<=-3+1e-8,'palm penetrated ground');
+      }
+      if(frame===0||frame===100){assert(Math.abs(p.drop)<1e-8);assert(Math.abs(p.lean)<1e-8);assert(Math.abs(p.slide)<1e-8);}
+    }
+  }
+  const water=T.slipMotion({slip:.4,slipDuration:.8,slipSurface:'water'});
+  const ice=T.slipMotion({slip:.55,slipDuration:1.1,slipSurface:'ice'});
+  assert(ice.slide>water.slide);assert.notEqual(ice.impact,water.impact);
+});
+check('a fall keeps its original surface when weather changes',()=>{
+  const g=game(2),u=spawn(g,'marian',true,.5);g.estate.ice=true;u.lane=1;u.moving=true;tick(g,.1);
+  assert.equal(u.slipSurface,'ice');g.estate.ice=false;g.estate.rain=true;
+  assert.equal(T.slipMotion(u).ice,true);assert.equal(u.slipDuration,1.1);
+});
 check('seeded automatic weather has warning, dry breaks, rain and ice independent of FPS',()=>{
   function run(dt){const g=game(2);g.estate.weather=T.weatherInit(42);const phases=new Set();for(let t=0;t<600;t+=dt){T.tick(g,dt,()=>{});const e=g.estate;phases.add(e.weather.phase+':'+e.weather.kind);assert(!(e.rain&&e.ice));if(e.weather.phase==='warning')assert(!e.rain&&!e.ice);}return [Array.from(phases).sort(),g.estate.weather.seed,g.estate.weather.phase];}
   const a=run(1/30),b=run(1/120);assert.deepEqual(a,b);for(const key of ['dry:dry','warning:rain','warning:ice','active:rain','active:ice'])assert(a[0].includes(key));assert.notDeepEqual(T.weatherInit(1),T.weatherInit(2));

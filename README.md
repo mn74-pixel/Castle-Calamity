@@ -1,5 +1,17 @@
 # Castle Calamity
 
+### v8.17.0 — wywrotki zamiast obracania sztywnej sylwetki
+
+Osobne sekwencje wody i lodu: utrata równowagi, wymachy rąk, ugięcie kolan,
+lądowanie i podparcie przy wstawaniu. Stopy korzystają z dwuczłonowego IK,
+cień pozostaje na ziemi, dłonie są ograniczone płaszczyzną chodnika.
+Grubas ma mniejszy przechył i cięższy przysiad; rolki trzymają się stóp,
+a kij pozostaje w dłoni. Dochodzą zaskoczone miny, rozprysk wody i drobiny lodu.
+Efekty są proceduralne, ograniczone do ośmiu drobin i nie zmieniają symulacji.
+Czas poślizgu (0,8/1,1 s), cooldown i brak obrażeń pozostają bez zmian.
+Testy obejmują przebieg pozy i arkusze klatek wszystkich jedenastu oddziałów.
+Płynność na fizycznym iPhonie wymaga sprawdzenia na urządzeniu.
+
 ### v8.16.0 — losowa pogoda, gołoledź i osiedlowe gagi
 
 Deszcz nie jest już przełącznikiem gracza. Wskaźnik pokazuje automatyczny
