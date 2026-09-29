@@ -16,6 +16,7 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  estateWearScene: function(ratio,p,night){launchEstateSegment(night?9:3);var c=p?G.p:G.e;c.hp=c.max*ratio;G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),stage:ESTATE.facadeCondition(c).stage,fatigue:ESTATE.residentFatigue(G,p),collapse:c.collapseT,holes:c.holes.length,fires:c.fires.length,rubble:c.rubble.length};},
   estateDeliveryScene: function(index,q){launchEstateSegment(index);G.estate.ai=1e6;ESTATE.buy(G,"runner",true);var r=G.estate.runners[0];ESTATE.tick(G,r.duration*q,castleDmg);render();return {phase:r.phase,open:ESTATE.doorOpen(G),x:r.x,y:r.y,target:ESTATE.runnerTarget(G,r),door:ESTATE.serviceDoor(G)};},
   estateWeatherAudit: function(){launchEstateSegment(3);var button=document.getElementById('btnEstateRain'),off=!G.estate.rain,visible=button.style.display!=='none';toggleEstateRain();var on=G.estate.rain&&button.getAttribute('aria-pressed')==='true';PAUSED=true;var paused=!toggleEstateRain()&&G.estate.rain;PAUSED=false;toggleEstateRain();var disabled=!G.estate.rain;G.over=true;var ended=!toggleEstateRain();G.over=false;launchTestLevel("modern",0);var hidden=button.style.display==='none'&&!toggleEstateRain();return {off:off,visible:visible,on:on,paused:paused,disabled:disabled,ended:ended,hidden:hidden};},
   estateRainScene: function(){launchEstateSegment(3);toggleEstateRain();G.estate.ai=1e6;ESTATE.buy(G,'marian',true);var u=G.estate.units[0];u.x=.5;u.lane=1;u.moving=true;window.CASTLE_ESTATE_TACTICS.tick(G,.3,castleDmg);G.estate.time=3;var before=JSON.stringify(G.estate);render();return {pure:before===JSON.stringify(G.estate),slip:u.slip>0};},
@@ -1037,7 +1038,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.10.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.11.1"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Deszcz: przełącznik '+key);
@@ -1088,6 +1089,9 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   }
 }
 const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
+const settlingSheet=createCanvas(660,270),settlingCtx=settlingSheet.getContext('2d');settlingCtx.fillStyle='#ded5bc';settlingCtx.fillRect(0,0,660,270);
+for(const [row,kind] of ['dres','heavy','cart'].entries()){const frames=[],u={kind,isP:true,walk:.7,animTime:1,moving:false,locomotion:1};for(let frame=0;frame<6;frame++){if(frame)estateActors.updateLocomotion(u,1/30,false);const tile=createCanvas(110,90),cx=tile.getContext('2d'),before=JSON.stringify(u);estateActors.figure(cx,u,35,80,1.1);assert.equal(JSON.stringify(u),before);frames.push(tile.toBuffer('image/png').toString('base64'));settlingCtx.drawImage(tile,frame*110,row*90);}check(new Set(frames).size>=5,'Animacja: stopniowe osiadanie po zatrzymaniu — '+kind);}
+fs.writeFileSync(path.join(__dirname,'renders/estate-stopping-poses.png'),settlingSheet.toBuffer('image/png'));
 const poseSheet=createCanvas(800,924),poseContext=poseSheet.getContext('2d');
 poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,924);
 for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy','neighbor','caretaker','musician','cart','marian'].entries()){
@@ -1130,7 +1134,10 @@ const intactCanvas=createCanvas(1280,590),intactCtx=intactCanvas.getContext("2d"
 const intactBase={x:0,w:180,h:260,isP:true,max:2200,hp:2200,collapseT:0};
 function estateBasePixels(){intactCtx.clearRect(0,0,1280,590);sandbox.window.CASTLE_ERA_ART.drawBase(intactCtx,intactBase,590,"modern","estate",0);return intactCanvas.toBuffer("image/png");}
 const healthyBase=estateBasePixels();intactBase.hp=0;intactBase.collapseT=1;
-check(healthyBase.equals(estateBasePixels()),"Osiedle: grafika bloku jest identyczna przy pełnym i zerowym morale, także po starej fladze collapse");
+check(healthyBase.equals(estateBasePixels()),"Osiedle: konstrukcja w cache pozostaje identyczna; ślady awantury są osobną warstwą");
+for(const night of [false,true])for(const p of [true,false]){const frames=[];for(const ratio of [1,.75,.5,.25,0]){const audit=qa.estateWearScene(ratio,p,night);check(audit.pure&&audit.collapse===0&&audit.holes===0&&audit.fires===0&&audit.rubble===0,'Gradacja: czysty render bez burzenia '+[night,p,ratio]);frames.push(canvas.toBuffer('image/png').toString('base64'));if(p&&night)save('estate-wear-'+Math.round(ratio*100)+'.png');}check(new Set(frames).size===5,'Gradacja: pięć rozróżnialnych stanów gospodarza i elewacji '+[night,p]);}
+for(const c of estateActors.cards){const frames=[];for(const ratio of [1,.75,.5,.25]){const tile=createCanvas(100,90),cx=tile.getContext('2d'),u={kind:c.id,isP:true,hp:c.hp*ratio,max:c.hp,walk:0,animTime:0};const before=JSON.stringify(u);estateActors.figure(cx,u,35,80,1.2);assert.equal(JSON.stringify(u),before);frames.push(tile.toBuffer('image/png').toString('base64'));}check(new Set(frames).size===4,'Postacie: stopnie zmęczenia bez zmiany statystyk — '+c.id);}
+qa.viewport(667,375,1);qa.estateWearScene(.25,true,true);save('estate-wear-phone.png');qa.viewport(1280,720,1);
 check(sandbox.window.CASTLE_ESTATE.artCache()<=4&&sandbox.window.CASTLE_ESTATE.baseCache()<=4,"Osiedle: przejście przez sceny i rozmiary ekranu nie powiększa cache bez końca");
 check(html.includes("CREST_MAX_FILE_SIZE=30*1024*1024")&&html.includes("createImageBitmap(file,{imageOrientation:\"from-image\"})")&&html.includes("URL.createObjectURL")&&html.includes("isLikelyCrestFile"),"produkcyjny uploader obsługuje duże zdjęcia, orientację aparatu, HEIC i Safari fallback");
 check(html.includes('for="crestFileP"')&&html.includes('for="crestFileE"')&&html.includes('id="crestStatus"'),"natywne etykiety otwierają selektor pliku i pokazują wynik operacji");

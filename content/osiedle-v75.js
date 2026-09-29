@@ -249,10 +249,11 @@
     ctx.strokeStyle='#23282b';ctx.fillStyle='#23282b';ctx.lineWidth=Math.max(.65,.85*s);ctx.beginPath();
     if(mood==='grimace'){ctx.moveTo(x-4*s,y-1.5*s);ctx.lineTo(x-1.2*s,y-.7*s);ctx.moveTo(x+1.2*s,y-.7*s);ctx.lineTo(x+4*s,y-1.5*s);ctx.stroke();}
     else if(mood==='grin'){ctx.moveTo(x-4.2*s,y-1.2*s);ctx.quadraticCurveTo(x-2.6*s,y-3.2*s,x-1*s,y-1.2*s);ctx.moveTo(x+1*s,y-1.2*s);ctx.quadraticCurveTo(x+2.6*s,y-3.2*s,x+4.2*s,y-1.2*s);ctx.stroke();}
+    else if(mood==='tired'){ctx.moveTo(x-4*s,y-1.5*s);ctx.lineTo(x-1.3*s,y-1*s);ctx.moveTo(x+1.3*s,y-1*s);ctx.lineTo(x+4*s,y-1.5*s);ctx.stroke();line(ctx,x-4*s,y+.3*s,x-1.5*s,y+.6*s,'#a77c68',.7*s);line(ctx,x+1.5*s,y+.6*s,x+4*s,y+.3*s,'#a77c68',.7*s);}
     else{ctx.arc(x-2.6*s,y-1.7*s,.85*s,0,Math.PI*2);ctx.arc(x+2.6*s,y-1.7*s,.85*s,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,255,255,.78)';ctx.beginPath();ctx.arc(x-2.35*s,y-2*s,.24*s,0,Math.PI*2);ctx.arc(x+2.85*s,y-2*s,.24*s,0,Math.PI*2);ctx.fill();}
     // A compact angular nose reads better than a single dot at this scale.
     ctx.strokeStyle='#9d6652';ctx.lineWidth=Math.max(.5,.65*s);ctx.beginPath();ctx.moveTo(x+.2*s,y-.5*s);ctx.lineTo(x-.5*s,y+1.5*s);ctx.lineTo(x+1.1*s,y+1.5*s);ctx.stroke();
-    ctx.strokeStyle=mood==='angry'||mood==='grimace'?'#562f2d':'#7a3f3f';ctx.lineWidth=Math.max(.65,.8*s);ctx.beginPath();if(mood==='angry'){ctx.moveTo(x-2.6*s,y+4*s);ctx.quadraticCurveTo(x,y+2.8*s,x+2.8*s,y+4*s);}else if(mood==='grimace'){ctx.moveTo(x-3.4*s,y+3*s);ctx.lineTo(x-1.7*s,y+4.2*s);ctx.lineTo(x,y+3*s);ctx.lineTo(x+1.7*s,y+4.2*s);ctx.lineTo(x+3.4*s,y+3*s);}else if(mood==='grin'){ctx.moveTo(x-3*s,y+2.5*s);ctx.quadraticCurveTo(x,y+5.6*s,x+3*s,y+2.5*s);ctx.fillStyle='#783b39';ctx.lineTo(x+2.2*s,y+3.5*s);ctx.quadraticCurveTo(x,y+4.8*s,x-2.2*s,y+3.5*s);ctx.closePath();ctx.fill();ctx.stroke();}else if(mood==='focus'){ctx.moveTo(x-2.6*s,y+3.2*s);ctx.lineTo(x+2.5*s,y+3.2*s);}else{ctx.moveTo(x-2.5*s,y+3.4*s);ctx.quadraticCurveTo(x,y+4*s,x+2.5*s,y+3.2*s);}ctx.stroke();
+    ctx.strokeStyle=mood==='angry'||mood==='grimace'?'#562f2d':'#7a3f3f';ctx.lineWidth=Math.max(.65,.8*s);ctx.beginPath();if(mood==='angry'){ctx.moveTo(x-2.6*s,y+4*s);ctx.quadraticCurveTo(x,y+2.8*s,x+2.8*s,y+4*s);}else if(mood==='grimace'){ctx.moveTo(x-3.4*s,y+3*s);ctx.lineTo(x-1.7*s,y+4.2*s);ctx.lineTo(x,y+3*s);ctx.lineTo(x+1.7*s,y+4.2*s);ctx.lineTo(x+3.4*s,y+3*s);}else if(mood==='grin'){ctx.moveTo(x-3*s,y+2.5*s);ctx.quadraticCurveTo(x,y+5.6*s,x+3*s,y+2.5*s);ctx.fillStyle='#783b39';ctx.lineTo(x+2.2*s,y+3.5*s);ctx.quadraticCurveTo(x,y+4.8*s,x-2.2*s,y+3.5*s);ctx.closePath();ctx.fill();ctx.stroke();}else if(mood==='tired'){ctx.moveTo(x-2.5*s,y+4*s);ctx.quadraticCurveTo(x,y+2.4*s,x+2.5*s,y+4*s);}else if(mood==='focus'){ctx.moveTo(x-2.6*s,y+3.2*s);ctx.lineTo(x+2.5*s,y+3.2*s);}else{ctx.moveTo(x-2.5*s,y+3.4*s);ctx.quadraticCurveTo(x,y+4*s,x+2.5*s,y+3.2*s);}ctx.stroke();
     ctx.fillStyle='rgba(190,92,76,.18)';ctx.beginPath();ctx.ellipse(x-4.7*s,y+1.4*s,1.5*s,.8*s,0,0,Math.PI*2);ctx.ellipse(x+4.7*s,y+1.4*s,1.5*s,.8*s,0,0,Math.PI*2);ctx.fill();ctx.restore();
   }
 
@@ -568,18 +569,44 @@
     ctx.save();var layout=baseLayout(c,ground),drawW=layout.w,drawH=layout.h,sx=drawW/200,sy=drawH/260,drawX=layout.x;contactShadow(ctx,drawX+drawW*.5,ground+2,drawW*.53,.42);ctx.drawImage(sprite,drawX-4*sx,ground-296*sy,208*sx,300*sy);ctx.restore();
   }
   function arenaBase(ctx,c,ground){estateApartmentBase(ctx,c,ground);}
+  function facadeCondition(c){return TACTICS.condition(c.hp,c.max);}
+  // Surface-only aftermath. Fixed anchors never cut holes in the structural sprite.
+  function facadeWear(ctx,g,p){
+    var c=p?g.p:g.e,wear=facadeCondition(c),layout=baseLayout(c,g.GY),stage=wear.stage;
+    if(!stage)return;
+    ctx.save();ctx.translate(layout.x,g.GY);ctx.scale(layout.w/200,layout.h/260);
+    var marks=[[57,-170,5,8],[100,-188,7,4],[149,-72,4,8],[19,-91,3,6],[94,-47,7,4],[146,-165,3,5]];
+    marks.slice(0,Math.min(6,stage*2)).forEach(function(m,i){
+      ctx.fillStyle=i%2?'rgba(107,75,52,.36)':'rgba(66,72,60,.32)';ctx.beginPath();ctx.ellipse(m[0],m[1],m[2],m[3],.3,0,Math.PI*2);ctx.fill();
+      line(ctx,m[0]+1,m[1]+m[3],m[0]+2,m[1]+m[3]+5,'rgba(97,77,52,.32)',1.2);
+    });
+    if(stage>=2){
+      // Chipped paint exposes undercoat, not brickwork or structural cracks.
+      [[24,-70],[153,-49],[55,-202]].forEach(function(a){ctx.fillStyle='#aaa48e';ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(a[0]+7,a[1]-1);ctx.lineTo(a[0]+5,a[1]+4);ctx.lineTo(a[0]+1,a[1]+6);ctx.closePath();ctx.fill();line(ctx,a[0],a[1],a[0]+6,a[1]-1,'#e0d3b2',.8);});
+      // A dented entrance visor: the doorway remains in its original location.
+      ctx.fillStyle='#555d58';ctx.fillRect(19,-55,40,7);ctx.fillStyle='#b7af96';ctx.beginPath();ctx.moveTo(20,-55);ctx.lineTo(42,-55);ctx.lineTo(48,-51);ctx.lineTo(59,-54);ctx.lineTo(59,-51);ctx.lineTo(48,-48);ctx.lineTo(41,-52);ctx.lineTo(20,-52);ctx.closePath();ctx.fill();
+    }
+    if(stage>=3){
+      // Loose pipe clip and a lopsided flower box remain attached to the facade.
+      line(ctx,183,-111,190,-106,'#344b4d',2);line(ctx,190,-106,187,-103,'#b0b8a4',1);
+      ctx.fillStyle='#435656';ctx.fillRect(158,-86,16,7);ctx.save();ctx.translate(166,-83);ctx.rotate(.16*(p?1:-1));ctx.fillStyle='#a45f42';ctx.fillRect(-7,-2,14,5);line(ctx,-6,-2,6,-2,'#d4976f',1);ctx.restore();
+    }
+    ctx.restore();
+  }
+  function residentFatigue(g,p){var c=p?g.p:g.e,wear=facadeCondition(c);return {stage:wear.stage,drop:wear.wear*3.5,lean:(p?1:-1)*wear.wear*.045,mood:wear.stage>=2?'tired':'neutral'};}
   function surrenderPose(g,p){var lost=(p?g.p:g.e).hp<=0,q=lost?clamp((g.overT||0)/1.05,0,1):0;return {lost:lost,drop:40*q*q,tilt:(p?-1:1)*q*.28,flag:lost&&q>.45};}
   function resident(ctx,g,p,img,drawFace,unitScale){
-    var c=p?g.p:g.e,pose=surrenderPose(g,p);var st=side(g,p),a=pose.lost?null:st.action,t=a?a.t:0,dir=p?1:-1,layout=baseLayout(c,g.GY),drawW=layout.w,drawH=layout.h,sx=drawW/200,sy=drawH/260,drawX=layout.x,sway=Math.sin(g.estate.time*2.0+(p?0:1))*.8,hitLife=clamp((st.hitReactT||0)/.72,0,1),hitPulse=Math.sin((1-hitLife)*Math.PI),recoilDir=p?-1:1;
+    var c=p?g.p:g.e,pose=surrenderPose(g,p),fatigue=residentFatigue(g,p);var st=side(g,p),a=pose.lost?null:st.action,t=a?a.t:0,dir=p?1:-1,layout=baseLayout(c,g.GY),drawW=layout.w,drawH=layout.h,sx=drawW/200,sy=drawH/260,drawX=layout.x,sway=Math.sin(g.estate.time*2.0+(p?0:1))*.8,hitLife=clamp((st.hitReactT||0)/.72,0,1),hitPulse=Math.sin((1-hitLife)*Math.PI),recoilDir=p?-1:1;
     // The resident is clipped by the same rectangular loggia opening painted into the facade.
     ctx.save();ctx.translate(drawX,g.GY);ctx.scale(sx,sy);ctx.beginPath();ctx.rect(63,-153,82,56);ctx.clip();
     ctx.translate(100,-98+pose.drop);ctx.rotate(pose.tilt);ctx.translate(-100,98);
+    ctx.translate(100,-98+fatigue.drop);ctx.rotate(fatigue.lean);ctx.translate(-100,98);
     ctx.translate(sway+recoilDir*hitPulse*5*(st.hitReactPower||1),hitPulse*1.5);ctx.translate(100,-98);ctx.rotate(recoilDir*hitPulse*.055*(st.hitReactPower||1));ctx.scale(1+hitPulse*.025,1-hitPulse*.035);ctx.translate(-100,98);
-    var body=p?'#4f7c9d':'#9e5b55';ctx.fillStyle=body;ctx.strokeStyle=ESTATE_INK;ctx.lineWidth=1;
+    var body=p?'#4f7c9d':'#9e5b55',shirt=ctx.createLinearGradient(83,-125,117,-98);shirt.addColorStop(0,p?'#8dafbd':'#c88e79');shirt.addColorStop(.42,body);shirt.addColorStop(1,p?'#304c66':'#634144');ctx.fillStyle=shirt;ctx.strokeStyle=ESTATE_INK;ctx.lineWidth=1;
     ctx.beginPath();ctx.moveTo(82,-94);ctx.lineTo(84,-121);ctx.quadraticCurveTo(100,-134,116,-121);ctx.lineTo(118,-94);ctx.closePath();ctx.fill();ctx.stroke();
     var hx=100+dir*19,hy=-109,bottleAngle=0;if(a){if(t<.42){var lift=Math.min(1,t/.42),ease=lift*lift*(3-2*lift);hx=100+dir*(19-10*ease);hy=-109-23*ease;bottleAngle=-dir*1.28*ease;}else if(t<.76){hx=100+dir*(9+Math.sin(t*24)*.7);hy=-132+Math.sin(t*18)*.5;bottleAngle=-dir*1.32;}else if(t<1.18){var wind=(t-.76)/.42;hx=100+dir*(9-33*wind);hy=-132-6*wind;bottleAngle=-dir*1.32+dir*1.82*wind;}else{hx=100+dir*(32+(t-1.18)*8);hy=-127+(t-1.18)*24;bottleAngle=dir*.55;}}
     line(ctx,100+dir*12,-117,hx,hy,'#d3aa85',6);
-    ctx.save();ctx.translate(100,-139);if(a&&t<.76)ctx.rotate(-dir*.07);if(hitLife>0)ctx.rotate(recoilDir*hitPulse*.10);if(img)drawFace(ctx,img,-16,-18,32,36,0);else{var residentSkin=ctx.createRadialGradient(-3,-3,1,0,0,13);residentSkin.addColorStop(0,'#f0c4a0');residentSkin.addColorStop(1,'#bd8263');ctx.fillStyle=residentSkin;ctx.strokeStyle='rgba(64,45,38,.68)';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,10,12,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#bd8263';ctx.beginPath();ctx.ellipse(-9.5,0,2,3,0,0,Math.PI*2);ctx.ellipse(9.5,0,2,3,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#49403a';ctx.beginPath();ctx.moveTo(-10,-6);ctx.quadraticCurveTo(-6,-15,4,-13);ctx.quadraticCurveTo(11,-11,10,-4);ctx.quadraticCurveTo(2,-9,-10,-6);ctx.fill();var mood=hitLife>0?'grimace':a?(t<.76?'grin':'focus'):'neutral';faceDetails(ctx,0,0,1.08,mood);}ctx.restore();
+    ctx.save();ctx.translate(100,-139);if(a&&t<.76)ctx.rotate(-dir*.07);if(hitLife>0)ctx.rotate(recoilDir*hitPulse*.10);if(img)drawFace(ctx,img,-16,-18,32,36,0);else{var residentSkin=ctx.createRadialGradient(-3,-3,1,0,0,13);residentSkin.addColorStop(0,'#f0c4a0');residentSkin.addColorStop(1,'#bd8263');ctx.fillStyle=residentSkin;ctx.strokeStyle='rgba(64,45,38,.68)';ctx.lineWidth=1;ctx.beginPath();ctx.ellipse(0,0,10,12,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#bd8263';ctx.beginPath();ctx.ellipse(-9.5,0,2,3,0,0,Math.PI*2);ctx.ellipse(9.5,0,2,3,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#49403a';ctx.beginPath();ctx.moveTo(-10,-6);ctx.quadraticCurveTo(-6,-15,4,-13);ctx.quadraticCurveTo(11,-11,10,-4);ctx.quadraticCurveTo(2,-9,-10,-6);ctx.fill();var mood=hitLife>0?'grimace':a?(t<.76?'grin':'focus'):fatigue.mood;faceDetails(ctx,0,0,1.08,mood);}ctx.restore();
     ctx.fillStyle='rgba(239,231,207,.20)';ctx.fillRect(98,-121,2,25);ctx.strokeStyle='rgba(33,43,47,.5)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(91,-122);ctx.lineTo(100,-116);ctx.lineTo(109,-122);ctx.stroke();line(ctx,88,-113,81,-101,'#d3aa85',5);ctx.fillStyle='#d3aa85';ctx.beginPath();ctx.arc(80,-100,3,0,Math.PI*2);ctx.fill();
     if(a&&!a.released)bottle(ctx,a.item,hx,hy-4,.74,bottleAngle);ctx.restore();
     // Loggia rail sits in front of the character and belongs to the facade.
@@ -594,7 +621,7 @@
   }
   function draw(ctx,g,pFace,eFace,drawFace,unitScale,lang){if(!active(g))return;var e=g.estate,seg=segmentOf(g);
     wetGround(ctx,g);
-    apartmentLights(ctx,g,true);apartmentLights(ctx,g,false);
+    apartmentLights(ctx,g,true);apartmentLights(ctx,g,false);facadeWear(ctx,g,true);facadeWear(ctx,g,false);
     courtyardMotion(ctx,g);resident(ctx,g,true,pFace,drawFace,unitScale);resident(ctx,g,false,eFace,drawFace,unitScale);
     drawDeliveries(ctx,g,unitScale);
     e.bottles.forEach(function(b){var q=Math.min(1,b.t/b.duration),a=anchor(g,b.isP,true),z=anchor(g,!b.isP);bottle(ctx,b.item,a.x+(z.x-a.x)*q,a.y+(z.y-a.y)*q-4*b.arc*q*(1-q),Math.max(.8,unitScale*.85),q*9*(b.isP?1:-1));});
@@ -621,5 +648,5 @@
   root.CASTLE_ERA_ART.drawBase=function(ctx,c,ground,era,l,t){if(era==='modern'&&l==='estate'){arenaBase(ctx,c,ground);return;}return oldBase(ctx,c,ground,era,l,t);};
   var oldBackdrop=root.CASTLE_ERA_ART.backdrop;
   root.CASTLE_ERA_ART.backdrop=function(ctx,w,gy,era,l){if(era!=='modern'||l!=='estate')return oldBackdrop(ctx,w,gy,era,l);drawArenaBackdrop(ctx,w,gy,segments[visualSegment]||segments[0]);};
-  root.CASTLE_ESTATE={backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.10.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
+  root.CASTLE_ESTATE={facadeCondition:facadeCondition,facadeWear:facadeWear,residentFatigue:residentFatigue,backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.11.1',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
 })(window);

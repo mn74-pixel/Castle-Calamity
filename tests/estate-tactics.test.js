@@ -124,4 +124,24 @@ check('wet battles are deterministic across FPS, raiders return and fallen actor
   const g=game(2),u=spawn(g,'marian',true,.5);g.estate.rain=true;u.lane=1;u.moving=true;tick(g,.1);assert(u.slip>0);T.finish(g,.1);assert.equal(u.slip,0);assert(u.retreat);assert.equal(T.slipPose(u),0);
   for(const c of T.cards){const r=game(c.unlock);r.estate.rain=true;spawn(r,c.id,true);tick(r,100);assert.equal(r.estate.units.length,0);assert.equal(r.e.gold,1000-T.raidCapacity(c.id,c.unlock));}
 });
+check('condition thresholds are bounded, shared, pure and safe for icon previews',()=>{
+  for(const [hp,expected] of [[100,0],[76,0],[75,1],[51,1],[50,2],[26,2],[25,3],[1,3],[0,4],[-5,4],[150,0]]){const c=T.condition(hp,100);assert.equal(c.stage,expected);assert(c.wear>=0&&c.wear<=1);assert.equal(c.ratio+c.wear,1);}
+  for(const [hp,max] of [[undefined,undefined],[1,undefined],[NaN,100],[10,0]])assert.equal(T.condition(hp,max).stage,0);
+});
+check('visual state prioritises withdrawal, return, slipping and impact over locomotion',()=>{
+  const u={moving:true,follow:.1,wind:.1,hurt:.1,slip:.3,returning:true,retreat:true};
+  for(const [key,expected] of [['retreat','withdraw'],['returning','return'],['slip','slip'],['hurt','hit'],['wind','anticipation'],['follow','follow'],['moving','move']]){const before=JSON.stringify(u);assert.equal(T.animationState(u),expected);assert.equal(JSON.stringify(u),before);u[key]=0;}assert.equal(T.animationState(u),'idle');
+});
+check('walking phase follows actual travel under slowdown and stopping',()=>{
+  function sample(slow){const g=game(2),u=spawn(g,'dres',true,.2);u.slow=slow;tick(g,.5);return {distance:u.x-.2,walk:u.walk};}
+  const normal=sample(0),slowed=sample(3);assert(Math.abs(normal.walk/normal.distance-slowed.walk/slowed.distance)<1e-8);assert(slowed.walk<normal.walk*.6);
+  const g=game(2),u=spawn(g,'dres',true,.4),v=spawn(g,'dres',false,.42);u.wind=v.wind=100;const phase=u.walk;tick(g,.3);assert.equal(u.walk,phase);
+});
+check('locomotion blends in simulation, settles feet and immediately obeys patrol and slipping',()=>{
+  const u={kind:'dres',moving:true,walk:.6,x:.4,wind:.2};T.updateLocomotion(u,1/30,false);assert(u.locomotion>0&&u.locomotion<1);const weight=u.locomotion;T.updateLocomotion(u,1/30,false);assert(u.locomotion>weight);u.moving=false;for(let i=0;i<15;i++)T.updateLocomotion(u,1/30,false);assert.equal(u.locomotion,0);assert.equal(T.pose(u).lift+T.pose(u).rightLift,0);assert.equal(u.x,.4);assert.equal(u.wind,.2);
+  u.moving=true;u.locomotion=1;T.updateLocomotion(u,1/30,true);assert.equal(u.locomotion,0);u.returning=true;T.updateLocomotion(u,1/30,true);assert(u.locomotion>0);u.slip=.5;T.updateLocomotion(u,1/30,false);assert.equal(u.locomotion,0);
+});
+check('planar leg IK preserves segment lengths and clamps unreachable and coincident targets',()=>{
+  for(const [upper,lower] of [[12,12],[9,9],[12,9]])for(const [x,y] of [[0,0],[0,21],[-8,18],[7,14],[100,100]]){const k=T.solveLeg(0,0,x,y,upper,lower);assert(Object.values(k).every(Number.isFinite));assert(Math.abs(Math.hypot(k.kx,k.ky)-upper)<1e-6);assert(Math.abs(Math.hypot(k.fx-k.kx,k.fy-k.ky)-lower)<1e-6);assert(Math.hypot(k.fx,k.fy)<upper+lower);}
+});
 console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');

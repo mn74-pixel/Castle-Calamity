@@ -1,5 +1,30 @@
 # Castle Calamity
 
+### v8.11.1 — płynne zatrzymanie i dwuczłonowe nogi
+
+Waga animacji marszu narasta i opada w stałym kroku symulacji, bez zmiany
+prędkości jednostek lub timerów ataku. Stopa uniesiona przy zatrzymaniu
+łagodnie wraca na podłoże. Patrol oraz poślizg mają pierwszeństwo.
+Chodzące postacie, w tym Heniek, używają dwuczłonowej kinematyki nóg
+z ograniczeniem zasięgu i zachowaniem długości kończyn. Rowerzysta zachowuje
+mechanikę pedałowania. Nie dodano nierównego terenu ani fizycznego rozpędu.
+Wersja obejmuje również wszystkie zmiany gradacji z v8.11.0.
+
+### v8.11.0 — ślady awantury i zmęczenie, bez burzenia
+
+Morale 75/50/25% uruchamia kolejne powierzchniowe ślady: zabrudzenia,
+odpryski farby, wgnieciony daszek, poluzowaną obejmę i przekrzywioną
+skrzynkę kwiatową. Blok zachowuje konstrukcję, drzwi i okna; przy zerze
+gospodarz nadal poddaje się z białą flagą. Brak ognia, gruzu i dziur.
+Gospodarz dostaje zmęczoną postawę i mimikę oraz cieniowaną koszulę.
+Dziesięć oddziałów ma progi przetarć ubrania i zmęczenia twarzy, bez
+dodatkowych kar do statystyk. Tempo kroków zależy od faktycznego dystansu,
+również przy spowolnieniu i powrocie z kredytami.
+
+Plan rozwoju 2,5D, oddzielający wdrożenie od przyszłego IK, blendowania
+i renderów offline: [OSIEDLE-25D-PLAN.md](docs/OSIEDLE-25D-PLAN.md).
+Testy ręczne na fizycznym telefonie pozostają wymagane.
+
 ### v8.10.0 — Zagrycha, Marian i opcjonalny deszcz
 
 Karta jedzenia ma stały podpis „Zagrycha”. Tło używa niezależnych adresów
