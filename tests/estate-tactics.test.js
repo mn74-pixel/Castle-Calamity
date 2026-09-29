@@ -10,6 +10,13 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('seeded automatic weather has warning, dry breaks, rain and ice independent of FPS',()=>{
+  function run(dt){const g=game(2);g.estate.weather=T.weatherInit(42);const phases=new Set();for(let t=0;t<600;t+=dt){T.tick(g,dt,()=>{});const e=g.estate;phases.add(e.weather.phase+':'+e.weather.kind);assert(!(e.rain&&e.ice));if(e.weather.phase==='warning')assert(!e.rain&&!e.ice);}return [Array.from(phases).sort(),g.estate.weather.seed,g.estate.weather.phase];}
+  const a=run(1/30),b=run(1/120);assert.deepEqual(a,b);for(const key of ['dry:dry','warning:rain','warning:ice','active:rain','active:ice'])assert(a[0].includes(key));assert.notDeepEqual(T.weatherInit(1),T.weatherInit(2));
+});
+check('ice causes longer local slips without damage, no repeat during cooldown, both teams',()=>{
+  for(const p of [true,false]){const g=game(2),u=spawn(g,'marian',p,.5);g.estate.ice=true;u.lane=1;u.moving=true;tick(g,.1);assert(u.slip>.8);assert.equal(u.hp,u.max);assert.equal(u.slips,1);tick(g,2);assert.equal(u.slips,1);assert.equal(u.slip,0);assert(u.x!==.5);}
+});
 check('Menel name and attack timing descriptions match all eleven definitions',()=>{
   assert.equal(T.cards.find(c=>c.id==='marian').pl,'Menel');
   for(const c of T.cards){assert(T.description(c.id,'pl').includes('Odpoczynek '+c.interval+' s'));assert(T.description(c.id,'en').includes('wind-up '+(c.windup||.22)+' s'));}

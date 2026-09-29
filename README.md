@@ -1,5 +1,33 @@
 # Castle Calamity
 
+### v8.16.0 — losowa pogoda, gołoledź i osiedlowe gagi
+
+Deszcz nie jest już przełącznikiem gracza. Wskaźnik pokazuje automatyczny
+cykl: 18–38 s pierwszej pogody suchej, 3 s ostrzeżenia, 10–18 s deszczu albo
+gołoledzi, następnie 22–44 s przerwy. Warunki są wspólne dla obu stron;
+losowanie nie zależy od wyniku. Ziarno jest losowane na początku bitwy,
+a cykl działa w stałym kroku symulacji, zatrzymuje się na pauzie i po końcu.
+
+Lodowe plamy są szersze od kałuż i wywołują poślizg na 1,1 s zamiast 0,8 s.
+Nie zadają obrażeń; ponowny poślizg blokuje 8-sekundowy cooldown. Dostawcy,
+powracający z kredytami oraz wycofujące się postacie nie są zatrzymywane.
+
+W tle z szansą 65% pojawia się jeden samochód między 48. a 93. sekundą:
+podjeżdża, lekko uderza w latarnię, czeka i cofa poza ekran. Żadnych obrażeń
+ani zmian ekonomii. Nocna latarnia powoli przygasa, gaśnie i zapala się;
+jej faza jest losowana osobno, a efekt nie rozświetla całego ekranu.
+
+Analiza ust odrzuca przezroczyste krawędzie i jednolite obszary skóry.
+Ręczna korekta nadal jest potrzebna przy trudnych zdjęciach. Reakcja zdjęcia
+na trafienie szybko narasta (60 ms), a potem wygasa; siła zależy od trafienia.
+Wczytywanie chronione numerem żądania odrzuca spóźnione wyniki starszego
+wyboru lub zdjęcia usuniętego podczas wczytywania.
+
+Testy: deterministyczna pogoda przy 30/120 FPS, ostrzeżenia, lód po obu
+stronach, pełne bitwy w deszczu/lodzie/losowej pogodzie, render bez mutacji,
+cykl samochodu i światła, PWA offline. Safari na fizycznym iPhonie wymaga
+jeszcze ręcznego odbioru.
+
 ### v8.15.0 — usta jako punkt animacji i reakcja wgranej twarzy
 
 Butelka jest ustawiana końcem szyjki przy zapisanym punkcie ust, we wspólnym

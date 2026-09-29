@@ -12,7 +12,7 @@
       function lum(x,y){var i=(y*96+x)*4;return .299*p[i]+.587*p[i+1]+.114*p[i+2];}
       for(var y=53;y<=79;y++)for(var x=30;x<=66;x++){
         var score=0;
-        for(var dx=-5;dx<=5;dx++){var i=(y*96+x+dx)*4;if(p[i+3]<220)continue;var contrast=(lum(x+dx,y-4)+lum(x+dx,y+4))*.5-lum(x+dx,y);score+=Math.max(0,contrast)+Math.max(0,p[i]-p[i+1]-12)*.35;}
+        for(var dx=-5;dx<=5;dx++){var i=(y*96+x+dx)*4;if(p[i+3]<220||p[((y-4)*96+x+dx)*4+3]<220||p[((y+4)*96+x+dx)*4+3]<220)continue;var contrast=(lum(x+dx,y-4)+lum(x+dx,y+4))*.5-lum(x+dx,y);if(contrast>4)score+=contrast+Math.max(0,p[i]-p[i+1]-12)*.35;}
         score*=1-Math.abs(x-48)/45;score*=1-Math.abs(y-67)/50;
         if(score>best){best=score;bx=x;by=y;}
       }
@@ -33,6 +33,7 @@
   }
   function mouth(img,angle,pulse,dir){var r=img&&valid(img.faceRig)?img.faceRig:fallback(),w=img&&(img.naturalWidth||img.width)||320,h=img&&(img.naturalHeight||img.height)||320,scale=Math.min(32/w,36/h),x=(r.mouth.x-.5)*w*scale,y=(r.mouth.y-.5)*h*scale;if(img&&pulse>.001){var q=(Math.floor(r.mouth.y*16)+.5)/16,curve=Math.sin(q*Math.PI);x-=dir*curve*pulse*1.8+r.mouth.x*w*scale*pulse*.05*curve;}return {x:100+x*Math.cos(angle)-y*Math.sin(angle),y:-139+x*Math.sin(angle)+y*Math.cos(angle)};}
   function grip(point,angle){return {x:point.x-16*.74*Math.sin(angle),y:point.y+16*.74*Math.cos(angle)+4};}
+  function impactPulse(remaining,power){if(!(remaining>0))return 0;var elapsed=clamp(.72-remaining,0,.72),attack=Math.min(1,elapsed/.06),decay=Math.exp(-Math.max(0,elapsed-.06)*6);return attack*decay*(1-elapsed/.72)*clamp(Number(power)||1,.7,1.35);}
   // Sixteen strips give the photo itself a short squash/recoil, without
   // painting a second pair of eyes or a mouth over someone's real features.
   function react(ctx,img,drawFace,pulse,dir){
@@ -42,5 +43,5 @@
     var scale=Math.min(32/w,36/h),dw=w*scale,dh=h*scale;
     for(var i=0;i<16;i++){var q=(i+.5)/16,shift=-dir*Math.sin(q*Math.PI)*pulse*1.8;ctx.drawImage(img,0,i*h/16,w,h/16,-dw/2+shift,-dh/2+i*dh/16,dw*(1-pulse*.05*Math.sin(q*Math.PI)),dh/16+.06);}
   }
-  root.CASTLE_FACE_RIG={valid:valid,detect:detect,fallback:fallback,contour:contour,removeBackdrop:removeBackdrop,mouth:mouth,grip:grip,react:react};
+  root.CASTLE_FACE_RIG={impactPulse:impactPulse,valid:valid,detect:detect,fallback:fallback,contour:contour,removeBackdrop:removeBackdrop,mouth:mouth,grip:grip,react:react};
 })(window);

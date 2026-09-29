@@ -102,15 +102,23 @@
   function archetype(id){return roles[id]?roles[id].role:'support';}
   function multiplier(a,b){a=archetype(a);b=archetype(b);return (a==='front'&&b==='fast')||(a==='fast'&&b==='ranged')||(a==='ranged'&&b==='front')?1.4:1;}
   var PUDDLES=[{x:.38,lane:0},{x:.5,lane:1},{x:.62,lane:2}];
+  function weatherRandom(w){w.seed=(Math.imul(w.seed,1664525)+1013904223)>>>0;return w.seed/4294967296;}
+  function weatherInit(seed){var w={seed:seed>>>0,phase:'dry',kind:'dry',left:0};w.left=18+weatherRandom(w)*20;return w;}
+  function weatherStep(e,dt){var w=e.weather;if(!w)return;w.left-=dt;
+    while(w.left<=0){if(w.phase==='dry'){w.phase='warning';w.kind=weatherRandom(w)<.55?'rain':'ice';w.left+=3;}else if(w.phase==='warning'){w.phase='active';w.left+=10+weatherRandom(w)*8;}else{w.phase='dry';w.kind='dry';w.left+=22+weatherRandom(w)*22;}}
+    e.rain=w.phase==='active'&&w.kind==='rain';e.ice=w.phase==='active'&&w.kind==='ice';
+  }
+  function weatherLabel(e,en){var w=e.weather;if(!w)return e.ice?(en?'ICE':'GOŁOLEDŹ'):e.rain?(en?'RAIN':'DESZCZ'):(en?'DRY':'SUCHO');return (w.phase==='warning'?'⚠ ':'')+(w.kind==='ice'?(en?'ICE':'GOŁOLEDŹ'):w.kind==='rain'?(en?'RAIN':'DESZCZ'):(en?'DRY':'SUCHO'));}
   function wetFooting(e,u,dt){
     u.slipCooldown=Math.max(0,(u.slipCooldown||0)-dt);
     if(u.slip>0){u.slip=Math.max(0,u.slip-dt);u.moving=false;return true;}
-    if(e.rain&&u.moving&&!u.returning&&!u.retreat&&!u.slipCooldown&&PUDDLES.some(function(p){return p.lane===laneOf(u)&&Math.abs(u.x-p.x)<.009;})){
-      u.slip=.8;u.slipCooldown=8;u.slips=(u.slips||0)+1;u.wind=0;u.follow=0;u.moving=false;return true;
+    if((e.rain||e.ice)&&u.moving&&!u.returning&&!u.retreat&&!u.slipCooldown&&PUDDLES.some(function(p){return p.lane===laneOf(u)&&Math.abs(u.x-p.x)<(e.ice?.016:.009);})){
+      u.slipDuration=e.ice?1.1:.8;u.slip=u.slipDuration;u.slipCooldown=8;u.slips=(u.slips||0)+1;u.wind=0;u.follow=0;u.moving=false;return true;
     }return false;
   }
-  function slipPose(u){var q=Math.max(0,Math.min(1,1-(u.slip||0)/.8));return u.slip>0?Math.sin(Math.PI*Math.pow(q,.6)):0;}
+  function slipPose(u){var q=Math.max(0,Math.min(1,1-(u.slip||0)/(u.slipDuration||.8)));return u.slip>0?Math.sin(Math.PI*Math.pow(q,.6)):0;}
   function step(g,dt,hit){
+    weatherStep(g.estate,dt);
     var e=g.estate,t=e.tactics;t.clock+=dt;t.p=Math.max(0,t.p-dt);t.e=Math.max(0,t.e-dt);t.ai=Math.max(0,t.ai-dt);
     var stopped=patrol(e),live=e.units.filter(function(u){return active(u);}),attacks=[];
     // Sample the aura once, before movement: array order cannot change who hears it.
@@ -300,5 +308,5 @@
     e.shots.forEach(function(v){var p=shotPose(v,s,g.GY,g.W);c.save();c.translate(p.x,p.y);c.rotate(v.t*16);if(v.kind==='cart'){c.fillStyle='#d4c4a3';c.strokeStyle='#354246';c.lineWidth=1;c.fillRect(-5*s,-4*s,10*s,8*s);c.strokeRect(-5*s,-4*s,10*s,8*s);line(c,0,-4*s,0,4*s,'#947b51',2*s);}else ellipse(c,0,0,6*s,2.5*s,'#dab771');c.restore();});
     c.save();c.textAlign='center';c.font='bold '+Math.max(9,Math.min(12,g.W/90))+'px sans-serif';var text=rules[e.segment][lang==='en'?1:0];if(e.segment===9){var phase=t.clock%14;text=(patrol(e)?(lang==='en'?'PATROL — HOLD! ':'PATROL — STAĆ! '):phase>=9?(lang==='en'?'PATROL INCOMING · ':'NADJEŻDŻA PATROL · '):'')+text;}if(e.segment===1&&t.owner!==null)text+=' '+Math.ceil(5-t.capture)+' s';if(g.over)text=lang==='en'?'ENOUGH! Time for tea. Everyone heads home.':'WYSTARCZY! Czas na herbatę. Wracamy do domu.';var y=Math.min(g.H-14,g.GY+48);c.fillStyle='rgba(22,32,36,.88)';c.fillRect(g.W*.16,y-13,g.W*.68,20);c.fillStyle='#f2dfaf';c.fillText(text,g.W*.5,y,g.W*.66);c.restore();
   }
-  root.CASTLE_ESTATE_TACTICS={solveLeg:solveLeg,updateLocomotion:updateLocomotion,condition:condition,animationState:animationState,puddles:PUDDLES,slipPose:slipPose,heavyPose:heavyPose,raidCapacity:raidCapacity,active:active,shotPose:shotPose,armPose:armPose,portrait:portrait,outfit:outfit,roles:roles,description:description,actorScale:actorScale,pose:pose,cards:cards,roster:roster,archetype:archetype,rules:rules,init:init,status:status,recruit:recruit,choose:choose,heal:heal,tick:tick,finish:finish,draw:draw,figure:figure,patrol:patrol,multiplier:multiplier};
+  root.CASTLE_ESTATE_TACTICS={weatherInit:weatherInit,weatherLabel:weatherLabel,weatherStep:weatherStep,solveLeg:solveLeg,updateLocomotion:updateLocomotion,condition:condition,animationState:animationState,puddles:PUDDLES,slipPose:slipPose,heavyPose:heavyPose,raidCapacity:raidCapacity,active:active,shotPose:shotPose,armPose:armPose,portrait:portrait,outfit:outfit,roles:roles,description:description,actorScale:actorScale,pose:pose,cards:cards,roster:roster,archetype:archetype,rules:rules,init:init,status:status,recruit:recruit,choose:choose,heal:heal,tick:tick,finish:finish,draw:draw,figure:figure,patrol:patrol,multiplier:multiplier};
 })(window);
