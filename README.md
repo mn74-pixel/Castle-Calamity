@@ -1,5 +1,15 @@
 # Castle Calamity
 
+### v8.8.1 — okrągła sylwetka i ciężar ruchu Heńka
+
+Heniek ma własną sylwetkę opartą na krzywych zamiast rozciągniętego tułowia
+dresiarza. Zaokrąglona kamizelka ma boczny cień, miękkie światło, wygięty pas
+i szwy podążające za brzuchem. Osobna animacja rozdziela stopy, przenoszenie
+ciężaru, ugięcie przed ciosem i wychylenie przy trafieniu. Sakiewki i flagi
+pozostałych postaci korzystają ze wspólnego rysowania przy dłoni.
+Obliczanie pozy jest niezależne od rysowania i nie zmienia stanu walki.
+Koszty, moce i rajdy pozostają bez zmian. Odbiór na telefonie nadal ręczny.
+
 ### v8.8.0 — rajdy po kredyty i głębsze bryły bloków
 
 Oddział przy obcym bloku zabiera dostępne kredyty zamiast zadawać obrażenia

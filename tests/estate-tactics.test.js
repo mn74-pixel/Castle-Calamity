@@ -90,4 +90,9 @@ check('returning raiders do not fight, block, heal or retain money after the feu
 });
 check('simultaneous arrivals cannot overdraft an almost empty enemy bank',()=>{const g=game(4);g.e.gold=7;const a=spawn(g,'bike',true,.809),b=spawn(g,'bike',true,.809);tick(g,.1);assert.equal(g.e.gold,0);assert.equal(a.loot+b.loot,7);const bank=g.p.gold;tick(g,10);assert.equal(g.p.gold,bank+7);assert.equal(g.stats.goldEarned,7);});
 check('a rival behind the unit cannot teleport it backwards before a raid',()=>{const g=game(4),a=spawn(g,'bike',true,.809),b=spawn(g,'bike',false,.191);tick(g,.1);assert(a.returning&&b.returning);assert(a.x>.79&&b.x<.21);assert.equal(a.loot,33);assert.equal(b.loot,33);});
+check('heavy rig alternates feet, anticipates impact and stays deterministic without mutating state',()=>{
+  const u={kind:'heavy',moving:true,walk:.7,wind:.3,animTime:2},before=JSON.stringify(u),a=T.heavyPose(u),b=T.heavyPose(u);assert.equal(JSON.stringify(a),JSON.stringify(b));assert.equal(JSON.stringify(u),before);assert(a.drop>0&&a.squash<1&&a.lean<0);
+  assert(T.heavyPose({follow:.2}).reach>0);const left=T.heavyPose({moving:true,walk:0}),right=T.heavyPose({moving:true,walk:Math.PI});assert(left.leftLift>left.rightLift);assert(right.rightLift>right.leftLift);
+  for(let t=0;t<20;t+=.1){const p=T.heavyPose({moving:true,walk:t,animTime:t});assert(Object.values(p).every(Number.isFinite));assert(p.leftX<p.rightX);assert(p.leftLift>=0&&p.rightLift>=0);}
+});
 console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');

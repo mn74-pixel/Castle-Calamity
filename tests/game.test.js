@@ -1033,7 +1033,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.8.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.8.1"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
@@ -1080,6 +1080,14 @@ fs.writeFileSync(path.join(__dirname,'renders/estate-animation-poses.png'),poseS
 const portraits=[];
 for(const unit of estateActors.cards){const tile=createCanvas(64,64),cx=tile.getContext('2d');cx.translate(25,15);cx.scale(2.5,2.5);estateActors.portrait(cx,{kind:unit.id},0,'#528caa');portraits.push(tile.toBuffer('image/png').toString('base64'));}
 check(new Set(portraits).size===7,'Osiedle: siedem odrębnych twarzy i nakryć głowy, bez identycznych portretów');
+for(const isP of [true,false]){
+  const tile=createCanvas(120,100),cx=tile.getContext('2d');estateActors.figure(cx,{kind:'heavy',isP},60,90,1);
+  function silhouetteWidth(y){const pixels=cx.getImageData(0,y,120,1).data;let first=120,last=-1;for(let x=0;x<120;x++)if(pixels[x*4+3]>64){first=Math.min(first,x);last=x;}return last-first+1;}
+  check(silhouetteWidth(66)>silhouetteWidth(42)*1.3,'Heniek: brzuch jest wyraźnie szerszy od ramion, strona '+isP);
+  const transform=cx.getTransform();assert.deepEqual([transform.a,transform.b,transform.c,transform.d,transform.e,transform.f],[1,0,0,1,0,0]);
+  const card=createCanvas(56,56),cc=card.getContext('2d');estateActors.figure(cc,{kind:'heavy',isP},26,54,.8);
+  check(!Array.from(cc.getImageData(0,0,1,56).data).some((v,i)=>i%4===3&&v)&&!Array.from(cc.getImageData(55,0,1,56).data).some((v,i)=>i%4===3&&v),'Heniek: okrągła sylwetka mieści się na karcie, strona '+isP);
+}
 qa.viewport(1280,720,1);
 for(const segment of [2,3,5,6,8,9,10]){qa.estateSegmentScene(segment);save("estate-1280x720-"+segment+".png");}
 qa.estateExpressionScene("drink");save("estate-expression-drink.png");
