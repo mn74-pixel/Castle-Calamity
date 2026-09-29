@@ -1,5 +1,23 @@
 # Castle Calamity
 
+### v8.12.0 — muzyka zakłóca ataki, Bokser i wcześniejszy Marian
+
+Akordeonista nadal kosztuje 30 kredytów, ale ma 130 wytrzymałości i cios 16.
+Oprócz premii +20% do marszu sojuszników, muzyka spowalnia odnawianie ataku
+rywali w zasięgu 0,13 szerokości areny o 25%. Nie zmienia trwającego zamachu,
+nie kumuluje się i nie działa podczas patrolu ani poślizgu grającego.
+Fale przy instrumencie i fioletowa nuta przy rywalu pokazują działający efekt.
+
+Menel Marian jest teraz dostępny w etapach 1–4: 20 kredytów, zaczepka 13,
+spowolnienie 1,4 s. To wcześniejsza postać Mariana, nie jej duplikat.
+Bokser w etapach 6–7 kosztuje 34, ma 150 wytrzymałości i cios 18. Garda
+zmniejsza obrażenia od pocisków o 30%, także obszarowych; nie chroni przed
+spowolnieniem ani ciosem wręcz. Jest wolniejszy od roweru, ale lepiej znosi
+ostrzał. Ma rękawice, opaskę, pas i własną pozycję rąk. AI używa tej samej
+gardy i kosztów. Bokser zastępuje kartę rowerzysty na dwa etapy; wcześniej
+zrekrutowani rowerzyści zostają. Dostępność piwa nie zmienia się, nadal
+maksymalnie osiem kart. Odbiór tempa na fizycznym telefonie pozostaje wymagany.
+
 ### v8.11.1 — płynne zatrzymanie i dwuczłonowe nogi
 
 Waga animacji marszu narasta i opada w stałym kroku symulacji, bez zmiany
