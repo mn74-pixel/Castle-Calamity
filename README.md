@@ -1,5 +1,23 @@
 # Castle Calamity
 
+### v8.13.0 — dotyk Osiedla, dopracowane intro i audyt mocy
+
+Wejście do Osiedla, wybór segmentów oraz zakupy mają wspólną obsługę
+dotknięcia i puszczenia palca. Przesunięcie/anulowanie gestu nie aktywuje
+przycisku, a emulowany click nie kupuje drugi raz. Menu nie dziedziczy już
+globalnej blokady przewijania dotykowego. Klawiatura i mysz pozostają dostępne.
+Automatycznie sprawdzono zdarzenia; odbiór na fizycznym iPhonie jest nadal wymagany.
+
+Intro zachowuje pantomimę, ale dodaje łagodne zbliżenie, trzy plany wzgórz,
+perspektywiczny trakt, cienie kontaktowe, nuty, błysk instrumentu i kurz pościgu.
+Ruch chmur wynika z czasu sceny; dekoracje są ograniczone liczbowo. Usunięto
+liczniki drewna znad drzew w intro. Czas i możliwość pominięcia pozostają bez zmian.
+
+„Menel Marian” nazywa się teraz „Menel”; pozostałe oddziały zostają.
+Opisy wszystkich 11 jednostek pokazują rzeczywisty czas odpoczynku i zamachu.
+Przewrócony muzyk nie przyspiesza marszu, a przewrócony dozorca nie leczy.
+Etapy 6–9 lepiej objaśniają zastosowanie nowych oddziałów; bez inflacji statystyk.
+
 ### v8.12.0 — muzyka zakłóca ataki, Bokser i wcześniejszy Marian
 
 Akordeonista nadal kosztuje 30 kredytów, ale ma 130 wytrzymałości i cios 16.

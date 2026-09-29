@@ -12,7 +12,7 @@
     {id:'heavy',pl:'Wielki Heniek',en:'Big Henry',rolePl:'Osiłek · uderza w grupę',roleEn:'Heavy · hits a crowd',cost:54,hp:280,attack:44,interval:2.3,windup:.55,speed:.022,range:.045,unlock:9},
     {id:'musician',pl:'Akordeonista',en:'Accordionist',rolePl:'Muzyka · zakłóca ataki rywali',roleEn:'Music · disrupts enemy attacks',cost:30,hp:130,attack:16,interval:1.5,speed:.032,range:.035,unlock:6},
     {id:'cart',pl:'Wózkarz',en:'Cart pusher',rolePl:'Dystans · rozprasza grupę',roleEn:'Ranged · disperses groups',cost:44,hp:135,attack:24,interval:2,windup:.45,speed:.025,range:.125,unlock:8},
-    {id:'marian',pl:'Menel Marian',en:'Marian',rolePl:'Zaczepka · spowalnia rywala',roleEn:'Heckler · slows a rival',cost:20,hp:120,attack:13,interval:1.5,windup:.32,speed:.029,range:.042,unlock:0},
+    {id:'marian',pl:'Menel',en:'Heckler',rolePl:'Zaczepka · spowalnia rywala',roleEn:'Heckler · slows a rival',cost:20,hp:120,attack:13,interval:1.5,windup:.32,speed:.029,range:.042,unlock:0},
     {id:'boxer',pl:'Bokser',en:'Boxer',rolePl:'Natarcie · osłona przed pociskami',roleEn:'Assault · projectile guard',cost:34,hp:150,attack:18,interval:.8,windup:.18,speed:.052,range:.034,unlock:5}
   ];
   // A single role sheet drives combat, card descriptions and the visual kit.
@@ -31,6 +31,7 @@
   };
   function description(id,lang){var c=def(id),r=roles[id];if(!c||!r)return '';var en=lang==='en',parts=[en?c.roleEn:c.rolePl,(en?'Stamina ':'Wytrzymałość ')+c.hp,(en?'Hit ':'Cios ')+c.attack];
     if(r.splash)parts.push((en?'Splash ':'Obszar ')+c.attack*r.splash.factor+(r.splash.limit===1?(en?' · one extra target':' · jeden dodatkowy cel'):(en?' · nearby group':' · pobliska grupa')));
+    parts.push((en?'Recovery ':'Odpoczynek ')+c.interval+' s'+(en?' + wind-up ':' + zamach ')+(c.windup||.22)+' s');
     if(r.slow)parts.push((en?'Slow ':'Spowolnienie ')+r.slow+' s');
     if(r.slowFactor)parts.push(en?'Keeps 85% speed when slowed':'Zachowuje 85% prędkości przy spowolnieniu');
     if(r.heal)parts.push((en?'Allies +':'Sojusznicy +')+r.heal+(en?' stamina/s; does not stack':' wytrzymałości/s; nie kumuluje się'));
@@ -46,10 +47,10 @@
     ['Rowerzysta: szybko dociera pod okno, ale uważa na dresy.','Cyclist: reaches the window fast, but watch for brawlers.'],
     ['Przy zapiekankach środek leczy jednostki obu stron.','The central snack stand heals units on either side.'],
     ['Sąsiadka spowalnia wroga kapciem. Osłoń ją dresem.','Neighbour slippers slow enemies. Protect her with a brawler.'],
-    ['Kij: szeroki zamach. Śmietniki osłaniają przed kapciem.','Bat: sweeping swing. Bins shelter against slippers.'],
-    ['Zjedzona pizza leczy też twoją ekipę o 25 HP.','Eating pizza also heals your squad by 25 HP.'],
+    ['Bokser osłania się przed pociskami. Kij zatrzymuje natarcie.','Boxers guard against projectiles. Bats stop a push.'],
+    ['Akordeonista zakłóca ataki rywali. Pizza leczy ekipę o 25 HP.','Accordionists disrupt enemy attacks. Pizza heals the squad by 25 HP.'],
     ['Rolkarz odporniejszy na kapcie. Noc skraca zasięg.','Skaters resist slowing. Night reduces throwing range.'],
-    ['Przy kebabie rekrutacja jest dwukrotnie szybsza.','Recruitment is twice as fast by the kebab stand.'],
+    ['Wózkarz trafia grupę. Przy kebabie rekrutacja jest 2× szybsza.','Carts hit groups. Kebab recruitment is twice as fast.'],
     ['Patrol: co 14 s ekipy zamierają na 3 s.','Patrol: every 14 s squads freeze for 3 s.'],
     ['Nocny Express: każda dostawa daje dodatkowe 12 kredytów.','Night Express: each supply delivery gives 12 extra credits.'],
     ['Finał: rajdy zabierają do 35% więcej kredytów.','Finale: raids carry up to 35% more credits.']
@@ -117,7 +118,7 @@
     e.units.forEach(function(u){u.hurt=Math.max(0,u.hurt-dt);u.follow=Math.max(0,(u.follow||0)-dt);u.shock=Math.max(0,(u.shock||0)-dt);u.drawLane=(u.drawLane===undefined?laneOf(u):u.drawLane)+(laneOf(u)-(u.drawLane===undefined?laneOf(u):u.drawLane))*Math.min(1,dt*9);if(u.returning){returnRaid(g,u,dt);return;}if(u.hp<=0){if(u.retreat)retreat(u,dt);return;}u.slow=Math.max(0,u.slow-dt);if(!stopped&&wetFooting(e,u,dt))return;u.moving=false;if(stopped){u.inspired=false;return;}u.animTime=(u.animTime||0)+dt;
       var c=def(u.kind),dir=u.isP?1:-1,range=c.range*(u.kind==='neighbor'&&e.segment===7?.72:1),target=null,distance=Infinity;
       live.forEach(function(v){if(v.isP===u.isP||(!roles[u.kind].projectile&&laneOf(v)!==laneOf(u)))return;var d=Math.abs(v.x-u.x);if(d<distance){distance=d;target=v;}});
-      u.inspired=live.some(function(v){return v!==u&&active(v)&&v.isP===u.isP&&roles[v.kind].haste&&Math.abs(v.x-u.x)<roles[v.kind].aura;});u.cd=Math.max(0,u.cd-dt*(u.disrupted?1-roles.musician.jam:1));
+      u.inspired=live.some(function(v){return v!==u&&active(v)&&!(v.slip>0)&&v.isP===u.isP&&roles[v.kind].haste&&Math.abs(v.x-u.x)<roles[v.kind].aura;});u.cd=Math.max(0,u.cd-dt*(u.disrupted?1-roles.musician.jam:1));
       if(u.wind>0){u.wind-=dt;if(u.wind<=0){u.follow=.2;if(u.kind==='heavy')u.shock=.35;var victim=live.find(function(v){return v.id===u.target;});if(victim&&(roles[u.kind].projectile||laneOf(victim)===laneOf(u))&&Math.abs(victim.x-u.x)<=range+.035)attacks.push({u:u,v:victim});u.cd=c.interval;}return;}
       if(target&&distance<=range){if(u.cd<=0){u.wind=c.windup||.22;u.target=target.id;}return;}
       var support=roles[u.kind];if((support.heal||support.haste)&&live.some(function(v){var ahead=(v.x-u.x)*dir;return v!==u&&active(v)&&(support.haste||v.hp<v.max)&&v.isP===u.isP&&ahead>0&&ahead<support.aura;}))return;var advance=c.speed*dt*(u.inspired?1+roles.musician.haste:1)*(u.slow>0?(support.slowFactor||.52):1),nx=u.x+dir*advance;
@@ -136,7 +137,7 @@
     e.units.forEach(function(u){updateLocomotion(u,dt,stopped);});
     e.units=e.units.filter(function(u){return u.returning||active(u)||(u.retreat&&u.x>-.04&&u.x<1.04);});
     if(e.segment===3)live.forEach(function(u){if(active(u)&&Math.abs(u.x-.5)<.11)u.hp=Math.min(u.max,u.hp+dt*5);});
-    live.forEach(function(u){u.recover=Math.max(0,(u.recover||0)-dt);if(!stopped&&active(u)&&u.hp<u.max&&live.some(function(v){return v!==u&&active(v)&&v.kind==='caretaker'&&v.isP===u.isP&&Math.abs(v.x-u.x)<roles.caretaker.aura;})){u.hp=Math.min(u.max,u.hp+dt*roles.caretaker.heal);u.recover=.25;}});
+    live.forEach(function(u){u.recover=Math.max(0,(u.recover||0)-dt);if(!stopped&&active(u)&&u.hp<u.max&&live.some(function(v){return v!==u&&active(v)&&!(v.slip>0)&&v.kind==='caretaker'&&v.isP===u.isP&&Math.abs(v.x-u.x)<roles.caretaker.aura;})){u.hp=Math.min(u.max,u.hp+dt*roles.caretaker.heal);u.recover=.25;}});
     if(e.segment===1){var p=live.some(function(u){return active(u)&&u.isP&&Math.abs(u.x-.5)<.1;}),q=live.some(function(u){return active(u)&&!u.isP&&Math.abs(u.x-.5)<.1;}),owner=p!==q?p:null;if(owner!==t.owner)t.capture=0;t.owner=owner;if(owner!==null){t.capture+=dt;if(t.capture>=5){t.capture-=5;var bank=owner?g.p:g.e;bank.gold=Math.min(9999,bank.gold+6);if(owner)g.stats.goldEarned+=6;}}}else{t.capture=0;t.owner=null;}
   }
   function tick(g,dt,hit,reward,impact){var t=g.estate.tactics,gold=g.stats.goldEarned;t.impact=false;t.carry+=dt;while(t.carry>=1/30&&!g.over){step(g,1/30,hit);t.carry-=1/30;}if(t.impact&&impact)impact();if(reward&&g.stats.goldEarned>gold)reward(true,g.stats.goldEarned-gold);}

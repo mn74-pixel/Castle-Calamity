@@ -16,6 +16,23 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  estateTouchAudit: function(){
+    buildLevelSelect();var launch=document.getElementById('estateLaunch');
+    var point={clientX:40,clientY:40},start={touches:[point]},end={changedTouches:[point],cancelable:true,preventDefault:function(){}};
+    launch.dispatchEvent(Object.assign({type:'touchstart'},start));launch.dispatchEvent(Object.assign({type:'touchend'},end));
+    var started=ESTATE.active(G);G.p.gold=200;
+    var card=document.getElementById('estate_marian');card.dispatchEvent(Object.assign({type:'touchstart'},start));card.dispatchEvent(Object.assign({type:'touchend'},end));
+    var purchased=G.estate.units.length===1&&G.p.gold===180;
+    card.dispatchEvent({type:'click',detail:1});var once=G.estate.units.length===1;
+    var b=document.createElement('button'),calls=0;window.CASTLE_ESTATE_INPUT.bindTap(b,function(){calls++;});
+    b.dispatchEvent(Object.assign({type:'touchstart'},start));b.dispatchEvent({type:'touchmove',touches:[{clientX:80,clientY:40}]});b.dispatchEvent(Object.assign({type:'touchend'},end));b.dispatchEvent({type:'click',detail:1});var swipe=calls===0;
+    b.dispatchEvent(Object.assign({type:'touchstart'},start));b.dispatchEvent({type:'touchcancel'});b.dispatchEvent(Object.assign({type:'touchend'},end));var cancelled=calls===0;
+    b.dispatchEvent({type:'click',detail:0});var keyboard=calls===1;
+    b.dispatchEvent(Object.assign({type:'touchstart'},start));b.dispatchEvent(Object.assign({type:'touchend'},end));b.dispatchEvent({type:'click',detail:1});var deduplicated=calls===2;
+    b.dispatchEvent({type:'touchstart',touches:[point,point]});b.dispatchEvent(Object.assign({type:'touchend'},end));var multitouch=calls===2;
+    b.disabled=true;b.dispatchEvent({type:'click',detail:0});
+    return {started:started,purchased:purchased,once:once,swipe:swipe,cancelled:cancelled,keyboard:keyboard,disabled:calls===2,deduplicated:deduplicated,multitouch:multitouch};
+  },
   estateMusicScene: function(){launchEstateSegment(7);G.estate.ai=1e6;ESTATE.buy(G,'musician',true);G.estate.tactics.p=0;ESTATE.buy(G,'bat',true);ESTATE.buy(G,'bat',false);G.estate.units.forEach(function(u,i){u.x=[.43,.49,.54][i];u.wind=100;});window.CASTLE_ESTATE_TACTICS.tick(G,.3,castleDmg);const before=JSON.stringify(G.estate);render();return {pure:before===JSON.stringify(G.estate),playing:G.estate.units[0].performing,disrupted:G.estate.units[2].disrupted};},
   estateWearScene: function(ratio,p,night){launchEstateSegment(night?9:3);var c=p?G.p:G.e;c.hp=c.max*ratio;G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),stage:ESTATE.facadeCondition(c).stage,fatigue:ESTATE.residentFatigue(G,p),collapse:c.collapseT,holes:c.holes.length,fires:c.fires.length,rubble:c.rubble.length};},
   estateDeliveryScene: function(index,q){launchEstateSegment(index);G.estate.ai=1e6;ESTATE.buy(G,"runner",true);var r=G.estate.runners[0];ESTATE.tick(G,r.duration*q,castleDmg);render();return {phase:r.phase,open:ESTATE.doorOpen(G),x:r.x,y:r.y,target:ESTATE.runnerTarget(G,r),door:ESTATE.serviceDoor(G)};},
@@ -374,7 +391,7 @@ window.__QA = {
   humorScaleAudit: function(){
     return {human:humorousHumanScale(),soldier:getUnitDrawSize()/22,types:["policeman","flyingdesk","bathtub","cloudknight","moonjanitor","firemarshal","vacuumdemon","airdrop","runawaybanner","powderclerk"].filter(function(k){return !!GAG_MOTION[k];})};
   },
-  introAudit: function(){return {duration:INTRO_DURATION,noText:renderIntroV44.toString().indexOf("fillText")<0,renderer:renderIntro===renderIntroV44};},
+  introAudit: function(){var labels=[],original=CT.fillText;CT.fillText=function(text){labels.push(text);};try{this.intro(8.56);}finally{CT.fillText=original;}return {duration:INTRO_DURATION,noText:labels.length===0,renderer:renderIntro===renderIntroV44};},
   cannonScene: function(isP){
     G.units=[];G.projs=[];var c=isP?G.p:G.e;c.gold=9999;spawnUnit("cannon",!!isP);
     var u=G.units[G.units.length-1];u.acd=0;doCannon(u,0);
@@ -653,12 +670,13 @@ function classList() {
 }
 
 function makeElement(tag = "div") {
+  const listeners={};
   const el = {
     tagName: tag.toUpperCase(), style: {}, classList: classList(), dataset: {}, children: [],
     get innerHTML(){return this._innerHTML||"";},set innerHTML(value){this._innerHTML=value;this.children=[];},textContent: "", value: "", files: [], width: 60, height: 60,
     appendChild(ch) { this.children.push(ch); if(ch&&ch.id&&typeof elements!=="undefined")elements.set(ch.id,ch); return ch; },
     removeChild(ch) { this.children = this.children.filter((x) => x !== ch); },
-    addEventListener() {}, removeEventListener() {}, click() {}, focus() {}, remove() { if(this.id&&typeof elements!=="undefined")elements.delete(this.id); },
+    addEventListener(type,fn) { (listeners[type]||(listeners[type]=[])).push(fn); }, removeEventListener() {}, dispatchEvent(event) { for(const fn of listeners[event.type]||[])fn.call(this,event); }, click() {}, focus() {}, remove() { if(this.id&&typeof elements!=="undefined")elements.delete(this.id); },
     setAttribute(k, v) { this[k] = v; }, getAttribute(k) { return this[k]; },
     querySelector() { return makeElement("div"); }, querySelectorAll() { return []; },
     getBoundingClientRect() { return { width: sandbox.window.innerWidth, height: sandbox.window.innerHeight, left: 0, top: 0 }; }
@@ -968,7 +986,7 @@ check(premiumPhone.count===5,"pięć dopracowanych sylwetek zachowuje skalę na 
 const castleDamagePhone=qa.castleDamageScene();save("castle-damage-phone.png");
 check(castleDamagePhone.enemy===3,"krytyczne uszkodzenia zamku pozostają czytelne na telefonie");
 
-const introAudit=qa.introAudit();check(introAudit.renderer&&introAudit.noText&&introAudit.duration<14,"intro v4.4 jest krótsze niż 14 s i nie rysuje napisów");
+const introAudit=qa.introAudit();check(introAudit.renderer&&introAudit.noText&&introAudit.duration<14,"intro jest krótsze niż 14 s i nie rysuje napisów");
 qa.intro(3.32);save("intro-arrow-phone.png");qa.intro(6.72);save("intro-cone-phone.png");qa.intro(8.56);save("intro-ticket-phone.png");qa.intro(10.72);save("intro-chase-phone.png");
 qa.viewport(1280,720,1);qa.intro(3.32);save("intro-arrow-desktop.png");qa.intro(8.56);save("intro-ticket-desktop.png");qa.intro(10.72);save("intro-chase-desktop.png");
 
@@ -1039,7 +1057,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.12.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.13.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Deszcz: przełącznik '+key);
@@ -1184,3 +1202,4 @@ const regression71=qa.regression71();check(regression71.noRemoteDamage&&regressi
 check(cardAvailability.poor&&cardAvailability.affordable&&cardAvailability.spent&&cardAvailability.funds,"karty blokują brak środków, odblokowują dokładny koszt i wracają do blokady po zakupie");
 
 check(qa.eraCrestAudit(),"zdjęcia obu stron renderują się w każdej późniejszej epoce");
+for(const [w,h] of [[667,375],[932,430]]){qa.viewport(w,h,1);const touchAudit=qa.estateTouchAudit();check(Object.values(touchAudit).every(Boolean),`Osiedle ${w}×${h}: dotyk uruchamia i kupuje raz; swipe/cancel/multitouch nie aktywuje; klawiatura działa`);}

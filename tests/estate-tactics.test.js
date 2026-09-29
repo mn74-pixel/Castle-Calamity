@@ -10,6 +10,18 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('Menel name and attack timing descriptions match all eleven definitions',()=>{
+  assert.equal(T.cards.find(c=>c.id==='marian').pl,'Menel');
+  for(const c of T.cards){assert(T.description(c.id,'pl').includes('Odpoczynek '+c.interval+' s'));assert(T.description(c.id,'en').includes('wind-up '+(c.windup||.22)+' s'));}
+});
+check('slipping supports cannot heal or inspire either team',()=>{
+  for(const side of [true,false])for(const kind of ['caretaker','musician']){
+    const g=game(kind==='caretaker'?10:6);g.estate.rain=true;
+    const support=spawn(g,kind,side,.4),ally=spawn(g,kind==='caretaker'?'heavy':'bat',side,.44);
+    support.slip=.8;ally.hp=50;ally.wind=100;tick(g,.2);
+    assert.equal(ally.hp,50);assert(!ally.inspired);
+  }
+});
 check('unlock stages, shared funds, separate recruitment cooldown',()=>{const g=game(0);assert.equal(T.status(g,'bike',true).reason,'locked');assert.equal(T.status(g,'neighbor',true).reason,'locked');spawn(g,'dres',true);assert.equal(g.p.gold,982);assert.equal(g.stats.unitsSpawned,1);assert.equal(T.status(g,'dres',true).reason,'recruit');tick(g,2.5);assert(T.status(g,'dres',true).ok);g.p.gold=0;assert.equal(T.status(g,'dres',true).reason,'gold');});
 check('every unit steals once, returns funds home and leaves both buildings intact',()=>{for(const c of T.cards)for(const p of [true,false]){const g=game(c.unlock);spawn(g,c.id,p);tick(g,90);const loot=T.raidCapacity(c.id,c.unlock);assert.equal((p?g.e:g.p).hp,2200);assert.equal((p?g.e:g.p).gold,1000-loot);assert.equal((p?g.p:g.e).gold,1000-c.cost+loot);assert.equal(g.estate.units.length,0);assert.equal(g.stats.kills+g.stats.losses,0);}});
 check('dres stops bikes; bikes catch exposed neighbours; neighbours kite dres through slowing',()=>{for(const [a,b] of [['dres','bike'],['bike','neighbor'],['neighbor','dres']]){const g=game();spawn(g,a,true,.35);spawn(g,b,false,.65);tick(g,20);assert.equal(g.stats.kills,1,a+' should win');assert.equal(g.stats.losses,0,a+' should survive');}});

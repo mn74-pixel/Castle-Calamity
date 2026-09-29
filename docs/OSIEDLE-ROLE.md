@@ -1,4 +1,10 @@
-# Osiedle — role oddziałów, v8.12.0
+# Osiedle — role oddziałów, v8.13.0
+
+Audyt v8.13.0: nazwa karty to „Menel” (wewnętrzny identyfikator `marian`
+pozostaje stabilny). Pozostają wszystkie 11 typów. Opisy pokazują osobno
+czas zamachu i odpoczynku: sam iloraz cios/odpoczynek zawyża realne DPS.
+Poślizg wyłącza wsparcie muzyka i dozorcy, tak samo jak patrol.
+Nie zmieniono cen ani podstawowych statystyk bez dowodu z rozgrywki.
 
 ## Rajdy ekonomiczne
 
@@ -15,7 +21,7 @@ Po jej wyczerpaniu postać wraca do domu. Koszty i moce obu stron są identyczne
 | Oddział | Koszt | Zastosowanie i moc | Słabość | Czytelny strój |
 | --- | ---: | --- | --- | --- |
 | Dresiarz | 18 | Tani front; premia 40% przeciw szybkim | Spowalniający dystans | Dres z kapturem i lampasami |
-| Menel Marian | 20 | Cios 13, spowolnienie 1,4 s, premia frontu przeciw szybkim | Mały zasięg, słaby cios | Łatany płaszcz, szalik, czapka i zarost |
+| Menel | 20 | Cios 13, spowolnienie 1,4 s, premia frontu przeciw szybkim | Mały zasięg, słaby cios | Łatany płaszcz, szalik, czapka i zarost |
 | Bokser | 34 | Cios 18, 150 wytrzymałości, o 30% mniej obrażeń od pocisków | Ciężki front, krótki zasięg | Rękawice, opaska i szeroki pas |
 | Rowerzysta | 22 | Szybki nacisk na okno; premia 40% przeciw dystansowi | Zablokowany front | Jasna kurtka, torba i rower |
 | Sąsiadka | 32 | Kapeć spowalnia na 1,3 s; premia 40% przeciw frontowi | Rower i rolkarz | Fioletowa sukienka, fartuch, chusta |
