@@ -100,13 +100,22 @@
   // never the reverse. Keep the historical unit-size clamp in one adapter.
   function actorScale(height){return Math.min(1.8,Math.max(.62,Math.round(Math.max(24,Math.min(46,height*.064)))/22*.74));}
   function pose(u){var phase=u.walk||0,moving=!!u.moving,cycle=moving?Math.sin(phase):0;
-    return {stride:cycle*(u.kind==='skater'?7:u.kind==='heavy'?3:5),lift:moving?Math.max(0,Math.cos(phase))*3:0,
+    return {stride:cycle*(u.kind==='skater'?7:u.kind==='heavy'?3:5),lift:moving?Math.max(0,Math.cos(phase))*3:0,rightLift:moving?Math.max(0,-Math.cos(phase))*3:0,sway:cycle*.025,
       bob:moving&&u.kind!=='bike'?Math.abs(cycle)*.85:0,
       recoil:(u.hurt||0)/.24*2.5,
       reach:u.wind>0?-Math.sin(u.wind/(u.kind==='heavy'?.55:.22)*Math.PI)*4:(u.follow||0)/.2*9,
       pedalX:Math.cos(phase)*5,pedalY:Math.sin(phase)*5};
   }
-  function limb(c,x,y,kx,ky,fx,fy,color,width){line(c,x,y,kx,ky,'#233238',width+1.5);line(c,kx,ky,fx,fy,'#233238',width+1.5);line(c,x,y,kx,ky,color,width);line(c,kx,ky,fx,fy,color,width);line(c,x-1,y+1,kx-1,ky,'#71818a',.8);}
+  function limb(c,x,y,kx,ky,fx,fy,color,width){line(c,x,y,kx,ky,'#233238',width+1.5);line(c,kx,ky,fx,fy,'#233238',width+1.5);line(c,x,y,kx,ky,color,width);line(c,kx,ky,fx,fy,color,width);line(c,x-width*.18,y+1,kx-width*.18,ky,'rgba(238,228,196,.32)',width*.22);line(c,kx-width*.18,ky,fx-width*.18,fy-1,'rgba(238,228,196,.2)',width*.18);ellipse(c,kx+.7,ky+1,width*.25,width*.2,'rgba(20,32,38,.2)');}
+  function hand(c,x,y){ellipse(c,x+.6,y+.8,3,3,'#8f694e');ellipse(c,x,y,2.6,2.7,'#d5ad88');ellipse(c,x-.8,y-1,1.2,1.2,'#f0caa1');}
+  function clothingBody(c,u,head,hip,team){var neighbor=u.kind==='neighbor',bottom=neighbor?-15:u.kind==='caretaker'?hip+5:hip+1,col=outfit(u.kind,team);
+    c.beginPath();c.moveTo(-5,head+12);c.bezierCurveTo(-11,head+12,-10,head+21,-11,bottom-4);c.quadraticCurveTo(-2,bottom+3,neighbor?13:10,bottom);c.bezierCurveTo(9,head+26,11,head+13,5,head+12);c.quadraticCurveTo(0,head+15,-5,head+12);c.closePath();
+    c.fillStyle=col;c.strokeStyle='#233238';c.lineWidth=1.4;c.fill();c.stroke();c.save();c.clip();
+    var light=c.createLinearGradient(-10,head+16,11,head+32);light.addColorStop(0,'rgba(249,235,201,.3)');light.addColorStop(.38,'rgba(243,229,197,.08)');light.addColorStop(.72,'rgba(26,39,45,.08)');light.addColorStop(1,'rgba(21,32,38,.4)');c.fillStyle=light;c.fillRect(-15,head+10,32,50);
+    ellipse(c,4,head+17,10,3,'rgba(16,29,35,.18)');c.restore();
+    line(c,0,head+16,1,bottom-3,'#c6c5b4',.8);line(c,-7,bottom-2,7,bottom-2,'#34434a',1.5);line(c,3,bottom-9,7,bottom-10,'#33434a',1);
+    c.strokeStyle='rgba(235,225,192,.3)';c.lineWidth=.8;c.beginPath();c.moveTo(-7,bottom-9);c.quadraticCurveTo(-4,bottom-6,-1,bottom-8);c.stroke();
+  }
   function outfit(id,team){return {cycling:'#c9b785',apron:'#806977',vest:'#444f58',sport:'#786b91',workcoat:'#687a65',heavyvest:'#60564c'}[(roles[id]||{}).kit]||team;}
   function armPose(u,head,p){var bike=u.kind==='bike',throwing=u.kind==='neighbor'&&(u.wind>0||u.follow>0);
     return {backX:bike?15:-7-p.stride,backY:bike?-32:head+32,
@@ -115,7 +124,7 @@
   }
   function portrait(c,u,y,team){var ink='#233238',hit=u.hurt>0,old=u.kind==='caretaker',heavy=u.kind==='heavy';
     c.save();c.translate(0,y);
-    line(c,-1,12,-1,16,'#b88768',5);ellipse(c,0,6,heavy?7:6,7.5,'#d4a982');ellipse(c,-4,7,2,3,'#b98565');ellipse(c,-1,3,3.3,3.7,'#e8bc94');ellipse(c,5,7,2.5,2.5,'#d4a982');
+    line(c,-1,12,-1,16,'#b88768',5);var skin=c.createLinearGradient(-6,0,7,13);skin.addColorStop(0,'#efc9a1');skin.addColorStop(.48,'#d9aa82');skin.addColorStop(1,'#a67355');ellipse(c,0,6,heavy?7:6,7.5,skin);ellipse(c,-4,7,2,3,'#b98565');ellipse(c,-1,3,3.3,3.7,'rgba(251,214,173,.32)');ellipse(c,5,7,2.5,2.5,'#d4a982');ellipse(c,6,6,1,1,'#edc9a2');
     // A few broad landmarks survive the smallest gameplay scale.
     if(u.kind==='neighbor'){c.fillStyle='#a88a60';c.beginPath();c.moveTo(-8,14);c.lineTo(-8,0);c.quadraticCurveTo(-2,-6,7,1);c.lineTo(7,3);c.lineTo(-2,1);c.lineTo(-4,14);c.closePath();c.fill();line(c,-6,2,-3,0,'#ddd0ae',2);ellipse(c,-5,14,3,2,'#a88a60');}
     else if(heavy){line(c,-6,1,-6,4,'#59463b',2);line(c,5,1,6,3,'#59463b',1.5);}
@@ -181,19 +190,18 @@
     if(bike){line(c,-27,-21,-11,-21,ink,1.5);line(c,-25,-21,-20,-11,ink,1);ellipse(c,17,-28,2,2,'#e5cf8f');line(c,-27,-19,-27,-17,'#be6d51',2);}
     var hip=bike?-25:-24,head=bike?-49:neighbor?-55:-58;
     if(bike){[-1,1].forEach(function(side){var fx=1+side*p.pedalX,fy=-9+side*p.pedalY;limb(c,-4,hip,6+side*3,-21,fx,fy,side<0?'#35444f':'#485866',5);line(c,fx-2,fy,fx+4,fy,'#d0c7ae',2.5);line(c,1,-9,fx,fy,ink,1.5);});}
-    else{limb(c,-4,hip,-6+stride*.35,-12,-5+stride,-3-p.lift,'#35444f',5);limb(c,4,hip,7-stride*.4,-12,6-stride,-3,'#485866',5);line(c,-7+stride,-3-p.lift,1+stride,-3-p.lift,'#c6bea7',3);line(c,4-stride,-3,12-stride,-3,'#c6bea7',3);}
-    c.save();c.translate(-p.recoil,-p.bob);c.rotate(hit?-.045:bike?.075+attack*.012:attack*.003);
-    c.fillStyle=outfit(u.kind,team);c.strokeStyle=ink;c.lineWidth=1.5;c.beginPath();c.moveTo(-8,head+12);c.lineTo(7,head+12);c.lineTo(neighbor?13:10,neighbor?-15:hip+1);c.lineTo(neighbor?-13:-10,neighbor?-15:hip+1);c.closePath();c.fill();c.stroke();
-    c.fillStyle='rgba(20,30,38,.23)';c.beginPath();c.moveTo(4,head+13);c.lineTo(7,head+13);c.lineTo(10,hip);c.lineTo(2,hip);c.closePath();c.fill();line(c,0,head+14,0,hip-2,'#c6c5b4',.8);line(c,-7,hip-2,8,hip-2,ink,2);line(c,2,hip-8,7,hip-9,ink,.8);
+    else{limb(c,-4,hip,-6+stride*.35,-12,-5+stride,-3-p.lift,'#35444f',5);limb(c,4,hip,7-stride*.4,-12,6-stride,-3-p.rightLift,'#485866',5);line(c,-7+stride,-3-p.lift,1+stride,-3-p.lift,'#c6bea7',3);line(c,4-stride,-3-p.rightLift,12-stride,-3-p.rightLift,'#c6bea7',3);}
+    if(u.kind==='skater'){[-4+stride,8-stride].forEach(function(xx,i){var lift=i===0?p.lift:p.rightLift;line(c,xx-4,-1-lift,xx+7,-1-lift,team,4);for(var wh=0;wh<3;wh++)ellipse(c,xx-3+wh*4,2-lift,2,2,ink);});line(c,-8+stride*.35,-12,-4+stride*.35,-12,team,4);line(c,5-stride*.4,-12,9-stride*.4,-12,team,4);}
+    c.save();c.translate(-p.recoil,-p.bob);c.rotate(hit?-.045:bike?.075+attack*.012:attack*.003+p.sway);
+    var arms=armPose(u,head,p);limb(c,-7,head+16,bike?4:-11-stride*.5,bike?-35:head+26,arms.backX,arms.backY,team,4.5);hand(c,arms.backX,arms.backY);clothingBody(c,u,head,hip,team);
     if(neighbor){c.fillStyle='#cbbca0';c.fillRect(-6,-34,13,18);for(var dot=0;dot<4;dot++)ellipse(c,-4+dot*3,-28+dot%2*5,1,1,'#9b6555');}else if(u.kind==='dres'||u.kind==='courier'){line(c,-6,head+14,-7,hip-1,'#dfd7b9',1.3);line(c,-3,head+14,-4,hip-1,'#dfd7b9',1.3);}
-    costume(c,u,head,hip,team);var arms=armPose(u,head,p);limb(c,-7,head+16,bike?4:-11-stride*.5,bike?-35:head+26,arms.backX,arms.backY,team,4.5);ellipse(c,arms.backX,arms.backY,2.5,2.5,'#d5ad88');limb(c,7,head+16,bike?12:12+attack*.5,bike?-36:head+20,arms.frontX,arms.frontY,team,4.5);ellipse(c,arms.frontX,arms.frontY,2.5,2.5,'#d5ad88');
-    if(neighbor){if(arms.slipper){ellipse(c,arms.frontX+1,arms.frontY-1,5,2,'#d6b46e');c.strokeStyle=ink;c.lineWidth=1;c.stroke();}line(c,-11,-25,-11,-17,'#d1c3a4',1);c.fillStyle='#857f4e';c.fillRect(-16,-19,10,11);}
+    costume(c,u,head,hip,team);limb(c,7,head+16,bike?12:12+attack*.5,bike?-36:head+20,arms.frontX,arms.frontY,team,4.5);hand(c,arms.frontX,arms.frontY);
+    if(neighbor){if(arms.slipper){ellipse(c,arms.frontX+1,arms.frontY-1,5,2,'#d6b46e');c.strokeStyle=ink;c.lineWidth=1;c.stroke();}c.save();c.translate(arms.backX+11,arms.backY+25);line(c,-11,-25,-11,-17,'#d1c3a4',1);c.fillStyle='#857f4e';c.fillRect(-16,-19,10,11);line(c,-14,-17,-14,-10,'#bdba86',1);c.restore();}
     portrait(c,u,head,team);
     if(u.kind==='courier'){c.fillStyle='#d1bd89';c.fillRect(-6,head+21,5,6);line(c,-8,hip-6,8,hip-6,'#d1bd89',2);if(u.cargo){c.fillStyle='#977544';c.strokeStyle=ink;c.lineWidth=1.3;c.fillRect(9,-28,18,14);c.strokeRect(9,-28,18,14);line(c,11,-24,25,-24,'#d1b47a',1.5);line(c,11,-20,25,-20,'#d1b47a',1.5);line(c,12,-30,24,-30,ink,2);}}
     carriedProps(c,u,phase,arms.frontX,arms.frontY);
     if(u.kind==='bat'&&!u.retreat){c.save();c.translate(17+attack,head+22);c.rotate(-.55+attack*.13);line(c,0,2,0,-27,ink,6);line(c,0,1,0,-10,'#997343',3);line(c,0,-10,0,-27,'#d3ac6c',5);line(c,-2,-16,-2,-26,'#efd59b',1);c.restore();}
-    if(u.kind==='skater'){[-4+stride,8-stride].forEach(function(xx,i){var lift=i===0?p.lift:0;line(c,xx-4,-1-lift,xx+7,-1-lift,team,4);for(var wh=0;wh<3;wh++)ellipse(c,xx-3+wh*4,2-lift,2,2,ink);});line(c,-5,-17,0,-17,team,4);line(c,5,-17,10,-17,team,4);}
-    if(u.kind==='caretaker'){c.fillStyle='#687a65';c.fillRect(-9,head+15,18,22);c.fillStyle='#d9c59b';c.fillRect(-5,head+20,7,6);line(c,-8,head+17,8,head+17,team,3);line(c,0,head+19,0,hip-1,'#b4bda3',1);c.save();c.translate(arms.frontX-17,arms.frontY-head-22);line(c,18,-43,22,-7,'#b49b70',2);c.fillStyle='#b8a780';c.fillRect(16,-9,15,6);for(var br=0;br<4;br++)line(c,18+br*3,-7,18+br*3,-2,'#8a7854',1);c.restore();line(c,-12,-24,-17,-14,'#bbb9a3',1);c.fillStyle='#9caaa0';c.fillRect(-23,-14,12,11);c.fillStyle='#e2d0a2';c.fillRect(-18,-12,3,7);c.fillRect(-20,-10,7,3);}
+    if(u.kind==='caretaker'){c.fillStyle='#d9c59b';c.fillRect(-5,head+20,7,6);line(c,-8,head+17,8,head+17,team,3);line(c,0,head+19,0,hip-1,'#b4bda3',1);c.save();c.translate(arms.frontX-17,arms.frontY-head-22);line(c,18,-43,22,-7,'#b49b70',2);c.fillStyle='#b8a780';c.fillRect(16,-9,15,6);for(var br=0;br<4;br++)line(c,18+br*3,-7,18+br*3,-2,'#8a7854',1);c.restore();line(c,-12,-24,-17,-14,'#bbb9a3',1);c.fillStyle='#9caaa0';c.fillRect(-23,-14,12,11);c.fillStyle='#e2d0a2';c.fillRect(-18,-12,3,7);c.fillRect(-20,-10,7,3);}
     if(u.recover>0&&!u.retreat){line(c,-14,head-3,-14,head+3,'#c5e7a3',2);line(c,-17,head,-11,head,'#c5e7a3',2);}
     c.restore();
     c.restore();

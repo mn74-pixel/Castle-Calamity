@@ -95,4 +95,7 @@ check('heavy rig alternates feet, anticipates impact and stays deterministic wit
   assert(T.heavyPose({follow:.2}).reach>0);const left=T.heavyPose({moving:true,walk:0}),right=T.heavyPose({moving:true,walk:Math.PI});assert(left.leftLift>left.rightLift);assert(right.rightLift>right.leftLift);
   for(let t=0;t<20;t+=.1){const p=T.heavyPose({moving:true,walk:t,animTime:t});assert(Object.values(p).every(Number.isFinite));assert(p.leftX<p.rightX);assert(p.leftLift>=0&&p.rightLift>=0);}
 });
+check('walking alternates foot lift without lifting both feet, idle is stable',()=>{
+  for(const kind of ['dres','bat','neighbor','skater','caretaker','courier']){const left=T.pose({kind,moving:true,walk:0}),right=T.pose({kind,moving:true,walk:Math.PI});assert(left.lift>0&&left.rightLift===0);assert(right.rightLift>0&&right.lift===0);for(let t=0;t<7;t+=.1){const p=T.pose({kind,moving:true,walk:t});assert(p.lift*p.rightLift===0);assert(Math.abs(p.sway)<=.025);}const idle=T.pose({kind,walk:3});assert.equal(idle.lift+idle.rightLift+idle.sway,0);}
+});
 console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');

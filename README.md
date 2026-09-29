@@ -1,5 +1,15 @@
 # Castle Calamity
 
+### v8.8.2 — objętość ubrań, twarzy i praca całej sylwetki
+
+Pozostałe postacie dostały zaokrąglone kontury kurtek i płaszczy, boczny
+światłocień, fałdy materiału oraz modelowane twarze i dłonie. Dalsza ręka
+jest rysowana za tułowiem. Chód naprzemiennie odrywa stopy i lekko skręca
+tułów; rolki oraz ochraniacze są przypisane do nóg, nie do ruchu kurtki.
+Torba sąsiadki podąża za dłonią. Bez zmiany skali postaci, mocy i ekonomii.
+To stylizowany efekt objętości w Canvas, nie pełne modele 3D.
+Testy automatyczne i podglądy nie zastępują odbioru ruchu na telefonie.
+
 ### v8.8.1 — okrągła sylwetka i ciężar ruchu Heńka
 
 Heniek ma własną sylwetkę opartą na krzywych zamiast rozciągniętego tułowia

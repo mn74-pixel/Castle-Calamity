@@ -1033,7 +1033,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.8.1"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.8.2"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
