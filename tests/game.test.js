@@ -16,6 +16,7 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  photoReactionScene: function(p,hit){launchEstateSegment(4);var img=document.createElement('canvas');img.width=img.height=320;var cx=img.getContext('2d');cx.fillStyle='#c78e6e';cx.beginPath();cx.ellipse(160,160,115,148,0,0,Math.PI*2);cx.fill();cx.fillStyle='#40342f';cx.fillRect(105,116,27,10);cx.fillRect(191,116,27,10);cx.fillStyle='#823c44';cx.fillRect(142,218,40,8);img.faceRig={version:1,mouth:{x:162/320,y:222/320},method:'manual'};var oldP=PLAYER_CREST,oldE=ENEMY_CREST;if(p)PLAYER_CREST=img;else ENEMY_CREST=img;var st=G.estate[p?'p':'e'];ESTATE.buy(G,'wine',p);st.action.t=.6;st.hitReactT=hit?.36:0;st.hitReactPower=1;var before=JSON.stringify(G.estate);render();var pure=before===JSON.stringify(G.estate);PLAYER_CREST=oldP;ENEMY_CREST=oldE;return pure;},
   estateMobileLayout: function(){launchEstateSegment(7);render();var ground=G.GY;return {ground:ground,creditsBottom:ground+44,hintBottom:ground+55,controlsTop:H-50,roof:ground-ESTATE.baseLayout(G.p,ground).h,height:H};},
   portraitAudit: function(){
     var src=document.createElement('canvas');src.width=400;src.height=800;var ctx=src.getContext('2d');ctx.fillStyle='#193455';ctx.fillRect(0,0,400,800);ctx.fillStyle='#c47e60';ctx.fillRect(130,100,140,200);
@@ -24,8 +25,9 @@ window.__QA = {
     var before=PLAYER_CREST;confirmPortrait(src,{x:130,y:100,width:140,height:200});var modal=document.getElementById('portraitEditor'),preview=modal.children[0],controls=modal.children[1],slider=controls.children[1];preview.getBoundingClientRect=function(){return {left:0,top:0,width:320,height:320};};
     function pointer(type,id,x,y){preview.dispatchEvent({type:type,pointerId:id,clientX:x,clientY:y,preventDefault:function(){}});}
     var zoomBefore=Number(slider.value);pointer('pointerdown',1,100,160);pointer('pointerdown',2,200,160);pointer('pointermove',2,240,160);var pinched=Number(slider.value)>zoomBefore;pointer('pointercancel',2,240,160);pointer('pointermove',1,120,170);pointer('pointerup',1,120,170);
-    slider.value='3';slider.oninput();controls.children[2].onclick();controls.children[4].onclick();
-    return {center:center,corner:corner,bounded:Math.abs(tr.x)<=1120&&Math.abs(tr.y)<=480,cancelled:PLAYER_CREST===before,pinched:pinched,released:preview.captures.size===0};
+    slider.value='3';slider.oninput();controls.children[2].onclick();controls.children[5].onclick();pointer('pointerdown',3,170,230);var marked=controls.children[5].getAttribute('aria-pressed')==='false';controls.children[6].onclick();controls.children[4].onclick();
+    var old=localStorage.getItem('castleCalamityRigP');localStorage.setItem('castleCalamityRigP',JSON.stringify({version:1,mouth:{x:.55,y:.72},method:'manual'}));var loaded={};restoreFaceRig(loaded,true);var restored=loaded.faceRig.mouth.x===.55;if(old)localStorage.setItem('castleCalamityRigP',old);else localStorage.removeItem('castleCalamityRigP');
+    return {center:center,corner:corner,bounded:Math.abs(tr.x)<=1120&&Math.abs(tr.y)<=480,cancelled:PLAYER_CREST===before,pinched:pinched,released:preview.captures.size===0,marked:marked,restored:restored};
   },
   estateTouchAudit: function(){
     buildLevelSelect();var launch=document.getElementById('estateLaunch');
@@ -790,6 +792,7 @@ vm.runInContext(fs.readFileSync(path.join(root, "content", "era-art-v73.js"), "u
 vm.runInContext(fs.readFileSync(path.join(root, "content", "next-eras-v74.js"), "utf8"), sandbox, { filename: "next-eras-v74.js" });
 vm.runInContext(fs.readFileSync(path.join(root,"content","estate-tactics.js"),"utf8"),sandbox,{filename:"estate-tactics.js"});
 vm.runInContext(fs.readFileSync(path.join(root,"content","osiedle-v75.js"),"utf8"),sandbox,{filename:"osiedle-v75.js"});
+vm.runInContext(fs.readFileSync(path.join(root,"content","face-rig.js"),"utf8"),sandbox,{filename:"face-rig.js"});
 vm.runInContext(gameSource, sandbox, { filename: "game.js" });
 
 const qa = sandbox.window.__QA;
@@ -1073,7 +1076,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.14.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.15.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Deszcz: przełącznik '+key);
@@ -1218,6 +1221,7 @@ const regression71=qa.regression71();check(regression71.noRemoteDamage&&regressi
 check(cardAvailability.poor&&cardAvailability.affordable&&cardAvailability.spent&&cardAvailability.funds,"karty blokują brak środków, odblokowują dokładny koszt i wracają do blokady po zakupie");
 
 check(qa.eraCrestAudit(),"zdjęcia obu stron renderują się w każdej późniejszej epoce");
-const portraitAudit=qa.portraitAudit();check(portraitAudit.center.join(',')==='196,126,96,255'&&portraitAudit.corner===0&&portraitAudit.bounded&&portraitAudit.cancelled&&portraitAudit.pinched&&portraitAudit.released,'ręczny kadr: źródłowe kolory, przezroczysty owal, pinch, anulowanie gestu i edycji bez zmiany twarzy');
+const portraitAudit=qa.portraitAudit();check(portraitAudit.center.join(',')==='196,126,96,255'&&portraitAudit.corner===0&&portraitAudit.bounded&&portraitAudit.cancelled&&portraitAudit.pinched&&portraitAudit.released&&portraitAudit.marked&&portraitAudit.restored,'ręczny kadr: źródłowe kolory, wycięcie głowy, pinch, wskazanie ust i zapis punktu, anulowanie bez zmiany twarzy');
+for(const [w,h] of [[1280,720],[667,375]]){qa.viewport(w,h,1);for(const side of [true,false])for(const hit of [false,true]){check(qa.photoReactionScene(side,hit),`zdjęcie: picie/trafienie renderuje bez zmiany stanu ${w}/${side}/${hit}`);save(`photo-reaction-${w}-${side}-${hit}.png`);}}
 for(const [w,h] of [[667,375],[844,390],[932,430],[740,300]]){qa.viewport(w,h,1);const layout=qa.estateMobileLayout();check(layout.creditsBottom<layout.controlsTop&&layout.hintBottom<layout.controlsTop&&layout.roof>=69,`Osiedle ${w}×${h}: kredyty i opis ponad przyciskami, dach poniżej kart`);save(`estate-safe-hud-${w}.png`);}
 for(const [w,h] of [[667,375],[932,430]]){qa.viewport(w,h,1);const touchAudit=qa.estateTouchAudit();check(Object.values(touchAudit).every(Boolean),`Osiedle ${w}×${h}: dotyk uruchamia i kupuje raz; swipe/cancel/multitouch nie aktywuje; klawiatura działa`);}

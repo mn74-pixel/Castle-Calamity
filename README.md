@@ -1,5 +1,27 @@
 # Castle Calamity
 
+### v8.15.0 — usta jako punkt animacji i reakcja wgranej twarzy
+
+Butelka jest ustawiana końcem szyjki przy zapisanym punkcie ust, we wspólnym
+układzie głowy: obrót, proporcje zdjęcia, strona bloku i odrzut nie wymagają
+osobnych przesunięć. Unoszenie i wycofanie ręki płynnie dochodzi do tego punktu.
+Zdjęcie po trafieniu otrzymuje krótką deformację 16 pasów; nie doklejamy
+drugich oczu ani ust. Oryginalne piksele pozostają niezmienione.
+
+Lokalna heurystyka kontrastu/koloru proponuje usta w edytorze. To nie model
+landmarków i nie gwarantuje trafienia dla profilu, zarostu czy nietypowego światła.
+Krzyżyk można poprawić przyciskiem „Wskaż usta” i dotknięciem zdjęcia.
+Punkt jest zapisywany osobno dla obu stron; starsze zapisy dostają estymację.
+Zmiana kadru/obrotu ponownie uruchamia estymację, by nie zostawić starego punktu.
+
+Maska ma teraz kontur głowy z węższą szczęką. Opcjonalne „Usuń jednolite tło”
+usuwa kolory połączone z brzegiem zdjęcia, chroniąc centralny obszar twarzy.
+Nie jest to semantyczna segmentacja: może usunąć podobne kolorystycznie włosy,
+dlatego domyślnie jest wyłączona i wynik jest widoczny przed zapisem.
+Moduł działa lokalnie i offline; analiza nie jest wykonywana w pętli bitwy.
+Testy obejmują geometrię szyjki, zapis ust, maskę i reakcje obu stron przy
+1280×720 oraz 667×375. Zdjęcia użytkownika i gesty nadal wymagają odbioru na iPhonie.
+
 ### v8.14.0 — miejsce na sterowanie telefonu i ręczny kadr twarzy
 
 Osiedle rezerwuje 112 px pod polem walki na niskich ekranach. Morale,
