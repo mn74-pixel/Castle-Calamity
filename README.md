@@ -1,5 +1,14 @@
 # Castle Calamity
 
+### v8.7.1 — czytelne role i odrębne stroje
+
+Siedem oddziałów ma osobne stroje i spójny podział na front, szybkie natarcie,
+dystans oraz wsparcie. Opisy kart PL/EN podają moc i słabość na podstawie
+danych walki. Dozorca pozostaje przy rannym sojuszniku i rusza po uzupełnieniu
+wytrzymałości; kij wybiera najbliższy dodatkowy cel. Heniek porusza się ciężej,
+rowerzysta szybciej pedałuje, rolkarz ma spokojniejszy rytm odpychania.
+Pełny podział: [role oddziałów](docs/OSIEDLE-ROLE.md).
+
 ### v8.7.0 — Wielki Heniek rozbija tłok
 
 Nowy ciężki oddział: koszt 54, wytrzymałość 280, uderzenie 44 w główny cel

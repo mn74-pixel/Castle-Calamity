@@ -1032,7 +1032,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.7.0"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.7.1"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
@@ -1062,9 +1062,9 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   }
 }
 const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
-const poseSheet=createCanvas(800,504),poseContext=poseSheet.getContext('2d');
-poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,504);
-for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy'].entries()){
+const poseSheet=createCanvas(800,672),poseContext=poseSheet.getContext('2d');
+poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,672);
+for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy','neighbor','caretaker'].entries()){
   const frames=[];
   for(let frame=0;frame<6;frame++){
     const u={kind,isP:true,moving:frame<3,walk:frame*Math.PI/2,wind:frame===3?.11:0,follow:frame===4?.2:0,hurt:frame===5?.2:0,cargo:kind==='courier'};

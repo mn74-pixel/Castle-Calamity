@@ -60,4 +60,15 @@ check('heavy unlock replaces the bat card, preserves existing bat units and shar
 check('spread ranged support can stop the expensive heavy before he reaches the building',()=>{
   for(const p of [true,false]){const g=game(10),h=spawn(g,'heavy',p,p?.35:.65);spawn(g,'neighbor',!p,p?.64:.36);spawn(g,'neighbor',!p,p?.69:.31);tick(g,25);assert(h.retreat);assert.equal((p?g.e:g.p).hp,2200);}
 });
+check('role sheets describe actual powers in both languages and have distinct clothing',()=>{
+  assert.equal(new Set(T.cards.map(c=>T.roles[c.id].kit)).size,7);
+  for(const c of T.cards){assert.equal(T.archetype(c.id),T.roles[c.id].role);for(const lang of ['pl','en']){const text=T.description(c.id,lang);assert(text.includes(String(c.hp)));assert(text.includes(String(c.attack)));assert(text.includes(lang==='pl'?'Słabość:':'Weakness:'));}}
+  assert(T.description('bat','pl').includes('13'));assert(T.description('heavy','en').includes('33'));assert(T.description('caretaker','pl').includes('+4'));assert(T.description('skater','en').includes('85%'));
+});
+check('caretaker holds behind an injured ally, heals, then resumes instead of creating a permanent stop',()=>{
+  for(const p of [true,false]){const g=game(10),dir=p?1:-1,a=spawn(g,'heavy',p,.5+dir*.06),c=spawn(g,'caretaker',p,.5);a.wind=100;a.hp=a.max-8;const x=c.x;tick(g,1);assert.equal(c.x,x);assert(a.hp>a.max-8);tick(g,2);assert.equal(a.hp,a.max);assert((c.x-x)*dir>0);}
+});
+check('bat secondary hit selects the nearest eligible rival, not array insertion order',()=>{
+  const g=game(5),a=spawn(g,'bat',true,.45),main=spawn(g,'bike',false,.48),far=spawn(g,'bike',false,.51),near=spawn(g,'bike',false,.49);a.lane=main.lane=1;far.lane=near.lane=0;[main,far,near].forEach(u=>u.wind=100);tick(g,.8);assert.equal(near.max-near.hp,13);assert.equal(far.hp,far.max);
+});
 console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');
