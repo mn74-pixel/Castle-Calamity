@@ -1,6 +1,6 @@
 {
   "name": "castle-calamity",
-  "version": "8.7.1",
+  "version": "8.7.2",
   "private": true,
   "scripts": {
     "test": "node tests/estate-tactics.test.js && node tests/game.test.js && node tests/pwa.test.js && node tests/era-art.test.js"

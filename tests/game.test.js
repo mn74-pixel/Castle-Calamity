@@ -1032,7 +1032,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.7.1"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.7.2"&&sandbox.window.CASTLE_ESTATE.baseGrammar.includes("hero-loggia"),"Osiedle v8.5 zachowuje mieszkalną architekturę i loggię bohatera");
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");
@@ -1075,6 +1075,9 @@ for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy','neighbo
   check(new Set(frames).size===6,'Osiedle: odrębne klatki ruchu, zamachu, uderzenia i reakcji — '+kind);
 }
 fs.writeFileSync(path.join(__dirname,'renders/estate-animation-poses.png'),poseSheet.toBuffer('image/png'));
+const portraits=[];
+for(const unit of estateActors.cards){const tile=createCanvas(64,64),cx=tile.getContext('2d');cx.translate(25,15);cx.scale(2.5,2.5);estateActors.portrait(cx,{kind:unit.id},0,'#528caa');portraits.push(tile.toBuffer('image/png').toString('base64'));}
+check(new Set(portraits).size===7,'Osiedle: siedem odrębnych twarzy i nakryć głowy, bez identycznych portretów');
 qa.viewport(1280,720,1);
 for(const segment of [2,3,5,6,8,9,10]){qa.estateSegmentScene(segment);save("estate-1280x720-"+segment+".png");}
 qa.estateExpressionScene("drink");save("estate-expression-drink.png");

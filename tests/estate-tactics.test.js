@@ -71,4 +71,12 @@ check('caretaker holds behind an injured ally, heals, then resumes instead of cr
 check('bat secondary hit selects the nearest eligible rival, not array insertion order',()=>{
   const g=game(5),a=spawn(g,'bat',true,.45),main=spawn(g,'bike',false,.48),far=spawn(g,'bike',false,.51),near=spawn(g,'bike',false,.49);a.lane=main.lane=1;far.lane=near.lane=0;[main,far,near].forEach(u=>u.wind=100);tick(g,.8);assert.equal(near.max-near.hp,13);assert.equal(far.hp,far.max);
 });
+check('cycling grips stay on handlebars and the throwing hand releases its slipper',()=>{
+  for(let t=0;t<7;t+=.25){const u={kind:'bike',walk:t,moving:true},a=T.armPose(u,-49,T.pose(u));assert.equal(a.backX,15);assert.equal(a.frontX,17);assert.equal(a.backY,-32);assert.equal(a.frontY,-32);}
+  const ready={kind:'neighbor',wind:.11},released={kind:'neighbor',follow:.2};
+  const a=T.armPose(ready,-55,T.pose(ready)),b=T.armPose(released,-55,T.pose(released));assert(a.slipper);assert(!b.slipper);assert.equal(a.frontY,-48);assert.equal(b.frontY,-48);
+});
+check('slipper visual leaves the throwing hand on both sides and arrives at the target lane',()=>{
+  for(const p of [true,false])for(const s of [.84,1.55]){const v={x:.5,isP:p,t:0,duration:.32,fromLane:0,toLane:2};const start=T.shotPose(v,s,590,1280);assert.equal(start.x,640+(p?26:-26)*s);assert.equal(start.y,587-48*s);v.t=.32;const end=T.shotPose(v,s,590,1280);assert.equal(end.x,640);assert(Math.abs(end.y-(587-38*s+24*s))<1e-8);}
+});
 console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');

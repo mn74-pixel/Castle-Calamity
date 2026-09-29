@@ -1,5 +1,15 @@
 # Castle Calamity
 
+### v8.7.2 — osobowość postaci i spójne detale ruchu
+
+Oddziały mają odrębne fryzury i nakrycia głowy: Heniek zakola i wąsy,
+sąsiadka chustę i okulary, dozorca siwe skronie i roboczą czapkę,
+rolkarz sportowy kask. Poprawiono światło twarzy, szwy, kieszenie i obuwie.
+Rower ma bagażnik, lampę i odblask; obie ręce trzymają kierownicę.
+Sąsiadka unosi rękę do rzutu, a kapeć wylatuje z dłoni zamiast ze środka
+postaci. Rolki i miotła podążają za kończynami. Bez zmian kosztów i mocy.
+Podglądy i testy automatyczne nie zastępują oceny ruchu na fizycznym telefonie.
+
 ### v8.7.1 — czytelne role i odrębne stroje
 
 Siedem oddziałów ma osobne stroje i spójny podział na front, szybkie natarcie,
