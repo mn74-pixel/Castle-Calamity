@@ -1,5 +1,24 @@
 # Castle Calamity
 
+### v8.14.0 — miejsce na sterowanie telefonu i ręczny kadr twarzy
+
+Osiedle rezerwuje 112 px pod polem walki na niskich ekranach. Morale,
+kredyty i opis etapu mieszczą się ponad dolnymi przyciskami; wysokość fasad
+uwzględnia mniejszą arenę. Historyczne epoki zachowują dotychczasową geometrię.
+Testy obejmują 667×375, 844×390, 932×430 i 740×300; rzeczywisty Safari/PWA
+pozostaje do ręcznego odbioru (testowy renderer Canvas nie renderuje DOM).
+
+Po wybraniu zdjęcia otwiera się edytor podobny w obsłudze do Slingtoon:
+przesuwanie, pinch, suwak, obrót i zatwierdzenie. Automat proponuje tylko
+początkowy kadr. PNG ma przezroczysty owal; kolory i proporcje zdjęcia zostają.
+Anulowanie zachowuje poprzednią twarz. Wszystko odbywa się lokalnie.
+Stare nietrafione wycinki wymagają ponownego wybrania oryginalnego zdjęcia,
+ponieważ wcześniejszy zapis nie przechowywał oryginału.
+
+Intro: mandat rozwija się w przesadnie długi paragon, trzepocze podczas pościgu,
+a kula przewraca pachołek. Moment przewrócenia wynika z toru kuli, nie z
+liczby klatek. Zachowany krótki czas i przycisk pomijania.
+
 ### v8.13.0 — dotyk Osiedla, dopracowane intro i audyt mocy
 
 Wejście do Osiedla, wybór segmentów oraz zakupy mają wspólną obsługę

@@ -16,6 +16,17 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  estateMobileLayout: function(){launchEstateSegment(7);render();var ground=G.GY;return {ground:ground,creditsBottom:ground+44,hintBottom:ground+55,controlsTop:H-50,roof:ground-ESTATE.baseLayout(G.p,ground).h,height:H};},
+  portraitAudit: function(){
+    var src=document.createElement('canvas');src.width=400;src.height=800;var ctx=src.getContext('2d');ctx.fillStyle='#193455';ctx.fillRect(0,0,400,800);ctx.fillStyle='#c47e60';ctx.fillRect(130,100,140,200);
+    var state={turns:0,zoom:2,x:0,y:320},out=portraitCutout(src,state),p=out.getContext('2d'),tr=portraitTransform(src,1,4,9999,-9999);
+    var center=Array.from(p.getImageData(160,160,1,1).data),corner=p.getImageData(0,0,1,1).data[3];
+    var before=PLAYER_CREST;confirmPortrait(src,{x:130,y:100,width:140,height:200});var modal=document.getElementById('portraitEditor'),preview=modal.children[0],controls=modal.children[1],slider=controls.children[1];preview.getBoundingClientRect=function(){return {left:0,top:0,width:320,height:320};};
+    function pointer(type,id,x,y){preview.dispatchEvent({type:type,pointerId:id,clientX:x,clientY:y,preventDefault:function(){}});}
+    var zoomBefore=Number(slider.value);pointer('pointerdown',1,100,160);pointer('pointerdown',2,200,160);pointer('pointermove',2,240,160);var pinched=Number(slider.value)>zoomBefore;pointer('pointercancel',2,240,160);pointer('pointermove',1,120,170);pointer('pointerup',1,120,170);
+    slider.value='3';slider.oninput();controls.children[2].onclick();controls.children[4].onclick();
+    return {center:center,corner:corner,bounded:Math.abs(tr.x)<=1120&&Math.abs(tr.y)<=480,cancelled:PLAYER_CREST===before,pinched:pinched,released:preview.captures.size===0};
+  },
   estateTouchAudit: function(){
     buildLevelSelect();var launch=document.getElementById('estateLaunch');
     var point={clientX:40,clientY:40},start={touches:[point]},end={changedTouches:[point],cancelable:true,preventDefault:function(){}};
@@ -685,11 +696,16 @@ function makeElement(tag = "div") {
 }
 
 function decorateCanvas(c) {
+  const listeners={};c.captures=new Set();
   c.style = {};
   c.classList = classList();
   c.dataset = {};
   c.children = [];
-  c.addEventListener = () => {};
+  c.addEventListener = (type,fn) => { (listeners[type]||(listeners[type]=[])).push(fn); };
+  c.dispatchEvent = (event) => { for(const fn of listeners[event.type]||[])fn(event); };
+  c.setPointerCapture = id => c.captures.add(id);
+  c.hasPointerCapture = id => c.captures.has(id);
+  c.releasePointerCapture = id => c.captures.delete(id);
   c.removeEventListener = () => {};
   c.appendChild = (ch) => { c.children.push(ch); return ch; };
   c.getBoundingClientRect = () => ({ width: sandbox.window.innerWidth, height: sandbox.window.innerHeight, left: 0, top: 0 });
@@ -1057,7 +1073,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.13.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.14.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Deszcz: przełącznik '+key);
@@ -1202,4 +1218,6 @@ const regression71=qa.regression71();check(regression71.noRemoteDamage&&regressi
 check(cardAvailability.poor&&cardAvailability.affordable&&cardAvailability.spent&&cardAvailability.funds,"karty blokują brak środków, odblokowują dokładny koszt i wracają do blokady po zakupie");
 
 check(qa.eraCrestAudit(),"zdjęcia obu stron renderują się w każdej późniejszej epoce");
+const portraitAudit=qa.portraitAudit();check(portraitAudit.center.join(',')==='196,126,96,255'&&portraitAudit.corner===0&&portraitAudit.bounded&&portraitAudit.cancelled&&portraitAudit.pinched&&portraitAudit.released,'ręczny kadr: źródłowe kolory, przezroczysty owal, pinch, anulowanie gestu i edycji bez zmiany twarzy');
+for(const [w,h] of [[667,375],[844,390],[932,430],[740,300]]){qa.viewport(w,h,1);const layout=qa.estateMobileLayout();check(layout.creditsBottom<layout.controlsTop&&layout.hintBottom<layout.controlsTop&&layout.roof>=69,`Osiedle ${w}×${h}: kredyty i opis ponad przyciskami, dach poniżej kart`);save(`estate-safe-hud-${w}.png`);}
 for(const [w,h] of [[667,375],[932,430]]){qa.viewport(w,h,1);const touchAudit=qa.estateTouchAudit();check(Object.values(touchAudit).every(Boolean),`Osiedle ${w}×${h}: dotyk uruchamia i kupuje raz; swipe/cancel/multitouch nie aktywuje; klawiatura działa`);}
