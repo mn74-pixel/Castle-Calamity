@@ -26,7 +26,7 @@ check('three lanes distribute a crowd without overlapping spawns or limiting pur
 check('equal dres crowds resolve rather than forming a permanent queue',()=>{for(const stage of [0,3,8,9]){const g=game(stage);g.p.hp=g.e.hp=100000;for(let i=0;i<12;i++){spawn(g,T.roster(stage)[0],true);spawn(g,T.roster(stage)[0],false);}tick(g,110);assert(g.stats.kills+g.stats.losses>=12,'combat must resolve at stage '+stage);assert.equal(g.estate.units.filter(T.active).length,0,'no permanent crowd at stage '+stage);tick(g,90);assert.equal(g.estate.units.length,0);}});
 check('defeated residents walk home, cannot block, attack or be healed',()=>{const g=game(),u=spawn(g,'bike',true,.45),v=spawn(g,'dres',false,.49);u.hp=1;tick(g,1);assert(u.retreat&&u.hp===0);const x=u.x,hp=v.hp;tick(g,1);assert(u.x<x);assert.equal(v.hp,hp);T.heal(g,true,999);assert.equal(u.hp,0);tick(g,10);assert(!g.estate.units.includes(u));});
 check('end of feud clears projectiles and sends squads home without new losses',()=>{const g=game();spawn(g,'dres',true,.5);spawn(g,'neighbor',false,.6);g.estate.shots.push({});const stats=JSON.stringify(g.stats);for(let i=0;i<100;i++)T.finish(g,.1);assert.equal(g.estate.shots.length,0);assert.equal(g.estate.units.length,0);assert.equal(JSON.stringify(g.stats),stats);});
-check('seven roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,7);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
+check('nine roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,9);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
 check('bat swing affects a second nearby rival but not a distant one',()=>{const g=game(5);spawn(g,'bat',true,.45);const a=spawn(g,'bike',false,.48),b=spawn(g,'bike',false,.49),far=spawn(g,'bike',false,.7);a.wind=b.wind=far.wind=100;tick(g,.8);assert(a.hp<a.max&&b.hp<b.max);assert.equal(far.hp,far.max);});
 check('skater keeps most speed when slowed',()=>{const g=game(7),u=spawn(g,'skater',true,.2);u.slow=3;tick(g,1);assert(u.x>.27);});
 check('caretaker restores nearby allies, not enemies or withdrawn units, and auras do not stack',()=>{const g=game(9),a=spawn(g,'heavy',true,.4),b=spawn(g,'heavy',false,.45),c=spawn(g,'caretaker',true,.35),d=spawn(g,'caretaker',true,.36);[a,b,c,d].forEach(u=>u.wind=100);a.hp=b.hp=50;tick(g,2);assert(Math.abs(a.hp-58)<.001);assert.equal(b.hp,50);a.hp=0;tick(g,.5);assert.equal(a.hp,0);});
@@ -55,13 +55,13 @@ check('heavy telegraphs a crowd hit, spares allies and distant enemies, then rec
   }
 });
 check('heavy unlock replaces the bat card, preserves existing bat units and shared cost',()=>{
-  const g=game(8),old=spawn(g,'bat',true);assert.equal(T.status(g,'heavy',true).reason,'locked');g.estate.segment=9;g.estate.tactics.p=0;g.p.gold=53;assert.equal(T.status(g,'heavy',true).reason,'gold');g.p.gold=54;spawn(g,'heavy',true);assert.equal(g.p.gold,0);assert(!T.roster(9).includes('bat'));tick(g,.1);assert(old.hp>0);assert.equal(T.choose(g),'neighbor');
+  const g=game(8),old=spawn(g,'bat',true);assert.equal(T.status(g,'heavy',true).reason,'locked');g.estate.segment=9;g.estate.tactics.p=0;g.p.gold=53;assert.equal(T.status(g,'heavy',true).reason,'gold');g.p.gold=54;spawn(g,'heavy',true);assert.equal(g.p.gold,0);assert(!T.roster(9).includes('bat'));tick(g,.1);assert(old.hp>0);assert.equal(T.choose(g),'cart');
 });
 check('spread ranged support can stop the expensive heavy before he reaches the building',()=>{
-  for(const p of [true,false]){const g=game(10),h=spawn(g,'heavy',p,p?.35:.65);spawn(g,'neighbor',!p,p?.64:.36);spawn(g,'neighbor',!p,p?.69:.31);tick(g,25);assert(h.retreat);assert.equal((p?g.e:g.p).hp,2200);}
+  for(const p of [true,false]){const g=game(10),h=spawn(g,'heavy',p,p?.35:.65);spawn(g,'cart',!p,p?.64:.36);spawn(g,'cart',!p,p?.69:.31);tick(g,25);assert(h.retreat);assert.equal((p?g.e:g.p).hp,2200);}
 });
 check('role sheets describe actual powers in both languages and have distinct clothing',()=>{
-  assert.equal(new Set(T.cards.map(c=>T.roles[c.id].kit)).size,7);
+  assert.equal(new Set(T.cards.map(c=>T.roles[c.id].kit)).size,9);
   for(const c of T.cards){assert.equal(T.archetype(c.id),T.roles[c.id].role);for(const lang of ['pl','en']){const text=T.description(c.id,lang);assert(text.includes(String(c.hp)));assert(text.includes(String(c.attack)));assert(text.includes(lang==='pl'?'Słabość:':'Weakness:'));}}
   assert(T.description('bat','pl').includes('13'));assert(T.description('heavy','en').includes('33'));assert(T.description('caretaker','pl').includes('+4'));assert(T.description('skater','en').includes('85%'));
 });
@@ -97,5 +97,18 @@ check('heavy rig alternates feet, anticipates impact and stays deterministic wit
 });
 check('walking alternates foot lift without lifting both feet, idle is stable',()=>{
   for(const kind of ['dres','bat','neighbor','skater','caretaker','courier']){const left=T.pose({kind,moving:true,walk:0}),right=T.pose({kind,moving:true,walk:Math.PI});assert(left.lift>0&&left.rightLift===0);assert(right.rightLift>0&&right.lift===0);for(let t=0;t<7;t+=.1){const p=T.pose({kind,moving:true,walk:t});assert(p.lift*p.rightLift===0);assert(Math.abs(p.sway)<=.025);}const idle=T.pose({kind,walk:3});assert.equal(idle.lift+idle.rightLift+idle.sway,0);}
+});
+check('music accelerates nearby allies by 20 percent without stacking or helping enemies',()=>{
+  function march(count,p=true){const g=game(6),u=spawn(g,'bike',p,.45);for(let i=0;i<count;i++){const m=spawn(g,'musician',true,.4);m.lane=0;m.wind=100;}tick(g,.5);return Math.abs(u.x-.45);}
+  const base=march(0);assert(Math.abs(march(1)/base-1.2)<.001);assert(Math.abs(march(2)-march(1))<.00001);assert(Math.abs(march(1,false)-base)<.00001);
+});
+check('cart projectile telegraphs, hits up to two additional neighbours and never its own team',()=>{
+  for(const p of [true,false]){const g=game(8),dir=p?1:-1,a=spawn(g,'cart',p,.4),target=spawn(g,'bat',!p,.4+dir*.1),b=spawn(g,'bat',!p,.4+dir*.12),c=spawn(g,'bat',!p,.4+dir*.13),far=spawn(g,'bat',!p,.4+dir*.2),friend=spawn(g,'bat',p,.4+dir*.11);[target,b,c,far,friend].forEach(u=>u.wind=100);tick(g,.6);assert.equal(target.hp,target.max);tick(g,.6);assert(target.hp<target.max);assert.equal(b.max-b.hp,12);assert.equal(c.max-c.hp,12);assert.equal(far.hp,far.max);assert.equal(friend.hp,friend.max);assert.equal(target.slow,0);}
+});
+check('new support is chosen only with an escort and new ranged unit counters front',()=>{
+  const g=game(6);spawn(g,'bat',false);spawn(g,'bike',false);g.estate.tactics.e=0;assert.equal(T.choose(g),'musician');g.estate.segment=8;spawn(g,'bat',true);g.estate.units=g.estate.units.filter(u=>u.isP);assert.equal(T.choose(g),'cart');
+});
+check('wide carts spawn with room for their equipment and retain stable simulation at different FPS',()=>{
+  function run(dt){const g=game(8);for(let i=0;i<9;i++)spawn(g,'cart',true);for(let lane=0;lane<3;lane++){const row=g.estate.units.filter(u=>u.lane===lane).sort((a,b)=>a.x-b.x);for(let j=1;j<row.length;j++)assert(row[j].x-row[j-1].x>=.061-1e-8);}spawn(g,'musician',true);for(let i=0;i<6;i++)spawn(g,'skater',false);tick(g,60,dt);return JSON.stringify([g.p.gold,g.e.gold,g.stats,g.estate.units.map(u=>[u.kind,u.hp,u.x])]);}assert.equal(run(1/30),run(1/120));
 });
 console.log('ESTATE TACTICS COMPLETE: '+checks+' checks');

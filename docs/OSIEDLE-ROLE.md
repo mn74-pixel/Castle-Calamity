@@ -1,10 +1,10 @@
-# Osiedle — role oddziałów, v8.8.0
+# Osiedle — role oddziałów, v8.9.0
 
 ## Rajdy ekonomiczne
 
 Dojście oddziału do przeciwnego bloku rozpoczyna powrót z kredytami zamiast
 obniżać morale. Udźwig: dres 27, rower 33, sąsiadka 48, kij 48, rolkarz 45,
-dozorca 63, Heniek 81. Finał zwiększa udźwig o 35% (zaokrąglenie do całości).
+dozorca 63, Heniek 81, akordeonista 45, wózkarz 66. Finał zwiększa udźwig o 35% (zaokrąglenie do całości).
 Nie można zabrać więcej niż przeciwnik posiada. Środki są odejmowane przy
 zabraniu, a dodawane własnej stronie dopiero po powrocie. To jedna istniejąca
 waluta, nie nowy zasób. Powracający są poza walką i nie blokują innych.
@@ -21,14 +21,19 @@ Po jej wyczerpaniu postać wraca do domu. Koszty i moce obu stron są identyczne
 | Rolkarz | 30 | Szybki nacisk; zachowuje 85% szybkości pod spowolnieniem | Ciężki front | Sportowa kurtka, ukośny pas, ochraniacze |
 | Dozorca | 42 | +4 wytrzymałości/s pobliskim sojusznikom; czeka za rannym | Słaby samodzielny atak | Zielony płaszcz roboczy, kieszeń, miotła |
 | Wielki Heniek | 54 | Cios 44 i dodatkowe 33 w pobliską grupę | Powolny marsz, długi odpoczynek, rozstawiony dystans | Szeroka ciemna kamizelka, pas, wąsy |
+| Akordeonista | 30 | +20% prędkości marszu pobliskich sojuszników, bez kumulacji | Słaby samodzielny atak, potrzebuje osłony | Kapelusz, bordowa kamizelka, akordeon |
+| Wózkarz | 44 | Paczka 24 w cel, po 12 w najwyżej dwóch sąsiadów | Długi przeładunek, słaby przeciw szybkim | Ogrodniczki, czapka, wózek ze skrzynią |
 
 Premie dotyczą głównego ciosu. Dodatkowe trafienia obszarowe nie otrzymują
 premii kontr. Leczenie dozorcy nie kumuluje się, nie leczy jego samego i nie
 przywraca wycofanych postaci. Po podleczaniu ekipy dozorca wznawia marsz;
 nie zmienia zasięgu ataku ani nie staje się drugą jednostką dystansową.
 
-Gradacja kart: dres → kij → Heniek oraz rower → rolkarz. Sąsiadka i dozorca
-uzupełniają skład; nie dodajemy wszystkich kart naraz. Starsze jednostki
+Gradacja kart: dres → kij → Heniek, rower → rolkarz, sąsiadka → wózkarz
+oraz akordeonista → dozorca. Muzyk pojawia się w etapach 7–9, wózkarz od 9,
+dozorca od 10. Karta piwa ustępuje muzykowi od etapu 7, żeby nie przekroczyć
+ośmiu kart. Muzyka nie przyspiesza ataków, nie leczy i nie działa na samego
+grającego ani wracających z rajdu. Starsze jednostki
 pozostają na planszy po zmianie etapu. Barwy drużyny pozostają na ubraniu,
 niezależnie od odmiennej palety stroju.
 

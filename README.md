@@ -1,5 +1,24 @@
 # Castle Calamity
 
+### v8.9.0 — akordeonista i wózkarz
+
+Dwie nowe role zwiększają katalog Osiedla do dziewięciu oddziałów:
+akordeonista (30 kredytów) przyspiesza marsz pobliskich sojuszników o 20%,
+bez kumulowania premii. Wózkarz (44 kredyty) wyrzuca paczkę z dystansu:
+24 w główny cel przed premią kontr i po 12 w maksymalnie dwa dodatkowe cele.
+Nie spowalnia, ma dłuższy zamach i przeładunek, potrzebuje osłony.
+
+Akordeonista dołącza w etapach 7–9, zastępując miejsce karty piwa; wózkarz
+zastępuje sąsiadkę od etapu 9. Dozorca zastępuje kartę muzyka od etapu 10.
+Wcześniej zrekrutowane postacie zostają. Nadal najwyżej osiem kart, bez limitu
+liczby wystawionych oddziałów. AI korzysta z tych samych cen i dostępności.
+
+Własne stroje, miech i klawiatura akordeonu, nutka przy przyspieszonych
+sojusznikach, obracające się koła, przestrzenna skrzynia, odrzut i paczka
+podczas przeładunku. Wózek zajmuje większy odstęp na swoim pasie. Testy
+obejmują zasięgi, sojuszników, brak kumulacji, różne FPS i pełną bitwę.
+Ręczny odbiór tempa i animacji na fizycznym telefonie pozostaje wymagany.
+
 ### v8.8.2 — objętość ubrań, twarzy i praca całej sylwetki
 
 Pozostałe postacie dostały zaokrąglone kontury kurtek i płaszczy, boczny
