@@ -17,6 +17,7 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 const qaHooks = String.raw`
 window.__QA = {
   estateDeliveryScene: function(index,q){launchEstateSegment(index);G.estate.ai=1e6;ESTATE.buy(G,"runner",true);var r=G.estate.runners[0];ESTATE.tick(G,r.duration*q,castleDmg);render();return {phase:r.phase,open:ESTATE.doorOpen(G),x:r.x,y:r.y,target:ESTATE.runnerTarget(G,r),door:ESTATE.serviceDoor(G)};},
+  estateLightingScene: function(time){launchEstateSegment(9);G.estate.time=time;var before=JSON.stringify(G.estate);render();render();return before===JSON.stringify(G.estate);},
   estateNewSquadScene: function(){launchEstateSegment(9);G.estate.ai=1e6;var ids=window.CASTLE_ESTATE_TACTICS.roster(9);ids.forEach(function(id,i){G.estate.tactics.p=0;ESTATE.buy(G,id,true);var u=G.estate.units[G.estate.units.length-1];u.x=.30+i*.13;u.walk=i;u.moving=true;});render();return G.estate.units.map(function(u){return u.kind;});},
   estateRaidScene: function(){launchEstateSegment(4);G.estate.ai=1e6;[true,false].forEach(function(p){ESTATE.buy(G,'bike',p);G.estate.units[G.estate.units.length-1].x=p?.809:.191;});window.CASTLE_ESTATE_TACTICS.tick(G,2.2,castleDmg);render();return G.estate.units.every(function(u){return u.returning&&u.loot===33&&!u.retreat;});},
   estateDeckAudit: function(){launchEstateSegment(0);var results=[];for(var i=0;i<12;i++){ESTATE.setSegment(G,i,true);ESTATE.updateCards(document,G,LANG,false);var row=document.getElementById("cds"),cards=Array.from(row.children);results.push({stage:i,expected:ESTATE.availableChoices(G).map(function(c){return 'estate_'+c.id;}),actual:cards.map(function(c){return c.id;}),keys:cards.map(function(c){return c.dataset.hotkey;})});}return results;},
@@ -1033,7 +1034,19 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.9.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.9.1"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
+const roomSeeds=Array.from({length:96},(_,i)=>113+i*67);
+const rooms=roomSeeds.map(seed=>roomLight(seed,0,true));
+check(new Set(rooms.map(r=>r.tone)).size===5&&rooms.some(r=>r.level===0)&&rooms.some(r=>r.level>.5),"Okna: pięć temperatur światła i niezależne ciemne mieszkania");
+check(rooms.every(r=>r.period>=43&&r.period<=114)&&new Set(rooms.map(r=>r.period)).size>90,"Okna: długie, niesynchronizowane rytmy mieszkań");
+check(roomSeeds.some(seed=>roomLight(seed,0,true).level!==roomLight(seed,150,true).level),"Okna: oświetlenie zmienia się wraz z czasem gry");
+check(roomSeeds.some(seed=>roomLight(seed,80,true).level!==roomLight(seed+606,80,true).level),"Okna: przeciwne bloki nie są lustrzanym wzorem");
+check(roomSeeds.reduce((s,seed)=>s+roomLight(seed,80,true).level,0)>roomSeeds.reduce((s,seed)=>s+roomLight(seed,80,false).level,0),"Okna: nocą więcej światła niż za dnia");
+let bounded=true,smooth=true,reproducible=true;
+for(const seed of roomSeeds.slice(0,24)){for(let t=0;t<240;t+=.1){const a=roomLight(seed,t,true),b=roomLight(seed,t+1/120,true);bounded=bounded&&a.level>=0&&a.level<=.9;smooth=smooth&&Math.abs(a.level-b.level)<.01;reproducible=reproducible&&JSON.stringify(a)===JSON.stringify(roomLight(seed,t,true));}}
+check(bounded&&smooth&&reproducible,"Okna: płynne, ograniczone przejścia niezależne od liczby renderowanych klatek");
+for(const time of [0,75,150]){check(qa.estateLightingScene(time),"Okna: render nie zmienia stanu bitwy przy t="+time);save("estate-lighting-"+time+".png");}
 const estateBattle=qa.estateBattle("mixed");
 console.log("ESTATE MIXED BATTLE",JSON.stringify(estateBattle));
 check(estateBattle.recruited>3&&estateBattle.kills>0,"Osiedle: pełna bitwa używa prawdziwych jednostek");

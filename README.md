@@ -1,5 +1,17 @@
 # Castle Calamity
 
+### v8.9.1 — zamieszkane okna i głębia elewacji
+
+Okna obu baz mają niezależne, deterministyczne rytmy (43–114 sekund),
+łagodne przejścia, pięć odcieni światła i różne szerokości firanek. Nocą
+więcej mieszkań jest rozświetlonych; za dnia dominują odbicia. Odległe
+bloki mają statyczny, nieregularny rozkład o mniejszym kontraście.
+Światło mieści się we wnękach, bez przebijania przez beton. Cień okapu,
+gradient bocznej ściany i przyciemnienie stropu loggii wzmacniają głębię.
+Animacja korzysta z czasu gry, nie zegara systemowego; nie rośnie cache
+i nie zmienia się stan rozgrywki podczas rysowania. Test na fizycznym
+telefonie nadal pozostaje do wykonania.
+
 ### v8.9.0 — akordeonista i wózkarz
 
 Dwie nowe role zwiększają katalog Osiedla do dziewięciu oddziałów:
