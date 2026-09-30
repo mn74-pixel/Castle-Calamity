@@ -45,13 +45,13 @@
   // Stylized material swatches, not sampled paint standards. References:
   // ursynow.org.pl/teczka-z-1997/ and telesfor.org/automaty/budki-telefoniczne-prl/
   function periodMaterials(period,night){var late=period==='1997';return {
-    facade:night?'#a5a9b1':late?'#ddd9c8':'#cecac0',
+    facade:night?'#8eacb9':late?'#b7d0d6':'#b9c7cb',enemyFacade:night?'#b9a183':late?'#e0c58f':'#d6c4a0',
     side:night?'#636d80':'#96958e',
-    player:late?'#7696ab':'#7c9297',enemy:late?'#bd8b75':'#a78977',
+    player:late?'#477eaa':'#557e8b',enemy:late?'#b56d51':'#a26e50',
     far:night?'#59677e':'#c5c5bf',farSide:night?'#48566d':'#aaafb0',
     near:night?'#4e5a70':'#acada7',nearSide:night?'#3c475c':'#929994',
     kiosk:late?'#c4bca8':'#bdbbb0',kioskSide:late?'#817c6f':'#818780',
-    sign:late?'#385582':'#356044',booth:late?'#31548d':'#3f624c',
+    sign:late?'#385582':'#356044',booth:late?'#31548d':'#183e2a',phone:'#e5b832',
     boothType:late?'open-blue':'glazed-green',frame:'#e2dfcf'
   };}
   segments.forEach(function(seg,i){seg.period=i<6?'1988':'1997';seg.brawlers=0;seg.hintPl=TACTICS.rules[i][0];seg.hintEn=TACTICS.rules[i][1];});
@@ -162,11 +162,13 @@
   function tick(g,dt,hit,reward,impact){if(!active(g)||g.over)return;var e=g.estate;e.time+=dt;var seg=syncSegment(g);e.segmentFlash=Math.max(0,e.segmentFlash-dt);tickBrawlers(g,dt);
     [true,false].forEach(function(p){var st=side(g,p);st.cd=Math.max(0,st.cd-dt);st.restT=Math.max(0,st.restT-dt);st.noticeT=Math.max(0,st.noticeT-dt);st.comboT=Math.max(0,st.comboT-dt);if(st.comboT<=0)st.combo=0;
       st.hitReactT=Math.max(0,(st.hitReactT||0)-dt);
+      st.plasterT=Math.max(0,(st.plasterT||0)-dt);
       if(st.mealT>0){st.mealT=Math.max(0,st.mealT-dt);if(st.mealT<=0){st.regenBonus=0;st.costMul=1;}}
       var baseRegen=seg.food?.16:.52;st.stamina=Math.min(100,st.stamina+dt*(baseRegen+st.regenBonus));
       if(st.action){st.action.t+=dt;if(st.action.t>=1.18&&!st.action.released){st.action.released=true;launch(g,st.action,p);}if(st.action.t>=1.78)st.action=null;}});
     e.runners=e.runners.filter(function(r){if(!advanceRunner(g,r,dt))return true;finishRunner(g,r,reward);return false;});
     e.bottles=e.bottles.filter(function(b){b.t+=dt;if(b.t<b.duration)return true;var target=anchor(g,!b.isP),victim=side(g,!b.isP);hit(b.isP?g.e:g.p,b.item.damage,target.x,target.y,{estate:true});victim.hitReactT=.72;victim.hitReactPower=b.item.id==='vodka'?1.35:b.item.id==='wine'?1.08:.9;e.hits++;var shooter=side(g,b.isP);shooter.combo=Math.min(9,(shooter.combo||0)+1);shooter.comboT=2.8;notice(shooter,'hit');
+      victim.plasterT=.7;
       e.impacts=e.impacts||[];e.impacts.push({x:target.x,y:target.y,t:0,col:b.item.col,power:b.item.id==='vodka'?1.35:b.item.id==='wine'?1.1:.9});
       if(shooter.stamina<10)shooter.restT=2.4;if(seg.finale){var owner=b.isP?g.p:g.e;owner.gold=Math.min(9999,owner.gold+3);}for(var i=0;i<(b.item.id==='vodka'?10:7);i++)e.glass.push({p:!b.isP,t:0,vx:(i-4)*11,vy:-18-i*3,col:b.item.col});return false;});
     e.glass=e.glass.filter(function(s){s.t+=dt;return s.t<.65;});e.impacts=(e.impacts||[]).filter(function(v){v.t+=dt;return v.t<.55;});
@@ -241,7 +243,7 @@
       ctx.fillStyle=m.frame;ctx.font='bold 6px sans-serif';ctx.textAlign='center';ctx.fillText('TELEFON',0,-81);
       line(ctx,-19,-39,19,-39,'#d1d4cc',2);
     }
-    ctx.fillStyle='#c4bda4';ctx.fillRect(-5,-60,11,20);ctx.fillStyle='#293f41';ctx.fillRect(-1,-56,4,7);
+    ctx.fillStyle=m.phone;ctx.fillRect(-6,-63,14,24);ctx.fillStyle='#ffe28a';ctx.fillRect(-5,-62,2,21);ctx.fillStyle='#293f41';ctx.fillRect(0,-58,5,7);
     line(ctx,-7,-60,-7,-48,'#23383b',3);line(ctx,-7,-48,-3,-41,'#23383b',1);
     if(seg.period==='1997'){for(var key=0;key<9;key++)ctx.fillRect(1+key%3*1.5,-47+Math.floor(key/3)*1.5,1,1);}
     else{ctx.strokeStyle='#59605b';ctx.lineWidth=1;ctx.beginPath();ctx.arc(2,-46,2.2,0,Math.PI*2);ctx.stroke();}
@@ -519,7 +521,7 @@
   var ESTATE_BASE_GRAMMAR=['apartment-mass','side-wings','stair-core','entrance-steps','hero-loggia','window-bays','flat-roof-services','recessed-window-reveals','side-wall-perspective','balcony-cast-shadows','independent-room-lighting','roof-occlusion'];
   // Five-storey prefabricated housing: flat roof, recessed balconies and a glazed stairwell.
   function paintApartmentBlock(ctx,player){
-    var seg=segments[visualSegment]||segments[0],night=seg.scene>=2,m=periodMaterials(seg.period,night),team=player?m.player:m.enemy,ink='#303e40',cream=m.facade,shadeWall=m.side;
+    var seg=segments[visualSegment]||segments[0],night=seg.scene>=2,m=periodMaterials(seg.period,night),team=player?m.player:m.enemy,ink='#303e40',cream=player?m.facade:m.enemyFacade,shadeWall=m.side;
     ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
     function box(x,y,w,h,fill,stroke){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);if(stroke!==false){ctx.strokeStyle=ink;ctx.lineWidth=1.2;ctx.strokeRect(x,y,w,h);}}
     function stroke(x,y,xx,yy,col,width){line(ctx,x,y,xx,yy,col,width||1);}
@@ -609,12 +611,21 @@
   // Surface-only aftermath. Fixed anchors never cut holes in the structural sprite.
   function facadeWear(ctx,g,p){
     var c=p?g.p:g.e,wear=facadeCondition(c),layout=baseLayout(c,g.GY),stage=wear.stage;
-    if(!stage)return;
+    if(wear.wear<=0)return;
     ctx.save();ctx.translate(layout.x,g.GY);ctx.scale(layout.w/200,layout.h/260);
     var marks=[[57,-170,5,8],[100,-188,7,4],[149,-72,4,8],[19,-91,3,6],[94,-47,7,4],[146,-165,3,5]];
     marks.slice(0,Math.min(6,stage*2)).forEach(function(m,i){
       ctx.fillStyle=i%2?'rgba(107,75,52,.36)':'rgba(66,72,60,.32)';ctx.beginPath();ctx.ellipse(m[0],m[1],m[2],m[3],.3,0,Math.PI*2);ctx.fill();
       line(ctx,m[0]+1,m[1]+m[3],m[0]+2,m[1]+m[3]+5,'rgba(97,77,52,.32)',1.2);
+    });
+    // Readable irregular plaster loss: dark cement core and lifted pale edges.
+    // Fixed positions avoid flicker; the exposed area grows with lost morale.
+    var chips=[[100,-190],[99,-65],[15,-169],[149,-191],[15,-74],[100,-44],[148,-48],[99,-169]];
+    chips.slice(0,Math.min(chips.length,1+Math.floor(wear.wear*10))).forEach(function(a,i){
+      var size=3+wear.wear*3,x=a[0],y=a[1];ctx.save();ctx.translate(x,y);ctx.scale(1,1.5);ctx.translate(-x,-y);
+      ctx.fillStyle='#666660';ctx.beginPath();ctx.moveTo(x-size,y);ctx.lineTo(x-2,y-size*.8);ctx.lineTo(x+size*.6,y-size);ctx.lineTo(x+size,y-2);ctx.lineTo(x+size*.5,y+size*.5);ctx.lineTo(x+1,y+size);ctx.lineTo(x-size*.8,y+size*.6);ctx.closePath();ctx.fill();
+      line(ctx,x-size,y,x-2,y-size*.8,'#ddd4bf',.8);line(ctx,x-2,y-size*.8,x+size*.6,y-size,'#c4bca8',.7);
+      line(ctx,x-3,y+2,x+3,y+3,'#8d887c',1);ctx.restore();
     });
     if(stage>=2){
       // Chipped paint exposes undercoat, not brickwork or structural cracks.
@@ -627,7 +638,22 @@
       line(ctx,183,-111,190,-106,'#344b4d',2);line(ctx,190,-106,187,-103,'#b0b8a4',1);
       ctx.fillStyle='#435656';ctx.fillRect(158,-86,16,7);ctx.save();ctx.translate(166,-83);ctx.rotate(.16*(p?1:-1));ctx.fillStyle='#a45f42';ctx.fillRect(-7,-2,14,5);line(ctx,-6,-2,6,-2,'#d4976f',1);ctx.restore();
     }
+    var life=side(g,p).plasterT||0;
+    if(life>0){var q=1-life/.7;ctx.save();ctx.globalAlpha=Math.min(1,life*5);for(var chip=0;chip<7;chip++){
+      var px=(chip%2?146:57)+(chip-3)*q*8,py=-151+(chip%3)*9-18*q+92*q*q;
+      ctx.save();ctx.translate(px,py);ctx.rotate(q*(chip%2?5:-4));ctx.fillStyle=chip%2?'#dfd2b2':'#a29b8c';ctx.fillRect(-2,-1,3+chip%3,2+chip%2);ctx.restore();
+    }ctx.restore();}
     ctx.restore();
+  }
+  function blockEntries(ctx,g,lang){
+    [true,false].forEach(function(p){var visitors=g.estate.units.filter(function(u){return u.inside&&u.isP!==p;});if(!visitors.length)return;
+      var b=baseLayout(p?g.p:g.e,g.GY),sx=b.w/200,sy=b.h/260,dx=b.x+25*sx,dy=g.GY-52*sy,dw=28*sx,dh=49*sy;
+      ctx.save();ctx.fillStyle='#152527';ctx.fillRect(dx,dy,dw,dh);
+      var entering=visitors.some(function(u){return u.entryT<1.2;});
+      ctx.fillStyle=entering?'#7c9994':'#4b686a';ctx.fillRect(dx,dy,dw*(entering?.16:1),dh);
+      visitors.forEach(function(u){if(u.entryT>=1.2)return;var q=Math.min(1,u.entryT/1.2),x=u.x*g.W+(dx+dw*.5-u.x*g.W)*q,y=g.GY-3+(u.drawLane||0)*12*TACTICS.actorScale(g.H)*(1-q);ctx.save();if(q>.8){ctx.beginPath();ctx.rect(dx,dy,dw,dh+6);ctx.clip();}TACTICS.figure(ctx,Object.assign({},u,{inside:false,moving:true,locomotion:1,walk:u.entryT*10,facing:x>dx+dw*.5?-1:1}),x,y,Math.min(TACTICS.actorScale(g.H),dh/62));ctx.restore();});
+      ctx.fillStyle='#edd391';ctx.font='bold 10px sans-serif';ctx.textAlign='center';ctx.fillText((lang==='en'?'INSIDE: ':'W ŚRODKU: ')+visitors.length,dx+dw*.5,dy-8);ctx.restore();
+    });
   }
   function residentFatigue(g,p){var c=p?g.p:g.e,wear=facadeCondition(c);return {stage:wear.stage,drop:wear.wear*3.5,lean:(p?1:-1)*wear.wear*.045,mood:wear.stage>=2?'tired':'neutral'};}
   function surrenderPose(g,p){var lost=(p?g.p:g.e).hp<=0,q=lost?clamp((g.overT||0)/1.05,0,1):0;return {lost:lost,drop:40*q*q,tilt:(p?-1:1)*q*.28,flag:lost&&q>.45};}
@@ -666,7 +692,7 @@
     e.bottles.forEach(function(b){var q=Math.min(1,b.t/b.duration),a=anchor(g,b.isP,true),z=anchor(g,!b.isP);bottle(ctx,b.item,a.x+(z.x-a.x)*q,a.y+(z.y-a.y)*q-4*b.arc*q*(1-q),Math.max(.8,unitScale*.85),q*9*(b.isP?1:-1));});
     e.glass.forEach(function(s){var a=anchor(g,s.p);ctx.save();ctx.globalAlpha=1-s.t/.65;ctx.fillStyle=s.col;ctx.beginPath();ctx.ellipse(a.x+s.vx*s.t,a.y+s.vy*s.t+120*s.t*s.t,2,3,0,0,Math.PI*2);ctx.fill();ctx.restore();});
     (e.impacts||[]).forEach(function(v){ctx.save();ctx.translate(v.x,v.y);ctx.globalAlpha=1-v.t/.55;ctx.strokeStyle=v.col;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,6+v.t*34*v.power,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='rgba(255,244,211,.92)';for(var ray=0;ray<8;ray++){var ra=ray*Math.PI/4+v.t*2,r1=5+v.t*17,r2=12+v.t*38*v.power;ctx.beginPath();ctx.moveTo(Math.cos(ra)*r1,Math.sin(ra)*r1);ctx.lineTo(Math.cos(ra)*r2,Math.sin(ra)*r2);ctx.stroke();}ctx.restore();});
-    TACTICS.draw(ctx,g,unitScale,lang);rainfall(ctx,g);stageBadge(ctx,g,lang);
+    TACTICS.draw(ctx,g,unitScale,lang);blockEntries(ctx,g,lang);rainfall(ctx,g);stageBadge(ctx,g,lang);
     var ps=side(g,true),barW=Math.min(170,Math.max(126,g.W*.12)),bx=14,by=Math.max(58,Math.min(154,g.H*.18)),stam=ps.stamina;ctx.save();rounded(ctx,bx,by,barW,42,6,'rgba(24,32,35,.91)',seg.accent||'rgba(238,219,176,.45)');ctx.fillStyle=seg.accent||'#d8c49c';ctx.fillRect(bx,by+6,3,30);
     ctx.fillStyle='#e7d9b5';ctx.font='bold 9px sans-serif';ctx.textAlign='left';ctx.fillText((lang==='en'?'STAMINA ':'KONDYCJA ')+Math.round(stam)+'%',bx+6,by+11);ctx.fillStyle='#46534e';ctx.fillRect(bx+6,by+15,barW-12,6);ctx.fillStyle=stam<22?'#bd665b':stam<48?'#c7aa5e':'#91b56b';ctx.fillRect(bx+6,by+15,(barW-12)*stam/100,6);
     ctx.fillStyle='#ead7ad';ctx.font='bold 8px sans-serif';ctx.fillText((lang==='en'?'BOTTLES ':'BUTELKI ')+ps.bottles+'  ·  '+(lang==='en'?'FOOD ':'POSIŁKI ')+ps.food+(ps.combo>1?'  ×'+ps.combo:''),bx+6,by+34);if(ps.noticeT>0&&ps.notice){ctx.textAlign='left';ctx.fillStyle='#fff0b8';ctx.font='bold 9px sans-serif';ctx.fillText(noticeText(ps.notice,lang),bx,by-7);}ctx.restore();
@@ -697,5 +723,5 @@
   root.CASTLE_ERA_ART.drawBase=function(ctx,c,ground,era,l,t){if(era==='modern'&&l==='estate'){arenaBase(ctx,c,ground);return;}return oldBase(ctx,c,ground,era,l,t);};
   var oldBackdrop=root.CASTLE_ERA_ART.backdrop;
   root.CASTLE_ERA_ART.backdrop=function(ctx,w,gy,era,l){if(era!=='modern'||l!=='estate')return oldBackdrop(ctx,w,gy,era,l);drawArenaBackdrop(ctx,w,gy,segments[visualSegment]||segments[0]);};
-  root.CASTLE_ESTATE={periodMaterials:periodMaterials,ambientPose:ambientPose,facadeCondition:facadeCondition,facadeWear:facadeWear,residentFatigue:residentFatigue,backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.19.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
+  root.CASTLE_ESTATE={periodMaterials:periodMaterials,ambientPose:ambientPose,facadeCondition:facadeCondition,facadeWear:facadeWear,residentFatigue:residentFatigue,backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.20.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
 })(window);

@@ -38,11 +38,11 @@
     if(r.haste)parts.push(en?'Nearby allies march 20% faster; does not stack':'Pobliscy sojusznicy maszerują 20% szybciej; nie kumuluje się');
     if(r.jam)parts.push(en?'Nearby enemy attack cooldown recovers 25% slower; does not stack':'Odnowienie ataku pobliskich rywali wolniejsze o 25%; nie kumuluje się');
     if(r.projectileGuard)parts.push(en?'Takes 30% less projectile damage':'Przyjmuje o 30% mniej obrażeń od pocisków');
-    parts.push((en?'Raid capacity: ':'Udźwig rajdu: ')+raidCapacity(id,0));parts.push((en?'Weakness: ':'Słabość: ')+(en?r.weakEn:r.weakPl));return parts.join(' · ');
+    parts.push(raidRunner(id)?(en?'Raid capacity: ':'Udźwig rajdu: ')+raidCapacity(id,0):(en?'Enters block: 6 × ':'Wchodzi do bloku: 6 × ')+entryDamage(id)+(en?' morale, once per second':' morale, raz na sekundę'));parts.push((en?'Weakness: ':'Słabość: ')+(en?r.weakEn:r.weakPl));return parts.join(' · ');
   }
   function roster(stage){var ids=[stage>=9?'heavy':stage>=5?'bat':'dres'];if(stage>=2)ids.push(stage>=7?'skater':stage>=5?'boxer':'bike');if(stage<=3)ids.push('marian');if(stage>=4)ids.push(stage>=8?'cart':'neighbor');if(stage>=6)ids.push(stage>=9?'caretaker':'musician');return ids;}
   var rules=[
-    ['Dojdź do bloku, zabierz kredyty i wróć. Butelki obniżają morale.','Reach the block, take credits and return. Bottles reduce morale.'],
+    ['Piesi wchodzą do bloku i obniżają morale. Rower i rolki wracają z kredytami.','Walkers enter the block and lower morale. Bikes and skaters return with credits.'],
     ['Zajmij środek: +6 kredytów co 5 s bez przeciwnika.','Hold the centre: +6 credits every 5 s uncontested.'],
     ['Rowerzysta: szybko dociera pod okno, ale uważa na dresy.','Cyclist: reaches the window fast, but watch for brawlers.'],
     ['Przy zapiekankach środek leczy jednostki obu stron.','The central snack stand heals units on either side.'],
@@ -56,7 +56,7 @@
     ['Finał: rajdy zabierają do 35% więcej kredytów.','Finale: raids carry up to 35% more credits.']
   ];
   function def(id){return cards.find(function(c){return c.id===id;});}
-  function active(u){return u.hp>0&&!u.returning;}
+  function active(u){return u.hp>0&&!u.returning&&!u.inside;}
   // Shared presentation thresholds. Missing health in card previews means pristine.
   function condition(hp,max){var ratio=Number.isFinite(hp)&&Number.isFinite(max)&&max>0?Math.max(0,Math.min(1,hp/max)):1;return {ratio:ratio,wear:1-ratio,stage:ratio===0?4:ratio<=.25?3:ratio<=.5?2:ratio<=.75?1:0};}
   function animationState(u){return u.retreat?'withdraw':u.returning?'return':u.slip>0?'slip':u.hurt>0?'hit':u.wind>0?'anticipation':u.follow>0?'follow':u.moving?'move':'idle';}
@@ -81,6 +81,17 @@
     if(stage>=2){ellipse(c,-4,y+5,3,2,'rgba(74,61,46,.35)');line(c,5,y+3,7,y+6,'#a4a18a',1);}c.restore();
   }
   function raidCapacity(id,stage){return Math.round(def(id).cost*1.5*(stage===11?1.35:1));}
+  function raidRunner(id){return id==='bike'||id==='skater';}
+  function entryDamage(id){return Math.ceil(def(id).cost*.75);}
+  function enterBlock(u){u.inside=true;u.entryT=0;u.entryHits=0;u.wind=0;u.follow=0;u.hurt=0;u.slip=0;u.moving=false;u.inspired=false;u.disrupted=false;}
+  function insideBlock(g,u,dt,hit,stopped){
+    if(stopped)return;
+    u.entryT+=dt;
+    // 1.2 s to enter, then six readable one-second pressure beats.
+    var beats=Math.min(6,Math.floor(Math.max(0,u.entryT-1.2)+1e-8));
+    while(u.entryHits<beats&&!g.over){u.entryHits++;var enemy=u.isP?g.e:g.p;if(enemy.hp<=0)break;hit(enemy,entryDamage(u.kind),enemy.x+enemy.w*.5,g.GY-35,{estate:true,estateEntry:true});}
+    if(u.entryT>=7.2){u.inside=false;u.hp=0;u.retreat=false;}
+  }
   function beginRaid(g,u){var enemy=u.isP?g.e:g.p;u.loot=Math.min(Math.max(0,Math.floor(enemy.gold)),raidCapacity(u.kind,g.estate.segment));enemy.gold-=u.loot;u.returning=true;u.wind=0;u.follow=0;u.moving=true;}
   function returnRaid(g,u,dt){var dir=u.isP?-1:1,home=u.isP?.19:.81,distance=dir*def(u.kind).speed*1.25*dt;u.moving=true;u.x+=distance;advanceWalk(u,distance);
     if((u.x-home)*dir>=0){var bank=u.isP?g.p:g.e;bank.gold+=u.loot;if(u.isP)g.stats.goldEarned+=u.loot;u.loot=0;u.returning=false;u.hp=0;u.retreat=false;u.x=home;}
@@ -135,7 +146,7 @@
     var stopped=patrol(e),live=e.units.filter(function(u){return active(u);}),attacks=[];
     // Sample the aura once, before movement: array order cannot change who hears it.
     e.units.forEach(function(u){u.performing=!stopped&&active(u)&&!!roles[u.kind].jam&&!(u.slip>0)&&live.some(function(v){return v.isP!==u.isP&&Math.abs(v.x-u.x)<roles[u.kind].jamRange;});u.disrupted=!stopped&&active(u)&&live.some(function(v){return v.isP!==u.isP&&roles[v.kind].jam&&!(v.slip>0)&&Math.abs(v.x-u.x)<roles[v.kind].jamRange;});});
-    e.units.forEach(function(u){u.hurt=Math.max(0,u.hurt-dt);u.follow=Math.max(0,(u.follow||0)-dt);u.shock=Math.max(0,(u.shock||0)-dt);u.drawLane=(u.drawLane===undefined?laneOf(u):u.drawLane)+(laneOf(u)-(u.drawLane===undefined?laneOf(u):u.drawLane))*Math.min(1,dt*9);if(u.returning){returnRaid(g,u,dt);return;}if(u.hp<=0){if(u.retreat)retreat(u,dt);return;}u.slow=Math.max(0,u.slow-dt);if(!stopped&&wetFooting(e,u,dt))return;u.moving=false;if(stopped){u.inspired=false;return;}u.animTime=(u.animTime||0)+dt;
+    e.units.forEach(function(u){u.hurt=Math.max(0,u.hurt-dt);u.follow=Math.max(0,(u.follow||0)-dt);u.shock=Math.max(0,(u.shock||0)-dt);u.drawLane=(u.drawLane===undefined?laneOf(u):u.drawLane)+(laneOf(u)-(u.drawLane===undefined?laneOf(u):u.drawLane))*Math.min(1,dt*9);if(u.inside){insideBlock(g,u,dt,hit,stopped);return;}if(u.returning){returnRaid(g,u,dt);return;}if(u.hp<=0){if(u.retreat)retreat(u,dt);return;}u.slow=Math.max(0,u.slow-dt);if(!stopped&&wetFooting(e,u,dt))return;u.moving=false;if(stopped){u.inspired=false;return;}u.animTime=(u.animTime||0)+dt;
       var c=def(u.kind),dir=u.isP?1:-1,range=c.range*(u.kind==='neighbor'&&e.segment===7?.72:1),target=null,distance=Infinity;
       live.forEach(function(v){if(!active(v)||v.isP===u.isP||(!roles[u.kind].projectile&&laneOf(v)!==laneOf(u)))return;var d=Math.abs(v.x-u.x);if(d<distance||(d===distance&&target&&v.id<target.id)){distance=d;target=v;}});
       u.inspired=live.some(function(v){return v!==u&&active(v)&&!(v.slip>0)&&v.isP===u.isP&&roles[v.kind].haste&&Math.abs(v.x-u.x)<roles[v.kind].aura;});u.cd=Math.max(0,u.cd-dt*(u.disrupted?1-roles.musician.jam:1));
@@ -151,18 +162,18 @@
       if(blocker)nx=u.x+dir*Math.max(0,Math.min(advance,(blocker.x-u.x)*dir-spacing(u,blocker)));
       if(target&&laneOf(target)===laneOf(u)&&(target.x-u.x)*dir>=0)nx=dir>0?Math.min(nx,target.x-.032):Math.max(nx,target.x+.032);
       u.moving=Math.abs(nx-u.x)>.00001;if(u.moving)advanceWalk(u,nx-u.x);u.x=nx;
-      if((u.isP&&u.x>=.81)||(!u.isP&&u.x<=.19)){beginRaid(g,u);}
+      if((u.isP&&u.x>=.81)||(!u.isP&&u.x<=.19)){if(raidRunner(u.kind))beginRaid(g,u);else enterBlock(u);}
     });
     attacks.forEach(function(a){var c=def(a.u.kind),damage=c.attack*multiplier(a.u.kind,a.v.kind);if(roles[a.u.kind].projectile)e.shots.push({kind:a.u.kind,x:a.u.x,from:a.u.x,to:a.v.x,fromLane:laneOf(a.u),toLane:laneOf(a.v),target:a.v.id,isP:a.u.isP,t:0,duration:.32,damage:damage});else{hurt(g,a.v,damage,roles[a.u.kind].slow||0);var splash=roles[a.u.kind].splash;if(splash){var victims=live.filter(function(v){return v!==a.v&&active(v)&&v.isP!==a.u.isP&&Math.abs(v.x-a.u.x)<splash.range&&Math.abs(laneOf(v)-laneOf(a.u))<=1;}).sort(function(v,w){return Math.abs(v.x-a.u.x)-Math.abs(w.x-a.u.x)||v.id-w.id;});victims.slice(0,splash.limit).forEach(function(v){hurt(g,v,c.attack*splash.factor,0);});}}});
     e.shots=e.shots.filter(function(s){if(stopped)return true;s.t+=dt;var u=e.units.find(function(v){return v.id===s.target;});if(u&&active(u)){s.to=u.x;s.toLane=laneOf(u);}s.x=s.from+(s.to-s.from)*Math.min(1,s.t/s.duration);if(s.t<s.duration)return true;if(u&&active(u)){var kind=s.kind||'neighbor';hurt(g,u,s.damage*(1-(roles[u.kind].projectileGuard||0))*(kind==='neighbor'&&e.segment===5&&Math.abs(u.x-.5)<.12?.5:1),roles[kind].slow||0);if(kind==='cart'){e.units.filter(function(v){return v!==u&&active(v)&&v.isP!==s.isP&&Math.abs(v.x-u.x)<roles.cart.splash.range&&Math.abs(laneOf(v)-laneOf(u))<=1;}).sort(function(a,b){return Math.abs(a.x-u.x)-Math.abs(b.x-u.x)||a.id-b.id;}).slice(0,roles.cart.splash.limit).forEach(function(v){hurt(g,v,def('cart').attack*roles.cart.splash.factor*(1-(roles[v.kind].projectileGuard||0)),0);});}}return false;});
     e.units.forEach(function(u){updateLocomotion(u,dt,stopped);});
-    e.units=e.units.filter(function(u){return u.returning||active(u)||(u.retreat&&u.x>-.04&&u.x<1.04);});
+    e.units=e.units.filter(function(u){return u.inside||u.returning||active(u)||(u.retreat&&u.x>-.04&&u.x<1.04);});
     if(e.segment===3)live.forEach(function(u){if(active(u)&&Math.abs(u.x-.5)<.11)u.hp=Math.min(u.max,u.hp+dt*5);});
     live.forEach(function(u){u.recover=Math.max(0,(u.recover||0)-dt);if(!stopped&&active(u)&&u.hp<u.max&&live.some(function(v){return v!==u&&active(v)&&!(v.slip>0)&&v.kind==='caretaker'&&v.isP===u.isP&&Math.abs(v.x-u.x)<roles.caretaker.aura;})){u.hp=Math.min(u.max,u.hp+dt*roles.caretaker.heal);u.recover=.25;}});
     if(e.segment===1){var p=live.some(function(u){return active(u)&&u.isP&&Math.abs(u.x-.5)<.1;}),q=live.some(function(u){return active(u)&&!u.isP&&Math.abs(u.x-.5)<.1;}),owner=p!==q?p:null;if(owner!==t.owner)t.capture=0;t.owner=owner;if(owner!==null){t.capture+=dt;if(t.capture>=5){t.capture-=5;var bank=owner?g.p:g.e;bank.gold=Math.min(9999,bank.gold+6);if(owner)g.stats.goldEarned+=6;}}}else{t.capture=0;t.owner=null;}
   }
   function tick(g,dt,hit,reward,impact){var t=g.estate.tactics,gold=g.stats.goldEarned;t.impact=false;t.carry+=dt;while(t.carry>=1/30&&!g.over){step(g,1/30,hit);t.carry-=1/30;}if(t.impact&&impact)impact();if(reward&&g.stats.goldEarned>gold)reward(true,g.stats.goldEarned-gold);}
-  function finish(g,dt){var e=g.estate;e.shots=[];e.units.forEach(function(u){if(u.returning){(u.isP?g.e:g.p).gold+=u.loot;u.loot=0;u.returning=false;}if(active(u))retire(u);retreat(u,dt);updateLocomotion(u,dt,false);});e.units=e.units.filter(function(u){return u.x>-.04&&u.x<1.04;});}
+  function finish(g,dt){var e=g.estate;e.shots=[];e.units.forEach(function(u){if(u.returning){(u.isP?g.e:g.p).gold+=u.loot;u.loot=0;u.returning=false;}if(u.inside){u.inside=false;u.hp=0;u.x=u.isP?1.05:-.05;return;}if(active(u))retire(u);retreat(u,dt);updateLocomotion(u,dt,false);});e.units=e.units.filter(function(u){return u.x>-.04&&u.x<1.04;});}
   function line(c,x,y,a,b,color,w){c.strokeStyle=color;c.lineWidth=w;c.lineCap='round';c.beginPath();c.moveTo(x,y);c.lineTo(a,b);c.stroke();}
   function ellipse(c,x,y,rx,ry,color){c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();}
   // All street-level adults share this scale; doorways must fit the actor,
@@ -336,9 +347,9 @@
   }
   function draw(c,g,scale,lang){var e=g.estate,t=e.tactics,s=Math.min(1.8,Math.max(.62,scale*.74));
     if(e.segment===1||e.segment===3||e.segment===5){c.save();c.strokeStyle=e.segment===3?'#94b881':e.segment===5?'#c3bba4':t.owner===null?'#d8c492':t.owner?'#79bddd':'#db8f71';c.lineWidth=2;c.setLineDash([5,5]);c.beginPath();c.ellipse(g.W*.5,g.GY-1,g.W*.1,7,0,0,Math.PI*2);c.stroke();c.restore();}
-    e.units.slice().sort(function(a,b){return a.drawLane-b.drawLane;}).forEach(function(u){var offset=(u.drawLane===undefined?laneOf(u):u.drawLane)*12*s;figure(c,u,u.x*g.W,g.GY-3+offset,s);if(u.inspired&&active(u)){c.save();var nx=u.x*g.W-14*s,ny=g.GY-48*s+offset;ellipse(c,nx,ny,2*s,1.5*s,'#e4c985');line(c,nx+2*s,ny,nx+2*s,ny-7*s,'#e4c985',1.2*s);c.restore();}if(u.disrupted&&active(u)){c.save();var dx=u.x*g.W+13*s,dy=g.GY-49*s+offset;line(c,dx,dy,dx+3*s,dy-6*s,'#c5add7',1.5*s);ellipse(c,dx-1,dy,2*s,1.5*s,'#c5add7');c.restore();}if(u.returning&&u.loot>0){c.save();c.fillStyle='#f5dd84';c.font='bold '+Math.max(9,10*s)+'px sans-serif';c.textAlign='center';c.fillText(String(u.loot),u.x*g.W,g.GY-65*s+offset);c.restore();}if(active(u)){var w=23*s,x=u.x*g.W-w/2,y=g.GY-65*s+offset;c.fillStyle='#213139';c.fillRect(x-1,y-1,w+2,4);c.fillStyle=u.isP?'#84c5cf':'#e3a183';c.fillRect(x,y,w*u.hp/u.max,2);}});
+    e.units.slice().sort(function(a,b){return a.drawLane-b.drawLane;}).forEach(function(u){if(u.inside)return;var offset=(u.drawLane===undefined?laneOf(u):u.drawLane)*12*s;figure(c,u,u.x*g.W,g.GY-3+offset,s);if(u.inspired&&active(u)){c.save();var nx=u.x*g.W-14*s,ny=g.GY-48*s+offset;ellipse(c,nx,ny,2*s,1.5*s,'#e4c985');line(c,nx+2*s,ny,nx+2*s,ny-7*s,'#e4c985',1.2*s);c.restore();}if(u.disrupted&&active(u)){c.save();var dx=u.x*g.W+13*s,dy=g.GY-49*s+offset;line(c,dx,dy,dx+3*s,dy-6*s,'#c5add7',1.5*s);ellipse(c,dx-1,dy,2*s,1.5*s,'#c5add7');c.restore();}if(u.returning&&u.loot>0){c.save();c.fillStyle='#f5dd84';c.font='bold '+Math.max(9,10*s)+'px sans-serif';c.textAlign='center';c.fillText(String(u.loot),u.x*g.W,g.GY-65*s+offset);c.restore();}if(active(u)){var w=23*s,x=u.x*g.W-w/2,y=g.GY-65*s+offset;c.fillStyle='#213139';c.fillRect(x-1,y-1,w+2,4);c.fillStyle=u.isP?'#84c5cf':'#e3a183';c.fillRect(x,y,w*u.hp/u.max,2);}});
     e.shots.forEach(function(v){var p=shotPose(v,s,g.GY,g.W);c.save();c.translate(p.x,p.y);c.rotate(v.t*16);if(v.kind==='cart'){c.fillStyle='#d4c4a3';c.strokeStyle='#354246';c.lineWidth=1;c.fillRect(-5*s,-4*s,10*s,8*s);c.strokeRect(-5*s,-4*s,10*s,8*s);line(c,0,-4*s,0,4*s,'#947b51',2*s);}else ellipse(c,0,0,6*s,2.5*s,'#dab771');c.restore();});
     c.save();c.textAlign='center';c.font='bold '+Math.max(9,Math.min(12,g.W/90))+'px sans-serif';var text=rules[e.segment][lang==='en'?1:0];if(e.segment===9){var phase=t.clock%14;text=(patrol(e)?(lang==='en'?'PATROL — HOLD! ':'PATROL — STAĆ! '):phase>=9?(lang==='en'?'PATROL INCOMING · ':'NADJEŻDŻA PATROL · '):'')+text;}if(e.segment===1&&t.owner!==null)text+=' '+Math.ceil(5-t.capture)+' s';if(g.over)text=lang==='en'?'ENOUGH! Time for tea. Everyone heads home.':'WYSTARCZY! Czas na herbatę. Wracamy do domu.';var y=Math.min(g.H-14,g.GY+48);c.fillStyle='rgba(22,32,36,.88)';c.fillRect(g.W*.16,y-13,g.W*.68,20);c.fillStyle='#f2dfaf';c.fillText(text,g.W*.5,y,g.W*.66);c.restore();
   }
-  root.CASTLE_ESTATE_TACTICS={weatherInit:weatherInit,weatherLabel:weatherLabel,weatherStep:weatherStep,solveLeg:solveLeg,updateLocomotion:updateLocomotion,condition:condition,animationState:animationState,puddles:PUDDLES,slipPose:slipPose,slipMotion:slipMotion,heavyPose:heavyPose,raidCapacity:raidCapacity,active:active,shotPose:shotPose,armPose:armPose,portrait:portrait,outfit:outfit,roles:roles,description:description,actorScale:actorScale,pose:pose,cards:cards,roster:roster,archetype:archetype,rules:rules,init:init,status:status,recruit:recruit,choose:choose,heal:heal,tick:tick,finish:finish,draw:draw,figure:figure,patrol:patrol,multiplier:multiplier};
+  root.CASTLE_ESTATE_TACTICS={weatherInit:weatherInit,weatherLabel:weatherLabel,weatherStep:weatherStep,solveLeg:solveLeg,updateLocomotion:updateLocomotion,condition:condition,animationState:animationState,puddles:PUDDLES,slipPose:slipPose,slipMotion:slipMotion,heavyPose:heavyPose,raidRunner:raidRunner,entryDamage:entryDamage,raidCapacity:raidCapacity,active:active,shotPose:shotPose,armPose:armPose,portrait:portrait,outfit:outfit,roles:roles,description:description,actorScale:actorScale,pose:pose,cards:cards,roster:roster,archetype:archetype,rules:rules,init:init,status:status,recruit:recruit,choose:choose,heal:heal,tick:tick,finish:finish,draw:draw,figure:figure,patrol:patrol,multiplier:multiplier};
 })(window);

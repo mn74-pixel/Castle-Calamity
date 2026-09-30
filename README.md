@@ -1,5 +1,28 @@
 # Castle Calamity
 
+### v8.20.0 — różne elewacje, odpadający tynk i wejścia do bloków
+
+Błękitnoszara i piaskowa elewacja różnią się na całej powierzchni, nie tylko
+paskiem drużyny. Ciemnozielona kabina ma żółty aparat: taki AW-7 z 1985 r.
+figuruje w [katalogu Telefony PRL](https://telesfor.org/eksponaty/).
+Nie wszystkie historyczne aparaty miały ten kolor.
+
+Każde trafienie butelką uruchamia siedem krótkotrwałych odprysków tynku.
+Stałe, nieregularne ubytki narastają wraz ze spadkiem morale; blok nie zapada
+się i nie odsłania konstrukcyjnych dziur.
+
+Rower i rolki nadal wracają z kredytami. Pozostałe oddziały wchodzą przez
+otwierane drzwi (1,2 s), po czym sześć razy, co sekundę, odejmują morale:
+każde działanie to 75% kosztu jednostki zaokrąglone w górę. Następnie kończą
+udział w bitwie, bez marszu powrotnego i bez naliczania śmierci. Patrol
+wstrzymuje tę sekwencję. Licznik przy drzwiach pokazuje obecność ekipy.
+Jednostki wewnątrz nie walczą na ulicy, nie blokują ruchu, nie leczą ani nie
+udzielają aur; koniec bitwy anuluje ich pozostałe działania.
+
+Testy obejmują obie strony, wszystkie oddziały, przerwanie działań, pogodę,
+pełne bitwy i renderowanie wejść na komputerze oraz w rozmiarze telefonu.
+Odbiór płynności i czytelności na fizycznym iPhonie pozostaje ręczny.
+
 ### v8.19.0 — kolory polskiego osiedla, 1988 / 1997
 
 Elewacje: szarość wielkiej płyty, przybrudzona biel, stonowane błękitne

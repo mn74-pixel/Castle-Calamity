@@ -16,6 +16,8 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 
 const qaHooks = String.raw`
 window.__QA = {
+  estateEntryScene: function(p,time){launchEstateSegment(0);G.estate.ai=1e6;ESTATE.buy(G,'dres',p);var u=G.estate.units[0];u.x=p?.809:.191;window.CASTLE_ESTATE_TACTICS.tick(G,time,castleDmg);var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),inside:u.inside,returning:!!u.returning,hits:u.entryHits};},
+  estatePlasterScene: function(){launchEstateSegment(0);G.estate.ai=1e6;G.e.hp=G.e.max*.55;G.estate.bottles.push({isP:true,item:ESTATE.choices[1],t:1,duration:1});ESTATE.tick(G,1/30,castleDmg);var triggered=G.estate.e.plasterT===.7;ESTATE.tick(G,.25,castleDmg);var before=JSON.stringify(G);render();var pure=before===JSON.stringify(G);ESTATE.tick(G,.8,castleDmg);return {triggered:triggered,pure:pure,expired:G.estate.e.plasterT===0};},
   photoReactionScene: function(p,hit){launchEstateSegment(4);var img=document.createElement('canvas');img.width=img.height=320;var cx=img.getContext('2d');cx.fillStyle='#c78e6e';cx.beginPath();cx.ellipse(160,160,115,148,0,0,Math.PI*2);cx.fill();cx.fillStyle='#40342f';cx.fillRect(105,116,27,10);cx.fillRect(191,116,27,10);cx.fillStyle='#823c44';cx.fillRect(142,218,40,8);img.faceRig={version:1,mouth:{x:162/320,y:222/320},method:'manual'};var oldP=PLAYER_CREST,oldE=ENEMY_CREST;if(p)PLAYER_CREST=img;else ENEMY_CREST=img;var st=G.estate[p?'p':'e'];ESTATE.buy(G,'wine',p);st.action.t=.6;st.hitReactT=hit?.36:0;st.hitReactPower=1;var before=JSON.stringify(G.estate);render();var pure=before===JSON.stringify(G.estate);PLAYER_CREST=oldP;ENEMY_CREST=oldE;return pure;},
   estateMobileLayout: function(){launchEstateSegment(7);render();var ground=G.GY;return {ground:ground,creditsBottom:ground+44,hintBottom:ground+55,controlsTop:H-50,roof:ground-ESTATE.baseLayout(G.p,ground).h,height:H};},
   portraitAudit: function(){
@@ -1078,7 +1080,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.19.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.20.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Pogoda: automatyczny cykl '+key);
@@ -1130,13 +1132,21 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   }
 }
 const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
+for(const viewport of [[1280,720],[667,375]]){
+  qa.viewport(viewport[0],viewport[1],1);
+  for(const p of [true,false])for(const time of [.3,1,3]){const entry=qa.estateEntryScene(p,time);check(entry.pure&&entry.inside&&!entry.returning,'Block entry is visible, read-only and not a returning raider '+viewport+' '+p+' '+time);save('estate-entry-'+viewport.join('x')+'-'+p+'-'+time+'.png');}
+  const plaster=qa.estatePlasterScene();check(plaster.triggered&&plaster.pure&&plaster.expired,'Bottle plaster chips are triggered, pure and expire '+viewport);save('estate-plaster-'+viewport.join('x')+'.png');
+}
+qa.viewport(1280,720,1);
 const estateMaterials=sandbox.window.CASTLE_ESTATE.periodMaterials;
+check(estateMaterials('1988',false).booth==='#183e2a'&&estateMaterials('1988',false).phone==='#e5b832','Dark green cabin contains a yellow payphone');
 check(estateMaterials('1988',false).boothType==='glazed-green'&&estateMaterials('1997',false).boothType==='open-blue','Historical props: green glazed cabin and later blue open phone shell');
 check(estateMaterials('1988',false).facade!==estateMaterials('1997',false).facade,'Historical facade materials distinguish the two periods');
 for(const period of ['1988','1997']){
   const day=estateMaterials(period,false),night=estateMaterials(period,true);
   check(day.facade!==night.facade&&day.far!==night.far,'Historical materials preserve night shading '+period);
   check(day.player!==day.enemy&&night.player!==night.enemy,'Historical palette retains team contrast '+period);
+  check(day.facade!==day.enemyFacade&&night.facade!==night.enemyFacade,'Whole facades differ, not just narrow team stripes '+period);
 }
 const contactSheet=createCanvas(720,330),contactCtx=contactSheet.getContext('2d');
 contactCtx.fillStyle='#33434c';contactCtx.fillRect(0,0,720,330);

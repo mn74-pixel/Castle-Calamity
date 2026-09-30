@@ -10,6 +10,15 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('entry telegraphs before damage, pauses for patrol, stops after six beats and never heals or blocks',()=>{
+  const g=game(0),u=spawn(g,'dres',true,.809);tick(g,.1);assert(u.inside&&!u.returning);assert(!T.active(u));
+  tick(g,1.8);assert.equal(g.e.hp,2200);tick(g,.5);assert.equal(g.e.hp,2200-T.entryDamage('dres'));
+  g.estate.segment=9;g.estate.tactics.clock=11;const time=u.entryT,hp=g.e.hp;tick(g,1);assert.equal(u.entryT,time);assert.equal(g.e.hp,hp);
+  g.estate.segment=0;tick(g,8);assert.equal(g.e.hp,2200-6*T.entryDamage('dres'));assert.equal(g.estate.units.length,0);
+});
+check('finishing the feud cancels indoor pressure with no losses or additional hits',()=>{
+  const g=game(0),u=spawn(g,'dres',true,.809);tick(g,.1);assert(u.inside);const hp=g.e.hp;T.finish(g,.1);assert.equal(g.estate.units.length,0);assert.equal(g.e.hp,hp);assert.equal(g.stats.losses+g.stats.kills,0);
+});
 check('newly returning raiders cannot consume a ranged attack windup in the same step',()=>{
   for(const side of [true,false]){
     const g=game(4),raider=spawn(g,'bike',side,side?.809:.191),ranged=spawn(g,'neighbor',!side,side?.78:.22);
@@ -89,7 +98,7 @@ check('slipping supports cannot heal or inspire either team',()=>{
   }
 });
 check('unlock stages, shared funds, separate recruitment cooldown',()=>{const g=game(0);assert.equal(T.status(g,'bike',true).reason,'locked');assert.equal(T.status(g,'neighbor',true).reason,'locked');spawn(g,'dres',true);assert.equal(g.p.gold,982);assert.equal(g.stats.unitsSpawned,1);assert.equal(T.status(g,'dres',true).reason,'recruit');tick(g,2.5);assert(T.status(g,'dres',true).ok);g.p.gold=0;assert.equal(T.status(g,'dres',true).reason,'gold');});
-check('every unit steals once, returns funds home and leaves both buildings intact',()=>{for(const c of T.cards)for(const p of [true,false]){const g=game(c.unlock);spawn(g,c.id,p);tick(g,90);const loot=T.raidCapacity(c.id,c.unlock);assert.equal((p?g.e:g.p).hp,2200);assert.equal((p?g.e:g.p).gold,1000-loot);assert.equal((p?g.p:g.e).gold,1000-c.cost+loot);assert.equal(g.estate.units.length,0);assert.equal(g.stats.kills+g.stats.losses,0);}});
+check('riders raid money while other units deliver six morale hits inside, on both teams',()=>{for(const c of T.cards)for(const p of [true,false]){const g=game(c.unlock);spawn(g,c.id,p);tick(g,90);const loot=T.raidRunner(c.id)?T.raidCapacity(c.id,c.unlock):0;assert.equal((p?g.e:g.p).hp,2200-(T.raidRunner(c.id)?0:6*T.entryDamage(c.id)));assert.equal((p?g.e:g.p).gold,1000-loot);assert.equal((p?g.p:g.e).gold,1000-c.cost+loot);assert.equal(g.estate.units.length,0);assert.equal(g.stats.kills+g.stats.losses,0);}});
 check('dres stops bikes; bikes catch exposed neighbours; neighbours kite dres through slowing',()=>{for(const [a,b] of [['dres','bike'],['bike','neighbor'],['neighbor','dres']]){const g=game();spawn(g,a,true,.35);spawn(g,b,false,.65);tick(g,20);assert.equal(g.stats.kills,1,a+' should win');assert.equal(g.stats.losses,0,a+' should survive');}});
 check('ranged telegraph, projectile impact and slowdown are real',()=>{const g=game();spawn(g,'neighbor',true,.4);const v=spawn(g,'dres',false,.53);tick(g,.3);assert(g.estate.units[0].wind>0);assert.equal(v.hp,v.max);tick(g,.25);assert.equal(g.estate.shots.length,1);tick(g,.4);assert(v.hp<v.max);assert(v.slow>0);});
 check('bins halve ranged damage; night reduces range',()=>{function sample(seg){const g=game(4);spawn(g,'neighbor',true,.38);const v=spawn(g,'dres',false,.52);g.estate.segment=seg;v.wind=100;tick(g,.9);return v.max-v.hp;}assert(sample(4)>0);assert(Math.abs(sample(5)*2-sample(4))<1e-8);assert.equal(sample(7),0);});
@@ -113,7 +122,7 @@ check('bike is affordable pressure, not an expensive disposable frontliner',()=>
   assert(bike.cost<=front.cost*1.25);assert(bike.hp>=110);
   for(const side of [true,false]){const g=game(),b=spawn(g,'bike',side,.5),d=spawn(g,'dres',!side,side?.53:.47);tick(g,8);assert(b.retreat);assert(d.hp>0&&d.hp<=front.hp*.5,'counter wins but pays a meaningful price');}
   function pressure(id){const c=T.cards.find(c=>c.id===id),g=game(c.unlock);spawn(g,id,true);let time=0;while(g.p.gold===1000-c.cost&&time<90){tick(g,1/30);time+=1/30;}return {time,value:(g.p.gold-1000+c.cost)/c.cost};}
-  const b=pressure('bike'),d=pressure('dres');assert(b.time<d.time*.5);assert(b.value>=d.value*.95);
+  const b=pressure('bike');assert(b.time<20);assert(b.value>=1.4);assert(!T.raidRunner('dres'));
 });
 check('upgraded front still counters skaters, skaters catch ranged support on either side',()=>{
   for(const side of [true,false])for(const [a,b] of [['bat','skater'],['skater','neighbor']]){const g=game(7);const winner=spawn(g,a,side,side?.35:.65),loser=spawn(g,b,!side,side?.65:.35);tick(g,14);assert(winner.hp>0||!winner.retreat||g[side?'e':'p'].hp<2200,a+' fulfils its role');assert(loser.retreat,b+' retreats');assert.equal(side?g.stats.losses:g.stats.kills,0);}
@@ -200,7 +209,7 @@ check('rain causes brief, damage-free slips only on marked puddles, on either te
 check('wet battles are deterministic across FPS, raiders return and fallen actors can withdraw',()=>{
   function run(dt){const g=game(2);g.estate.rain=true;for(const p of [true,false]){spawn(g,'marian',p);spawn(g,'bike',p);spawn(g,'dres',p);}tick(g,90,dt);return JSON.stringify([g.p.gold,g.e.gold,g.stats,g.estate.units]);}assert.equal(run(1/30),run(1/120));
   const g=game(2),u=spawn(g,'marian',true,.5);g.estate.rain=true;u.lane=1;u.moving=true;tick(g,.1);assert(u.slip>0);T.finish(g,.1);assert.equal(u.slip,0);assert(u.retreat);assert.equal(T.slipPose(u),0);
-  for(const c of T.cards){const r=game(c.unlock);r.estate.rain=true;spawn(r,c.id,true);tick(r,100);assert.equal(r.estate.units.length,0);assert.equal(r.e.gold,1000-T.raidCapacity(c.id,c.unlock));}
+  for(const c of T.cards){const r=game(c.unlock);r.estate.rain=true;spawn(r,c.id,true);tick(r,100);assert.equal(r.estate.units.length,0);assert.equal(r.e.gold,1000-(T.raidRunner(c.id)?T.raidCapacity(c.id,c.unlock):0));}
 });
 check('condition thresholds are bounded, shared, pure and safe for icon previews',()=>{
   for(const [hp,expected] of [[100,0],[76,0],[75,1],[51,1],[50,2],[26,2],[25,3],[1,3],[0,4],[-5,4],[150,0]]){const c=T.condition(hp,100);assert.equal(c.stage,expected);assert(c.wear>=0&&c.wear<=1);assert.equal(c.ratio+c.wear,1);}
