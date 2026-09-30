@@ -130,15 +130,15 @@
   function slipPose(u){var q=Math.max(0,Math.min(1,1-(u.slip||0)/(u.slipDuration||.8)));return u.slip>0?Math.sin(Math.PI*Math.pow(q,.6)):0;}
   // Authored body mechanics, sampled from simulation time, not render frames.
   // q, hip drop, lean, rear foot, front foot, rear hand Y, front hand Y.
-  var FALL_ICE=[[0,0,0,-5,6,-26,-36],[.18,1,-.16,-2,13,-58,-64],[.43,14,-.48,8,20,-24,-52],[.58,16,-.28,9,20,-14,-34],[.76,10,.19,-3,12,-17,-26],[1,0,0,-5,6,-26,-36]];
-  var FALL_WATER=[[0,0,0,-5,6,-26,-36],[.14,0,-.12,-4,11,-46,-57],[.34,13,-.4,5,18,-23,-48],[.48,15,-.22,6,18,-15,-33],[.7,9,.16,-3,10,-18,-27],[1,0,0,-5,6,-26,-36]];
+  var FALL_ICE=[[0,0,0,-5,6,-26,-36],[.18,1,-.16,-2,13,-58,-64],[.43,14,-.48,8,20,-24,-52],[.58,16,-.28,9,20,-14,-34],[.76,10,.19,-3,12,-17,-26],[.91,1,-.06,-5,7,-30,-40],[1,0,0,-5,6,-26,-36]];
+  var FALL_WATER=[[0,0,0,-5,6,-26,-36],[.14,0,-.12,-4,11,-46,-57],[.34,13,-.4,5,18,-23,-48],[.48,15,-.22,6,18,-15,-33],[.7,9,.16,-3,10,-18,-27],[.88,1,-.045,-5,7,-29,-39],[1,0,0,-5,6,-26,-36]];
   function slipMotion(u){
     var q=u.slip>0?Math.max(0,Math.min(1,1-u.slip/(u.slipDuration||.8))):1,ice=u.slipSurface==='ice',frames=ice?FALL_ICE:FALL_WATER,i=0;
     while(i<frames.length-2&&q>frames[i+1][0])i++;
     var a=frames[i],b=frames[i+1],v=Math.max(0,Math.min(1,(q-a[0])/(b[0]-a[0])));v=v*v*(3-2*v);
     function at(n){return a[n]+(b[n]-a[n])*v;}
-    var blend=Math.sin(q*Math.PI),heavy=u.kind==='heavy';
-    return {q:q,ice:ice,drop:at(1)*(heavy?.68:1),lean:at(2)*(heavy?.75:1),leftX:heavy?-8+(at(3)+5)*.75:at(3),rightX:heavy?8+(at(4)-6)*.75:at(4),backY:at(5),frontY:at(6),flail:Math.sin(q*Math.PI*5)*Math.sin(Math.min(1,q/.48)*Math.PI)*(ice?4:2),slide:(ice?7:3)*blend,blend:blend,impact:ice?.43:.34};
+    var blend=Math.sin(q*Math.PI),heavy=u.kind==='heavy',bike=u.kind==='bike';
+    return {q:q,ice:ice,drop:at(1)*(heavy?.68:bike?.3:1),lean:at(2)*(heavy?.75:bike?.55:1),leftX:heavy?-8+(at(3)+5)*.75:at(3),rightX:heavy?8+(at(4)-6)*.75:at(4),backY:at(5),frontY:at(6),flail:Math.sin(q*Math.PI*5)*Math.sin(Math.min(1,q/.48)*Math.PI)*(ice?4:2),slide:(ice?7:3)*blend,blend:blend,impact:ice?.43:.34};
   }
   function step(g,dt,hit){
     weatherStep(g.estate,dt);
@@ -180,14 +180,15 @@
   // never the reverse. Keep the historical unit-size clamp in one adapter.
   function actorScale(height){return Math.min(1.8,Math.max(.62,Math.round(Math.max(24,Math.min(46,height*.064)))/22*.74));}
   function pose(u){var phase=u.walk||0,weight=locomotionWeight(u),cycle=Math.sin(phase)*weight;
-    return {stride:cycle*(u.kind==='skater'?7:u.kind==='heavy'?3:5),lift:Math.max(0,Math.cos(phase))*3*weight,rightLift:Math.max(0,-Math.cos(phase))*3*weight,sway:cycle*.025+(u.kind==='marian'?Math.sin((u.animTime||0)*2.3)*.09:0),
-      bob:u.kind!=='bike'?Math.abs(cycle)*.85:0,
+    return {stride:cycle*(u.kind==='skater'?7:u.kind==='heavy'?3:5),lift:Math.pow(Math.max(0,Math.cos(phase)),2)*3*weight,rightLift:Math.pow(Math.max(0,-Math.cos(phase)),2)*3*weight,sway:cycle*.025+(u.kind==='marian'?Math.sin((u.animTime||0)*2.3)*.09:0),
+      bob:u.kind!=='bike'?cycle*cycle*.85:0,
       recoil:Math.pow(Math.max(0,Math.min(1,(u.hurt||0)/.24)),2)*2.5*(u.hitPower||1),
       reach:u.wind>0?-Math.sin(u.wind/((def(u.kind)||{}).windup||.22)*Math.PI)*4:(u.follow||0)/.2*9,
       pedalX:Math.cos(phase)*5,pedalY:Math.sin(phase)*5};
   }
   function limb(c,x,y,kx,ky,fx,fy,color,width){line(c,x,y,kx,ky,'#233238',width+1.5);line(c,kx,ky,fx,fy,'#233238',width+1.5);line(c,x,y,kx,ky,color,width);line(c,kx,ky,fx,fy,color,width);line(c,x-width*.18,y+1,kx-width*.18,ky,'rgba(238,228,196,.32)',width*.22);line(c,kx-width*.18,ky,fx-width*.18,fy-1,'rgba(238,228,196,.2)',width*.18);ellipse(c,kx+.7,ky+1,width*.25,width*.2,'rgba(20,32,38,.2)');}
   function hand(c,x,y){ellipse(c,x+.6,y+.8,3,3,'#8f694e');ellipse(c,x,y,2.6,2.7,'#d5ad88');ellipse(c,x-.8,y-1,1.2,1.2,'#f0caa1');}
+  function actorShadow(c,width,fall){var spread=fall?fall.drop*.16:0;ellipse(c,2,2,width+spread+4,4,'rgba(13,24,28,.10)');ellipse(c,0,1,width+spread,2.3,'rgba(13,24,28,.23)');}
   function leg(c,hx,hy,fx,fy,color,width,length){var joint=solveLeg(hx,hy,fx,fy,length,length);limb(c,hx,hy,joint.kx,joint.ky,joint.fx,joint.fy,color,width);}
   function clothingBody(c,u,head,hip,team){var neighbor=u.kind==='neighbor',bottom=neighbor?-15:(u.kind==='caretaker'||u.kind==='marian')?hip+5:hip+1,col=outfit(u.kind,team);
     c.beginPath();c.moveTo(-5,head+12);c.bezierCurveTo(-11,head+12,-10,head+21,-11,bottom-4);c.quadraticCurveTo(-2,bottom+3,neighbor?13:10,bottom);c.bezierCurveTo(9,head+26,11,head+13,5,head+12);c.quadraticCurveTo(0,head+15,-5,head+12);c.closePath();
@@ -271,7 +272,7 @@
     line(c,-7,-47,-3,-42,'#d6c7a7',2);line(c,7,-47,4,-41,'#d6c7a7',2);line(c,10,-27,16,-28,'#cbb589',1.2);c.fillStyle='#d1b774';c.fillRect(2,-20,5,4);
   }
   function heavyFigure(c,u,x,y,s){var p=heavyPose(u),team=u.isP?'#528caa':'#b96552',ink='#233238',phase=u.walk||0,fall=animationState(u)==='slip'?slipMotion(u):null;
-    c.save();c.translate(x,y);c.scale((u.facing||((u.isP?1:-1)*(u.retreat||u.returning?-1:1)))*s,s);ellipse(c,1,1,21,3.5,'rgba(13,24,28,.3)');
+    c.save();c.translate(x,y);c.scale((u.facing||((u.isP?1:-1)*(u.retreat||u.returning?-1:1)))*s,s);actorShadow(c,21,fall);
     if(fall){c.translate(fall.slide,0);p.leftX=fall.leftX;p.rightX=fall.rightX;p.leftLift=p.rightLift=0;}
     if(u.shock>0&&!u.retreat&&!u.returning){c.save();c.globalAlpha=u.shock/.35;c.strokeStyle='#e8ce91';c.lineWidth=2;c.beginPath();c.ellipse(12,0,15+(1-u.shock/.35)*28,5,0,0,Math.PI*2);c.stroke();c.restore();}
     [[-8,p.leftX,p.leftLift],[8,p.rightX,p.rightLift]].forEach(function(leg){var hy=-20+(fall?fall.drop:0),knee=solveLeg(leg[0],hy,leg[1],-4-leg[2],8.5,8.5);limb(c,leg[0],hy,knee.kx,knee.ky,knee.fx,knee.fy,'#394b56',6);ellipse(c,knee.fx+2,knee.fy+1,7,3,ink);line(c,knee.fx-3,knee.fy+3,knee.fx+7,knee.fy+3,'#92998b',1);});
@@ -301,7 +302,7 @@
   function uprightFigure(c,u,x,y,s){
     if(u.kind==='heavy'){heavyFigure(c,u,x,y,s);return;}
     var bike=u.kind==='bike',neighbor=u.kind==='neighbor',team=u.isP?'#528caa':'#b96552',ink='#233238',phase=u.walk||0,p=pose(u),stride=p.stride,hit=u.hurt>0,attack=p.reach,fall=animationState(u)==='slip'?slipMotion(u):null;
-    c.save();c.translate(x,y);c.scale((u.facing||((u.isP?1:-1)*(u.retreat||u.returning?-1:1)))*s,s);ellipse(c,0,1,bike?22:14,3,'rgba(13,24,28,.3)');
+    c.save();c.translate(x,y);c.scale((u.facing||((u.isP?1:-1)*(u.retreat||u.returning?-1:1)))*s,s);actorShadow(c,bike?22:14,fall);
     if(fall)c.translate(fall.slide,0);
     if(u.kind==='cart')cartEquipment(c,u,team);
     if(bike){[-18,18].forEach(function(xx){ellipse(c,xx,-9,10,10,ink);ellipse(c,xx,-9,7,7,'#a4b4aa');ellipse(c,xx,-9,5.5,5.5,'#526560');for(var n=0;n<3;n++){var a=phase+n*Math.PI/3;line(c,xx-Math.cos(a)*7,-9-Math.sin(a)*7,xx+Math.cos(a)*7,-9+Math.sin(a)*7,'#c4c9b3',.6);}});line(c,-18,-9,-6,-25,'#d4b35f',2);line(c,-6,-25,1,-9,'#d4b35f',2);line(c,1,-9,-18,-9,'#d4b35f',2);line(c,-6,-25,13,-25,'#d4b35f',2);line(c,13,-25,1,-9,'#d4b35f',2);line(c,13,-25,18,-9,'#d4b35f',2);line(c,13,-25,12,-31,ink,2);line(c,12,-31,17,-32,ink,2);line(c,-10,-26,-3,-26,ink,3);}

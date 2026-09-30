@@ -1,5 +1,41 @@
 # Castle Calamity
 
+### v8.22.0 — osobny detal dla wszystkich 12 etapów
+
+Kiosk: paczki gazet; Monopolowy: skrzynki i butelki; ławka: słoje drewna,
+śruby i przewieszona tkanina; zapiekanki: wywietrznik i tacki; trzepak:
+wzór dywanu i frędzle; śmietniki: uchwyty, zacieki i worek; pizza: markiza
+i pudełka; nocna brama: perspektywa przejścia i oświetlone drzwi w głębi;
+kebab: tablica menu i metalowa tacka; patrol: pachołki; zamknięty sklep:
+zacieki na rolecie i kłódka; Express: mała markiza, paragon i refleksy blachy.
+
+Detale korzystają ze skali istniejącego obiektu, pozostają pod jednostkami
+i drzwiami. Nie zmieniają kolizji, ekonomii ani nawigacji. Nie wymagają
+pluginów, pobieranych tekstur ani dodatkowych buforów renderowania w grze.
+Testy sprawdzają odrębny rysunek każdego etapu, brak mutacji oraz pełne
+sceny w rozdzielczościach 1280×720 i 667×375. Dołączono również usprawnienia
+v8.21.0, wcześniej przygotowane lokalnie. Odbiór na prawdziwym iPhonie
+pozostaje ręczny — obrazy testowe nie mierzą płynności Safari.
+
+### v8.21.0 — gołąb z bułką, miększy krok i światło na chodniku
+
+Alternatywny, jednorazowy gag: gołąb ląduje przy bułce, podskakuje przy
+próbach poderwania jej i odlatuje z łupem. W jednej bitwie pojawia się
+gołąb albo samochód, nigdy oba; wybór nie wpływa na mechanikę. Cała
+12-sekundowa sekwencja korzysta z zegara symulacji i nie tworzy kolekcji
+cząstek. Renderowanie nie losuje i nie zmienia stanu.
+
+Stopy łagodniej dotykają podłoża, tułów płynniej pracuje podczas marszu,
+a końcówka wywrotki ma krótkie zachwianie przy prostowaniu. Rowerzysta
+nie siada tak głęboko w ramę. Cienie kontaktowe mają miększą krawędź
+i ciemniejszy środek; nocna latarnia oświetla chodnik i daje krótkie
+refleksy na mokrej lub oblodzonej powierzchni. Nie zmieniono szybkości,
+obrażeń, czasu poślizgu ani zasad rajdów i wejść do bloków.
+
+Testy obejmują warianty gagu, brak mutacji stanu, klatki na rozmiarach
+komputera i telefonu oraz wcześniejsze pełne bitwy. Płynność i odbiór
+humoru na fizycznym iPhonie wymagają ręcznego sprawdzenia.
+
 ### v8.20.0 — różne elewacje, odpadający tynk i wejścia do bloków
 
 Błękitnoszara i piaskowa elewacja różnią się na całej powierzchni, nie tylko

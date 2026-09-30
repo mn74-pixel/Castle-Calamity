@@ -10,6 +10,14 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('soft foot planting has no lift cusp and recovery includes a small counter-lean',()=>{
+  const epsilon=.001,a=T.pose({kind:'dres',moving:true,walk:Math.PI/2-epsilon}),b=T.pose({kind:'dres',moving:true,walk:Math.PI/2});
+  assert(Math.abs(a.lift-b.lift)/epsilon<.01);
+  for(const surface of ['water','ice']){const duration=surface==='ice'?1.1:.8,q=surface==='ice'?.91:.88;
+    const u={kind:'dres',slip:duration*(1-q),slipDuration:duration,slipSurface:surface};assert(T.slipMotion(u).lean<0);
+    const seated={...u,slip:duration*.5};assert(T.slipMotion({...seated,kind:'bike'}).drop<T.slipMotion(seated).drop*.4);
+  }
+});
 check('entry telegraphs before damage, pauses for patrol, stops after six beats and never heals or blocks',()=>{
   const g=game(0),u=spawn(g,'dres',true,.809);tick(g,.1);assert(u.inside&&!u.returning);assert(!T.active(u));
   tick(g,1.8);assert.equal(g.e.hp,2200);tick(g,.5);assert.equal(g.e.hp,2200-T.entryDamage('dres'));
