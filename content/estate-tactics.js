@@ -14,7 +14,8 @@
     {id:'cart',pl:'Wózkarz',en:'Cart pusher',rolePl:'Dystans · rozprasza grupę',roleEn:'Ranged · disperses groups',cost:44,hp:135,attack:24,interval:2,windup:.45,speed:.025,range:.125,unlock:8},
     {id:'marian',pl:'Menel',en:'Heckler',rolePl:'Zaczepka · spowalnia rywala',roleEn:'Heckler · slows a rival',cost:20,hp:120,attack:13,interval:1.5,windup:.32,speed:.029,range:.042,unlock:0},
     {id:'boxer',pl:'Bokser',en:'Boxer',rolePl:'Natarcie · osłona przed pociskami',roleEn:'Assault · projectile guard',cost:34,hp:150,attack:18,interval:.8,windup:.18,speed:.052,range:.034,unlock:5},
-    {id:'boss',pl:'Szef osiedla',en:'Estate Boss',rolePl:'Elita · rozbija zwarty front',roleEn:'Elite · breaks a packed front',cost:96,hp:390,attack:58,interval:2.6,windup:.65,speed:.021,range:.05,unlock:10}
+    {id:'boss',pl:'Szef osiedla',en:'Estate Boss',rolePl:'Elita · rozbija zwarty front',roleEn:'Elite · breaks a packed front',cost:96,hp:390,attack:58,interval:2.6,windup:.65,speed:.021,range:.05,unlock:10},
+    {id:'thief',pl:'Kieszonkowiec',en:'Pickpocket',rolePl:'Ekonomia · podkrada dostawy',roleEn:'Economy · steals deliveries',cost:28,hp:95,attack:9,interval:1.2,windup:.2,speed:.06,range:.032,unlock:3}
   ];
   // A single role sheet drives combat, card descriptions and the visual kit.
   var roles={
@@ -29,12 +30,14 @@
     cart:{role:'ranged',kit:'overalls',projectile:'parcel',splash:{range:.045,factor:.5,limit:2},weakPl:'szybkie jednostki i długi przeładunek',weakEn:'fast units and long reload'},
     marian:{role:'front',kit:'patchedcoat',slow:1.4,weakPl:'mały zasięg i słaby cios',weakEn:'short reach and weak hit'},
     boxer:{role:'fast',kit:'boxing',projectileGuard:.3,weakPl:'ciężki front i krótki zasięg',weakEn:'heavy frontline and short reach'},
-    boss:{role:'front',kit:'leather',splash:{range:.075,factor:.6,limit:2},weakPl:'rozstawiony dystans, wolny marsz i długi zamach',weakEn:'spread ranged units, slow march and long wind-up'}
+    boss:{role:'front',kit:'leather',splash:{range:.075,factor:.6,limit:2},weakPl:'rozstawiony dystans, wolny marsz i długi zamach',weakEn:'spread ranged units, slow march and long wind-up'},
+    thief:{role:'fast',kit:'raincoat',steal:8,weakPl:'mała wytrzymałość i słaby cios; osłona dostaw',weakEn:'low stamina and weak hit; escorted deliveries'}
   };
   function description(id,lang){var c=def(id),r=roles[id];if(!c||!r)return '';var en=lang==='en',parts=[en?c.roleEn:c.rolePl,(en?'Stamina ':'Wytrzymałość ')+c.hp,(en?'Hit ':'Cios ')+c.attack];
     if(r.splash)parts.push((en?'Splash ':'Obszar ')+c.attack*r.splash.factor+(r.splash.limit===1?(en?' · one extra target':' · jeden dodatkowy cel'):(en?' · nearby group':' · pobliska grupa')));
     parts.push((en?'Recovery ':'Odpoczynek ')+c.interval+' s'+(en?' + wind-up ':' + zamach ')+(c.windup||.22)+' s');
     if(r.slow)parts.push((en?'Slow ':'Spowolnienie ')+r.slow+' s');
+    if(r.steal)parts.push(en?'Steals up to 8 cargo credits or one meal nearby; 6 s cooldown; each trip once':'Kradnie z bliska do 8 kredytów z ładunku lub posiłek; przerwa 6 s; kurs okradany raz');
     if(r.slowFactor)parts.push(en?'Keeps 85% speed when slowed':'Zachowuje 85% prędkości przy spowolnieniu');
     if(r.heal)parts.push((en?'Allies +':'Sojusznicy +')+r.heal+(en?' stamina/s; does not stack':' wytrzymałości/s; nie kumuluje się'));
     if(r.haste)parts.push(en?'Nearby allies march 20% faster; does not stack':'Pobliscy sojusznicy maszerują 20% szybciej; nie kumuluje się');
@@ -42,9 +45,9 @@
     if(r.projectileGuard)parts.push(en?'Takes 30% less projectile damage':'Przyjmuje o 30% mniej obrażeń od pocisków');
     parts.push(raidRunner(id)?(en?'Raid capacity: ':'Udźwig rajdu: ')+raidCapacity(id,0):(en?'Enters block: 6 × ':'Wchodzi do bloku: 6 × ')+entryDamage(id)+(en?' morale, once per second':' morale, raz na sekundę'));parts.push((en?'Weakness: ':'Słabość: ')+(en?r.weakEn:r.weakPl));return parts.join(' · ');
   }
-  function roster(stage){var ids=[stage>=10?'boss':stage>=9?'heavy':stage>=5?'bat':'dres'];if(stage>=2)ids.push(stage>=7?'skater':stage>=5?'boxer':'bike');if(stage<=3)ids.push('marian');if(stage>=4)ids.push(stage>=8?'cart':'neighbor');if(stage>=6)ids.push(stage>=9?'caretaker':'musician');return ids;}
+  function roster(stage){var ids=[stage>=10?'boss':stage>=9?'heavy':stage>=5?'bat':'dres'];if(stage>=2)ids.push(stage>=7?'skater':stage>=5?'boxer':'bike');if(stage<=2)ids.push('marian');if(stage>=3&&stage<=5)ids.push('thief');if(stage>=4)ids.push(stage>=8?'cart':'neighbor');if(stage>=6)ids.push(stage>=9?'caretaker':'musician');return ids;}
   var rules=[
-    ['Piesi wchodzą do bloku i obniżają morale. Rower i rolki wracają z kredytami.','Walkers enter the block and lower morale. Bikes and skaters return with credits.'],
+    ['Handlarz sam zarabia: +16 za kurs. Zatrudnij drugiego za 24 kredyty.','Your trader earns +16 each trip. Hire a second for 24 credits.'],
     ['Zajmij środek: +6 kredytów co 5 s bez przeciwnika.','Hold the centre: +6 credits every 5 s uncontested.'],
     ['Rowerzysta: szybko dociera pod okno, ale uważa na dresy.','Cyclist: reaches the window fast, but watch for brawlers.'],
     ['Przy zapiekankach środek leczy jednostki obu stron.','The central snack stand heals units on either side.'],
@@ -110,7 +113,7 @@
   function recruit(g,id,p){var s=status(g,id,p);if(!s.ok)return false;var c=s.item,e=g.estate,t=e.tactics,allies=e.units.filter(function(u){return u.isP===p&&active(u);}),lane=LANES.slice().sort(function(a,b){return allies.filter(function(u){return laneOf(u)===a;}).length-allies.filter(function(u){return laneOf(u)===b;}).length;})[0],x=p?.19:.81;
     allies.forEach(function(u){if(laneOf(u)===lane)x=p?Math.min(x,u.x-spacing(u,{kind:id})):Math.max(x,u.x+spacing(u,{kind:id}));});
     (p?g.p:g.e).gold-=c.cost;t[p?'p':'e']=e.segment===8?1.2:2.4;e.units.push({id:t.nextId++,kind:id,isP:p,x:x,lane:lane,drawLane:lane,hp:c.hp,max:c.hp,cd:.25,wind:0,target:null,slow:0,hurt:0,retreat:false,blocked:0,walk:0,moving:false});if(p)g.stats.unitsSpawned++;return true;}
-  function choose(g){var e=g.estate,t=e.tactics;if(t.ai>0||t.e>0)return null;var deck=roster(e.segment),enemies=e.units.filter(function(u){return u.isP&&active(u);}),allies=e.units.filter(function(u){return !u.isP&&active(u);}),last=enemies[enemies.length-1],role=last?archetype(last.kind):'fast',wanted=role==='fast'?'front':role==='ranged'?'fast':'ranged';var controller=deck.find(function(id){return roles[id].slow&&!roles[id].projectile;});if(controller&&last&&role==='fast'&&allies.some(function(u){return archetype(u.kind)==='front';})&&!allies.some(function(u){return u.kind===controller;})&&status(g,controller,false).ok)return controller;var support=deck.find(function(id){return archetype(id)==='support';});if(support&&allies.length>=2&&!allies.some(function(u){return archetype(u.kind)==='support';})&&status(g,support,false).ok)return support;var order=deck.slice().sort(function(a,b){function score(id){return Number(archetype(id)===wanted)*2+(role==='ranged'?(roles[id].projectileGuard||0):0);}return score(b)-score(a);});return order.find(function(id){return status(g,id,false).ok;})||null;}
+  function choose(g){var e=g.estate,t=e.tactics;if(t.ai>0||t.e>0)return null;var deck=roster(e.segment),enemies=e.units.filter(function(u){return u.isP&&active(u);}),allies=e.units.filter(function(u){return !u.isP&&active(u);}),last=enemies[enemies.length-1],role=last?archetype(last.kind):'fast',wanted=role==='fast'?'front':role==='ranged'?'fast':'ranged';var controller=deck.find(function(id){return roles[id].slow&&!roles[id].projectile;});if(controller&&last&&role==='fast'&&allies.some(function(u){return archetype(u.kind)==='front';})&&!allies.some(function(u){return u.kind===controller;})&&status(g,controller,false).ok)return controller;var support=deck.find(function(id){return archetype(id)==='support';});if(support&&allies.length>=2&&!allies.some(function(u){return archetype(u.kind)==='support';})&&status(g,support,false).ok)return support;if(deck.includes('thief')&&allies.length>0&&!allies.some(function(u){return u.kind==='thief';})&&(e.runners||[]).some(function(r){return r.isP&&r.phase==='return'&&!r.robbed;})&&status(g,'thief',false).ok)return 'thief';var order=deck.slice().sort(function(a,b){function score(id){return (id==='thief'?-4:0)+Number(archetype(id)===wanted)*2+(role==='ranged'?(roles[id].projectileGuard||0):0);}return score(b)-score(a);});return order.find(function(id){return status(g,id,false).ok;})||null;}
   function heal(g,p,n){g.estate.units.forEach(function(u){if(u.isP===p&&active(u))u.hp=Math.min(u.max,u.hp+n);});}
   function patrol(e){return e.segment===9&&e.tactics.clock%14>=11;}
   function hurt(g,u,amount,slow){if(!u||!active(u))return;g.estate.tactics.impact=true;u.hp=Math.max(0,u.hp-amount);u.hurt=.24;u.hitPower=Math.max(.35,Math.min(1.4,amount/32));u.slow=Math.max(u.slow,slow||0);if(!u.hp){retire(u);if(u.isP)g.stats.losses++;else g.stats.kills++;}}
@@ -144,6 +147,17 @@
     var blend=Math.sin(q*Math.PI),heavy=u.kind==='heavy',bike=u.kind==='bike';
     return {q:q,ice:ice,drop:at(1)*(heavy?.68:bike?.3:1),lean:at(2)*(heavy?.75:bike?.55:1),leftX:heavy?-8+(at(3)+5)*.75:at(3),rightX:heavy?8+(at(4)-6)*.75:at(4),backY:at(5),frontY:at(6),flail:Math.sin(q*Math.PI*5)*Math.sin(Math.min(1,q/.48)*Math.PI)*(ice?4:2),slide:(ice?7:3)*blend,blend:blend,impact:ice?.43:.34};
   }
+  function pickpocket(g,u,dt,stopped){
+    u.theftT=Math.max(0,(u.theftT||0)-dt);u.theftCooldown=Math.max(0,(u.theftCooldown||0)-dt);
+    if(!active(u)||!roles[u.kind].steal||stopped||u.slip>0||u.wind>0||u.theftCooldown>0)return;
+    // A frontliner escort prevents theft; economic units never become attack targets.
+    if(g.estate.units.some(function(v){return active(v)&&v.isP!==u.isP&&archetype(v.kind)==='front'&&Math.abs(v.x-u.x)<.065;}))return;
+    var target=(g.estate.runners||[]).filter(function(r){return r.isP!==u.isP&&r.phase==='return'&&!r.robbed&&Math.abs(r.x-u.x)<.045;}).sort(function(a,b){return Math.abs(a.x-u.x)-Math.abs(b.x-u.x);})[0];if(!target)return;
+    var bank=u.isP?g.p:g.e,st=g.estate[u.isP?'p':'e'],amount;
+    if(target.kind==='food'){if(!st||st.food>=2||target.cargoFood===0)return;st.food++;target.cargoFood=0;u.theftFood=true;}
+    else{amount=Math.max(0,Math.min(roles[u.kind].steal,target.cargoCredits||0,9999-bank.gold));if(!amount)return;target.cargoCredits-=amount;bank.gold+=amount;if(u.isP)g.stats.goldEarned+=amount;u.theftFood=false;u.theftGold=amount;}
+    target.robbed=true;target.theftFlash=.7;u.theftT=.7;u.theftCooldown=6;
+  }
   function step(g,dt,hit){
     weatherStep(g.estate,dt);
     var e=g.estate,t=e.tactics;t.clock+=dt;t.p=Math.max(0,t.p-dt);t.e=Math.max(0,t.e-dt);t.ai=Math.max(0,t.ai-dt);
@@ -170,7 +184,7 @@
     });
     attacks.forEach(function(a){var c=def(a.u.kind),damage=c.attack*multiplier(a.u.kind,a.v.kind);if(roles[a.u.kind].projectile)e.shots.push({kind:a.u.kind,x:a.u.x,from:a.u.x,to:a.v.x,fromLane:laneOf(a.u),toLane:laneOf(a.v),target:a.v.id,isP:a.u.isP,t:0,duration:.32,damage:damage});else{hurt(g,a.v,damage,roles[a.u.kind].slow||0);var splash=roles[a.u.kind].splash;if(splash){var victims=live.filter(function(v){return v!==a.v&&active(v)&&v.isP!==a.u.isP&&Math.abs(v.x-a.u.x)<splash.range&&Math.abs(laneOf(v)-laneOf(a.u))<=1;}).sort(function(v,w){return Math.abs(v.x-a.u.x)-Math.abs(w.x-a.u.x)||v.id-w.id;});victims.slice(0,splash.limit).forEach(function(v){hurt(g,v,c.attack*splash.factor,0);});}}});
     e.shots=e.shots.filter(function(s){if(stopped)return true;s.t+=dt;var u=e.units.find(function(v){return v.id===s.target;});if(u&&active(u)){s.to=u.x;s.toLane=laneOf(u);}s.x=s.from+(s.to-s.from)*Math.min(1,s.t/s.duration);if(s.t<s.duration)return true;if(u&&active(u)){var kind=s.kind||'neighbor';hurt(g,u,s.damage*(1-(roles[u.kind].projectileGuard||0))*(kind==='neighbor'&&e.segment===5&&Math.abs(u.x-.5)<.12?.5:1),roles[kind].slow||0);if(kind==='cart'){e.units.filter(function(v){return v!==u&&active(v)&&v.isP!==s.isP&&Math.abs(v.x-u.x)<roles.cart.splash.range&&Math.abs(laneOf(v)-laneOf(u))<=1;}).sort(function(a,b){return Math.abs(a.x-u.x)-Math.abs(b.x-u.x)||a.id-b.id;}).slice(0,roles.cart.splash.limit).forEach(function(v){hurt(g,v,def('cart').attack*roles.cart.splash.factor*(1-(roles[v.kind].projectileGuard||0)),0);});}}return false;});
-    e.units.forEach(function(u){updateLocomotion(u,dt,stopped);});
+    e.units.forEach(function(u){pickpocket(g,u,dt,stopped);updateLocomotion(u,dt,stopped);});
     e.units=e.units.filter(function(u){return u.inside||u.returning||active(u)||(u.retreat&&u.x>-.04&&u.x<1.04);});
     if(e.segment===3)live.forEach(function(u){if(active(u)&&Math.abs(u.x-.5)<.11)u.hp=Math.min(u.max,u.hp+dt*5);});
     live.forEach(function(u){u.recover=Math.max(0,(u.recover||0)-dt);if(!stopped&&active(u)&&u.hp<u.max&&live.some(function(v){return v!==u&&active(v)&&!(v.slip>0)&&v.kind==='caretaker'&&v.isP===u.isP&&Math.abs(v.x-u.x)<roles.caretaker.aura;})){u.hp=Math.min(u.max,u.hp+dt*roles.caretaker.heal);u.recover=.25;}});
@@ -202,7 +216,7 @@
     line(c,0,head+16,1,bottom-3,'#c6c5b4',.8);line(c,-7,bottom-2,7,bottom-2,'#34434a',1.5);line(c,3,bottom-9,7,bottom-10,'#33434a',1);
     c.strokeStyle='rgba(235,225,192,.3)';c.lineWidth=.8;c.beginPath();c.moveTo(-7,bottom-9);c.quadraticCurveTo(-4,bottom-6,-1,bottom-8);c.stroke();
   }
-  function outfit(id,team){return {cycling:'#c9b785',apron:'#806977',vest:'#444f58',sport:'#786b91',workcoat:'#687a65',heavyvest:'#60564c',waistcoat:'#855c55',overalls:'#657b89',patchedcoat:'#7c7564',boxing:'#a69471',leather:'#302b30'}[(roles[id]||{}).kit]||team;}
+  function outfit(id,team){return {cycling:'#c9b785',apron:'#806977',vest:'#444f58',sport:'#786b91',workcoat:'#687a65',heavyvest:'#60564c',waistcoat:'#855c55',overalls:'#657b89',patchedcoat:'#7c7564',boxing:'#a69471',leather:'#302b30',raincoat:'#586153'}[(roles[id]||{}).kit]||team;}
   // Keep the supporting palm above the pavement after torso rotation.
   function palmHeight(f,x,y,hip){return Math.min(y,hip+(-3-hip-f.drop-Math.sin(f.lean)*x)/Math.cos(f.lean));}
   function armPose(u,head,p){var bike=u.kind==='bike',throwing=u.kind==='neighbor'&&(u.wind>0||u.follow>0);
@@ -230,6 +244,7 @@
     if(heavy||old){line(c,1,10,5,10,'#55473f',2);line(c,2,12,5,12,ink,.8);}
     else line(c,2,12,5,hit?11:u.retreat?13:12,ink,.9);
     if(u.kind==='boss'){line(c,-5,0,5,-1,'#302728',3);line(c,0,5,7,5,'#171f28',3);line(c,-4,5,0,5,'#b18d45',1);line(c,1,4,3,4,'#93b4b5',.8);ellipse(c,-6,8,1.5,2,'#e6bd54');}
+    if(u.kind==='thief'){ellipse(c,-1,-1,7,3,'#464d3e');line(c,1,1,10,2,'#464d3e',2);line(c,0,5,6,5,'#253237',2);ellipse(c,3,5,.7,.7,'#e5d7ae');}
     if(old){line(c,-4,3,-4,6,'#d6ccb1',1.6);line(c,0,8,2,8,'#a17a60',.7);}
     if(u.kind==='neighbor'){c.strokeStyle=ink;c.lineWidth=.7;c.strokeRect(0,4,5,4);line(c,-4,5,0,5,ink,.7);}
     if(fatigue.stage>=1){line(c,1,8,4,8,'rgba(113,78,64,.42)',.8);}
@@ -261,6 +276,7 @@
     if(u.kind==='cart'){line(c,-6,head+13,-5,hip-2,'#c6c6a7',2);line(c,5,head+13,6,hip-2,'#c6c6a7',2);c.fillStyle=team;c.fillRect(-4,head+23,8,6);line(c,-4,head+23,4,head+23,'#cdd4b7',1);}
     if(u.kind==='boxer'){line(c,-6,head+14,-4,head+22,team,3);line(c,6,head+14,4,head+22,team,3);line(c,-8,hip-2,9,hip-2,'#dfd4ad',4);c.fillStyle=team;c.fillRect(-3,hip-4,6,5);}
     if(u.kind==='musician'){line(c,-6,head+13,2,hip-2,'#d2bb96',1.4);line(c,6,head+13,-3,hip-2,'#d2bb96',1.4);}
+    if(u.kind==='thief'){line(c,-7,head+15,7,hip-5,'#332e29',2.5);ellipse(c,8,hip-6,5,6,'#8b6c40');line(c,5,hip-9,11,hip-9,'#d0b574',1);line(c,-6,head+22,-3,head+24,'#b7b197',1);}
     if(u.kind==='marian'){line(c,-7,head+14,5,head+17,team,5);line(c,-5,head+17,-3,head+28,team,3);c.fillStyle='#ab9976';c.fillRect(-7,hip-11,7,8);for(var stitch=0;stitch<3;stitch++)line(c,-6+stitch*2,hip-12,-5+stitch*2,hip-9,'#534e44',.7);line(c,5,head+21,6,hip-1,'#c5b698',1);}
   }
   // Heavy actors have their own rig, not a horizontally stretched thin actor.
@@ -313,7 +329,9 @@
     for(var i=0;i<4;i++){var a=-1.1+i*.72;line(c,Math.cos(a)*r,Math.sin(a)*r,Math.cos(a)*(r+3+power*2),Math.sin(a)*(r+3+power*2),'#f4d7a0',1.2);}
     c.restore();
   }
-  function figure(c,u,x,y,s){uprightFigure(c,u,x,y,s);if(animationState(u)==='slip')slipEffects(c,u,x,y,s);contactEffect(c,u,x,y,s);}
+  function figure(c,u,x,y,s){uprightFigure(c,u,x,y,s);if(animationState(u)==='slip')slipEffects(c,u,x,y,s);contactEffect(c,u,x,y,s);
+    if(u.theftT>0){c.save();c.globalAlpha=Math.min(1,u.theftT*3);var ty=y-(69+(.7-u.theftT)*15)*s;ellipse(c,x-9*s,ty-3*s,3*s,3*s,u.theftFood?'#c88f55':'#e6bf49');c.fillStyle='#ffe4a0';c.font='bold '+Math.max(9,10*s)+'px sans-serif';c.textAlign='left';c.fillText('+'+(u.theftFood?1:u.theftGold),x-3*s,ty);c.restore();}
+  }
   function uprightFigure(c,u,x,y,s){
     if(u.kind==='heavy'){heavyFigure(c,u,x,y,s);return;}
     var bike=u.kind==='bike',neighbor=u.kind==='neighbor',team=u.isP?'#528caa':'#b96552',ink='#233238',phase=u.walk||0,p=pose(u),stride=p.stride,hit=u.hurt>0,attack=p.reach,fall=animationState(u)==='slip'?slipMotion(u):null;
@@ -367,5 +385,5 @@
     e.shots.forEach(function(v){var p=shotPose(v,s,g.GY,g.W);c.save();c.translate(p.x,p.y);c.rotate(v.t*16);if(v.kind==='cart'){c.fillStyle='#d4c4a3';c.strokeStyle='#354246';c.lineWidth=1;c.fillRect(-5*s,-4*s,10*s,8*s);c.strokeRect(-5*s,-4*s,10*s,8*s);line(c,0,-4*s,0,4*s,'#947b51',2*s);}else ellipse(c,0,0,6*s,2.5*s,'#dab771');c.restore();});
     c.save();c.textAlign='center';c.font='bold '+Math.max(9,Math.min(12,g.W/90))+'px sans-serif';var text=rules[e.segment][lang==='en'?1:0];if(e.segment===9){var phase=t.clock%14;text=(patrol(e)?(lang==='en'?'PATROL — HOLD! ':'PATROL — STAĆ! '):phase>=9?(lang==='en'?'PATROL INCOMING · ':'NADJEŻDŻA PATROL · '):'')+text;}if(e.segment===1&&t.owner!==null)text+=' '+Math.ceil(5-t.capture)+' s';if(g.over)text=lang==='en'?'ENOUGH! Time for tea. Everyone heads home.':'WYSTARCZY! Czas na herbatę. Wracamy do domu.';var y=Math.min(g.H-14,g.GY+48);c.fillStyle='rgba(22,32,36,.88)';c.fillRect(g.W*.16,y-13,g.W*.68,20);c.fillStyle='#f2dfaf';c.fillText(text,g.W*.5,y,g.W*.66);c.restore();
   }
-  root.CASTLE_ESTATE_TACTICS={displayLane:displayLane,weatherInit:weatherInit,weatherLabel:weatherLabel,weatherStep:weatherStep,solveLeg:solveLeg,updateLocomotion:updateLocomotion,condition:condition,animationState:animationState,puddles:PUDDLES,slipPose:slipPose,slipMotion:slipMotion,heavyPose:heavyPose,raidRunner:raidRunner,entryDamage:entryDamage,raidCapacity:raidCapacity,active:active,shotPose:shotPose,armPose:armPose,portrait:portrait,outfit:outfit,roles:roles,description:description,actorScale:actorScale,pose:pose,cards:cards,roster:roster,archetype:archetype,rules:rules,init:init,status:status,recruit:recruit,choose:choose,heal:heal,tick:tick,finish:finish,draw:draw,figure:figure,patrol:patrol,multiplier:multiplier};
+  root.CASTLE_ESTATE_TACTICS={pickpocket:pickpocket,displayLane:displayLane,weatherInit:weatherInit,weatherLabel:weatherLabel,weatherStep:weatherStep,solveLeg:solveLeg,updateLocomotion:updateLocomotion,condition:condition,animationState:animationState,puddles:PUDDLES,slipPose:slipPose,slipMotion:slipMotion,heavyPose:heavyPose,raidRunner:raidRunner,entryDamage:entryDamage,raidCapacity:raidCapacity,active:active,shotPose:shotPose,armPose:armPose,portrait:portrait,outfit:outfit,roles:roles,description:description,actorScale:actorScale,pose:pose,cards:cards,roster:roster,archetype:archetype,rules:rules,init:init,status:status,recruit:recruit,choose:choose,heal:heal,tick:tick,finish:finish,draw:draw,figure:figure,patrol:patrol,multiplier:multiplier};
 })(window);

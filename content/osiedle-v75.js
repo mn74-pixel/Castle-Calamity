@@ -4,13 +4,13 @@
   // fullscreen never change a delivery route or an in-flight bottle's target.
   // A dedicated Polish estate chapter, entered independently of the historical campaign.
   var TACTICS=root.CASTLE_ESTATE_TACTICS;
-  var level=Object.assign({},root.CASTLE_FUTURE.levels.modern[3],{id:'estate',n:'Osiedle Wielkiej Awantury',special:'estate',ul:['drwal'],ai:[],recommended:[],pH:2200,eH:2200,passiveP:2.4,passiveE:1.7,treeCount:0,treeCap:0});
+  var level=Object.assign({},root.CASTLE_FUTURE.levels.modern[3],{id:'estate',n:'Osiedle Wielkiej Awantury',special:'estate',ul:['drwal'],ai:[],recommended:[],pH:2200,eH:2200,passiveP:.5,passiveE:.5,treeCount:0,treeCap:0});
   var choices=[
     {id:'beer',pl:'Piwo',en:'Beer',cost:12,damage:65,cd:3.8,stamina:18,col:'#957029'},
     {id:'wine',pl:'Wino',en:'Wine',cost:25,damage:150,cd:5.2,stamina:28,col:'#5b793e'},
     {id:'vodka',pl:'Wódka',en:'Vodka',cost:40,damage:255,cd:6.6,stamina:38,col:'#a9d5db'},
     {id:'food',pl:'Zagrycha',en:'Snack',cost:10,col:'#d78d46'},
-    {id:'runner',pl:'Dostawca',en:'Runner',cost:8,col:'#d3b16d'}
+    {id:'runner',pl:'Handlarz',en:'Trader',cost:24,col:'#d3b16d'}
   ];
   var foods=[
     {id:'zapiekanka',pl:'Zapiekanka',en:'Baguette',restore:30,buff:'quick',seconds:4},
@@ -60,13 +60,15 @@
   function ambientKind(seed){return AMBIENT_KINDS[(seed>>>0)%AMBIENT_KINDS.length];}
   function makeSide(){return {cd:0,action:null,stamina:100,bottles:2,food:0,restT:0,mealT:0,regenBonus:0,costMul:1,notice:'',noticeT:0,combo:0,comboT:0,hitReactT:0,hitReactPower:0};}
   function init(g){if(!active(g))return;g.trees=[];g.rocks=[];g.gagShown=true;g.gagT=1e9;
-    g.estate={time:0,rain:false,ice:false,weather:TACTICS.weatherInit(Math.floor(Math.random()*4294967296)),ambient:{start:48+Math.random()*45,enabled:Math.random()<.65,lampSeed:Math.floor(Math.random()*997)},ai:4.4,segment:0,testSegment:null,segmentFlash:2.2,brawlT:1.8,p:makeSide(),e:makeSide(),runners:[],bottles:[],glass:[],brawlers:[],delivered:0,hits:0}; g.estate.ambient.kind=ambientKind(g.estate.ambient.lampSeed);visualSegment=0;g.lv.sc=segments[0].scene;g.p.gold=g.e.gold=72;TACTICS.init(g);
+    g.estate={time:0,rain:false,ice:false,weather:TACTICS.weatherInit(Math.floor(Math.random()*4294967296)),ambient:{start:48+Math.random()*45,enabled:Math.random()<.65,lampSeed:Math.floor(Math.random()*997)},ai:4.4,segment:0,testSegment:null,segmentFlash:2.2,brawlT:1.8,p:makeSide(),e:makeSide(),runners:[],bottles:[],glass:[],brawlers:[],delivered:0,hits:0}; g.estate.ambient.kind=ambientKind(g.estate.ambient.lampSeed);visualSegment=0;g.lv.sc=segments[0].scene;g.p.gold=g.e.gold=72;TACTICS.init(g);g.estate.runners.push(makeRunner(g,true,'supply',segments[0].runner),makeRunner(g,false,'supply',segments[0].runner));
   }
   function side(g,p){return g.estate[p?'p':'e'];}
-  function count(g,p){return g.estate.runners.filter(function(r){return r.isP===p;}).length;}
+  function count(g,p){return g.estate.runners.filter(function(r){return r.isP===p&&r.kind==='supply';}).length;}
+  function deliveryETA(r){return (r.departureDelay||0)+Math.max(0,r.phaseDuration-r.phaseT)+r.duration*({approach:.60,enter:.52,inside:.46,exit:.38,return:0,done:0}[r.phase]||0);}
+  function economy(g,p){var workers=g.estate.runners.filter(function(r){return r.isP===p&&r.kind==='supply';}),next=workers.slice().sort(function(a,b){return deliveryETA(a)-deliveryETA(b);})[0];return {workers:workers.length,capacity:2,eta:next?deliveryETA(next):null,payout:next?next.cargoCredits:0};}
   function segmentOf(g){return segments[Math.max(0,Math.min(segments.length-1,g.estate.segment||0))];}
   function setSegment(g,index,forTest){if(!active(g)||!g.estate)return false;index=Math.max(0,Math.min(segments.length-1,Number(index)||0));g.estate.segment=index;g.estate.testSegment=forTest?index:null;g.estate.time=index*SEGMENT_SECONDS+.05;visualSegment=index;g.lv.sc=segments[index].scene;g.estate.segmentFlash=2.2;g.estate.brawlT=.05;g.estate.brawlers=[];ensureBrawlers(g);
-    if(forTest){g.estate.pendingSegment=null;TACTICS.init(g);[true,false].forEach(function(p){var st=side(g,p),c=p?g.p:g.e;st.stamina=100;st.bottles=5;st.food=segments[index].food?2:0;st.cd=0;st.restT=0;st.mealT=0;st.regenBonus=0;st.costMul=1;st.notice='';st.noticeT=0;st.combo=0;st.comboT=0;st.action=null;c.gold=240;});g.estate.runners=[];g.estate.bottles=[];}return true;}
+    if(forTest){g.estate.pendingSegment=null;TACTICS.init(g);[true,false].forEach(function(p){var st=side(g,p),c=p?g.p:g.e;st.stamina=100;st.bottles=5;st.food=segments[index].food?2:0;st.cd=0;st.restT=0;st.mealT=0;st.regenBonus=0;st.costMul=1;st.notice='';st.noticeT=0;st.combo=0;st.comboT=0;st.action=null;c.gold=240;});g.estate.runners=[makeRunner(g,true,'supply',segments[index].runner),makeRunner(g,false,'supply',segments[index].runner)];g.estate.bottles=[];}return true;}
   function syncSegment(g){var e=g.estate,next=e.testSegment!==null?e.testSegment:Math.min(segments.length-1,Math.floor(e.time/SEGMENT_SECONDS));e.pendingSegment=next!==e.segment?next:null;
     // Finish a doorway crossing before replacing its building. New arrivals
     // wait outside; this bounds the delay and prevents endless transition locks.
@@ -77,11 +79,11 @@
   function ensureBrawlers(g){var e=g.estate,seg=segmentOf(g),wanted=seg.brawlers||0;while(e.brawlers.length<wanted){var i=e.brawlers.length;e.brawlers.push({t:i*1.05,seed:e.segment*7+i,type:(e.segment+i)%5});}if(e.brawlers.length>wanted)e.brawlers.length=wanted;}
   function tickBrawlers(g,dt){var e=g.estate;e.brawlT-=dt;if(e.brawlT<=0){ensureBrawlers(g);e.brawlT=5.8;}e.brawlers.forEach(function(b){b.t+=dt;});}
   function itemById(id){return choices.filter(function(i){return i.id===id;})[0];}
-  function availableChoices(g){var stage=g.estate.segment,army=TACTICS.roster(stage);return choices.filter(function(c){return c.unlock!==undefined?army.includes(c.id):c.id==='food'?stage>=3:c.id==='beer'?stage<6:true;});}
+  function availableChoices(g){var stage=g.estate.segment,army=TACTICS.roster(stage);return choices.filter(function(c){return c.unlock!==undefined?army.includes(c.id):c.id==='food'?stage>=3:c.id==='beer'?stage<6&&army.length<4:true;});}
   function foodFor(g){var seg=segmentOf(g);return foods[Math.min(foods.length-1,seg.foodType||0)];}
   function staminaCost(g,item,p){var st=side(g,p);return Math.max(8,Math.round((item.stamina||0)*(st.mealT>0?st.costMul:1)));}
   function notice(st,code){st.notice=code;st.noticeT=1.25;}
-  function noticeText(code,lang){var pl={gold:'Brak kredytów',bottles:'Brak pustych butelek',hungry:'Zjedz coś',rest:'Chwila przerwy',limit:'Dwóch dostawców w drodze',recruit:'Ekipa zaraz będzie gotowa',locked:'Karta jeszcze niedostępna',full:'Jedzenie 2/2',supply:'Dostawa: +butelki',food:'Jedzenie dostarczone',eat:'Kondycja w górę',hit:'Celny rzut!'};var en={gold:'Not enough credits',bottles:'No empty bottles',hungry:'Eat something',rest:'Take a short break',limit:'Two runners already out',recruit:'Squad getting ready',locked:'Card not unlocked yet',full:'Food 2/2',supply:'Supply: +bottles',food:'Food delivered',eat:'Stamina restored',hit:'Direct hit!'};return (lang==='en'?en:pl)[code]||'';}
+  function noticeText(code,lang){var pl={gold:'Brak kredytów',bottles:'Brak pustych butelek',hungry:'Zjedz coś',rest:'Chwila przerwy',limit:'Handlarze 2/2',foodPending:'Jedzenie jest w drodze',robbed:'Skradziono posiłek!',recruit:'Ekipa zaraz będzie gotowa',locked:'Karta jeszcze niedostępna',full:'Jedzenie 2/2',supply:'Dostawa: +butelki',food:'Jedzenie dostarczone',eat:'Kondycja w górę',hit:'Celny rzut!'};var en={gold:'Not enough credits',bottles:'No empty bottles',hungry:'Eat something',rest:'Take a short break',limit:'Traders 2/2',foodPending:'Food is on its way',robbed:'Meal stolen!',recruit:'Squad getting ready',locked:'Card not unlocked yet',full:'Food 2/2',supply:'Supply: +bottles',food:'Food delivered',eat:'Stamina restored',hit:'Direct hit!'};return (lang==='en'?en:pl)[code]||'';}
   function applyFood(g,p){var st=side(g,p),food=foodFor(g);st.stamina=Math.min(100,st.stamina+food.restore);st.mealT=food.seconds||0;st.regenBonus=0;st.costMul=1;
     if(g.estate.segment===6)TACTICS.heal(g,p,25);
     if(food.buff==='quick')st.regenBonus=.35;
@@ -96,7 +98,7 @@
     if(id==='food'){
       if(!seg.food)return {ok:false,reason:'locked'};
       if(st.food>0)return {ok:true,item:item,action:'eat'};
-      if(count(g,p)>=2)return {ok:false,reason:'limit'};
+      if(g.estate.runners.some(function(r){return r.isP===p&&r.kind==='food';}))return {ok:false,reason:'foodPending'};
       if((p?g.p:g.e).gold<item.cost)return {ok:false,reason:'gold'};
       return {ok:true,item:item,action:'order'};
     }
@@ -112,7 +114,7 @@
     if(item.unlock!==undefined)return TACTICS.recruit(g,id,p);
     if(id==='food'&&s.action==='eat'){eat(g,p);return true;}
     (p?g.p:g.e).gold-=item.cost;
-    if(id==='runner'||id==='food')g.estate.runners.push(makeRunner(g,p,id==='food'?'food':'supply',id==='food'?Math.max(5.8,seg.runner*.64):seg.runner));
+    if(id==='runner'||id==='food'){var courier=makeRunner(g,p,id==='food'?'food':'supply',id==='food'?Math.max(5.8,seg.runner*.64):seg.runner);if(id==='runner'&&count(g,p)>0)courier.departureDelay=2;g.estate.runners.push(courier);}
     else{var need=staminaCost(g,item,p);if(st.stamina<need&&st.food>0)eat(g,p);st.stamina=Math.max(0,st.stamina-need);st.bottles--;st.cd=item.cd*seg.cd;st.action={item:item,t:0,released:false};st.comboT=Math.max(st.comboT,2.6);}
     return true;
   }
@@ -130,9 +132,9 @@
     scale=TACTICS.actorScale(g.H)*1.05;cx=g.W*.28;y-=4*scale;
     return {stage:stage,kind:'annex',x:cx+22*scale,y:y,w:22*scale,h:76*scale,scale:scale,buildingX:cx,buildingY:y,sign:stage>=7?'EXPRESS 24':'SPOŻYWCZY'};
   }
-  function makeRunner(g,p,kind,duration){var x=anchor(g,p).x/g.W,seg=segmentOf(g);return {isP:p,kind:kind,duration:duration,t:0,seed:g.estate.time,phase:'approach',phaseT:0,phaseDuration:duration*.40,routeSegment:g.estate.segment,cargoCredits:seg.id==='closed'?40:28,cargoBottles:seg.supply||2,x:x,y:1,fromX:x,fromY:1};}
+  function makeRunner(g,p,kind,duration){var x=anchor(g,p).x/g.W,seg=segmentOf(g);return {isP:p,kind:kind,duration:duration,t:0,seed:g.estate.time,phase:'approach',phaseT:0,phaseDuration:duration*.40,routeSegment:g.estate.segment,cargoFood:kind==='food'?1:0,robbed:false,theftFlash:0,cargoCredits:seg.id==='closed'?28:16,cargoBottles:seg.supply||2,x:x,y:1,fromX:x,fromY:1};}
   function runnerTarget(g,r){var d=serviceDoor(g,r.routeSegment);return {x:(d.x+d.w*.52)/g.W,y:d.y/g.GY,door:d};}
-  function advanceRunner(g,r,dt){var remaining=dt;while(remaining>1e-8&&r.phase!=='done'){
+  function advanceRunner(g,r,dt){var remaining=dt;if(r.departureDelay>0){var wait=Math.min(remaining,r.departureDelay);r.departureDelay-=wait;r.t+=wait;remaining-=wait;}while(remaining>1e-8&&r.phase!=='done'){
       if(r.phase==='approach'&&r.phaseT>=r.phaseDuration&&g.estate.pendingSegment!==null&&g.estate.pendingSegment!==undefined)break;
       var used=Math.min(remaining,Math.max(0,r.phaseDuration-r.phaseT));r.phaseT+=used;r.t+=used;remaining-=used;
       var q=Math.min(1,r.phaseT/r.phaseDuration),target=runnerTarget(g,r),home=anchor(g,r.isP).x/g.W,streetY=1+6/g.GY;
@@ -152,16 +154,17 @@
     if(leafOnly){var width=d.w*Math.max(.10,Math.cos(open*1.42));materialRect(ctx,d.x,d.y-d.h,width,d.h,'#79968a','#3d5c54','#283d3c');if(width>5)glassPanel(ctx,d.x+width*.15,d.y-d.h+4,width*.65,d.h*.62,segments[g.estate.segment].scene>=2);ctx.fillStyle='#ead7a4';ctx.fillRect(d.x+width*.76,d.y-d.h*.4,Math.max(1,width*.1),2);}
     ctx.restore();
   }
-  function drawDeliveries(ctx,g,unitScale){paintServiceDoor(ctx,g,false);var d=serviceDoor(g);function paintRunner(r){if(r.phase==='inside'||r.phase==='done')return;var crossing=r.phase==='enter'||r.phase==='exit',dir=r.phase==='return'?(r.isP?-1:1):(r.isP?1:-1),s=TACTICS.actorScale(g.H),cargo=r.phase==='exit'||r.phase==='return';ctx.save();
+  function drawDeliveries(ctx,g,unitScale){paintServiceDoor(ctx,g,false);var d=serviceDoor(g);function paintRunner(r){if(r.departureDelay>0||r.phase==='inside'||r.phase==='done')return;var crossing=r.phase==='enter'||r.phase==='exit',dir=r.phase==='return'?(r.isP?-1:1):(r.isP?1:-1),s=TACTICS.actorScale(g.H),cargo=r.phase==='exit'||r.phase==='return';ctx.save();
       if(crossing){ctx.beginPath();ctx.rect(d.x,d.y-d.h,d.w,d.h);ctx.clip();}
-      TACTICS.figure(ctx,{kind:'courier',isP:r.isP,facing:dir,moving:true,walk:r.t*10+r.seed,cargo:cargo},r.x*g.W,r.y*g.GY,s);ctx.restore();}
+      TACTICS.figure(ctx,{kind:'courier',isP:r.isP,facing:dir,moving:true,walk:r.t*10+r.seed,cargo:cargo&&!(r.kind==='food'&&r.cargoFood===0),hurt:r.theftFlash>0?.15:0},r.x*g.W,r.y*g.GY,s);
+      if(r.theftFlash>0){ctx.globalAlpha=Math.min(1,r.theftFlash*3);line(ctx,r.x*g.W-4*s,r.y*g.GY-68*s,r.x*g.W-8*s,r.y*g.GY-74*s,'#efb576',2*s);line(ctx,r.x*g.W+4*s,r.y*g.GY-68*s,r.x*g.W+8*s,r.y*g.GY-74*s,'#efb576',2*s);}ctx.restore();}
     g.estate.runners.filter(function(r){return r.phase==='enter'||r.phase==='exit';}).forEach(paintRunner);paintServiceDoor(ctx,g,true);
     g.estate.runners.filter(function(r){return r.phase==='approach'||r.phase==='return';}).forEach(paintRunner);
   }
-  function finishRunner(g,r,reward){if(r.settled||r.phase!=='done')return;r.settled=true;var st=side(g,r.isP),c=r.isP?g.p:g.e,seg=segments[r.routeSegment]||segmentOf(g);if(r.kind==='food'){st.food=Math.min(2,st.food+1);notice(st,'food');if(!r.isP&&st.stamina<38)eat(g,false);return;}
-    var promised=r.cargoCredits===undefined?(seg.id==='closed'?40:28):r.cargoCredits,pack=r.cargoBottles===undefined?(seg.supply||2):r.cargoBottles;
+  function finishRunner(g,r,reward){if(r.settled||r.phase!=='done')return;r.settled=true;var st=side(g,r.isP),c=r.isP?g.p:g.e,seg=segments[r.routeSegment]||segmentOf(g);if(r.kind==='food'){if(r.cargoFood===0){notice(st,'robbed');return;}st.food=Math.min(2,st.food+1);notice(st,'food');if(!r.isP&&st.stamina<38)eat(g,false);return;}
+    var promised=r.cargoCredits===undefined?(seg.id==='closed'?28:16):r.cargoCredits,pack=r.cargoBottles===undefined?(seg.supply||2):r.cargoBottles;
     var gain=Math.max(0,Math.min(promised,9999-c.gold));c.gold+=gain;st.bottles=Math.min(6,st.bottles+pack);st.deliveryCredit=gain;notice(st,'supply');st.noticeT=2.5;if(r.isP){g.stats.goldEarned+=gain;g.estate.delivered++;}if(reward&&gain>0)reward(r.isP,gain);}
-  function chooseDrink(g,p){var st=side(g,p),c=p?g.p:g.e,seg=segmentOf(g),order=seg.id==='finale'?['vodka','wine','beer']:seg.id==='closed'?['wine','beer','vodka']:['wine','beer','vodka'];for(var i=0;i<order.length;i++){var id=order[i],it=itemById(id),need=staminaCost(g,it,p);if(c.gold>=it.cost&&st.bottles>0&&(st.stamina>=need||st.food>0))return id;}return null;}
+  function chooseDrink(g,p){var st=side(g,p),c=p?g.p:g.e,seg=segmentOf(g),order=seg.id==='finale'?['vodka','wine','beer']:seg.id==='closed'?['wine','beer','vodka']:['wine','beer','vodka'];for(var i=0;i<order.length;i++){var id=order[i],it=itemById(id),need=staminaCost(g,it,p);if(availableChoices(g).some(function(choice){return choice.id===id;})&&c.gold>=it.cost&&st.bottles>0&&(st.stamina>=need||st.food>0))return id;}return null;}
   function tick(g,dt,hit,reward,impact){if(!active(g)||g.over)return;var e=g.estate;e.time+=dt;var seg=syncSegment(g);e.segmentFlash=Math.max(0,e.segmentFlash-dt);tickBrawlers(g,dt);
     [true,false].forEach(function(p){var st=side(g,p);st.cd=Math.max(0,st.cd-dt);st.restT=Math.max(0,st.restT-dt);st.noticeT=Math.max(0,st.noticeT-dt);st.comboT=Math.max(0,st.comboT-dt);if(st.comboT<=0)st.combo=0;
       st.hitReactT=Math.max(0,(st.hitReactT||0)-dt);
@@ -169,7 +172,9 @@
       if(st.mealT>0){st.mealT=Math.max(0,st.mealT-dt);if(st.mealT<=0){st.regenBonus=0;st.costMul=1;}}
       var baseRegen=seg.food?.16:.52;st.stamina=Math.min(100,st.stamina+dt*(baseRegen+st.regenBonus));
       if(st.action){st.action.t+=dt;if(st.action.t>=1.18&&!st.action.released){st.action.released=true;launch(g,st.action,p);}if(st.action.t>=1.78)st.action=null;}});
-    e.runners=e.runners.filter(function(r){if(!advanceRunner(g,r,dt))return true;finishRunner(g,r,reward);return false;});
+    e.runners=e.runners.filter(function(r){var remaining=dt;r.theftFlash=Math.max(0,(r.theftFlash||0)-dt);while(remaining>1e-8){var before=r.t;if(!advanceRunner(g,r,remaining))return true;remaining-=r.t-before;finishRunner(g,r,reward);if(r.kind==='food')return false;
+      // Carry leftover frame time into the next trip: wages do not depend on FPS.
+      Object.assign(r,makeRunner(g,r.isP,'supply',seg.runner),{settled:false,departureDelay:0});}return true;});
     e.bottles=e.bottles.filter(function(b){b.t+=dt;if(b.t<b.duration)return true;var target=anchor(g,!b.isP),victim=side(g,!b.isP);hit(b.isP?g.e:g.p,b.item.damage,target.x,target.y,{estate:true});victim.hitReactT=.72;victim.hitReactPower=b.item.id==='vodka'?1.35:b.item.id==='wine'?1.08:.9;e.hits++;var shooter=side(g,b.isP);shooter.combo=Math.min(9,(shooter.combo||0)+1);shooter.comboT=2.8;notice(shooter,'hit');
       victim.plasterT=.7;
       e.impacts=e.impacts||[];e.impacts.push({x:target.x,y:target.y,t:0,col:b.item.col,power:b.item.id==='vodka'?1.35:b.item.id==='wine'?1.1:.9});
@@ -827,8 +832,10 @@
     e.glass.forEach(function(s){var a=anchor(g,s.p);ctx.save();ctx.globalAlpha=1-s.t/.65;ctx.fillStyle=s.col;ctx.beginPath();ctx.ellipse(a.x+s.vx*s.t,a.y+s.vy*s.t+120*s.t*s.t,2,3,0,0,Math.PI*2);ctx.fill();ctx.restore();});
     (e.impacts||[]).forEach(function(v){ctx.save();ctx.translate(v.x,v.y);ctx.globalAlpha=1-v.t/.55;ctx.strokeStyle=v.col;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,6+v.t*34*v.power,0,Math.PI*2);ctx.stroke();ctx.strokeStyle='rgba(255,244,211,.92)';for(var ray=0;ray<8;ray++){var ra=ray*Math.PI/4+v.t*2,r1=5+v.t*17,r2=12+v.t*38*v.power;ctx.beginPath();ctx.moveTo(Math.cos(ra)*r1,Math.sin(ra)*r1);ctx.lineTo(Math.cos(ra)*r2,Math.sin(ra)*r2);ctx.stroke();}ctx.restore();});
     TACTICS.draw(ctx,g,unitScale,lang);blockEntries(ctx,g,lang);rainfall(ctx,g);stageBadge(ctx,g,lang);
-    var ps=side(g,true),barW=Math.min(170,Math.max(126,g.W*.12)),bx=14,by=Math.max(58,Math.min(154,g.H*.18)),stam=ps.stamina;ctx.save();rounded(ctx,bx,by,barW,42,6,'rgba(24,32,35,.91)',seg.accent||'rgba(238,219,176,.45)');ctx.fillStyle=seg.accent||'#d8c49c';ctx.fillRect(bx,by+6,3,30);
+    var ps=side(g,true),barW=Math.min(170,Math.max(126,g.W*.12)),bx=14,by=Math.max(58,Math.min(154,g.H*.18)),stam=ps.stamina;ctx.save();rounded(ctx,bx,by,barW,64,6,'rgba(24,32,35,.91)',seg.accent||'rgba(238,219,176,.45)');ctx.fillStyle=seg.accent||'#d8c49c';ctx.fillRect(bx,by+6,3,30);
     ctx.fillStyle='#e7d9b5';ctx.font='bold 9px sans-serif';ctx.textAlign='left';ctx.fillText((lang==='en'?'STAMINA ':'KONDYCJA ')+Math.round(stam)+'%',bx+6,by+11);ctx.fillStyle='#46534e';ctx.fillRect(bx+6,by+15,barW-12,6);ctx.fillStyle=stam<22?'#bd665b':stam<48?'#c7aa5e':'#91b56b';ctx.fillRect(bx+6,by+15,(barW-12)*stam/100,6);
+    var income=economy(g,true);ctx.font='bold 8px sans-serif';ctx.fillStyle='#edca70';ctx.fillText((lang==='en'?'TRADERS ':'HANDLARZE ')+income.workers+'/2',bx+6,by+46,barW-12);
+    ctx.fillStyle='#d7e6c4';ctx.fillText(income.eta===null?(lang==='en'?'Hire a trader to earn credits':'Zatrudnij handlarza — zarabiaj'):'+'+income.payout+(lang==='en'?' credits in ':' kred. za ')+Math.ceil(income.eta)+' s',bx+6,by+57,barW-12);
     ctx.fillStyle='#ead7ad';ctx.font='bold 8px sans-serif';ctx.fillText((lang==='en'?'BOTTLES ':'BUTELKI ')+ps.bottles+'  ·  '+(lang==='en'?'FOOD ':'POSIŁKI ')+ps.food+(ps.combo>1?'  ×'+ps.combo:''),bx+6,by+34);if(ps.noticeT>0&&ps.notice){ctx.textAlign='left';ctx.fillStyle='#fff0b8';ctx.font='bold 9px sans-serif';ctx.fillText(noticeText(ps.notice,lang)+(ps.notice==='supply'?' · +'+ps.deliveryCredit+(lang==='en'?' credits':' kredytów'):''),bx,by-7);}ctx.restore();
   }
   // Activate on release, not touchstart: swiping a deck/menu must never buy or launch.
@@ -843,7 +850,7 @@
   root.CASTLE_ESTATE_INPUT={bindTap:bindTap};
   function buildCards(doc,g,lang,onBuy,paused){var row=doc.getElementById('cds'),deck=availableChoices(g);row.innerHTML='';row._estateBuy=onBuy;row._estateDeck=deck.map(function(c){return c.id;}).join(',');deck.forEach(function(item,i){var card=doc.createElement('button');card.type='button';card.className='cd';card.id='estate_'+item.id;card.dataset.hotkey=String(i+1);
     var title=lang==='en'?item.en:item.pl;card.setAttribute('aria-label',title+(item.rolePl?' · '+(lang==='en'?item.roleEn:item.rolePl):''));card.title=title+(item.unlock!==undefined?' · '+TACTICS.description(item.id,lang):item.damage?' · '+item.damage+(lang==='en'?' morale':' morale'):item.id==='food'?' · stamina':' · supply');
-    if(item.id==='runner'){var pay=segmentOf(g).id==='closed'?40:28;card.title=title+' · '+(lang==='en'?'Cost 8; return +':'Koszt 8; powrót +')+pay+(lang==='en'?' credits + bottles':' kredytów + butelki');card.setAttribute('aria-label',card.title);}
+    if(item.id==='runner'){var pay=segmentOf(g).id==='closed'?28:16;card.title=title+' · '+(lang==='en'?'Hire once: 24; every return +':'Zatrudnij raz: 24; każdy powrót +')+pay+(lang==='en'?' credits + bottles. Repeats automatically.':' kredytów + butelki. Kursy automatyczne.');card.setAttribute('aria-label',card.title);}
     if(item.unlock!==undefined)card.setAttribute('aria-label',title+' · '+TACTICS.description(item.id,lang));var kbd=doc.createElement('div');kbd.className='cdk';kbd.textContent=String(i+1);card.appendChild(kbd);
     var wrap=doc.createElement('div');wrap.className='iconWrap';var canvas=doc.createElement('canvas');canvas.width=56;canvas.height=56;canvas.id='estate_icon_'+item.id;var ctx=canvas.getContext('2d');if(item.unlock!==undefined)TACTICS.figure(ctx,{kind:item.id,isP:true,hp:1,walk:0},item.id==='cart'?20:26,54,item.id==='cart'?.65:.8);else if(item.id==='runner')TACTICS.figure(ctx,{kind:'courier',isP:true,walk:0,cargo:true},24,54,.8);else if(item.id==='food')foodIcon(ctx,28,29,1.5,segmentOf(g).foodType||0);else bottle(ctx,item,28,29,1.6,-.15);wrap.appendChild(canvas);
     var overlay=doc.createElement('div');overlay.className='cdState';overlay.id='estate_state_'+item.id;wrap.appendChild(overlay);card.appendChild(wrap);
@@ -851,12 +858,14 @@
   });updateCards(doc,g,lang,!!paused);}
   function updateCards(doc,g,lang,paused){var row=doc.getElementById('cds'),deck=availableChoices(g);if(row._estateBuy&&row._estateDeck!==deck.map(function(c){return c.id;}).join(',')){buildCards(doc,g,lang,row._estateBuy,paused);return;}deck.forEach(function(item){var el=doc.getElementById('estate_'+item.id);if(!el)return;var s=status(g,item.id,true),off=paused||!s.ok;if(el.disabled!==off)el.disabled=off;if(el.getAttribute('aria-disabled')!==String(off)){el.setAttribute('aria-disabled',String(off));el.classList.toggle('unitUnavailable',off);}
     var label=s.reason==='recruit'?Math.ceil(g.estate.tactics.p)+' s':s.reason==='limit'?'2/2':s.reason==='wait'?Math.ceil(side(g,true).cd)+' s':s.reason==='gold'?(lang==='en'?'CREDITS':'KREDYTY'):s.reason==='bottles'?'🍾 0':s.reason==='hungry'?'🍴':s.reason==='full'?'2/2':s.reason==='rest'?(lang==='en'?'REST':'PRZERWA'):'';
+    if(s.reason==='foodPending')label=lang==='en'?'ON THE WAY':'W DRODZE';
     var badge=doc.getElementById('estate_state_'+item.id);if(badge){badge.textContent=label;badge.style.display=off?'flex':'none';}
+    if(item.id==='runner'){var workerCost=doc.getElementById('estate_cost_runner');if(workerCost)workerCost.textContent=count(g,true)>=2?'2/2':item.cost;}
     if(item.id==='food'){var cv=doc.getElementById('estate_icon_food'),cc=doc.getElementById('estate_cost_food'),nn=doc.getElementById('estate_name_food'),st=side(g,true);if(cv){var cx=cv.getContext('2d');cx.clearRect(0,0,56,56);foodIcon(cx,28,29,1.5,segmentOf(g).foodType||0);}if(cc)cc.textContent=st.food>0?(lang==='en'?'EAT':'ZJEDZ'):item.cost;if(nn)nn.textContent=lang==='en'?'Snack':'Zagrycha';}
   });}
   var oldBase=root.CASTLE_ERA_ART.drawBase;
   root.CASTLE_ERA_ART.drawBase=function(ctx,c,ground,era,l,t){if(era==='modern'&&l==='estate'){arenaBase(ctx,c,ground);return;}return oldBase(ctx,c,ground,era,l,t);};
   var oldBackdrop=root.CASTLE_ERA_ART.backdrop;
   root.CASTLE_ERA_ART.backdrop=function(ctx,w,gy,era,l){if(era!=='modern'||l!=='estate')return oldBackdrop(ctx,w,gy,era,l);drawArenaBackdrop(ctx,w,gy,segments[visualSegment]||segments[0]);};
-  root.CASTLE_ESTATE={neighbourhoodPose:neighbourhoodPose,finishRunner:finishRunner,ambientKind:ambientKind,streetGagPose:streetGagPose,landmarkDetails:landmarkDetails,pigeonPose:pigeonPose,periodMaterials:periodMaterials,ambientPose:ambientPose,facadeCondition:facadeCondition,facadeWear:facadeWear,residentFatigue:residentFatigue,backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.24.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
+  root.CASTLE_ESTATE={economy:economy,neighbourhoodPose:neighbourhoodPose,finishRunner:finishRunner,ambientKind:ambientKind,streetGagPose:streetGagPose,landmarkDetails:landmarkDetails,pigeonPose:pigeonPose,periodMaterials:periodMaterials,ambientPose:ambientPose,facadeCondition:facadeCondition,facadeWear:facadeWear,residentFatigue:residentFatigue,backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.25.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
 })(window);

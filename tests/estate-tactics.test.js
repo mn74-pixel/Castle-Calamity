@@ -10,6 +10,23 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('pickpockets steal cargo once, not bank deposits, with symmetric cooldown and escort protection',()=>{
+  for(const side of [true,false]){const g=game(3),u=spawn(g,'thief',side,.5);g.estate.p={food:0};g.estate.e={food:0};
+    const r={isP:!side,kind:'supply',phase:'return',x:.51,cargoCredits:16};g.estate.runners=[r];const bank=side?g.p:g.e,enemy=side?g.e:g.p,before=bank.gold;
+    T.pickpocket(g,u,.1,false);assert.equal(bank.gold,before+8);assert.equal(enemy.gold,1000);assert.equal(r.cargoCredits,8);assert(r.robbed);assert.equal(u.theftCooldown,6);
+    T.pickpocket(g,u,7,false);assert.equal(bank.gold,before+8,'same trip cannot be robbed twice');
+    const meal={isP:!side,kind:'food',phase:'return',x:.5,cargoFood:1};g.estate.runners=[meal];T.pickpocket(g,u,.1,false);assert.equal(meal.cargoFood,0);assert.equal(g.estate[side?'p':'e'].food,1);
+    const next={...r,robbed:false,cargoCredits:16};g.estate.runners=[next];T.pickpocket(g,u,.1,false);assert.equal(next.cargoCredits,16,'cooldown protects following deliveries');
+    const escort=spawn(g,'dres',!side,.52);T.pickpocket(g,u,7,false);assert(!next.robbed,'frontline escort deters theft');escort.x=.8;
+    T.pickpocket(g,u,.1,true);assert(!next.robbed,'patrol prevents theft');u.slip=.5;T.pickpocket(g,u,.1,false);assert(!next.robbed);u.slip=0;
+    bank.gold=9997;T.pickpocket(g,u,.1,false);assert.equal(bank.gold,9999);assert.equal(next.cargoCredits,14,'only actual transferred money is removed');
+  }
+});
+check('pickpockets ignore outbound, indoor, friendly and distant couriers',()=>{
+  const g=game(3),u=spawn(g,'thief',true,.5),before=g.p.gold;
+  g.estate.runners=[{isP:false,phase:'approach',x:.5,cargoCredits:16},{isP:false,phase:'inside',x:.5,cargoCredits:16},{isP:true,phase:'return',x:.5,cargoCredits:16},{isP:false,phase:'return',x:.8,cargoCredits:16}];
+  T.pickpocket(g,u,.1,false);assert.equal(g.p.gold,before);assert(g.estate.runners.every(r=>!r.robbed));
+});
 check('boss is a costly late frontline with bounded splash and a slow telegraphed strike',()=>{
   const c=T.cards.find(c=>c.id==='boss');assert.equal(c.cost,96);assert(!T.roster(9).includes('boss'));assert(T.roster(10).includes('boss'));
   const poor=game(10);poor.p.gold=95;assert(!T.recruit(poor,'boss',true));assert.equal(poor.p.gold,95);
@@ -111,7 +128,7 @@ check('seeded automatic weather has warning, dry breaks, rain and ice independen
 check('ice causes longer local slips without damage, no repeat during cooldown, both teams',()=>{
   for(const p of [true,false]){const g=game(2),u=spawn(g,'marian',p,.5);g.estate.ice=true;u.lane=1;u.moving=true;tick(g,.1);assert(u.slip>.8);assert.equal(u.hp,u.max);assert.equal(u.slips,1);tick(g,2);assert.equal(u.slips,1);assert.equal(u.slip,0);assert(u.x!==.5);}
 });
-check('Menel name and attack timing descriptions match all twelve definitions',()=>{
+check('Menel name and attack timing descriptions match all thirteen definitions',()=>{
   assert.equal(T.cards.find(c=>c.id==='marian').pl,'Menel');
   for(const c of T.cards){assert(T.description(c.id,'pl').includes('Odpoczynek '+c.interval+' s'));assert(T.description(c.id,'en').includes('wind-up '+(c.windup||.22)+' s'));}
 });
@@ -139,7 +156,7 @@ check('three lanes distribute a crowd without overlapping spawns or limiting pur
 check('equal dres crowds resolve rather than forming a permanent queue',()=>{for(const stage of [0,3,8,9]){const g=game(stage);g.p.hp=g.e.hp=100000;for(let i=0;i<12;i++){spawn(g,T.roster(stage)[0],true);spawn(g,T.roster(stage)[0],false);}tick(g,110);assert(g.stats.kills+g.stats.losses>=12,'combat must resolve at stage '+stage);assert.equal(g.estate.units.filter(T.active).length,0,'no permanent crowd at stage '+stage);tick(g,90);assert.equal(g.estate.units.length,0);}});
 check('defeated residents walk home, cannot block, attack or be healed',()=>{const g=game(),u=spawn(g,'bike',true,.45),v=spawn(g,'dres',false,.49);u.hp=1;tick(g,1);assert(u.retreat&&u.hp===0);const x=u.x,hp=v.hp;tick(g,1);assert(u.x<x);assert.equal(v.hp,hp);T.heal(g,true,999);assert.equal(u.hp,0);tick(g,10);assert(!g.estate.units.includes(u));});
 check('end of feud clears projectiles and sends squads home without new losses',()=>{const g=game();spawn(g,'dres',true,.5);spawn(g,'neighbor',false,.6);g.estate.shots.push({});const stats=JSON.stringify(g.stats);for(let i=0;i<100;i++)T.finish(g,.1);assert.equal(g.estate.shots.length,0);assert.equal(g.estate.units.length,0);assert.equal(JSON.stringify(g.stats),stats);});
-check('twelve roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,12);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
+check('thirteen roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,13);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
 check('bat swing affects a second nearby rival but not a distant one',()=>{const g=game(5);spawn(g,'bat',true,.45);const a=spawn(g,'boxer',false,.48),b=spawn(g,'boxer',false,.49),far=spawn(g,'boxer',false,.7);a.wind=b.wind=far.wind=100;tick(g,.8);assert(a.hp<a.max&&b.hp<b.max);assert.equal(far.hp,far.max);});
 check('skater keeps most speed when slowed',()=>{const g=game(7),u=spawn(g,'skater',true,.2);u.slow=3;tick(g,1);assert(u.x>.27);});
 check('caretaker restores nearby allies, not enemies or withdrawn units, and auras do not stack',()=>{const g=game(9),a=spawn(g,'heavy',true,.4),b=spawn(g,'heavy',false,.45),c=spawn(g,'caretaker',true,.35),d=spawn(g,'caretaker',true,.36);[a,b,c,d].forEach(u=>u.wind=100);a.hp=b.hp=50;tick(g,2);assert(Math.abs(a.hp-58)<.001);assert.equal(b.hp,50);a.hp=0;tick(g,.5);assert.equal(a.hp,0);});

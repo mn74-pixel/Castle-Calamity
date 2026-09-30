@@ -1,20 +1,20 @@
-/* Castle Calamity PWA v8.24.0 — Polish estate chapter, 1980s and 1990s.
+/* Castle Calamity PWA v8.25.0 — Polish estate chapter, 1980s and 1990s.
    Dokument HTML: network-first z powrotem do cache.
    Zasoby gry: cache-first i aktualizacja pamięci w tle. */
-const CACHE = "castle-calamity-v8.24.0";
+const CACHE = "castle-calamity-v8.25.0";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./content/gags.js?v=8.24.0",
-  "./content/i18n.js?v=8.24.0",
-  "./content/eras.js?v=8.24.0",
-  "./content/future-eras-v73.js?v=8.24.0",
-  "./content/era-art-v73.js?v=8.24.0",
-  "./content/next-eras-v74.js?v=8.24.0",
-  "./content/estate-tactics.js?v=8.24.0",
-  "./content/face-rig.js?v=8.24.0",
-  "./content/osiedle-v75.js?v=8.24.0",
+  "./content/gags.js?v=8.25.0",
+  "./content/i18n.js?v=8.25.0",
+  "./content/eras.js?v=8.25.0",
+  "./content/future-eras-v73.js?v=8.25.0",
+  "./content/era-art-v73.js?v=8.25.0",
+  "./content/next-eras-v74.js?v=8.25.0",
+  "./content/estate-tactics.js?v=8.25.0",
+  "./content/face-rig.js?v=8.25.0",
+  "./content/osiedle-v75.js?v=8.25.0",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png",
   "./assets/icons/icon-maskable-192.png",

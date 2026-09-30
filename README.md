@@ -1,5 +1,42 @@
 # Castle Calamity
 
+### v8.25.0 — stała gospodarka Osiedla
+
+Handlarz zastępuje jednorazowego Dostawcę jako odpowiednik drwala.
+Obie strony zaczynają z jednym bezpłatnym handlarzem, również przy starcie
+wybranego etapu. Drugi kosztuje jednorazowo 24 kredyty; limit to dwóch.
+Wracający handlarz przynosi 16 kredytów i butelki, po czym automatycznie
+wyrusza ponownie. Kontrakt rozpoczęty przy zamkniętym sklepie daje 28.
+Wynagrodzenie jest ustalane na początku kursu, nie przy zmianie planszy.
+Przy limicie waluty statystyki zliczają tylko faktycznie przyznane kredyty.
+
+Dochód pasywny obu stron wynosi teraz 0,5 kredytu/s — główna gospodarka
+jest widoczna na ulicy. HUD pokazuje liczbę handlarzy, kwotę kolejnej
+wypłaty i pozostały czas; pierwszy etap wyjaśnia zatrudnianie. Zamówienie
+jedzenia ma osobne miejsce (jedno na stronę), więc dwóch pracujących
+handlarzy nie blokuje posiłków. Maksymalnie trzy osoby logistyki na stronę;
+liczba postaci nie rośnie przy kolejnych kursach. Nie dodano nowej waluty.
+Drugi zatrudniony handlarz wychodzi z dwusekundowym opóźnieniem, żeby
+pracownicy nie poruszali się stale jako jedna nałożona sylwetka.
+
+Kieszonkowiec (28 kredytów) jest dostępny w etapach 4–6: ma 95 wytrzymałości,
+słaby cios 9 i szybki chód. Z bliska podkrada do 8 kredytów z powracającego
+ładunku albo jeden posiłek. Nie odbiera dostawcom życia ani nie zabiera
+pieniędzy już zapisanych w banku. Jeden kurs można okraść tylko raz;
+przerwa między kradzieżami to 6 s. Eskorta jednostką frontową, patrol,
+poślizg lub własny zamach blokują kradzież. Handlarz zachowuje resztę
+wypłaty i pracę; nowy kurs odtwarza pełny ładunek. Skradziony posiłek
+trafia do przeciwnika, zamiast powielić się po dostawie. Reakcja kuriera
+i znak zysku nad kieszonkowcem pokazują zdarzenie.
+
+Regresja obejmuje odbudowę salda od zera bez dochodu pasywnego, wielokrotne
+kursy, identyczne wypłaty przy różnych krokach symulacji, jednorazowy koszt
+zatrudnienia, niezależne zamawianie jedzenia, pauzę/koniec, zmianę etapu,
+limit waluty i pełne bitwy. Klatka kończąca kurs przekazuje pozostały czas
+do następnego, zamiast gubić go zależnie od FPS. Przewaga strategii samych
+butelek nadal wymaga dalszego strojenia; ta wersja przebudowuje gospodarkę.
+Płynność i czytelność na fizycznym iPhonie pozostają do odbioru ręcznego.
+
 ### v8.24.0 — życie osiedla, szef i audyt dostaw
 
 W oddalonym planie spacerowicz prowadzi węszącego psa albo przechodzień
