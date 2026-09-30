@@ -1,5 +1,34 @@
 # Castle Calamity
 
+### v8.24.0 — życie osiedla, szef i audyt dostaw
+
+W oddalonym planie spacerowicz prowadzi węszącego psa albo przechodzień
+zatacza się w drodze do domu. Jedna 22-sekundowa scenka na 70 sekund,
+bez nakładania na główny gag, bez jednostek w symulacji walki. Małe sylwetki,
+cień kontaktowy i stonowany kontrast pozostają za centralną scenografią.
+
+Szef osiedla kosztuje 96 kredytów i zastępuje kartę Heńka w etapach 11–12.
+Ma 390 wytrzymałości, cios 58, zamach 0,65 s, odpoczynek 2,6 s i wolny
+marsz. Trafia główny cel oraz najwyżej dwóch dodatkowych rywali po 34,8.
+Skórzana kurtka, dwie animowane złote kolie i okulary odróżniają go od
+pozostałych. Rozstawione jednostki dystansowe są jego kontrą, nie ma aury
+ani odporności na pociski. Dotychczas zwerbowany Heniek zostaje na planszy.
+
+Audyt: dostawy już wypłacały 28 kredytów (koszt 8, zysk netto 20), lecz
+komunikat wspominał tylko butelki. Kwota zależała od etapu przy powrocie,
+a statystyki przy limicie 9999 zawyżały faktyczny przyrost. Teraz kontrakt
+zapamiętuje wypłatę i butelki przy zakupie, rozlicza się dokładnie raz po
+powrocie, a komunikat i statystyki pokazują faktycznie przyznane kredyty.
+Etap zamkniętego sklepu oferuje 40 (netto 32). Jedzenie nie daje kredytów.
+
+Audyt tłoku: powracający i wycofujący się nakładali się wizualnie na front.
+Przechodzą teraz płynnie na tylny chodnik; sortowanie zachowuje głębię.
+Ciężkie jednostki potrzebują większego odstępu, a zmiana pasa ma 1,2 s
+przerwy, ograniczając oscylowanie przy zatorze. Nie dodano limitu armii.
+Testy obejmują ekonomię obu stron, limit waluty, zmianę etapu, wielokrotne
+rozliczenie, bossa, jego kontrę, ruch powrotny, omijanie i pełne bitwy.
+Odbiór czytelności i płynności na fizycznym iPhonie pozostaje ręczny.
+
 ### v8.23.0 — mocniejsze kolory i nowe żarty tła
 
 Elewacje, niebo, szyldy i kolejne plany mają ciemniejszą, bardziej nasyconą

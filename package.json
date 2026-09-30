@@ -1,6 +1,6 @@
 {
   "name": "castle-calamity",
-  "version": "8.23.0",
+  "version": "8.24.0",
   "private": true,
   "scripts": {
     "test": "node tests/portrait-load.test.js && node tests/face-rig.test.js && node tests/estate-tactics.test.js && node tests/game.test.js && node tests/pwa.test.js && node tests/era-art.test.js"

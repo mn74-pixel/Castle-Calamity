@@ -17,6 +17,8 @@ if (end < 0) throw new Error("Nie znaleziono końca głównego skryptu gry");
 const qaHooks = String.raw`
 window.__QA = {
   estateDetailScene: function(i){launchEstateSegment(i);G.estate.ai=1e6;G.estate.segmentFlash=0;G.estate.ambient.enabled=false;var before=JSON.stringify(G);render();return before===JSON.stringify(G);},
+  estateDeliveryAudit: function(stage,p,cap){launchEstateSegment(stage);G.estate.ai=1e6;var bank=p?G.p:G.e;bank.gold=cap?9995:100;var earned=G.stats.goldEarned;ESTATE.buy(G,'runner',p);var r=G.estate.runners[0],paid=bank.gold;G.estate.segment=stage===10?0:10;ESTATE.finishRunner(G,r);var early=bank.gold===paid;var reward=0;ESTATE.advanceRunner(G,r,100);ESTATE.finishRunner(G,r,function(side,n){reward+=n;});var end=bank.gold;ESTATE.finishRunner(G,r,function(side,n){reward+=n;});return {early:early,paid:paid,end:end,duplicate:bank.gold===end,reward:reward,earned:G.stats.goldEarned-earned,notice:(p?G.estate.p:G.estate.e).deliveryCredit};},
+  estateNeighbourScene: function(seed,time){launchEstateSegment(2);G.estate.ambient={start:55,enabled:true,lampSeed:seed,kind:'car'};G.estate.tactics.clock=time;G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),pose:ESTATE.neighbourhoodPose(G)};},
   estatePigeonScene: function(t){launchEstateSegment(0);G.estate.ambient={start:50,enabled:true,lampSeed:1,kind:'pigeon'};G.estate.tactics.clock=50+t;G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),pose:ESTATE.pigeonPose(G),car:ESTATE.ambientPose(G).visible};},
   estateStreetGagScene: function(kind,t,enabled){launchEstateSegment(0);G.estate.ambient={start:50,enabled:enabled!==false,lampSeed:2,kind:kind};G.estate.tactics.clock=50+t;G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),pose:ESTATE.streetGagPose(G),car:ESTATE.ambientPose(G).visible,pigeon:ESTATE.pigeonPose(G).visible};},
   estateEntryScene: function(p,time){launchEstateSegment(0);G.estate.ai=1e6;ESTATE.buy(G,'dres',p);var u=G.estate.units[0];u.x=p?.809:.191;window.CASTLE_ESTATE_TACTICS.tick(G,time,castleDmg);var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),inside:u.inside,returning:!!u.returning,hits:u.entryHits};},
@@ -1083,7 +1085,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.23.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.24.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Pogoda: automatyczny cykl '+key);
@@ -1135,6 +1137,18 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   }
 }
 const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
+for(const stage of [0,10])for(const side of [true,false])for(const cap of [false,true]){
+  const r=qa.estateDeliveryAudit(stage,side,cap),gain=Math.min(stage===10?40:28,9999-r.paid);
+  check(r.early&&r.duplicate&&r.end===r.paid+gain&&r.reward===gain&&r.notice===gain&&r.earned===(side?gain:0),'Supply is paid exactly once on return, contract survives stage changes and respects cap '+stage+' '+side+' '+cap);
+}
+for(const size of [[1280,720],[667,375]]){qa.viewport(...size,1);for(const seed of [0,1])for(const time of [16,20,21,24,31]){const r=qa.estateNeighbourScene(seed,time);check(r.pure,'Background pedestrians never mutate combat');save('estate-neighbours-'+size[0]+'-'+seed+'-'+time+'.png');}}
+const neighbourArt=sandbox.window.CASTLE_ESTATE;
+for(const seed of [0,1,8,996])for(const start of [48,70,93])for(let clock=0;clock<210;clock+=.25){
+  const g={estate:{ambient:{enabled:true,start,lampSeed:seed},tactics:{clock}}},p=neighbourArt.neighbourhoodPose(g);
+  if(p.visible){assert(!(clock>=start&&clock<start+12),'Civilian cameo overlaps the main gag');assert(Number.isFinite(p.x)&&p.x>=-.1&&p.x<=1.1);}
+  g.over=true;assert(!neighbourArt.neighbourhoodPose(g).visible);
+}
+qa.viewport(1280,720,1);
 const detailFrames=[];
 for(const segment of sandbox.window.CASTLE_ESTATE.segments){
   const tile=createCanvas(300,180),cx=tile.getContext('2d'),before=JSON.stringify(segment);
@@ -1234,9 +1248,10 @@ for(const surface of ['water','ice']){
 const settlingSheet=createCanvas(660,270),settlingCtx=settlingSheet.getContext('2d');settlingCtx.fillStyle='#ded5bc';settlingCtx.fillRect(0,0,660,270);
 for(const [row,kind] of ['dres','heavy','cart'].entries()){const frames=[],u={kind,isP:true,walk:.7,animTime:1,moving:false,locomotion:1};for(let frame=0;frame<6;frame++){if(frame)estateActors.updateLocomotion(u,1/30,false);const tile=createCanvas(110,90),cx=tile.getContext('2d'),before=JSON.stringify(u);estateActors.figure(cx,u,35,80,1.1);assert.equal(JSON.stringify(u),before);frames.push(tile.toBuffer('image/png').toString('base64'));settlingCtx.drawImage(tile,frame*110,row*90);}check(new Set(frames).size>=5,'Animacja: stopniowe osiadanie po zatrzymaniu — '+kind);}
 fs.writeFileSync(path.join(__dirname,'renders/estate-stopping-poses.png'),settlingSheet.toBuffer('image/png'));
-const poseSheet=createCanvas(800,1008),poseContext=poseSheet.getContext('2d');
-poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,1008);
-for(const [row,kind] of ['dres','bike','bat','skater','courier','heavy','neighbor','caretaker','musician','cart','marian','boxer'].entries()){
+const poseKinds=[...estateActors.cards.map(c=>c.id),'courier'];
+const poseSheet=createCanvas(800,poseKinds.length*84),poseContext=poseSheet.getContext('2d');
+poseContext.fillStyle='#ded5bc';poseContext.fillRect(0,0,800,poseKinds.length*84);
+for(const [row,kind] of poseKinds.entries()){
   const frames=[];
   for(let frame=0;frame<6;frame++){
     const u={kind,isP:true,moving:frame<3,walk:frame*Math.PI/2,animTime:frame*.25,wind:frame===3?.11:0,follow:frame===4?.2:0,hurt:frame===5?.2:0,cargo:kind==='courier'};
@@ -1250,7 +1265,7 @@ fs.writeFileSync(path.join(__dirname,'renders/estate-animation-poses.png'),poseS
 const portraits=[];
 for(const viewport of [[1280,720],[667,375]]){qa.viewport(viewport[0],viewport[1],1);const music=qa.estateMusicScene();check(music.pure&&music.playing&&music.disrupted,'Muzyka: widoczny efekt na przeciwniku bez mutowania stanu przy renderze '+viewport);save('estate-music-'+viewport.join('x')+'.png');}qa.viewport(1280,720,1);
 for(const unit of estateActors.cards){const tile=createCanvas(64,64),cx=tile.getContext('2d');cx.translate(25,15);cx.scale(2.5,2.5);estateActors.portrait(cx,{kind:unit.id},0,'#528caa');portraits.push(tile.toBuffer('image/png').toString('base64'));}
-check(new Set(portraits).size===11,'Osiedle: jedenaście odrębnych twarzy i nakryć głowy, bez identycznych portretów');
+check(new Set(portraits).size===estateActors.cards.length,'Osiedle: dwanaście odrębnych twarzy i nakryć głowy, bez identycznych portretów');
 for(const isP of [true,false]){
   const tile=createCanvas(120,100),cx=tile.getContext('2d');estateActors.figure(cx,{kind:'heavy',isP},60,90,1);
   function silhouetteWidth(y){const pixels=cx.getImageData(0,y,120,1).data;let first=120,last=-1;for(let x=0;x<120;x++)if(pixels[x*4+3]>64){first=Math.min(first,x);last=x;}return last-first+1;}

@@ -10,6 +10,24 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('boss is a costly late frontline with bounded splash and a slow telegraphed strike',()=>{
+  const c=T.cards.find(c=>c.id==='boss');assert.equal(c.cost,96);assert(!T.roster(9).includes('boss'));assert(T.roster(10).includes('boss'));
+  const poor=game(10);poor.p.gold=95;assert(!T.recruit(poor,'boss',true));assert.equal(poor.p.gold,95);
+  for(const side of [true,false]){const g=game(10),dir=side?1:-1,b=spawn(g,'boss',side,.5),victims=[];
+    for(let i=0;i<4;i++){const v=spawn(g,'skater',!side,.5+dir*(.04+i*.003));v.lane=1;v.wind=100;victims.push(v);}b.lane=1;
+    tick(g,.5);assert(victims.every(v=>v.hp===v.max));tick(g,.6);assert.equal(victims.filter(v=>v.hp<v.max).length,3);assert.equal(g[side?'p':'e'].gold,904);
+  }
+});
+check('return and retreat traffic use the rear sidewalk, combat lanes are unchanged',()=>{
+  for(const lane of [0,1,2]){const u={lane};assert.equal(T.displayLane(u),lane);assert.equal(T.displayLane({...u,returning:true}),-1.5);assert.equal(T.displayLane({...u,retreat:true}),-1.5);}
+  const g=game(2),u=spawn(g,'bike',true,.809);u.lane=u.drawLane=2;tick(g,.05);assert(u.returning);assert(T.displayLane(u)>-1.5);tick(g,.8);assert(Math.abs(T.displayLane(u)+1.5)<.01);assert.equal(u.lane,2);
+});
+check('spread carts counter the costly boss on either side',()=>{
+  for(const p of [true,false]){const g=game(10),boss=spawn(g,'boss',p,p?.35:.65);spawn(g,'cart',!p,p?.64:.36);spawn(g,'cart',!p,p?.69:.31);tick(g,35);assert(boss.retreat);assert.equal((p?g.e:g.p).hp,2200);}
+});
+check('overtaking has a cooldown rather than oscillating between lanes',()=>{
+  const g=game(8),u=spawn(g,'skater',true,.4),v=spawn(g,'cart',true,.44);u.lane=v.lane=1;v.wind=100;tick(g,.6);assert.notEqual(u.lane,1);assert(u.laneCooldown>0);const lane=u.lane;tick(g,.3);assert.equal(u.lane,lane);
+});
 check('soft foot planting has no lift cusp and recovery includes a small counter-lean',()=>{
   const epsilon=.001,a=T.pose({kind:'dres',moving:true,walk:Math.PI/2-epsilon}),b=T.pose({kind:'dres',moving:true,walk:Math.PI/2});
   assert(Math.abs(a.lift-b.lift)/epsilon<.01);
@@ -93,13 +111,13 @@ check('seeded automatic weather has warning, dry breaks, rain and ice independen
 check('ice causes longer local slips without damage, no repeat during cooldown, both teams',()=>{
   for(const p of [true,false]){const g=game(2),u=spawn(g,'marian',p,.5);g.estate.ice=true;u.lane=1;u.moving=true;tick(g,.1);assert(u.slip>.8);assert.equal(u.hp,u.max);assert.equal(u.slips,1);tick(g,2);assert.equal(u.slips,1);assert.equal(u.slip,0);assert(u.x!==.5);}
 });
-check('Menel name and attack timing descriptions match all eleven definitions',()=>{
+check('Menel name and attack timing descriptions match all twelve definitions',()=>{
   assert.equal(T.cards.find(c=>c.id==='marian').pl,'Menel');
   for(const c of T.cards){assert(T.description(c.id,'pl').includes('Odpoczynek '+c.interval+' s'));assert(T.description(c.id,'en').includes('wind-up '+(c.windup||.22)+' s'));}
 });
 check('slipping supports cannot heal or inspire either team',()=>{
   for(const side of [true,false])for(const kind of ['caretaker','musician']){
-    const g=game(kind==='caretaker'?10:6);g.estate.rain=true;
+    const g=game(kind==='caretaker'?9:6);g.estate.rain=true;
     const support=spawn(g,kind,side,.4),ally=spawn(g,kind==='caretaker'?'heavy':'bat',side,.44);
     support.slip=.8;ally.hp=50;ally.wind=100;tick(g,.2);
     assert.equal(ally.hp,50);assert(!ally.inspired);
@@ -121,7 +139,7 @@ check('three lanes distribute a crowd without overlapping spawns or limiting pur
 check('equal dres crowds resolve rather than forming a permanent queue',()=>{for(const stage of [0,3,8,9]){const g=game(stage);g.p.hp=g.e.hp=100000;for(let i=0;i<12;i++){spawn(g,T.roster(stage)[0],true);spawn(g,T.roster(stage)[0],false);}tick(g,110);assert(g.stats.kills+g.stats.losses>=12,'combat must resolve at stage '+stage);assert.equal(g.estate.units.filter(T.active).length,0,'no permanent crowd at stage '+stage);tick(g,90);assert.equal(g.estate.units.length,0);}});
 check('defeated residents walk home, cannot block, attack or be healed',()=>{const g=game(),u=spawn(g,'bike',true,.45),v=spawn(g,'dres',false,.49);u.hp=1;tick(g,1);assert(u.retreat&&u.hp===0);const x=u.x,hp=v.hp;tick(g,1);assert(u.x<x);assert.equal(v.hp,hp);T.heal(g,true,999);assert.equal(u.hp,0);tick(g,10);assert(!g.estate.units.includes(u));});
 check('end of feud clears projectiles and sends squads home without new losses',()=>{const g=game();spawn(g,'dres',true,.5);spawn(g,'neighbor',false,.6);g.estate.shots.push({});const stats=JSON.stringify(g.stats);for(let i=0;i<100;i++)T.finish(g,.1);assert.equal(g.estate.shots.length,0);assert.equal(g.estate.units.length,0);assert.equal(JSON.stringify(g.stats),stats);});
-check('eleven roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,11);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
+check('twelve roles form progressive decks; old recruits stay after their card retires',()=>{assert.equal(T.cards.length,12);for(let stage=0;stage<12;stage++){const ids=Array.from(T.roster(stage));assert(ids.length<=4);const g=game(stage);for(const c of T.cards)assert.equal(T.status(g,c.id,true).ok,ids.includes(c.id));}const g=game(4),u=spawn(g,'dres',true);g.estate.segment=5;assert(!T.status(g,'dres',true).ok);tick(g,1);assert(u.hp>0&&u.x>.19);});
 check('bat swing affects a second nearby rival but not a distant one',()=>{const g=game(5);spawn(g,'bat',true,.45);const a=spawn(g,'boxer',false,.48),b=spawn(g,'boxer',false,.49),far=spawn(g,'boxer',false,.7);a.wind=b.wind=far.wind=100;tick(g,.8);assert(a.hp<a.max&&b.hp<b.max);assert.equal(far.hp,far.max);});
 check('skater keeps most speed when slowed',()=>{const g=game(7),u=spawn(g,'skater',true,.2);u.slow=3;tick(g,1);assert(u.x>.27);});
 check('caretaker restores nearby allies, not enemies or withdrawn units, and auras do not stack',()=>{const g=game(9),a=spawn(g,'heavy',true,.4),b=spawn(g,'heavy',false,.45),c=spawn(g,'caretaker',true,.35),d=spawn(g,'caretaker',true,.36);[a,b,c,d].forEach(u=>u.wind=100);a.hp=b.hp=50;tick(g,2);assert(Math.abs(a.hp-58)<.001);assert.equal(b.hp,50);a.hp=0;tick(g,.5);assert.equal(a.hp,0);});
@@ -142,7 +160,7 @@ check('animation has anticipation, follow-through, recoil and circular pedal tra
   for(const h of [375,390,720,1100])assert.equal(T.actorScale(h),Math.round(Math.max(24,Math.min(46,h*.064)))/22*.74);
 });
 check('heavy telegraphs a crowd hit, spares allies and distant enemies, then recovers slowly',()=>{
-  for(const p of [true,false]){const g=game(10),dir=p?1:-1,h=spawn(g,'heavy',p,.5),a=spawn(g,'skater',!p,.5+dir*.04),b=spawn(g,'skater',!p,.5+dir*.055),far=spawn(g,'skater',!p,.5+dir*.12),friend=spawn(g,'skater',p,.5+dir*.06);
+  for(const p of [true,false]){const g=game(9),dir=p?1:-1,h=spawn(g,'heavy',p,.5),a=spawn(g,'skater',!p,.5+dir*.04),b=spawn(g,'skater',!p,.5+dir*.055),far=spawn(g,'skater',!p,.5+dir*.12),friend=spawn(g,'skater',p,.5+dir*.06);
     h.lane=a.lane=1;b.lane=0;far.lane=friend.lane=2;[a,b,far,friend].forEach(u=>u.wind=100);
     tick(g,.7);assert.equal(a.hp,a.max,'no damage before the long windup');assert(h.wind>0);
     tick(g,.2);assert(a.hp<a.max);assert.equal(b.max-b.hp,33);assert.equal(far.hp,far.max);assert.equal(friend.hp,friend.max);assert(h.shock>0);
@@ -153,15 +171,15 @@ check('heavy unlock replaces the bat card, preserves existing bat units and shar
   const g=game(8),old=spawn(g,'bat',true);assert.equal(T.status(g,'heavy',true).reason,'locked');g.estate.segment=9;g.estate.tactics.p=0;g.p.gold=53;assert.equal(T.status(g,'heavy',true).reason,'gold');g.p.gold=54;spawn(g,'heavy',true);assert.equal(g.p.gold,0);assert(!T.roster(9).includes('bat'));tick(g,.1);assert(old.hp>0);assert.equal(T.choose(g),'cart');
 });
 check('spread ranged support can stop the expensive heavy before he reaches the building',()=>{
-  for(const p of [true,false]){const g=game(10),h=spawn(g,'heavy',p,p?.35:.65);spawn(g,'cart',!p,p?.64:.36);spawn(g,'cart',!p,p?.69:.31);tick(g,25);assert(h.retreat);assert.equal((p?g.e:g.p).hp,2200);}
+  for(const p of [true,false]){const g=game(9),h=spawn(g,'heavy',p,p?.35:.65);spawn(g,'cart',!p,p?.64:.36);spawn(g,'cart',!p,p?.69:.31);tick(g,25);assert(h.retreat);assert.equal((p?g.e:g.p).hp,2200);}
 });
 check('role sheets describe actual powers in both languages and have distinct clothing',()=>{
-  assert.equal(new Set(T.cards.map(c=>T.roles[c.id].kit)).size,11);
+  assert.equal(new Set(T.cards.map(c=>T.roles[c.id].kit)).size,T.cards.length);
   for(const c of T.cards){assert.equal(T.archetype(c.id),T.roles[c.id].role);for(const lang of ['pl','en']){const text=T.description(c.id,lang);assert(text.includes(String(c.hp)));assert(text.includes(String(c.attack)));assert(text.includes(lang==='pl'?'Słabość:':'Weakness:'));}}
   assert(T.description('bat','pl').includes('13'));assert(T.description('heavy','en').includes('33'));assert(T.description('caretaker','pl').includes('+4'));assert(T.description('skater','en').includes('85%'));
 });
 check('caretaker holds behind an injured ally, heals, then resumes instead of creating a permanent stop',()=>{
-  for(const p of [true,false]){const g=game(10),dir=p?1:-1,a=spawn(g,'heavy',p,.5+dir*.06),c=spawn(g,'caretaker',p,.5);a.wind=100;a.hp=a.max-8;const x=c.x;tick(g,1);assert.equal(c.x,x);assert(a.hp>a.max-8);tick(g,2);assert.equal(a.hp,a.max);assert((c.x-x)*dir>0);}
+  for(const p of [true,false]){const g=game(9),dir=p?1:-1,a=spawn(g,'heavy',p,.5+dir*.06),c=spawn(g,'caretaker',p,.5);a.wind=100;a.hp=a.max-8;const x=c.x;tick(g,1);assert.equal(c.x,x);assert(a.hp>a.max-8);tick(g,2);assert.equal(a.hp,a.max);assert((c.x-x)*dir>0);}
 });
 check('bat secondary hit selects the nearest eligible rival, not array insertion order',()=>{
   const g=game(5),a=spawn(g,'bat',true,.45),main=spawn(g,'boxer',false,.48),far=spawn(g,'boxer',false,.51),near=spawn(g,'boxer',false,.49);a.lane=main.lane=1;far.lane=near.lane=0;[main,far,near].forEach(u=>u.wind=100);tick(g,.8);assert.equal(near.max-near.hp,13);assert.equal(far.hp,far.max);
