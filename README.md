@@ -1,5 +1,28 @@
 # Castle Calamity
 
+### v8.19.0 — kolory polskiego osiedla, 1988 / 1997
+
+Elewacje: szarość wielkiej płyty, przybrudzona biel, stonowane błękitne
+i terakotowe akcenty. Pawilony są bardziej szaro-kremowe, chodniki neutralne,
+a noc zachowuje chłodne cienie i niezależne światła mieszkań. Starsza budka
+jest zielona, przeszklona, z jasnym szyldem TELEFON; późniejszy wariant to
+niebieska otwarta osłona aparatu. Cache elewacji rozróżnia okres i nadal
+przechowuje najwyżej cztery obrazy.
+
+Referencje sprawdzone podczas pracy:
+
+- [Wyżyny, zdjęcie na teczce z 1997 r.](https://ursynow.org.pl/teczka-z-1997/):
+  jasne elewacje, widoczne podziały płyt, ciemne wnęki balkonów.
+- [Telefony PRL](https://telesfor.org/automaty/budki-telefoniczne-prl/):
+  opis zielonych kabin, zdjęcie Wrocławia z sierpnia 1980 r. dla konstrukcji,
+  półkabiny z 1991 r. oraz niebieski aparat w Wałbrzychu z 1998 r.
+
+To interpretacja do gry, nie rekonstrukcja konkretnego osiedla ani paleta
+farb RAL. Zdjęcia czarno-białe służą wyłącznie do badania formy. Referencja
+z 1998 r. reprezentuje końcówkę dekady, nie dowodzi daty instalacji w 1997.
+Fotografie nie są kopiowane do zasobów gry. Odcienie akcentów i cienie są
+dobrane autorsko pod czytelność; polskie osiedla nie miały jednej palety.
+
 ### v8.18.0 — audyt ruchu i czytelniejsze trafienia
 
 Oddziały sprawdzają aktualną aktywność celu po rozpoczęciu jego rajdu.

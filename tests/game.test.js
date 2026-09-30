@@ -1078,7 +1078,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.18.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.19.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Pogoda: automatyczny cykl '+key);
@@ -1130,6 +1130,14 @@ for(const viewport of [[1280,720],[1950,1100],[844,390],[667,375]]){
   }
 }
 const estateActors=sandbox.window.CASTLE_ESTATE_TACTICS;
+const estateMaterials=sandbox.window.CASTLE_ESTATE.periodMaterials;
+check(estateMaterials('1988',false).boothType==='glazed-green'&&estateMaterials('1997',false).boothType==='open-blue','Historical props: green glazed cabin and later blue open phone shell');
+check(estateMaterials('1988',false).facade!==estateMaterials('1997',false).facade,'Historical facade materials distinguish the two periods');
+for(const period of ['1988','1997']){
+  const day=estateMaterials(period,false),night=estateMaterials(period,true);
+  check(day.facade!==night.facade&&day.far!==night.far,'Historical materials preserve night shading '+period);
+  check(day.player!==day.enemy&&night.player!==night.enemy,'Historical palette retains team contrast '+period);
+}
 const contactSheet=createCanvas(720,330),contactCtx=contactSheet.getContext('2d');
 contactCtx.fillStyle='#33434c';contactCtx.fillRect(0,0,720,330);
 for(const [row,kind] of ['dres','heavy','boxer'].entries()){

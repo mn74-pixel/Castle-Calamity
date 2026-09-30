@@ -42,6 +42,18 @@
     {s1:'#111d31',s2:'#3c5167',g1:'#455357',g2:'#25353e',sun:'#d5decc',sr:16,night:true}
   ];
   function scenePalette(g){return estatePalettes[segmentOf(g).scene];}
+  // Stylized material swatches, not sampled paint standards. References:
+  // ursynow.org.pl/teczka-z-1997/ and telesfor.org/automaty/budki-telefoniczne-prl/
+  function periodMaterials(period,night){var late=period==='1997';return {
+    facade:night?'#a5a9b1':late?'#ddd9c8':'#cecac0',
+    side:night?'#636d80':'#96958e',
+    player:late?'#7696ab':'#7c9297',enemy:late?'#bd8b75':'#a78977',
+    far:night?'#59677e':'#c5c5bf',farSide:night?'#48566d':'#aaafb0',
+    near:night?'#4e5a70':'#acada7',nearSide:night?'#3c475c':'#929994',
+    kiosk:late?'#c4bca8':'#bdbbb0',kioskSide:late?'#817c6f':'#818780',
+    sign:late?'#385582':'#356044',booth:late?'#31548d':'#3f624c',
+    boothType:late?'open-blue':'glazed-green',frame:'#e2dfcf'
+  };}
   segments.forEach(function(seg,i){seg.period=i<6?'1988':'1997';seg.brawlers=0;seg.hintPl=TACTICS.rules[i][0];seg.hintEn=TACTICS.rules[i][1];});
   function active(g){return !!(g&&g.lv&&g.lv.special==='estate');}
   function makeSide(){return {cd:0,action:null,stamina:100,bottles:2,food:0,restT:0,mealT:0,regenBonus:0,costMul:1,notice:'',noticeT:0,combo:0,comboT:0,hitReactT:0,hitReactPower:0};}
@@ -210,17 +222,30 @@
     ctx.restore();
   }
   function periodProps(ctx,g,seg){
-    var s=Math.max(.68,Math.min(1.45,g.GY/590)),y=g.GY-106*s;
+    var s=Math.max(.68,Math.min(1.45,g.GY/590)),y=g.GY-106*s,m=periodMaterials(seg.period,seg.scene>=2);
     // The service lane sits behind the main actors, not on their collision line.
     maluch(ctx,g.W*.31,y,s*.90,'#c88743');
     if(seg.period==='1997')maluch(ctx,g.W*.70,y,s*.78,'#91a29b');
     ctx.save();ctx.translate(g.W*.74,y);ctx.scale(s,s);
-    // Glazed telephone booth with a receiver, coin box and enamel header.
-    rectPanel(ctx,-15,-91,30,89,'#567d75');glassPanel(ctx,-11,-72,22,65,seg.scene>=2);
-    line(ctx,-13,-76,13,-76,'#e4d6b2',3);enamelSign(ctx,-16,-92,32,15,'TELEFON','#456c69',5.4);
+    // Older glazed green cabin; later blue open public-phone shell.
+    if(m.boothType==='glazed-green'){
+      rectPanel(ctx,-15,-91,30,89,m.booth);glassPanel(ctx,-11,-72,22,65,seg.scene>=2);
+      line(ctx,-18,-93,18,-93,m.booth,4);
+      ctx.fillStyle=m.frame;ctx.fillRect(-14,-89,28,12);ctx.fillStyle=m.booth;ctx.font='bold 6px sans-serif';ctx.textAlign='center';ctx.fillText('TELEFON',0,-80);
+      line(ctx,0,-75,0,-7,m.frame,1);line(ctx,-11,-24,11,-24,m.booth,2);
+      line(ctx,7,-36,7,-30,'#babcb7',1.5);
+    }else{
+      rectPanel(ctx,-4,-40,8,38,'#5b6065');
+      rounded(ctx,-18,-91,36,55,11,m.booth,'#d8dcd8');
+      rounded(ctx,-12,-76,24,34,5,'#253747','#b6c1c4');
+      ctx.fillStyle=m.frame;ctx.font='bold 6px sans-serif';ctx.textAlign='center';ctx.fillText('TELEFON',0,-81);
+      line(ctx,-19,-39,19,-39,'#d1d4cc',2);
+    }
     ctx.fillStyle='#c4bda4';ctx.fillRect(-5,-60,11,20);ctx.fillStyle='#293f41';ctx.fillRect(-1,-56,4,7);
     line(ctx,-7,-60,-7,-48,'#23383b',3);line(ctx,-7,-48,-3,-41,'#23383b',1);
-    line(ctx,0,-75,0,-7,'#9baf9b',1);ctx.restore();
+    if(seg.period==='1997'){for(var key=0;key<9;key++)ctx.fillRect(1+key%3*1.5,-47+Math.floor(key/3)*1.5,1,1);}
+    else{ctx.strokeStyle='#59605b';ctx.lineWidth=1;ctx.beginPath();ctx.arc(2,-46,2.2,0,Math.PI*2);ctx.stroke();}
+    ctx.restore();
   }
   function saturator(ctx,x,y){
     ctx.save();ctx.translate(x,y);contactShadow(ctx,0,0,22,.25);
@@ -308,15 +333,15 @@
   function lamp(ctx,x,y,on){ctx.strokeStyle='#4c5353';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-90);ctx.lineTo(x+18,y-90);ctx.stroke();ctx.fillStyle=on?'#f1d58b':'#9aa1a0';ctx.beginPath();ctx.ellipse(x+22,y-89,9,5,0,0,Math.PI*2);ctx.fill();}
   function car(ctx,x,y,s,col){ctx.save();ctx.translate(x,y);ctx.scale(s,s);contactShadow(ctx,0,1,31,.28);var body=ctx.createLinearGradient(-28,-26,28,-5);body.addColorStop(0,shade(col,1.16));body.addColorStop(.55,col);body.addColorStop(1,shade(col,.62));ctx.fillStyle=body;ctx.strokeStyle='#242b2e';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-29,-16);ctx.lineTo(-20,-17);ctx.lineTo(-9,-29);ctx.lineTo(15,-29);ctx.lineTo(26,-18);ctx.lineTo(30,-15);ctx.lineTo(27,-5);ctx.lineTo(-27,-5);ctx.closePath();ctx.fill();ctx.stroke();glassPanel(ctx,-7,-27,20,9,true);ctx.fillStyle='rgba(255,255,255,.22)';ctx.fillRect(-25,-14,44,2);wheel(ctx,-18,-5,7);wheel(ctx,19,-5,7);ctx.restore();}
   function kiosk(ctx,x,y,w,h,sign,body,accent){
-    var left=x-w/2,night=segments[visualSegment].scene>=2,shop=sign==='MONOPOLOWY';
+    var left=x-w/2,night=segments[visualSegment].scene>=2,shop=sign==='MONOPOLOWY',m=periodMaterials(segments[visualSegment].period,night);
     ctx.save();ctx.lineJoin='round';contactShadow(ctx,x,y,w*.57,.30);
     // Enamel fascia, corrugated roof and a deep service window: a local service pavilion.
-    materialRect(ctx,left,y-h,w,h,'#dbd1ae',shop?'#b9b493':'#769485','#2b4143');
-    ctx.fillStyle='#465d56';ctx.fillRect(left+w*.84,y-h,w*.16,h);
+    materialRect(ctx,left,y-h,w,h,'#dedbcf',m.kiosk,'#394342');
+    ctx.fillStyle=m.kioskSide;ctx.fillRect(left+w*.84,y-h,w*.16,h);
     ctx.fillStyle='#344a49';ctx.fillRect(left-6,y-h-29,w+12,10);
     ctx.fillStyle='#d3c8a5';ctx.fillRect(left-7,y-h-31,w+14,3);
     for(var roof=0;roof<12;roof++)line(ctx,left+roof*w/12,y-h-28,left+roof*w/12+4,y-h-21,'#829385',.7);
-    enamelSign(ctx,left-2,y-h-20,w+4,27,sign,shop?'#315f5a':accent,14);
+    enamelSign(ctx,left-2,y-h-20,w+4,27,sign,shop?m.sign:accent,14);
     ctx.fillStyle='#273e40';ctx.fillRect(left+9,y-h+15,w*.60,h*.58);
     glassPanel(ctx,left+12,y-h+18,w*.57,h*.51,night);
     // Framed display: bottles and paper labels stay below the high-contrast fascia.
@@ -383,10 +408,10 @@
   }
   function urbanEstateLayer(ctx,w,baseY,maxH,c1,c2,alpha,layout,night){ctx.save();ctx.globalAlpha=1;ESTATE_SKYLINE_LAYOUTS[layout].forEach(function(b,i){estateBackgroundBlock(ctx,w,baseY,maxH,b,c1,c2,night,i+layout*101);});ctx.restore();}
   function paintArenaBackdrop(ctx,w,gy,seg){
-    var night=seg.scene>=2,scale=Math.max(.65,Math.min(1.6,gy/590));
+    var night=seg.scene>=2,scale=Math.max(.65,Math.min(1.6,gy/590)),m=periodMaterials(seg.period,night);
     // Opaque architecture occludes the sun; distance is encoded in hue and contrast.
-    urbanEstateLayer(ctx,w,gy-76*scale,408*scale,night?'#53657c':'#b1b4ab',night?'#424f66':'#9ba9a1',.55,0,night);
-    urbanEstateLayer(ctx,w,gy-38*scale,303*scale,night?'#46556d':'#99a29a',night?'#323e55':'#88998e',.70,1,night);
+    urbanEstateLayer(ctx,w,gy-76*scale,408*scale,m.far,m.farSide,.55,0,night);
+    urbanEstateLayer(ctx,w,gy-38*scale,303*scale,m.near,m.nearSide,.70,1,night);
     // Keep the middle open: low pavilions and trees rather than a third wall of blocks.
     materialRect(ctx,w*.24,gy-144*scale,w*.20,65*scale,night?'#586168':'#c5b996',night?'#3d4a53':'#9d9e83','#657871');
     materialRect(ctx,w*.60,gy-137*scale,w*.16,58*scale,night?'#586168':'#b8b595',night?'#3d4a53':'#8f9e89','#657871');
@@ -416,7 +441,7 @@
     var y=g.GY,mid=g.W*.5,t=g.estate.time,night=seg.scene>=2,sceneScale=estateViewportScale(y),groundDepth=112*sceneScale;ctx.save();
     // Narrow urban ground plane; the scenery, not a grey parking lot, owns the frame.
     var ground=ctx.createLinearGradient(0,y-groundDepth,0,y+4);ground.addColorStop(0,night?'#50595f':'#747368');ground.addColorStop(1,night?'#2e3538':'#4c554c');ctx.fillStyle=ground;ctx.fillRect(0,y-groundDepth,g.W,groundDepth+4);
-    var pavement=ctx.createLinearGradient(0,y,0,g.H);pavement.addColorStop(0,night?'#434a4d':'#929482');pavement.addColorStop(1,night?'#242c32':'#596a60');ctx.fillStyle=pavement;ctx.fillRect(0,y,g.W,g.H-y);
+    var pavement=ctx.createLinearGradient(0,y,0,g.H);pavement.addColorStop(0,night?'#434a53':'#a09e95');pavement.addColorStop(1,night?'#242c36':'#6d7374');ctx.fillStyle=pavement;ctx.fillRect(0,y,g.W,g.H-y);
     ctx.fillStyle=night?'#222e32':'#506657';ctx.fillRect(0,y,g.W,17);ctx.fillStyle='rgba(239,228,195,.34)';ctx.fillRect(0,y-4,g.W,2);ctx.fillStyle='rgba(27,34,31,.22)';ctx.fillRect(0,y+2,g.W,4);
     ctx.strokeStyle=night?'#37434a':'#6d7c6b';ctx.lineWidth=1;
     for(var slab=0;slab<g.W/90;slab++){ctx.beginPath();ctx.moveTo(slab*90,y+20);ctx.lineTo(slab*90-35,g.H);ctx.stroke();}
@@ -494,7 +519,7 @@
   var ESTATE_BASE_GRAMMAR=['apartment-mass','side-wings','stair-core','entrance-steps','hero-loggia','window-bays','flat-roof-services','recessed-window-reveals','side-wall-perspective','balcony-cast-shadows','independent-room-lighting','roof-occlusion'];
   // Five-storey prefabricated housing: flat roof, recessed balconies and a glazed stairwell.
   function paintApartmentBlock(ctx,player){
-    var night=(segments[visualSegment]||segments[0]).scene>=2,team=player?'#4f8586':'#b8624e',ink='#303e40',cream=night?'#a2aaa3':'#ded5b7',shadeWall=night?'#697f7f':'#a69f8b';
+    var seg=segments[visualSegment]||segments[0],night=seg.scene>=2,m=periodMaterials(seg.period,night),team=player?m.player:m.enemy,ink='#303e40',cream=m.facade,shadeWall=m.side;
     ctx.save();ctx.lineJoin='round';ctx.lineCap='round';
     function box(x,y,w,h,fill,stroke){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h);if(stroke!==false){ctx.strokeStyle=ink;ctx.lineWidth=1.2;ctx.strokeRect(x,y,w,h);}}
     function stroke(x,y,xx,yy,col,width){line(ctx,x,y,xx,yy,col,width||1);}
@@ -576,7 +601,7 @@
     ctx.restore();
   }
   function estateApartmentBase(ctx,c,ground){
-    var key='estate:'+c.isP+':'+((segments[visualSegment]||segments[0]).scene>=2),sprite=ESTATE_BASE_CACHE.get(key);if(!sprite){sprite=document.createElement('canvas');sprite.width=624;sprite.height=900;var sc=sprite.getContext('2d');sc.scale(3,3);sc.translate(4,296);paintApartmentBlock(sc,c.isP);ESTATE_BASE_CACHE.set(key,sprite);}
+    var seg=segments[visualSegment]||segments[0],key='estate:'+c.isP+':'+seg.period+':'+(seg.scene>=2),sprite=ESTATE_BASE_CACHE.get(key);if(!sprite){sprite=document.createElement('canvas');sprite.width=624;sprite.height=900;var sc=sprite.getContext('2d');sc.scale(3,3);sc.translate(4,296);paintApartmentBlock(sc,c.isP);ESTATE_BASE_CACHE.set(key,sprite);if(ESTATE_BASE_CACHE.size>4)ESTATE_BASE_CACHE.delete(ESTATE_BASE_CACHE.keys().next().value);}
     ctx.save();var layout=baseLayout(c,ground),drawW=layout.w,drawH=layout.h,sx=drawW/200,sy=drawH/260,drawX=layout.x;contactShadow(ctx,drawX+drawW*.5,ground+2,drawW*.53,.42);ctx.drawImage(sprite,drawX-4*sx,ground-296*sy,208*sx,300*sy);ctx.restore();
   }
   function arenaBase(ctx,c,ground){estateApartmentBase(ctx,c,ground);}
@@ -672,5 +697,5 @@
   root.CASTLE_ERA_ART.drawBase=function(ctx,c,ground,era,l,t){if(era==='modern'&&l==='estate'){arenaBase(ctx,c,ground);return;}return oldBase(ctx,c,ground,era,l,t);};
   var oldBackdrop=root.CASTLE_ERA_ART.backdrop;
   root.CASTLE_ERA_ART.backdrop=function(ctx,w,gy,era,l){if(era!=='modern'||l!=='estate')return oldBackdrop(ctx,w,gy,era,l);drawArenaBackdrop(ctx,w,gy,segments[visualSegment]||segments[0]);};
-  root.CASTLE_ESTATE={ambientPose:ambientPose,facadeCondition:facadeCondition,facadeWear:facadeWear,residentFatigue:residentFatigue,backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.18.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
+  root.CASTLE_ESTATE={periodMaterials:periodMaterials,ambientPose:ambientPose,facadeCondition:facadeCondition,facadeWear:facadeWear,residentFatigue:residentFatigue,backgroundRoom:backgroundRoom,roomLight:roomLight,availableChoices:availableChoices,serviceDoor:serviceDoor,runnerTarget:runnerTarget,doorOpen:doorOpen,advanceRunner:advanceRunner,surrenderPose:surrenderPose,finishTick:function(g,dt){g.estate.p.action=g.estate.e.action=null;g.estate.bottles=[];g.estate.glass=[];g.estate.impacts=[];TACTICS.finish(g,dt);},scenePalette:scenePalette,drawScenery:function(ctx,g){drawArenaScene(ctx,g,segmentOf(g));},baseLayout:baseLayout,anchor:anchor,active:active,init:init,buy:buy,eat:eat,status:status,tick:tick,draw:draw,buildCards:buildCards,updateCards:updateCards,choices:choices,foods:foods,segments:segments,level:level,segmentSeconds:SEGMENT_SECONDS,setSegment:setSegment,chooseDrink:chooseDrink,staminaCost:staminaCost,currentVisual:function(){return visualSegment;},arenaKinds:segments.map(function(s){return s.arena;}),landmarkKinds:segments.map(function(s){return s.landmark;}),artCache:function(){return ART_CACHE.size;},styleVersion:'8.19.0',periods:['1988','1997'],baseGrammar:ESTATE_BASE_GRAMMAR.slice(),baseCache:function(){return ESTATE_BASE_CACHE.size;}};
 })(window);
