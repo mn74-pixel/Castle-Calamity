@@ -18,6 +18,7 @@ const qaHooks = String.raw`
 window.__QA = {
   estateDetailScene: function(i){launchEstateSegment(i);G.estate.ai=1e6;G.estate.segmentFlash=0;G.estate.ambient.enabled=false;var before=JSON.stringify(G);render();return before===JSON.stringify(G);},
   estatePigeonScene: function(t){launchEstateSegment(0);G.estate.ambient={start:50,enabled:true,lampSeed:1,kind:'pigeon'};G.estate.tactics.clock=50+t;G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),pose:ESTATE.pigeonPose(G),car:ESTATE.ambientPose(G).visible};},
+  estateStreetGagScene: function(kind,t,enabled){launchEstateSegment(0);G.estate.ambient={start:50,enabled:enabled!==false,lampSeed:2,kind:kind};G.estate.tactics.clock=50+t;G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),pose:ESTATE.streetGagPose(G),car:ESTATE.ambientPose(G).visible,pigeon:ESTATE.pigeonPose(G).visible};},
   estateEntryScene: function(p,time){launchEstateSegment(0);G.estate.ai=1e6;ESTATE.buy(G,'dres',p);var u=G.estate.units[0];u.x=p?.809:.191;window.CASTLE_ESTATE_TACTICS.tick(G,time,castleDmg);var before=JSON.stringify(G);render();return {pure:before===JSON.stringify(G),inside:u.inside,returning:!!u.returning,hits:u.entryHits};},
   estatePlasterScene: function(){launchEstateSegment(0);G.estate.ai=1e6;G.e.hp=G.e.max*.55;G.estate.bottles.push({isP:true,item:ESTATE.choices[1],t:1,duration:1});ESTATE.tick(G,1/30,castleDmg);var triggered=G.estate.e.plasterT===.7;ESTATE.tick(G,.25,castleDmg);var before=JSON.stringify(G);render();var pure=before===JSON.stringify(G);ESTATE.tick(G,.8,castleDmg);return {triggered:triggered,pure:pure,expired:G.estate.e.plasterT===0};},
   photoReactionScene: function(p,hit){launchEstateSegment(4);var img=document.createElement('canvas');img.width=img.height=320;var cx=img.getContext('2d');cx.fillStyle='#c78e6e';cx.beginPath();cx.ellipse(160,160,115,148,0,0,Math.PI*2);cx.fill();cx.fillStyle='#40342f';cx.fillRect(105,116,27,10);cx.fillRect(191,116,27,10);cx.fillStyle='#823c44';cx.fillRect(142,218,40,8);img.faceRig={version:1,mouth:{x:162/320,y:222/320},method:'manual'};var oldP=PLAYER_CREST,oldE=ENEMY_CREST;if(p)PLAYER_CREST=img;else ENEMY_CREST=img;var st=G.estate[p?'p':'e'];ESTATE.buy(G,'wine',p);st.action.t=.6;st.hitReactT=hit?.36:0;st.hitReactPower=1;var before=JSON.stringify(G.estate);render();var pure=before===JSON.stringify(G.estate);PLAYER_CREST=oldP;ENEMY_CREST=oldE;return pure;},
@@ -1082,7 +1083,7 @@ for(const p of [true,false]){
   check(late.over&&late.collapse===0&&late.holes===0&&late.rubble===0&&late.fires===0&&late.effects===0&&late.shots===0,"Osiedle: brak wyburzenia, pęknięć, iskier i walki po poddaniu");
   check(!late.message.includes("remont")&&late.stats.includes("Nasi wycofani"),"Osiedle: finał opisuje poddanie, nie zabijanie ani remont");
 }
-check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.22.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
+check(sandbox.window.CASTLE_ESTATE.styleVersion==="8.23.0"&&["hero-loggia","recessed-window-reveals","side-wall-perspective","balcony-cast-shadows"].every(k=>sandbox.window.CASTLE_ESTATE.baseGrammar.includes(k)),"Osiedle v8.8: loggia, wnęki, boczne płaszczyzny i cienie balkonów");
 const roomLight=sandbox.window.CASTLE_ESTATE.roomLight;
 check(qa.estateSnackLabel()==='Zagrycha','Osiedle: stały podpis Zagrycha bez dopisywania potrawy');
 for(const [key,value] of Object.entries(qa.estateWeatherAudit()))check(value,'Pogoda: automatyczny cykl '+key);
@@ -1169,6 +1170,32 @@ for(const viewport of [[1280,720],[667,375]]){
 }
 qa.viewport(1280,720,1);
 const estateMaterials=sandbox.window.CASTLE_ESTATE.periodMaterials;
+const estateArt=sandbox.window.CASTLE_ESTATE;
+check(new Set(Array.from({length:997},(_,seed)=>estateArt.ambientKind(seed))).size===4,'Four deterministic background gag variants, no extra random draws');
+for(const size of [[1280,720],[667,375]]){
+  qa.viewport(size[0],size[1],1);
+  for(const kind of ['cat','umbrella']){
+    const frames=[];
+    for(const t of [-1,0,2,3,4,5,5.5,6,8,11.99,12,100000]){
+      const result=qa.estateStreetGagScene(kind,t);
+      check(result.pure&&!result.car&&!result.pigeon&&result.pose.visible===(t>=0&&t<12),'Exclusive bounded street gag '+kind+' '+t+' '+size);
+      if(result.pose.visible){for(const value of Object.values(result.pose))if(typeof value==='number')assert(Number.isFinite(value));frames.push(canvas.toBuffer('image/png').toString('base64'));save('estate-gag-'+kind+'-'+size[0]+'-'+t+'.png');}
+    }
+    assert(new Set(frames).size>=7,'Gag must have visibly different animation phases');
+    assert(!qa.estateStreetGagScene(kind,4,false).pose.visible,'Disabled gags stay disabled');
+    assert(qa.estateStreetGagScene(kind,0).pose.x<-.05&&qa.estateStreetGagScene(kind,11.99).pose.x>1.05,'Gag enters and leaves beyond the viewport');
+    const before=qa.estateStreetGagScene(kind,5.999).pose,after=qa.estateStreetGagScene(kind,6.001).pose;
+    assert(Math.abs(before.x-after.x)<.001&&Math.abs(before.lift-after.lift)<.01,'No teleport at the exit transition');
+  }
+}
+qa.viewport(1280,720,1);
+function swatchValue(hex){const rgb=hex.slice(1).match(/../g).map(v=>parseInt(v,16));return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;}
+for(const period of ['1988','1997'])for(const night of [false,true]){
+  const m=estateMaterials(period,night);
+  check(swatchValue(m.facade)-swatchValue(m.side)>25,'Facade separates from shaded side '+period+' '+night);
+  check(swatchValue(m.far)>swatchValue(m.near)+8,'Depth planes remain separated '+period+' '+night);
+  check(swatchValue(m.facade)<170&&swatchValue(m.enemyFacade)<175,'Estate concrete avoids the old pale pastel values '+period+' '+night);
+}
 check(estateMaterials('1988',false).booth==='#183e2a'&&estateMaterials('1988',false).phone==='#e5b832','Dark green cabin contains a yellow payphone');
 check(estateMaterials('1988',false).boothType==='glazed-green'&&estateMaterials('1997',false).boothType==='open-blue','Historical props: green glazed cabin and later blue open phone shell');
 check(estateMaterials('1988',false).facade!==estateMaterials('1997',false).facade,'Historical facade materials distinguish the two periods');

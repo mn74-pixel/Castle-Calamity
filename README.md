@@ -1,5 +1,25 @@
 # Castle Calamity
 
+### v8.23.0 — mocniejsze kolory i nowe żarty tła
+
+Elewacje, niebo, szyldy i kolejne plany mają ciemniejszą, bardziej nasyconą
+paletę zamiast pastelowej. Głębszy cień ścian oddziela bryły; tło zachowuje
+mniejszy kontrast niż pierwszy plan. Historyczna zielona budka i żółty
+telefon pozostają bez zmian.
+
+Do samochodu i gołębia dołączają kot polujący na kiełbasę oraz parasol,
+który podmuch wywraca i porywa. Wybierany jest jeden wariant na bitwę,
+z istniejącego ziarna, bez dodatkowych losowań wpływających na symulację.
+Animacje trwają 12 sekund, korzystają z zegara gry, mają wejście i wyjście
+poza ekranem, nie tworzą cząstek ani timerów. Kot ma osobny ruch łap,
+ogona, skok i przykucnięcie; parasol deformuje czaszę przed odlotem.
+
+Testy obejmują klatki obu nowych gagów na 1280×720 i 667×375, wyłączanie,
+wyłączność wariantów, granice czasu, ciągłość wyjścia i brak mutacji stanu.
+Paleta ma testy separacji planów i cienia. Pełny zestaw regresji pozostaje
+obowiązkowy; płynność i czytelność na fizycznym iPhonie wymagają odbioru
+ręcznego. Żadnych dodatkowych pluginów ani zależności.
+
 ### v8.22.0 — osobny detal dla wszystkich 12 etapów
 
 Kiosk: paczki gazet; Monopolowy: skrzynki i butelki; ławka: słoje drewna,
