@@ -10,6 +10,39 @@ function tick(g,seconds,dt=1/60){for(let t=0;t<seconds-1e-8;t+=dt)T.tick(g,Math.
 function spawn(g,id,p,x){g.estate.tactics[p?'p':'e']=0;assert(T.recruit(g,id,p));const u=g.estate.units.at(-1);if(x!==undefined)u.x=x;return u;}
 let checks=0;
 function check(name,fn){fn();checks++;console.log('OK Estate tactics: '+name);}
+check('newly returning raiders cannot consume a ranged attack windup in the same step',()=>{
+  for(const side of [true,false]){
+    const g=game(4),raider=spawn(g,'bike',side,side?.809:.191),ranged=spawn(g,'neighbor',!side,side?.78:.22);
+    raider.lane=0;ranged.lane=1;ranged.cd=0;
+    tick(g,1/30);assert(raider.returning);assert.equal(ranged.wind,0);assert(ranged.moving);
+  }
+});
+check('traffic stops at the nearest ally, independent of insertion order',()=>{
+  for(const side of [true,false])for(const reverse of [false,true]){
+    const g=game(8),dir=side?1:-1,walker=spawn(g,'skater',side,.5),near=spawn(g,'skater',side,.5+dir*.035),far=spawn(g,'cart',side,.5+dir*.063);
+    walker.lane=near.lane=far.lane=1;near.wind=far.wind=100;
+    g.estate.units=reverse?[far,near,walker]:[walker,near,far];
+    tick(g,1/30);assert.equal(walker.x,.5,'do not advance through the nearest neighbour');
+  }
+});
+check('all twelve stage rosters survive sustained recruitment, clear the street and conserve raid money',()=>{
+  for(let stage=0;stage<12;stage++){
+    const g=game(stage);g.p.gold=g.e.gold=9999;g.estate.weather=T.weatherInit(42+stage);
+    const deck=Array.from(T.roster(stage));let spent=0;
+    for(let second=0;second<30;second++){
+      for(const side of [true,false]){const id=deck[second%deck.length];if(T.status(g,id,side).ok){T.recruit(g,id,side);spent+=T.cards.find(c=>c.id===id).cost;}}
+      tick(g,1);assert(g.estate.units.every(u=>Number.isFinite(u.x)&&u.hp>=0&&u.hp<=u.max));assert(g.estate.shots.length<40);
+    }
+    tick(g,240);assert.equal(g.estate.units.length,0,'unresolved street at stage '+stage);
+    // Only stage 1 intentionally mints centre-control credits.
+    if(stage!==1)assert.equal(g.p.gold+g.e.gold,19998-spent,'raid credit conservation at stage '+stage);
+  }
+});
+check('contact strength affects presentation only and settles completely',()=>{
+  assert(T.pose({hurt:.24,hitPower:1.4}).recoil>T.pose({hurt:.24,hitPower:.35}).recoil);
+  assert(Math.abs(T.heavyPose({hurt:.24,hitPower:1.4}).lean)>Math.abs(T.heavyPose({hurt:.24,hitPower:.35}).lean));
+  assert.equal(T.pose({hurt:0,hitPower:1.4}).recoil,0);
+});
 check('articulated slips are pure, bounded, surface-specific and recover to neutral',()=>{
   for(const card of T.cards)for(const surface of ['water','ice']){
     const duration=surface==='ice'?1.1:.8;

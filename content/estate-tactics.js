@@ -98,7 +98,7 @@
   function choose(g){var e=g.estate,t=e.tactics;if(t.ai>0||t.e>0)return null;var deck=roster(e.segment),enemies=e.units.filter(function(u){return u.isP&&active(u);}),allies=e.units.filter(function(u){return !u.isP&&active(u);}),last=enemies[enemies.length-1],role=last?archetype(last.kind):'fast',wanted=role==='fast'?'front':role==='ranged'?'fast':'ranged';var controller=deck.find(function(id){return roles[id].slow&&!roles[id].projectile;});if(controller&&last&&role==='fast'&&allies.some(function(u){return archetype(u.kind)==='front';})&&!allies.some(function(u){return u.kind===controller;})&&status(g,controller,false).ok)return controller;var support=deck.find(function(id){return archetype(id)==='support';});if(support&&allies.length>=2&&!allies.some(function(u){return archetype(u.kind)==='support';})&&status(g,support,false).ok)return support;var order=deck.slice().sort(function(a,b){function score(id){return Number(archetype(id)===wanted)*2+(role==='ranged'?(roles[id].projectileGuard||0):0);}return score(b)-score(a);});return order.find(function(id){return status(g,id,false).ok;})||null;}
   function heal(g,p,n){g.estate.units.forEach(function(u){if(u.isP===p&&active(u))u.hp=Math.min(u.max,u.hp+n);});}
   function patrol(e){return e.segment===9&&e.tactics.clock%14>=11;}
-  function hurt(g,u,amount,slow){if(!u||!active(u))return;g.estate.tactics.impact=true;u.hp=Math.max(0,u.hp-amount);u.hurt=.24;u.slow=Math.max(u.slow,slow||0);if(!u.hp){retire(u);if(u.isP)g.stats.losses++;else g.stats.kills++;}}
+  function hurt(g,u,amount,slow){if(!u||!active(u))return;g.estate.tactics.impact=true;u.hp=Math.max(0,u.hp-amount);u.hurt=.24;u.hitPower=Math.max(.35,Math.min(1.4,amount/32));u.slow=Math.max(u.slow,slow||0);if(!u.hp){retire(u);if(u.isP)g.stats.losses++;else g.stats.kills++;}}
   function archetype(id){return roles[id]?roles[id].role:'support';}
   function multiplier(a,b){a=archetype(a);b=archetype(b);return (a==='front'&&b==='fast')||(a==='fast'&&b==='ranged')||(a==='ranged'&&b==='front')?1.4:1;}
   var PUDDLES=[{x:.38,lane:0},{x:.5,lane:1},{x:.62,lane:2}];
@@ -137,16 +137,17 @@
     e.units.forEach(function(u){u.performing=!stopped&&active(u)&&!!roles[u.kind].jam&&!(u.slip>0)&&live.some(function(v){return v.isP!==u.isP&&Math.abs(v.x-u.x)<roles[u.kind].jamRange;});u.disrupted=!stopped&&active(u)&&live.some(function(v){return v.isP!==u.isP&&roles[v.kind].jam&&!(v.slip>0)&&Math.abs(v.x-u.x)<roles[v.kind].jamRange;});});
     e.units.forEach(function(u){u.hurt=Math.max(0,u.hurt-dt);u.follow=Math.max(0,(u.follow||0)-dt);u.shock=Math.max(0,(u.shock||0)-dt);u.drawLane=(u.drawLane===undefined?laneOf(u):u.drawLane)+(laneOf(u)-(u.drawLane===undefined?laneOf(u):u.drawLane))*Math.min(1,dt*9);if(u.returning){returnRaid(g,u,dt);return;}if(u.hp<=0){if(u.retreat)retreat(u,dt);return;}u.slow=Math.max(0,u.slow-dt);if(!stopped&&wetFooting(e,u,dt))return;u.moving=false;if(stopped){u.inspired=false;return;}u.animTime=(u.animTime||0)+dt;
       var c=def(u.kind),dir=u.isP?1:-1,range=c.range*(u.kind==='neighbor'&&e.segment===7?.72:1),target=null,distance=Infinity;
-      live.forEach(function(v){if(v.isP===u.isP||(!roles[u.kind].projectile&&laneOf(v)!==laneOf(u)))return;var d=Math.abs(v.x-u.x);if(d<distance){distance=d;target=v;}});
+      live.forEach(function(v){if(!active(v)||v.isP===u.isP||(!roles[u.kind].projectile&&laneOf(v)!==laneOf(u)))return;var d=Math.abs(v.x-u.x);if(d<distance||(d===distance&&target&&v.id<target.id)){distance=d;target=v;}});
       u.inspired=live.some(function(v){return v!==u&&active(v)&&!(v.slip>0)&&v.isP===u.isP&&roles[v.kind].haste&&Math.abs(v.x-u.x)<roles[v.kind].aura;});u.cd=Math.max(0,u.cd-dt*(u.disrupted?1-roles.musician.jam:1));
-      if(u.wind>0){u.wind-=dt;if(u.wind<=0){u.follow=.2;if(u.kind==='heavy')u.shock=.35;var victim=live.find(function(v){return v.id===u.target;});if(victim&&(roles[u.kind].projectile||laneOf(victim)===laneOf(u))&&Math.abs(victim.x-u.x)<=range+.035)attacks.push({u:u,v:victim});u.cd=c.interval;}return;}
+      if(u.wind>0){u.wind-=dt;if(u.wind<=0){u.follow=.2;if(u.kind==='heavy')u.shock=.35;var victim=live.find(function(v){return active(v)&&v.id===u.target;});if(victim&&(roles[u.kind].projectile||laneOf(victim)===laneOf(u))&&Math.abs(victim.x-u.x)<=range+.035)attacks.push({u:u,v:victim});u.cd=c.interval;}return;}
       if(target&&distance<=range){if(u.cd<=0){u.wind=c.windup||.22;u.target=target.id;}return;}
       var support=roles[u.kind];if((support.heal||support.haste)&&live.some(function(v){var ahead=(v.x-u.x)*dir;return v!==u&&active(v)&&(support.haste||v.hp<v.max)&&v.isP===u.isP&&ahead>0&&ahead<support.aura;}))return;var advance=c.speed*dt*(u.inspired?1+roles.musician.haste:1)*(u.slow>0?(support.slowFactor||.52):1),nx=u.x+dir*advance;
       // Friends block only their own lane. A stalled marcher may use a clear
       // neighbouring lane, but never teleport through another actor.
-      var blocker=live.find(function(v){var ahead=(v.x-u.x)*dir;return v!==u&&v.isP===u.isP&&laneOf(v)===laneOf(u)&&ahead>=0&&ahead<spacing(u,v)+advance;});
+      var blocker=null,blockDistance=Infinity;
+      live.forEach(function(v){var ahead=(v.x-u.x)*dir;if(v!==u&&active(v)&&v.isP===u.isP&&laneOf(v)===laneOf(u)&&ahead>=0&&ahead<spacing(u,v)+advance&&(ahead<blockDistance||(ahead===blockDistance&&blocker&&v.id<blocker.id))){blocker=v;blockDistance=ahead;}});
       u.blocked=blocker?(u.blocked||0)+dt:0;
-      if(blocker&&u.blocked>=.45){var free=LANES.find(function(l){return Math.abs(l-laneOf(u))===1&&!live.some(function(v){return v!==u&&laneOf(v)===l&&Math.abs(v.x-u.x)<spacing(u,v)*1.4;});});if(free!==undefined){u.lane=free;u.blocked=0;return;}}
+      if(blocker&&u.blocked>=.45){var free=LANES.find(function(l){return Math.abs(l-laneOf(u))===1&&!live.some(function(v){return v!==u&&active(v)&&laneOf(v)===l&&Math.abs(v.x-u.x)<spacing(u,v)*1.4;});});if(free!==undefined){u.lane=free;u.blocked=0;return;}}
       if(blocker)nx=u.x+dir*Math.max(0,Math.min(advance,(blocker.x-u.x)*dir-spacing(u,blocker)));
       if(target&&laneOf(target)===laneOf(u)&&(target.x-u.x)*dir>=0)nx=dir>0?Math.min(nx,target.x-.032):Math.max(nx,target.x+.032);
       u.moving=Math.abs(nx-u.x)>.00001;if(u.moving)advanceWalk(u,nx-u.x);u.x=nx;
@@ -170,7 +171,7 @@
   function pose(u){var phase=u.walk||0,weight=locomotionWeight(u),cycle=Math.sin(phase)*weight;
     return {stride:cycle*(u.kind==='skater'?7:u.kind==='heavy'?3:5),lift:Math.max(0,Math.cos(phase))*3*weight,rightLift:Math.max(0,-Math.cos(phase))*3*weight,sway:cycle*.025+(u.kind==='marian'?Math.sin((u.animTime||0)*2.3)*.09:0),
       bob:u.kind!=='bike'?Math.abs(cycle)*.85:0,
-      recoil:(u.hurt||0)/.24*2.5,
+      recoil:Math.pow(Math.max(0,Math.min(1,(u.hurt||0)/.24)),2)*2.5*(u.hitPower||1),
       reach:u.wind>0?-Math.sin(u.wind/((def(u.kind)||{}).windup||.22)*Math.PI)*4:(u.follow||0)/.2*9,
       pedalX:Math.cos(phase)*5,pedalY:Math.sin(phase)*5};
   }
@@ -241,7 +242,7 @@
     var wind=Math.max(0,Math.min(1,(u.wind||0)/.55)),follow=Math.max(0,Math.min(1,(u.follow||0)/.2));
     var prepare=Math.sin(wind*Math.PI),release=Math.sin(follow*Math.PI/2);
     return {leftX:-8+cycle*3.5,rightX:8-cycle*3.5,leftLift:Math.max(0,Math.cos(phase))*2*weight,rightLift:Math.max(0,-Math.cos(phase))*2*weight,
-      sway:cycle*.9,drop:prepare*1.8,lean:-prepare*.09+release*.12-(u.hurt||0)*.25,
+      sway:cycle*.9,drop:prepare*1.8,lean:-prepare*.09+release*.12-pose(u).recoil*.024,
       bob:Math.abs(Math.sin(phase*2))*.65*weight+Math.sin((u.animTime||0)*2.2)*.3*(1-weight),
       squash:1-prepare*.045,reach:-prepare*6+release*12,handY:-31-prepare*9+release*2};
   }
@@ -275,7 +276,17 @@
     if(!f.ice){c.strokeStyle='#9bc8d4';c.lineWidth=1;c.beginPath();c.ellipse(5,1,8+p*22,2+p*3,0,0,Math.PI*2);c.stroke();}
     for(var i=0;i<(f.ice?5:8);i++){var vx=(i-3.5)*5,px=5+vx*p,py=-2-(12+i%3*6)*p+28*p*p;c.fillStyle=f.ice?'#d8edf1':'#8fbacb';if(f.ice){c.save();c.translate(px,Math.min(1,py));c.rotate(i+p*3);c.fillRect(-1,-1,3,1.5);c.restore();}else ellipse(c,px,Math.min(1,py),1.3,2,'#a5d1dc');}c.restore();
   }
-  function figure(c,u,x,y,s){uprightFigure(c,u,x,y,s);if(animationState(u)==='slip')slipEffects(c,u,x,y,s);}
+  // A short contact accent, never an accumulating particle collection.
+  // Kept outside the body transform so the flash does not recoil with the victim.
+  function contactEffect(c,u,x,y,s){
+    if(!(u.hurt>0)||u.retreat||u.returning)return;
+    var q=1-Math.min(1,u.hurt/.24);if(q>.72)return;
+    var power=u.hitPower||1,dir=u.facing||(u.isP?1:-1),r=3+q*10;
+    c.save();c.translate(x+dir*11*s,y-34*s);c.scale(dir*s,s);c.globalAlpha=(1-q/.72)*.75;
+    for(var i=0;i<4;i++){var a=-1.1+i*.72;line(c,Math.cos(a)*r,Math.sin(a)*r,Math.cos(a)*(r+3+power*2),Math.sin(a)*(r+3+power*2),'#f4d7a0',1.2);}
+    c.restore();
+  }
+  function figure(c,u,x,y,s){uprightFigure(c,u,x,y,s);if(animationState(u)==='slip')slipEffects(c,u,x,y,s);contactEffect(c,u,x,y,s);}
   function uprightFigure(c,u,x,y,s){
     if(u.kind==='heavy'){heavyFigure(c,u,x,y,s);return;}
     var bike=u.kind==='bike',neighbor=u.kind==='neighbor',team=u.isP?'#528caa':'#b96552',ink='#233238',phase=u.walk||0,p=pose(u),stride=p.stride,hit=u.hurt>0,attack=p.reach,fall=animationState(u)==='slip'?slipMotion(u):null;

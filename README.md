@@ -1,5 +1,15 @@
 # Castle Calamity
 
+### v8.18.0 — audyt ruchu i czytelniejsze trafienia
+
+Oddziały sprawdzają aktualną aktywność celu po rozpoczęciu jego rajdu.
+Kolejka wybiera najbliższego sojusznika, a nie pierwszego na liście.
+Lekkie i mocne trafienia mają różny odrzut wizualny oraz krótki akcent
+kontaktu bez krwi. Dodano test rekrutacji i rozstrzygnięcia wszystkich
+12 etapów, kontroli kredytów oraz czystości renderowania.
+Zakres, dowody i wymagany odbiór na telefonie:
+[audyt Osiedla](docs/AUDYT-OSIEDLE-v8.18.0.md).
+
 ### v8.17.0 — wywrotki zamiast obracania sztywnej sylwetki
 
 Osobne sekwencje wody i lodu: utrata równowagi, wymachy rąk, ugięcie kolan,
