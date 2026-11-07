@@ -1,9 +1,9 @@
 {
   "name": "castle-calamity",
-  "version": "8.25.1",
+  "version": "8.25.2",
   "private": true,
   "scripts": {
-    "test": "node tests/unit-presentation.test.js && node tests/portrait-load.test.js && node tests/face-rig.test.js && node tests/estate-tactics.test.js && node tests/game.test.js && node tests/pwa.test.js && node tests/era-art.test.js"
+    "test": "node tests/unit-presentation.test.js && node tests/estate-ground-contact.test.js && node tests/portrait-load.test.js && node tests/face-rig.test.js && node tests/estate-tactics.test.js && node tests/game.test.js && node tests/pwa.test.js && node tests/era-art.test.js"
   },
   "devDependencies": {
     "@napi-rs/canvas": "0.1.100"

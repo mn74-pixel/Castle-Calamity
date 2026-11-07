@@ -18,6 +18,14 @@ const qaHooks = String.raw`
 // Isolated stage fixtures suppress automatic workers; full battles use real starts.
 function estateFixture(index){launchEstateSegment(index);if(index!==null)G.estate.runners=[];}
 window.__QA = {
+  groundRosters: function(){return ERA_ORDER.map(function(era){return {era:era,levels:ERA_LEVELS[era].map(function(l){return Array.from(new Set((l.ul||[]).concat(l.ai||[]))).filter(function(k){return UD[k]&&!UD[k].cannon;});})};});},
+  groundSprite: function(era,key,size,phase){
+    var oldEra=G.eraId;G.eraId=era;CT.save();CT.setTransform(1,0,0,1,0,0);CT.clearRect(0,0,260,250);
+    var u={key:key,ud:UD[key],isP:true,x:130,y:200,vx:20,step:phase,atkPhase:0,state:'march'};
+    if(u.ud.boss)drawBossUnit(u,size);else drawFigGame(u,130,200,1,size);var pixels=CT.getImageData(85,196,90,9).data,opaque=0;
+    for(var i=3;i<pixels.length;i+=4)if(pixels[i]>200)opaque++;
+    CT.restore();G.eraId=oldEra;return opaque;
+  },
   estateRobbedNextTrip: function(){launchEstateSegment(0);G.estate.ai=1e6;var r=G.estate.runners[0],gold=G.p.gold;r.cargoCredits=8;r.robbed=true;ESTATE.advanceRunner(G,r,100);ESTATE.finishRunner(G,r);ESTATE.tick(G,.01,castleDmg);return G.p.gold===gold+8&&r.cargoCredits===16&&!r.robbed&&!r.settled&&r.phase==='approach'&&ESTATE.economy(G,true).workers===1;},
   estateTheftAudit: function(food){estateFixture(3);G.estate.ai=1e6;G.estate.p.food=G.estate.e.food=0;ESTATE.buy(G,food?'food':'runner',false);var r=G.estate.runners[0];r.phase='return';r.x=.5;var T=window.CASTLE_ESTATE_TACTICS;T.recruit(G,'thief',true);var u=G.estate.units[0];u.x=.5;var beforeP=G.p.gold,beforeE=G.e.gold;T.pickpocket(G,u,.1,false);var state=JSON.stringify(G);render();var pure=state===JSON.stringify(G);r.phase='done';ESTATE.finishRunner(G,r);ESTATE.finishRunner(G,r);return {pure:pure,player:G.p.gold-beforeP,enemy:G.e.gold-beforeE,foodP:G.estate.p.food,foodE:G.estate.e.food,notice:G.estate.e.notice};},
   estateIncomeScene: function(time){launchEstateSegment(0);G.estate.ai=1e6;ESTATE.buy(G,'runner',true);ESTATE.tick(G,time,castleDmg);G.estate.segmentFlash=0;var before=JSON.stringify(G);render();return before===JSON.stringify(G)&&ESTATE.economy(G,true).workers===2;},
@@ -817,6 +825,13 @@ function check(ok, msg) { if (!ok) throw new Error(msg); console.log("OK", msg);
 function approx(a, b, eps = 0.001) { return Math.abs(a - b) <= eps; }
 
 qa.viewport(1280, 720, 1); qa.load(4);
+// Render every ground-unit roster used by every campaign level at both sizes
+// and multiple gait phases. Faint shadows alone do not count as foot contact.
+for(const era of qa.groundRosters()) for(const [level, roster] of era.levels.entries()) for(const key of roster)
+  for(const size of [24,46]) for(const phase of [0, .8, 1.57, 2.4, 3.14, 4.7])
+    check(qa.groundSprite(era.era,key,size,phase)>0,`Podłoże ${era.era} poziom ${level+1}: ${key} size ${size} phase ${phase}`);
+for(const key of ['moonlord','demonking']) for(const size of [24,46])
+  check(qa.groundSprite('medieval',key,size,0)>0,`Podłoże: boss ${key} size ${size}`);
 let st = qa.state();
 const iphoneCases=[
   {name:"iphone-se",w:667,h:375,safe:{top:0,right:0,bottom:21,left:44},offsetTop:0},

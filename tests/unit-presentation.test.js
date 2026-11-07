@@ -16,4 +16,5 @@ for (let i = 0; i < arranged.length; i++) for (let j = i + 1; j < arranged.lengt
   }
 }
 assert(arranged.every(a => Math.abs(a.dx) <= size * 1.2));
+assert(arranged.every(a => a.dy >= 0), "no row may float above ground");
 console.log('OK unit presentation: nine actors remain distinct without changing combat positions');

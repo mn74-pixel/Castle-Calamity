@@ -35,6 +35,7 @@ check('boss is a costly late frontline with bounded splash and a slow telegraphe
     tick(g,.5);assert(victims.every(v=>v.hp===v.max));tick(g,.6);assert.equal(victims.filter(v=>v.hp<v.max).length,3);assert.equal(g[side?'p':'e'].gold,904);
   }
 });
+check('all street lanes stay on or below the ground line',()=>{ for(const scale of [.62,1,1.8]) for(let lane=-1.5;lane<=2;lane+=.1) assert(T.groundLaneOffset(lane,scale)>=0); });
 check('return and retreat traffic use the rear sidewalk, combat lanes are unchanged',()=>{
   for(const lane of [0,1,2]){const u={lane};assert.equal(T.displayLane(u),lane);assert.equal(T.displayLane({...u,returning:true}),-1.5);assert.equal(T.displayLane({...u,retreat:true}),-1.5);}
   const g=game(2),u=spawn(g,'bike',true,.809);u.lane=u.drawLane=2;tick(g,.05);assert(u.returning);assert(T.displayLane(u)>-1.5);tick(g,.8);assert(Math.abs(T.displayLane(u)+1.5)<.01);assert.equal(u.lane,2);
@@ -207,7 +208,7 @@ check('cycling grips stay on handlebars and the throwing hand releases its slipp
   const a=T.armPose(ready,-55,T.pose(ready)),b=T.armPose(released,-55,T.pose(released));assert(a.slipper);assert(!b.slipper);assert.equal(a.frontY,-48);assert.equal(b.frontY,-48);
 });
 check('slipper visual leaves the throwing hand on both sides and arrives at the target lane',()=>{
-  for(const p of [true,false])for(const s of [.84,1.55]){const v={x:.5,isP:p,t:0,duration:.32,fromLane:0,toLane:2};const start=T.shotPose(v,s,590,1280);assert.equal(start.x,640+(p?26:-26)*s);assert.equal(start.y,587-48*s);v.t=.32;const end=T.shotPose(v,s,590,1280);assert.equal(end.x,640);assert(Math.abs(end.y-(587-38*s+24*s))<1e-8);}
+  for(const p of [true,false])for(const s of [.84,1.55]){const v={x:.5,isP:p,t:0,duration:.32,fromLane:0,toLane:2};const start=T.shotPose(v,s,590,1280);assert.equal(start.x,640+(p?26:-26)*s);assert.equal(start.y,590-48*s+T.groundLaneOffset(0,s));v.t=.32;const end=T.shotPose(v,s,590,1280);assert.equal(end.x,640);assert(Math.abs(end.y-(590-38*s+T.groundLaneOffset(2,s)))<1e-8);}
 });
 check('raid deducts only available money, credits it only at home and cannot steal twice',()=>{
   for(const p of [true,false])for(const available of [0,7,100]){const g=game(4),bank=p?g.p:g.e,enemy=p?g.e:g.p;enemy.gold=available;const u=spawn(g,'bike',p,p?.809:.191),before=bank.gold,expected=Math.min(available,T.raidCapacity('bike',4));let callbacks=0;
