@@ -213,6 +213,8 @@
     c.fillStyle=col;c.strokeStyle='#233238';c.lineWidth=1.4;c.fill();c.stroke();c.save();c.clip();
     var light=c.createLinearGradient(-10,head+16,11,head+32);light.addColorStop(0,'rgba(249,235,201,.3)');light.addColorStop(.38,'rgba(243,229,197,.08)');light.addColorStop(.72,'rgba(26,39,45,.08)');light.addColorStop(1,'rgba(21,32,38,.4)');c.fillStyle=light;c.fillRect(-15,head+10,32,50);
     ellipse(c,4,head+17,10,3,'rgba(16,29,35,.18)');c.restore();
+    // A small team-coloured armband remains visible against every outfit.
+    line(c,-10,head+20,-5,head+20,team,3.2);line(c,-10,head+19,-5,head+19,'rgba(255,245,218,.7)',.8);
     line(c,0,head+16,1,bottom-3,'#c6c5b4',.8);line(c,-7,bottom-2,7,bottom-2,'#34434a',1.5);line(c,3,bottom-9,7,bottom-10,'#33434a',1);
     c.strokeStyle='rgba(235,225,192,.3)';c.lineWidth=.8;c.beginPath();c.moveTo(-7,bottom-9);c.quadraticCurveTo(-4,bottom-6,-1,bottom-8);c.stroke();
   }
