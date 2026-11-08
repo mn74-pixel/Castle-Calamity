@@ -18,6 +18,29 @@ const qaHooks = String.raw`
 // Isolated stage fixtures suppress automatic workers; full battles use real starts.
 function estateFixture(index){launchEstateSegment(index);if(index!==null)G.estate.runners=[];}
 window.__QA = {
+  endCrowdedAudit: function(){endTestSession();},
+  crowdedBattleAudit: function(era,index){
+    launchTestLevel(era,index);G.tutorialMode=true;G.units=[];G.gags=[];G.projs=[];G.p.gold=G.e.gold=9999;
+    var keys=G.lv.ul.filter(function(k){return UD[k]&&!UD[k].cannon&&!UD[k].worker&&!UD[k].mason;});
+    if(!keys.length)return {ok:false,frames:0};
+    for(var side=0;side<2;side++)for(var n=0;n<4;n++){var u=spawnUnit(keys[n%keys.length],side===0,{free:true});u.x=W*.5+(side===0?-1:1)*(18+n*9);u.y=G.GY;u.hp=u.max=10000;u.acd=10;}
+    var ok=true,frames=0,sz=getUnitDrawSize();
+    for(var f=0;f<90;f++){tick(1/30);if(f%5)continue;var before=JSON.stringify(G.units.map(function(u){return [u.x,u.y,u.hp,u.state,u.vx];})),arr=arrangeUnitPresentation(G.units,sz).filter(function(p){return !p.unit.ud.cannon;});
+      if(before!==JSON.stringify(G.units.map(function(u){return [u.x,u.y,u.hp,u.state,u.vx];})))ok=false;
+      arr=arr.map(function(p){var u=p.unit,w=sz*(u.key==='knight'?2.5:u.ud.boss?3.5:u.key==='golem'?1.8:1.4)*p.scale;return {x:u.x+p.dx,w:w,dy:p.dy};}).sort(function(a,b){return a.x-b.x;});
+      for(var i=1;i<arr.length;i++)if(arr[i].x-arr[i-1].x+1e-6<(arr[i].w+arr[i-1].w)/2||arr[i].dy<0)ok=false;frames++;
+    }
+    render();return {ok:ok,frames:frames};
+  },
+  crowdedEstateAudit: function(stage){
+    estateFixture(stage);G.estate.ai=1e8;G.p.gold=G.e.gold=9999;var T=window.CASTLE_ESTATE_TACTICS,deck=T.roster(stage);
+    for(var side=0;side<2;side++)for(var i=0;i<4;i++){G.estate.tactics[side===0?'p':'e']=0;T.recruit(G,deck[i%deck.length],side===0);var u=G.estate.units[G.estate.units.length-1];u.x=.5+(side===0?-1:1)*(.028+i*.018);u.hp=u.max=10000;u.cd=10;}
+    var ok=true,frames=0,s=T.actorScale(H);
+    for(var f=0;f<90;f++){T.tick(G,1/30,function(){});if(f%5)continue;var before=JSON.stringify(G.estate),a=T.layoutEstateActors(G.estate.units,W,s).sort(function(x,y){return x.x-y.x;});
+      if(before!==JSON.stringify(G.estate))ok=false;for(var j=1;j<a.length;j++)if(a[j].x-a[j-1].x+1e-6<(a[j].width+a[j-1].width)/2||a[j].offset<0)ok=false;frames++;
+    }
+    render();return {ok:ok,frames:frames};
+  },
   groundRosters: function(){return ERA_ORDER.map(function(era){return {era:era,levels:ERA_LEVELS[era].map(function(l){return Array.from(new Set((l.ul||[]).concat(l.ai||[]))).filter(function(k){return UD[k]&&!UD[k].cannon;});})};});},
   groundSprite: function(era,key,size,phase){
     var oldEra=G.eraId;G.eraId=era;CT.save();CT.setTransform(1,0,0,1,0,0);CT.clearRect(0,0,260,250);
@@ -824,6 +847,15 @@ function save(name) { fs.writeFileSync(path.join(outDir, name), canvas.toBuffer(
 function check(ok, msg) { if (!ok) throw new Error(msg); console.log("OK", msg); }
 function approx(a, b, eps = 0.001) { return Math.abs(a - b) <= eps; }
 
+for(const [w,h] of [[667,375],[1280,720]]){
+  qa.viewport(w,h,1);qa.load(4);
+  for(const era of qa.groundRosters())for(let level=0;level<era.levels.length;level++){
+    const r=qa.crowdedBattleAudit(era.era,level);check(r.ok&&r.frames===18,`Rozstawienie ${era.era} poziom ${level+1} ${w}×${h}`);
+    if(era.era==='medieval'&&level===2)save(`formation-battle-${w}.png`);
+  }
+  for(let stage=0;stage<12;stage++){const r=qa.crowdedEstateAudit(stage);check(r.ok&&r.frames===18,`Rozstawienie Osiedle ${stage+1} ${w}×${h}`);if(stage===4)save(`formation-estate-${w}.png`);}
+}
+qa.endCrowdedAudit();
 qa.viewport(1280, 720, 1); qa.load(4);
 // Render every ground-unit roster used by every campaign level at both sizes
 // and multiple gait phases. Faint shadows alone do not count as foot contact.
